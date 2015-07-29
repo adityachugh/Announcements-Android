@@ -7,4 +7,5 @@
     <dimen name="app_logo_size">64dp</dimen>
     <dimen name="app_name_size">28sp</dimen>
     <dimen name="signinup_button_width">125dp</dimen>
+    <dimen name="signinup_button_spacing">40dp</dimen>
 </resources>

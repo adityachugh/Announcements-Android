@@ -1,12 +1,14 @@
 package io.mindbend.android.announcements;
 
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
@@ -21,6 +23,15 @@ public class OnboardingActivity extends ActionBarActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_onboarding);
 
+        //get sign in and up buttons; colour backgrounds if under API 21 (default tint will not work)
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+            Button signInButton = (Button)findViewById(R.id.signin_button);
+            Button signUpButton = (Button)findViewById(R.id.signup_button);
+
+            signInButton.setBackgroundColor(getResources().getColor(R.color.text_tertiary));
+            signUpButton.setBackgroundColor(getResources().getColor(R.color.accent));
+        }
+//test button to go to tabbed activity
 //        Button testButton = (Button)findViewById(R.id.test_button);
 //        testButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
