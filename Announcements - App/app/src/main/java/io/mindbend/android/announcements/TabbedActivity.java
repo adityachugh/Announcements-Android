@@ -45,9 +45,10 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
         mTabBar = (MaterialTabHost)findViewById(R.id.tab_bar);
         mTabBar.addTab(mTabBar.newTab().setText("Today").setTabListener(this));
         mTabBar.addTab(mTabBar.newTab().setText("Notifications").setTabListener(this));
-        mTabBar.addTab(mTabBar.newTab().setText("Admin").setTabListener(this));
         mTabBar.addTab(mTabBar.newTab().setText("Discover").setTabListener(this));
         mTabBar.addTab(mTabBar.newTab().setText("More").setTabListener(this));
+        //TODO: only add admin tag if user isA dmin
+        mTabBar.addTab(mTabBar.newTab().setText("Admin").setTabListener(this));
 
         //creates todayFragment by default (first screen)
         mTodayFragment = (TodayFragment)getFragmentManager().findFragmentById(R.id.fragment_container);
@@ -84,24 +85,24 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
                 break;
             //Admin
             case 2:
-                if (mAdminFragment == null){
-                    mAdminFragment = new AdminFragment();
-                }
-                fragment = mAdminFragment;
-                break;
-            //Discover
-            case 3:
                 if (mDiscoverFragment == null){
                     mDiscoverFragment = new DiscoverFragment();
                 }
                 fragment = mDiscoverFragment;
                 break;
-            //More
-            case 4:
+            //Discover
+            case 3:
                 if (mMoreFragment == null){
                     mMoreFragment = new MoreFragment();
                 }
                 fragment = mMoreFragment;
+                break;
+            //More
+            case 4:
+                if (mAdminFragment == null){
+                    mAdminFragment = new AdminFragment();
+                }
+                fragment = mAdminFragment;
                 break;
         }
 
