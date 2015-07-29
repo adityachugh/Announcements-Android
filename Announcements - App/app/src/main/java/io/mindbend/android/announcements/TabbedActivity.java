@@ -1,5 +1,6 @@
 package io.mindbend.android.announcements;
 
+import android.app.Fragment;
 import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -15,7 +16,15 @@ import it.neokree.materialtabs.MaterialTabListener;
 
 public class TabbedActivity extends ActionBarActivity implements MaterialTabListener {
 
+    //tab bar
     private MaterialTabHost mTabBar;
+
+    //all fragments under TabbedActivity
+    private TodayFragment mTodayFragment;
+    private NotificationsFragment mNotificationsFragment;
+    private AdminFragment mAdminFragment;
+    private DiscoverFragment mDiscoverFragment;
+    private MoreFragment mMoreFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +48,16 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
         mTabBar.addTab(mTabBar.newTab().setText("Admin").setTabListener(this));
         mTabBar.addTab(mTabBar.newTab().setText("Discover").setTabListener(this));
         mTabBar.addTab(mTabBar.newTab().setText("More").setTabListener(this));
+
+        //creates todayFragment by default (first screen)
+        mTodayFragment = (TodayFragment)getFragmentManager().findFragmentById(R.id.fragment_container);
+        if (mTodayFragment == null){
+            mTodayFragment = new TodayFragment();
+
+            getFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, mTodayFragment)
+                    .commit();
+        }
     }
 
     @Override
@@ -46,6 +65,50 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
         //gets position of tab selected, only sets nav accent bar to that tab
         int position = materialTab.getPosition();
         mTabBar.setSelectedNavigationItem(position);
+
+        Fragment fragment = null;
+        //Creates fragments if they do not exist when tab is selected
+        //changes arbitrary 'fragment' to fragment associated with selected tab
+        switch (position){
+            //Today
+            case 0:
+                //no need to instantiate today fragment, created on default when user enters tabbed activity
+                fragment = mTodayFragment;
+                break;
+            //Notifications
+            case 1:
+                if (mNotificationsFragment == null){
+                    mNotificationsFragment = new NotificationsFragment();
+                }
+                fragment = mNotificationsFragment;
+                break;
+            //Admin
+            case 2:
+                if (mAdminFragment == null){
+                    mAdminFragment = new AdminFragment();
+                }
+                fragment = mAdminFragment;
+                break;
+            //Discover
+            case 3:
+                if (mDiscoverFragment == null){
+                    mDiscoverFragment = new DiscoverFragment();
+                }
+                fragment = mDiscoverFragment;
+                break;
+            //More
+            case 4:
+                if (mMoreFragment == null){
+                    mMoreFragment = new MoreFragment();
+                }
+                fragment = mMoreFragment;
+                break;
+        }
+
+        //Changes fragment based on selected tab
+        getFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
 
     }
 
