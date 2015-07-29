@@ -1,0 +1,65 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="io.mindbend.android.announcements.SignInFragment">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/signinup_padding">
+        <TextView
+            android:gravity="center"
+            android:text="@string/tagline"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:textColor="@color/text_primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="30dp"/>
+        <EditText
+            android:id="@+id/sign_in_username"
+            android:hint="@string/username_hint"
+            android:background="@null"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/edittext_to_line"/>
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+        <EditText
+            android:id="@+id/sign_in_password"
+            android:paddingTop="@dimen/edittext_to_line"
+            android:inputType="textPassword"
+            android:hint="@string/password_hint"
+            android:background="@null"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/forgot_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:clickable="true"
+            android:gravity="center"
+            android:paddingTop="30dp"
+            android:text="@string/forgot_password"
+            android:paddingBottom="50dp"/>
+        <Button
+            android:id="@+id/sign_in_button"
+            android:backgroundTint="@color/accent"
+            android:textColor="@android:color/white"
+            android:text="@string/signin_button_text"
+            android:layout_gravity="center"
+            android:layout_width="@dimen/single_button_width"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+
+
+</FrameLayout>

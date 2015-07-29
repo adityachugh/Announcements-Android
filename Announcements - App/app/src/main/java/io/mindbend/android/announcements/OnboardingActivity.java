@@ -17,30 +17,48 @@ import it.neokree.materialtabs.MaterialTabListener;
 
 public class OnboardingActivity extends ActionBarActivity {
 
+    //Tells SignInUp activity which button has been clicked
+    public static final String EXTRA = "WhichButton";
+
+    public static final String SIGNINTAG = "Sign in";
+    public static final String SIGNUPTAG = "Sign up";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_onboarding);
 
-        //get sign in and up buttons; colour backgrounds if under API 21 (default tint will not work)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            Button signInButton = (Button) findViewById(R.id.signin_button);
-            Button signUpButton = (Button) findViewById(R.id.signup_button);
+        //get sign in and up buttons
+        Button signInButton = (Button) findViewById(R.id.signin_button);
+        Button signUpButton = (Button) findViewById(R.id.signup_button);
 
+        //button colour backgrounds if under API 21 (default tint will not work)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             signInButton.setBackgroundColor(getResources().getColor(R.color.text_tertiary));
             signUpButton.setBackgroundColor(getResources().getColor(R.color.accent));
         }
 
-        //test button to go to tabbed activity
-        Button testButton = (Button) findViewById(R.id.test_button);
-        testButton.setOnClickListener(new View.OnClickListener() {
+        //sign in and up buttons go to "SignInUpActivity"
+        signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(OnboardingActivity.this, TabbedActivity.class);
+                Intent i = new Intent(OnboardingActivity.this, SignInUpActivity.class);
+                //Tells SignInUp which button has been clicked
+                i.putExtra(EXTRA, SIGNINTAG);
                 startActivity(i);
             }
         });
+
+        signUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(OnboardingActivity.this, SignInUpActivity.class);
+                i.putExtra(EXTRA, SIGNUPTAG);
+                startActivity(i);
+            }
+        });
+
 
     }
 

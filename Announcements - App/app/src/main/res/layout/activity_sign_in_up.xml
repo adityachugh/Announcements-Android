@@ -4,10 +4,52 @@
                 android:layout_height="match_parent"
                 tools:context="io.mindbend.android.announcements.SignInUpActivity">
 
-    <ImageView
-        android:id="@+id/banner_signupin"
-        android:background="@color/primary"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/banner_height"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/banner_signupin"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/banner_height"
+                android:background="@color/primary"
+                android:gravity="center">
+            </ImageView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="64dp"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/app_logo"
+                    android:layout_width="@dimen/app_logo_size"
+                    android:layout_height="@dimen/app_logo_size"
+                    android:src="@drawable/ic_templogo"
+                    android:tint="@android:color/black"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="@string/app_name"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:textSize="@dimen/app_name_size"/>
+            </LinearLayout>
+        </RelativeLayout>
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+        </FrameLayout>
+    </LinearLayout>
+
 
 </RelativeLayout>

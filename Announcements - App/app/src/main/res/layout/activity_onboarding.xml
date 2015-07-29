@@ -31,12 +31,6 @@
         android:layout_height="wrap_content">
     </HorizontalScrollView>
 
-    <Button
-        android:id="@+id/test_button"
-        android:text="TO TABBED ACTIVITY - FOR TESTING"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
     <LinearLayout
         android:layout_alignParentBottom="true"
         android:layout_margin="16dp"
