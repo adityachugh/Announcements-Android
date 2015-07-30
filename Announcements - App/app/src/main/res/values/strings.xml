@@ -15,4 +15,8 @@
     <string name="tagline">Notifications made simple.</string>
     <string name="password_hint">password</string>
     <string name="forgot_password">forgot password?</string>
+    <string name="last_name_hint">last name</string>
+    <string name="sign_up_username_hint">\@username</string>
+    <string name="email_hint">email address</string>
+    <string name="sign_up_username_warning">This can\'t be changed!</string>
 </resources>

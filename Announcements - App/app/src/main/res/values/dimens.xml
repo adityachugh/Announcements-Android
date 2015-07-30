@@ -8,7 +8,8 @@
     <dimen name="app_name_size">28sp</dimen>
     <dimen name="signinup_button_width">125dp</dimen>
     <dimen name="signinup_button_spacing">40dp</dimen>
-    <dimen name="edittext_to_line">10dp</dimen>
+    <dimen name="edittext_to_line">12dp</dimen>
     <dimen name="single_button_width">200dp</dimen>
     <dimen name="signinup_padding">25dp</dimen>
+    <dimen name="edittext_to_warning">3dp</dimen>
 </resources>

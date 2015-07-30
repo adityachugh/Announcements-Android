@@ -4,10 +4,113 @@
              android:layout_height="match_parent"
              tools:context="io.mindbend.android.announcements.SignUpFragment">
 
-    <EditText
-        android:hint="@string/first_name_hint"
-        android:gravity="center"
+
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:padding="@dimen/signinup_padding">
+        <TextView
+            android:gravity="center"
+            android:text="@string/tagline"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:textColor="@color/text_primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="30dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/sign_up_first_name"
+                android:hint="@string/first_name_hint"
+                android:background="@null"
+                android:gravity="center"
+                android:layout_width="0dp"
+                android:layout_weight="50"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/edittext_to_line"/>
+            <View
+                android:layout_width="1dp"
+                android:layout_height="fill_parent"
+                android:background="@android:color/darker_gray"/>
+            <EditText
+                android:id="@+id/sign_up_last_name"
+                android:paddingTop="@dimen/edittext_to_line"
+                android:hint="@string/last_name_hint"
+                android:background="@null"
+                android:gravity="center"
+                android:paddingBottom="@dimen/edittext_to_line"
+                android:layout_width="0dp"
+                android:layout_weight="50"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+        <EditText
+            android:id="@+id/sign_up_username"
+            android:paddingTop="@dimen/edittext_to_line"
+            android:hint="@string/sign_up_username_hint"
+            android:background="@null"
+            android:gravity="center"
+            android:paddingBottom="@dimen/edittext_to_warning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sign_up_username_warning"
+            android:textColor="@color/accent"
+            android:gravity="center"
+            style="@style/TextAppearance.AppCompat.Caption"/>
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+        <EditText
+            android:id="@+id/sign_up_email"
+            android:inputType="textEmailAddress"
+            android:paddingTop="@dimen/edittext_to_line"
+            android:hint="@string/email_hint"
+            android:background="@null"
+            android:gravity="center"
+            android:paddingBottom="@dimen/edittext_to_line"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+        <EditText
+            android:id="@+id/sign_up_password"
+            android:inputType="textPassword"
+            android:paddingTop="@dimen/edittext_to_line"
+            android:hint="@string/password_hint"
+            android:background="@null"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/signinup_button_spacing"/>
+
+        <Button
+            android:id="@+id/sign_up_button"
+            android:backgroundTint="@color/accent"
+            android:textColor="@android:color/white"
+            android:text="@string/signup_button_text"
+            android:layout_gravity="center"
+            android:layout_width="@dimen/single_button_width"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
 
 </FrameLayout>
