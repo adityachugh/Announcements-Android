@@ -1,6 +1,7 @@
 package io.mindbend.android.announcements;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -34,7 +35,7 @@ public class OnboardingActivity extends ActionBarActivity {
         Button signUpButton = (Button) findViewById(R.id.signup_button);
 
         //button colour backgrounds if under API 21 (default tint will not work)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
             signInButton.setBackgroundColor(getResources().getColor(R.color.text_tertiary));
             signUpButton.setBackgroundColor(getResources().getColor(R.color.accent));
         }

@@ -4,6 +4,7 @@
                 android:layout_height="match_parent"
                 tools:context=".OnboardingActivity">
 
+
     <LinearLayout
         android:layout_marginTop="64dp"
         android:layout_width="match_parent"
@@ -40,10 +41,10 @@
         android:orientation="horizontal">
         <Button
             android:textColor="@android:color/white"
-            android:backgroundTint="@color/accent"
             android:layout_width="@dimen/signinup_button_width"
             android:layout_height="wrap_content"
             android:id="@+id/signup_button"
+            android:backgroundTint="@color/accent"
             android:text="@string/signup_button_text"/>
         <View
             android:layout_width="@dimen/signinup_button_spacing"
