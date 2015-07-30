@@ -43,7 +43,7 @@
             android:textColor="@android:color/white"
             android:layout_width="@dimen/signinup_button_width"
             android:layout_height="wrap_content"
-            android:id="@+id/signup_button"
+            android:id="@+id/sign_up_button_onboarding"
             android:backgroundTint="@color/accent"
             android:text="@string/signup_button_text"/>
         <View
@@ -54,7 +54,7 @@
             android:backgroundTint="@color/text_tertiary"
             android:layout_width="@dimen/signinup_button_width"
             android:layout_height="wrap_content"
-            android:id="@+id/signin_button"
+            android:id="@+id/sign_in_button_onboarding"
             android:text="@string/signin_button_text"/>
     </LinearLayout>
 

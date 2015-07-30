@@ -31,10 +31,11 @@ public class OnboardingActivity extends ActionBarActivity {
         setContentView(R.layout.activity_onboarding);
 
         //get sign in and up buttons
-        Button signInButton = (Button) findViewById(R.id.signin_button);
-        Button signUpButton = (Button) findViewById(R.id.signup_button);
+        Button signInButton = (Button) findViewById(R.id.sign_in_button_onboarding);
+        Button signUpButton = (Button) findViewById(R.id.sign_up_button_onboarding);
 
         //button colour backgrounds if under API 21 (default tint will not work)
+        //NOTE: TINT DOES NOT WORK ON API 21! Background coloured instead.
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
             signInButton.setBackgroundColor(getResources().getColor(R.color.text_tertiary));
             signUpButton.setBackgroundColor(getResources().getColor(R.color.accent));

@@ -9,8 +9,8 @@ import android.view.MenuItem;
 
 public class SignInUpActivity extends ActionBarActivity {
     //Fragments used in this Activity
-    SignInFragment mSignInFragment;
-    SignUpFragment mSignUpFragment;
+    private SignInFragment mSignInFragment;
+    private SignUpFragment mSignUpFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
