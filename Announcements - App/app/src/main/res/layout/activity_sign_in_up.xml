@@ -2,7 +2,7 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:context="io.mindbend.android.announcements.SignInUpActivity">
+                tools:context="io.mindbend.android.announcements.onboardingAndSignupin.SignInUpActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -44,12 +44,15 @@
                     android:textSize="@dimen/app_name_size"/>
             </LinearLayout>
         </RelativeLayout>
-        <FrameLayout
-            android:id="@+id/fragment_container"
-            android:layout_weight="1"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="0dp">
-        </FrameLayout>
+            android:layout_height="match_parent">
+            <FrameLayout
+                android:id="@+id/fragment_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </FrameLayout>
+        </ScrollView>
     </LinearLayout>
 
 

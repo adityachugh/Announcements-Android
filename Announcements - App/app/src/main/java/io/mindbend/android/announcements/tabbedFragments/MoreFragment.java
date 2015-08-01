@@ -1,20 +1,22 @@
-package io.mindbend.android.announcements;
+package io.mindbend.android.announcements.tabbedFragments;
 
 
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import io.mindbend.android.announcements.R;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SignUpFragment extends Fragment {
+public class MoreFragment extends Fragment {
 
 
-    public SignUpFragment() {
+    public MoreFragment() {
         // Required empty public constructor
     }
 
@@ -23,7 +25,8 @@ public class SignUpFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sign_up, container, false);
+        setRetainInstance(true);
+        return inflater.inflate(R.layout.fragment_more, container, false);
     }
 
 

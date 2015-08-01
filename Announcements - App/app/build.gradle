@@ -24,5 +24,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile 'it.neokree:MaterialTabs:0.11'
     compile 'com.parse.bolts:bolts-android:1.+'
-    compile 'com.android.support:support-v4:22.0.0'
+    compile 'com.android.support:support-v4:22.1.1'
+    compile 'com.android.support:cardview-v7:22.1.1'
 }

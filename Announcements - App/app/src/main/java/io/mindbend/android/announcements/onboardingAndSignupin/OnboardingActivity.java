@@ -1,8 +1,6 @@
-package io.mindbend.android.announcements;
+package io.mindbend.android.announcements.onboardingAndSignupin;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.os.Build;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -12,9 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import it.neokree.materialtabs.MaterialTab;
-import it.neokree.materialtabs.MaterialTabHost;
-import it.neokree.materialtabs.MaterialTabListener;
+import io.mindbend.android.announcements.App;
+import io.mindbend.android.announcements.R;
 
 
 public class OnboardingActivity extends ActionBarActivity {

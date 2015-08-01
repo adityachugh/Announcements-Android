@@ -1,7 +1,6 @@
-package io.mindbend.android.announcements;
+package io.mindbend.android.announcements.onboardingAndSignupin;
 
 
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,6 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.TabbedActivity;
 
 
 /**
@@ -30,6 +32,8 @@ public class SignInFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setRetainInstance(true);
+
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_sign_in, container, false);
 

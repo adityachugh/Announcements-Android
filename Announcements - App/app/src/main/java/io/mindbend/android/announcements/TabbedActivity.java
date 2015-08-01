@@ -1,6 +1,5 @@
 package io.mindbend.android.announcements;
 
-import android.app.Fragment;
 import android.os.Build;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -12,6 +11,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 
+import io.mindbend.android.announcements.tabbedFragments.AdminFragment;
+import io.mindbend.android.announcements.tabbedFragments.DiscoverFragment;
+import io.mindbend.android.announcements.tabbedFragments.MoreFragment;
+import io.mindbend.android.announcements.tabbedFragments.NotificationsFragment;
+import io.mindbend.android.announcements.tabbedFragments.TodayFragment;
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
