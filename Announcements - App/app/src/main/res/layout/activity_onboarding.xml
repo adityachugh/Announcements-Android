@@ -6,6 +6,7 @@
 
 
     <LinearLayout
+        android:id="@+id/onboarding_app_logo_and_title"
         android:layout_marginTop="64dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -52,7 +53,7 @@
             android:layout_height="0dp"/>
         <Button
             android:textColor="@color/accent"
-            android:backgroundTint="@color/text_tertiary"
+            android:backgroundTint="@android:color/white"
             android:layout_width="@dimen/signinup_button_width"
             android:layout_height="wrap_content"
             android:id="@+id/sign_in_button_onboarding"
