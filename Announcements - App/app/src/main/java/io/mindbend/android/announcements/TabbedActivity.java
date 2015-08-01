@@ -2,6 +2,9 @@ package io.mindbend.android.announcements;
 
 import android.app.Fragment;
 import android.os.Build;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -14,11 +17,14 @@ import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
 
 
-public class TabbedActivity extends ActionBarActivity implements MaterialTabListener {
+public class TabbedActivity extends ActionBarActivity implements MaterialTabListener, ViewPager.OnPageChangeListener {
 
     //tab bar
     private MaterialTabHost mTabBar;
 
+    //viewpager; what allows the swiping between fragments
+    private android.support.v4.view.ViewPager mViewPager;
+    private PagerAdapter mAdapter;
     //all fragments under TabbedActivity
     private TodayFragment mTodayFragment;
     private NotificationsFragment mNotificationsFragment;
@@ -30,6 +36,12 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tabbed);
+
+        //initialize the viewpager
+        mViewPager = (android.support.v4.view.ViewPager) findViewById(R.id.viewpager);
+        mAdapter = new PagerAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(mAdapter);
+        mViewPager.setOnPageChangeListener(this);
 
         //Get linear layout with tabbar and toolbar in order to add elevation (if API 21+)
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
@@ -47,70 +59,30 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
         mTabBar.addTab(mTabBar.newTab().setText("Notifications").setTabListener(this));
         mTabBar.addTab(mTabBar.newTab().setText("Discover").setTabListener(this));
         mTabBar.addTab(mTabBar.newTab().setText("More").setTabListener(this));
-        //TODO: only add admin tag if user isA dmin
+        //TODO: only add admin tag if user is admin
         mTabBar.addTab(mTabBar.newTab().setText("Admin").setTabListener(this));
+    }
 
-        //creates todayFragment by default (first screen)
-        mTodayFragment = (TodayFragment)getFragmentManager().findFragmentById(R.id.fragment_container);
-        if (mTodayFragment == null){
-            mTodayFragment = new TodayFragment();
+    @Override
+    public void onPageScrollStateChanged(int state) {
 
-            getFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, mTodayFragment)
-                    .commit();
-        }
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        mTabBar.setSelectedNavigationItem(position);
     }
 
     @Override
     public void onTabSelected(MaterialTab materialTab) {
         //gets position of tab selected, only sets nav accent bar to that tab
         int position = materialTab.getPosition();
-        mTabBar.setSelectedNavigationItem(position);
-
-        Fragment fragment = null;
-        //Creates fragments if they do not exist when tab is selected
-        //changes arbitrary 'fragment' to fragment associated with selected tab
-        switch (position){
-            //Today
-            case 0:
-                //no need to instantiate today fragment, created on default when user enters tabbed activity
-                fragment = mTodayFragment;
-                break;
-            //Notifications
-            case 1:
-                if (mNotificationsFragment == null){
-                    mNotificationsFragment = new NotificationsFragment();
-                }
-                fragment = mNotificationsFragment;
-                break;
-            //Admin
-            case 2:
-                if (mDiscoverFragment == null){
-                    mDiscoverFragment = new DiscoverFragment();
-                }
-                fragment = mDiscoverFragment;
-                break;
-            //Discover
-            case 3:
-                if (mMoreFragment == null){
-                    mMoreFragment = new MoreFragment();
-                }
-                fragment = mMoreFragment;
-                break;
-            //More
-            case 4:
-                if (mAdminFragment == null){
-                    mAdminFragment = new AdminFragment();
-                }
-                fragment = mAdminFragment;
-                break;
-        }
-
-        //Changes fragment based on selected tab
-        getFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .commit();
-
+        mViewPager.setCurrentItem(position);
     }
 
     @Override
@@ -144,5 +116,38 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private class PagerAdapter extends FragmentStatePagerAdapter{
+        PagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+        @Override
+        public int getCount() {
+            //TODO: only return 5 IF *****ADMIN*****, otherwise return 4.
+            return 5;
+        }
+
+        @Override
+        public android.support.v4.app.Fragment getItem(int position) {
+            switch (position){
+                case 0:
+                    if (mTodayFragment == null) mTodayFragment = new TodayFragment();
+                    return mTodayFragment;
+                case 1:
+                    if (mNotificationsFragment == null) mNotificationsFragment = new NotificationsFragment();
+                    return mNotificationsFragment;
+                case 2:
+                    if (mDiscoverFragment == null) mDiscoverFragment = new DiscoverFragment();
+                    return mDiscoverFragment;
+                case 3:
+                    if (mMoreFragment == null) mMoreFragment = new MoreFragment();
+                    return mMoreFragment;
+                case 4:
+                    if (mAdminFragment == null) mAdminFragment = new AdminFragment();
+                    return mAdminFragment;
+            }
+            return null;
+        }
     }
 }
