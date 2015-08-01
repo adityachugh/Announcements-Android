@@ -10,6 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 
 public class PostsCardsFragment extends Fragment {
@@ -21,7 +25,7 @@ public class PostsCardsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private PostFeedAdapter mPostFeedAdapter;
+    private PostsFeedAdapter mPostFeedAdapter;
 
     /**
      * Use this factory method to create a new instance of
@@ -33,6 +37,7 @@ public class PostsCardsFragment extends Fragment {
      */
     // TODO: Rename and change types and number of parameters
     public static PostsCardsFragment newInstance(String param1, String param2) {
+        //TODO: in the future, the arguments passed in should be a query of the posts THEMSELVES.
         PostsCardsFragment fragment = new PostsCardsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
@@ -60,10 +65,17 @@ public class PostsCardsFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_posts_cards, container, false);
 
-        RecyclerView recyclerView = (RecyclerView)v.findViewById(R.id.feed_recycler_view);
+        RecyclerView recyclerView = (RecyclerView)v.findViewById(R.id.posts_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        //get list
-        mPostFeedAdapter = new PostsFeedAdapter(getActivity(), INSERT_LIST);
+        //TODO: query posts from parse, pass into list, then set adapter
+        List<Post> posts = new ArrayList<>();
+
+        //THE FOLLOWING IS A FAKE TEST POST
+        Post testPost1 = new Post("Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        posts.add(testPost1);
+
+        //Initialize and set the adapter
+        mPostFeedAdapter = new PostsFeedAdapter(getActivity(), posts);
         recyclerView.setAdapter(mPostFeedAdapter);
 
         return v;

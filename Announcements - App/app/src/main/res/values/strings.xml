@@ -20,4 +20,6 @@
     <string name="email_hint">email address</string>
     <string name="sign_up_username_warning">This can\'t be changed!</string>
     <string name="onboaring_to_signup_animation">onboarding_logo_and_title_to_signupin</string>
+    <string name="post_comment_button">Comment</string>
+    <string name="post_share_button">Share</string>
 </resources>
