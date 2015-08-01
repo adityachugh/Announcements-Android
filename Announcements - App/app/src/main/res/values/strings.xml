@@ -19,4 +19,5 @@
     <string name="sign_up_username_hint">\@username</string>
     <string name="email_hint">email address</string>
     <string name="sign_up_username_warning">This can\'t be changed!</string>
+    <string name="onboaring_to_signup_animation">onboarding_logo_and_title_to_signupin</string>
 </resources>
