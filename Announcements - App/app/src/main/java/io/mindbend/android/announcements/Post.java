@@ -1,9 +1,11 @@
 package io.mindbend.android.announcements;
 
+import java.io.Serializable;
+
 /**
  * Created by Akshay Pall on 01/08/2015.
  */
-public class Post {
+public class Post implements Serializable {
     private String mObjectId;
     private String mPostTitle;
     private String mPostTimeSince;

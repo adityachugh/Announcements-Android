@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
         private final TextView mDetail;
         private final TextView mTimeSince;
         private final TextView mClubUsername;
+        private final Button mCommentButton;
 
         //TODO: create private fields for the elements within a single feed item
 
@@ -31,26 +33,35 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
             mDetail = (TextView)itemView.findViewById(R.id.post_detail);
             mTimeSince = (TextView)itemView.findViewById(R.id.post_time);
             mClubUsername = (TextView)itemView.findViewById(R.id.post_club_username);
+            mCommentButton = (Button)itemView.findViewById(R.id.post_comment_button);
         }
     }
 
     //TODO: create private fields for the list
     private List<Post> mPosts;
     private Context mContext;
+    PostInteractionListener mListener;
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, final int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.post_feed_item, viewGroup, false);
         return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        Post post = mPosts.get(i);
+        final Post post = mPosts.get(i);
         viewHolder.mTitle.setText(post.getmPostTitle());
         viewHolder.mDetail.setText(post.getmPostDetail());
         viewHolder.mTimeSince.setText(post.getmPostTimeSince());
         viewHolder.mClubUsername.setText(post.getmPostClubUsername());
+
+        viewHolder.mCommentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.pressedPost(post);
+            }
+        });
     }
 
     @Override
@@ -62,5 +73,26 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
         //save the mPosts private field as what is passed in
         mContext = context;
         mPosts = posts;
+    }
+
+    @Override
+    public void onViewAttachedToWindow(ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        try {
+            mListener = (PostInteractionListener)holder;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(holder.toString()
+                    + " must implement PostInteractionListener");
+        }
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(ViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        mListener = null;
+    }
+
+    public interface PostInteractionListener{
+        public void pressedPost(Post postPressed);
     }
 }

@@ -9,14 +9,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.reusableFrags.PostCommentsFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsCardsFragment;
+import io.mindbend.android.announcements.reusableFrags.PostsFeedAdapter;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TodayFragment extends Fragment {
+public class TodayFragment extends Fragment implements PostsFeedAdapter.PostInteractionListener {
 
 
     public TodayFragment() {
@@ -48,5 +51,10 @@ public class TodayFragment extends Fragment {
         return v;
     }
 
-
+    @Override
+    public void pressedPost(Post postPressed) {
+        Fragment postComments = PostCommentsFragment.newInstance(postPressed);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.today_framelayout, postComments).commit();
+    }
 }

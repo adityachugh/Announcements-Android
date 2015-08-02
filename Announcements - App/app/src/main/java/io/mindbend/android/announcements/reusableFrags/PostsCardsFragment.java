@@ -78,6 +78,7 @@ public class PostsCardsFragment extends Fragment {
         mPostFeedAdapter = new PostsFeedAdapter(getActivity(), posts);
         recyclerView.setAdapter(mPostFeedAdapter);
 
+
         return v;
     }
 
