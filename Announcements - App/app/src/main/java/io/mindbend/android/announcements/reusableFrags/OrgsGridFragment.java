@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +13,10 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.mindbend.android.announcements.Post;
+import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
 
-public class PostsCardsFragment extends Fragment {
+public class OrgsGridFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -25,7 +25,7 @@ public class PostsCardsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private PostsFeedAdapter mPostFeedAdapter;
+    private OrgsGridAdapter mOrgsAdapter;
 
     /**
      * Use this factory method to create a new instance of
@@ -33,12 +33,11 @@ public class PostsCardsFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment PostsCardsFragment.
+     * @return A new instance of fragment OrgsGridFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PostsCardsFragment newInstance(String param1, String param2) {
-        //TODO: in the future, the arguments passed in should be a query of the posts THEMSELVES.
-        PostsCardsFragment fragment = new PostsCardsFragment();
+    public static OrgsGridFragment newInstance(String param1, String param2) {
+        OrgsGridFragment fragment = new OrgsGridFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -46,7 +45,7 @@ public class PostsCardsFragment extends Fragment {
         return fragment;
     }
 
-    public PostsCardsFragment() {
+    public OrgsGridFragment() {
         // Required empty public constructor
     }
 
@@ -63,23 +62,28 @@ public class PostsCardsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_posts_cards, container, false);
-
-        RecyclerView recyclerView = (RecyclerView)v.findViewById(R.id.posts_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        View v = inflater.inflate(R.layout.fragment_orgs_grid, container, false);
+        RecyclerView recyclerView = (RecyclerView)v.findViewById(R.id.orgs_recycler_view);
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         //TODO: query posts from parse, pass into list, then set adapter
-        List<Post> posts = new ArrayList<>();
+        List<Organization> orgs = new ArrayList<>();
 
         //THE FOLLOWING IS A FAKE TEST POST
-        Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio");
-        posts.add(testPost1);
+        Organization testOrg1 = new Organization("test Id", "Software Dev Club", "NEW"); //TODO: change "NEW" to be a dynamically chosen banner
+        orgs.add(testOrg1);
+
+        Organization testOrg2 = new Organization("test Id", "Math Club", "54 Followers"); //TODO: change "NEW" to be a dynamically chosen banner
+        orgs.add(testOrg2);
+
+        Organization testOrg3 = new Organization("test Id", "Mindbend Studio", "NEW"); //TODO: change "NEW" to be a dynamically chosen banner
+        orgs.add(testOrg3);
 
         //Initialize and set the adapter
-        mPostFeedAdapter = new PostsFeedAdapter(getActivity(), posts);
-        recyclerView.setAdapter(mPostFeedAdapter);
-
+        mOrgsAdapter = new OrgsGridAdapter (getActivity(), orgs);
+        recyclerView.setAdapter(mOrgsAdapter);
         return v;
     }
+
 
     @Override
     public void onAttach(Activity activity) {

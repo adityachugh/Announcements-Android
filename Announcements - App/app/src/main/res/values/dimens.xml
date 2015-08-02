@@ -17,4 +17,7 @@
     <dimen name="card_inner_margin">16dp</dimen>
     <dimen name="post_title_margin">64dp</dimen>
     <dimen name="post_description_line_spacing">5dp</dimen>
+    <dimen name="orgs_card_image_height">200dp</dimen>
+    <dimen name="org_grid_card_inner_margin">8dp</dimen>
+    <dimen name="org_grid_card_title_text_size">28sp</dimen>
 </resources>

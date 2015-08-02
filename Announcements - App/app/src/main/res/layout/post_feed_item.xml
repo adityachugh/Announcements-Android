@@ -42,6 +42,13 @@
                 android:textColor="@color/text_tertiary" />
         </RelativeLayout>
 
+        <ImageView
+            android:id="@+id/post_image_attached"
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:src="@color/primary"/>
+
         <TextView
             android:id="@+id/post_detail"
             android:layout_width="match_parent"
