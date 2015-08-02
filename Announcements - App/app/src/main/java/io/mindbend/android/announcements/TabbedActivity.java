@@ -62,7 +62,7 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
         mTabBar.addTab(mTabBar.newTab().setText("Today").setTabListener(this));
         mTabBar.addTab(mTabBar.newTab().setText("Notifications").setTabListener(this));
         mTabBar.addTab(mTabBar.newTab().setText("Discover").setTabListener(this));
-        mTabBar.addTab(mTabBar.newTab().setText("More").setTabListener(this));
+        mTabBar.addTab(mTabBar.newTab().setText("You").setTabListener(this));
         //TODO: only add admin tag if user is admin
         mTabBar.addTab(mTabBar.newTab().setText("Admin").setTabListener(this));
     }
