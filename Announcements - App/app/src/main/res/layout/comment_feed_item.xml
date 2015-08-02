@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/card_inner_margin"
+            android:layout_marginRight="@dimen/card_inner_margin"
+            android:layout_marginTop="@dimen/card_inner_margin">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/comment_image"
+                android:layout_width="@dimen/circle_avatar_size"
+                android:layout_height="@dimen/circle_avatar_size"
+                android:src="@color/primary" />
+
+            <TextView
+                android:id="@+id/comment_poster_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/comment_image"
+                android:layout_marginLeft="@dimen/post_title_margin"
+                android:text="Akshay Pall"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textSize="@dimen/abc_text_size_title_material" />
+
+            <TextView
+                android:id="@+id/comment_time_since"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/comment_image"
+                android:layout_marginLeft="@dimen/post_title_margin"
+                android:text="2hrs"
+                android:textColor="@color/text_tertiary" />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/post_image_attached"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:src="@color/primary" />
+
+        <TextView
+            android:id="@+id/comment_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/card_inner_margin"
+            android:layout_marginRight="@dimen/card_inner_margin"
+            android:layout_marginTop="8dp"
+            android:lineSpacingExtra="@dimen/post_description_line_spacing"
+            android:text="Located two hours south of Sydney in the Southern Highlands of New South Wales, ..."
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/text_primary" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/card_inner_margin"
+        android:background="@color/divider_color"/>
+
+
+</LinearLayout>

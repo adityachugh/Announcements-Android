@@ -94,7 +94,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
     }
 
     public interface PostInteractionListener {
-        public void pressedPost(Post postPressed);
+        void pressedPost(Post postPressed);
     }
 
     public static void setListener(PostInteractionListener mListener) {

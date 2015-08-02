@@ -3,6 +3,7 @@ package io.mindbend.android.announcements.reusableFrags;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import io.mindbend.android.announcements.Comment;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 
@@ -18,6 +23,8 @@ public class PostCommentsFragment extends Fragment {
     private static final String ARG_POST = "post";
 
     private Post mPost;
+    private PostCommentsAdapter mCommentsAdapter;
+    private List<Comment> mComments;
 
     /**
      * Use this factory method to create a new instance of
@@ -57,6 +64,22 @@ public class PostCommentsFragment extends Fragment {
         //TODO: setup recycler view adapter for comments, along with the recycler view feed item layout (comment).
         //TODO: ensure that the feed item is NOT a card -> the enture comment list will be enclosed in one card (already set up)
         RecyclerView recyclerView = (RecyclerView)v.findViewById(R.id.comments_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mComments = new ArrayList<>();
+
+        //the following is fake data
+        Comment testComment1 = new Comment("ID- NeedNameHere", "Wow what a great announcement!", "1 minute ago");
+        mComments.add(testComment1);
+
+        Comment testComment2 = new Comment("ID- NeedNameHere", "This is a test comment with a long string of text to see how comments look when stretched. This is super cool wow much happiness.", "Now");
+        mComments.add(testComment2);
+
+        Comment testComment3 = new Comment("ID- NeedNameHere", "Wow what a great announcement!This is a test comment with a long string of text to see how comments look when stretched. This is super cool wow much happiness.", "Now");
+        mComments.add(testComment3);
+
+        //instantiate and set the adapter
+        mCommentsAdapter = new PostCommentsAdapter(getActivity(), mComments);
+        recyclerView.setAdapter(mCommentsAdapter);
 
         return v;
     }
