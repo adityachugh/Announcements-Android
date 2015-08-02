@@ -21,6 +21,9 @@ import io.mindbend.android.announcements.reusableFrags.PostsFeedAdapter;
  */
 public class TodayFragment extends Fragment implements PostsFeedAdapter.PostInteractionListener {
 
+    //to allow the activity to figure out if the today frag is on posts or comments
+    public boolean isOnComments = false;
+
 
     public TodayFragment() {
         // Required empty public constructor
@@ -56,8 +59,16 @@ public class TodayFragment extends Fragment implements PostsFeedAdapter.PostInte
 
     @Override
     public void pressedPost(Post postPressed) {
+        isOnComments = true;
         Fragment postComments = PostCommentsFragment.newInstance(postPressed);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.today_framelayout, postComments).commit();
+    }
+
+    public void returnFromComments(){
+        isOnComments = false;
+        Fragment postsFragment = PostsCardsFragment.newInstance("test", "test");
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.today_framelayout, postsFragment).commit();
     }
 }

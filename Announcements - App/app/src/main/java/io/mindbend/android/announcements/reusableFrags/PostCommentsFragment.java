@@ -71,11 +71,11 @@ public class PostCommentsFragment extends Fragment {
         Comment testComment1 = new Comment("ID- NeedNameHere", "Wow what a great announcement!", "1 minute ago");
         mComments.add(testComment1);
 
-        Comment testComment2 = new Comment("ID- NeedNameHere", "This is a test comment with a long string of text to see how comments look when stretched. This is super cool wow much happiness.", "Now");
-        mComments.add(testComment2);
-
-        Comment testComment3 = new Comment("ID- NeedNameHere", "Wow what a great announcement!This is a test comment with a long string of text to see how comments look when stretched. This is super cool wow much happiness.", "Now");
-        mComments.add(testComment3);
+//        Comment testComment2 = new Comment("ID- NeedNameHere", "This is a test comment with a long string of text to see how comments look when stretched. This is super cool wow much happiness.", "Now");
+//        mComments.add(testComment2);
+//
+//        Comment testComment3 = new Comment("ID- NeedNameHere", "Wow what a great announcement!This is a test comment with a long string of text to see how comments look when stretched. This is super cool wow much happiness.", "Now");
+//        mComments.add(testComment3);
 
         //instantiate and set the adapter
         mCommentsAdapter = new PostCommentsAdapter(getActivity(), mComments);
