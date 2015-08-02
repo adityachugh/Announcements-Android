@@ -44,6 +44,9 @@ public class TodayFragment extends Fragment implements PostsFeedAdapter.PostInte
         View v = inflater.inflate(R.layout.fragment_today, container, false);
         setRetainInstance(true);
 
+        //set the listener for the posts feed adapter in order to open the comments feed for a post
+        PostsFeedAdapter.setListener(this);
+
         //TODO: query today's posts data from Parse, then pass that data into a PostsCardFragment that will be created using the PostsCardsFragment.NewInstance static method
         Fragment postsFragment = PostsCardsFragment.newInstance("test", "test");
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();

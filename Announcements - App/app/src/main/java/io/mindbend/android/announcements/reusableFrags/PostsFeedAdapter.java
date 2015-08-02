@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.util.List;
 
 import io.mindbend.android.announcements.Post;
@@ -40,7 +41,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
     //TODO: create private fields for the list
     private List<Post> mPosts;
     private Context mContext;
-    PostInteractionListener mListener;
+    private static PostInteractionListener mListener;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, final int i) {
@@ -78,12 +79,12 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
     @Override
     public void onViewAttachedToWindow(ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
-        try {
-            mListener = (PostInteractionListener)holder;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(holder.toString()
-                    + " must implement PostInteractionListener");
-        }
+//        try {
+//            mListener = (PostInteractionListener)holder;
+//        } catch (ClassCastException e) {
+//            throw new ClassCastException(holder.toString()
+//                    + " must implement PostInteractionListener");
+//        }
     }
 
     @Override
@@ -92,7 +93,11 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
         mListener = null;
     }
 
-    public interface PostInteractionListener{
+    public interface PostInteractionListener {
         public void pressedPost(Post postPressed);
+    }
+
+    public static void setListener(PostInteractionListener mListener) {
+        PostsFeedAdapter.mListener = mListener;
     }
 }

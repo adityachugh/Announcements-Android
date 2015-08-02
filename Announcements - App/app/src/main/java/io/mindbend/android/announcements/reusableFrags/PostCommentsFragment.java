@@ -51,7 +51,6 @@ public class PostCommentsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_post_comments, container, false);
-        setRetainInstance(true);
 
         setupPost(v);
 
