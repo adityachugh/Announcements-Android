@@ -15,6 +15,10 @@ import io.mindbend.android.announcements.R;
  */
 public class YouFragment extends Fragment {
 
+    //NOTE: Image within Ratiolayout must be contained in a parent fragment (like this)
+    //Frame layout added inside the RatioLayout
+    //Grandchild fragments are reusable
+
 
     public YouFragment() {
         // Required empty public constructor
