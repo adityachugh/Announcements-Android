@@ -15,9 +15,8 @@ import io.mindbend.android.announcements.R;
  */
 public class YouFragment extends Fragment {
 
-    //NOTE: Image within Ratiolayout must be contained in a parent fragment (like this)
-    //Frame layout added inside the RatioLayout
-    //Grandchild fragments are reusable
+    //NOTE: Opens child ProfileFragment, which has a grandchild for user followed organizations/ organization announcements
+    //Makes Profile fragment generic (useable by both users and organizations)
 
 
     public YouFragment() {
@@ -30,7 +29,9 @@ public class YouFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         setRetainInstance(true);
-        return inflater.inflate(R.layout.fragment_you, container, false);
+        View v = inflater.inflate(R.layout.fragment_you, container, false);
+
+        return v;
     }
 
 

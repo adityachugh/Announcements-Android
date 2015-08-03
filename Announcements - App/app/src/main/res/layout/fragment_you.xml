@@ -4,38 +4,9 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              tools:context="io.mindbend.android.announcements.tabbedFragments.YouFragment">
-
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/you_framelayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <com.avikhasija.materialannouncements.RatioLayout
-            android:id="@+id/user_profile_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:ratio="0.5625">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/landscape"/>
-
-            <FrameLayout
-                android:id="@+id/profile_header_framelayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            </FrameLayout>
-        </com.avikhasija.materialannouncements.RatioLayout>
-
-
-        <FrameLayout
-            android:id="@+id/user_club_grid_framelayout"
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp">
-        </FrameLayout>
-    </LinearLayout>
-
+        android:layout_height="match_parent">
+    </FrameLayout>
 </FrameLayout>

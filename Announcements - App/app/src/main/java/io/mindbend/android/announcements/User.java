@@ -17,8 +17,10 @@ public class User {
     //Displayed as a hashtag (such as #Grade10, #Teacher, #Administration, etc.)
     private static String userCategory;
 
-    private static String organizationsFollowed;
+    private static String numberOfOrganizationsFollowed;
 
     //TODO: add fields for profile photo, cover photo
+
+
 
 }
