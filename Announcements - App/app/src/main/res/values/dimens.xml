@@ -21,4 +21,8 @@
     <dimen name="orgs_card_image_height">200dp</dimen>
     <dimen name="org_grid_card_inner_margin">8dp</dimen>
     <dimen name="org_grid_card_title_text_size">28sp</dimen>
+    <dimen name="fab_size">56dp</dimen>
+    <dimen name="pre21_fab_shadow_offset">8dp</dimen>
+    <dimen name="fab_side_margin">16dp</dimen>
+    <dimen name="fab_elevation">8dp</dimen>
 </resources>

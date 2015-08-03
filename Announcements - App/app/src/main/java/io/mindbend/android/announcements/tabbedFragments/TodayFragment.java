@@ -4,6 +4,7 @@ package io.mindbend.android.announcements.tabbedFragments;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.transition.Scene;
 import android.transition.TransitionManager;
@@ -24,6 +25,10 @@ import io.mindbend.android.announcements.reusableFrags.PostsFeedAdapter;
  * A simple {@link Fragment} subclass.
  */
 public class TodayFragment extends Fragment implements PostsFeedAdapter.PostInteractionListener {
+
+    //in order to add frags to the backstack
+    public static final String TODAY_POSTS_FRAG = "today_posts_frag";
+    public static final String COMMENTS_FRAG = "comments_frag";
 
     //to allow the activity to figure out if the today frag is on posts or comments
     public boolean isOnComments = false;
@@ -57,7 +62,7 @@ public class TodayFragment extends Fragment implements PostsFeedAdapter.PostInte
         //TODO: query today's posts data from Parse, then pass that data into a PostsCardFragment that will be created using the PostsCardsFragment.NewInstance static method
         Fragment postsFragment = PostsCardsFragment.newInstance("test", "test");
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.today_framelayout, postsFragment).commit();
+        transaction.add(R.id.today_framelayout, postsFragment).addToBackStack(TODAY_POSTS_FRAG).commit();
 
         return v;
     }
@@ -67,13 +72,11 @@ public class TodayFragment extends Fragment implements PostsFeedAdapter.PostInte
         isOnComments = true;
         Fragment postComments = PostCommentsFragment.newInstance(postPressed);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.today_framelayout, postComments).commit();
+        transaction.replace(R.id.today_framelayout, postComments).addToBackStack(COMMENTS_FRAG).commit();
     }
 
     public void returnFromComments(){
         isOnComments = false;
-        Fragment postsFragment = PostsCardsFragment.newInstance("test", "test");
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.today_framelayout, postsFragment).commit();
+        getChildFragmentManager().popBackStack();
     }
 }
