@@ -2,6 +2,7 @@ package io.mindbend.android.announcements.tabbedFragments;
 
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,7 +12,11 @@ import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
+
+import java.util.Calendar;
+import java.util.Date;
 
 import io.mindbend.android.announcements.App;
 import io.mindbend.android.announcements.Post;
@@ -25,7 +30,7 @@ import io.mindbend.android.announcements.reusableFrags.PostsFeedAdapter;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TodayFragment extends Fragment implements PostsFeedAdapter.PostInteractionListener, View.OnClickListener {
+public class TodayFragment extends Fragment implements PostsFeedAdapter.PostInteractionListener, View.OnClickListener, DatePickerDialog.OnDateSetListener {
 
     //in order to add frags to the backstack
     public static final String TODAY_POSTS_FRAG = "today_posts_frag";
@@ -81,7 +86,18 @@ public class TodayFragment extends Fragment implements PostsFeedAdapter.PostInte
         }
         else {
             //TODO: dialogue box to change today date
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date()); //new Date gets the current date and time
+
+            //instantiate the date picker dialog and implement the onDateSet method (it is implemented by the today frag)
+            DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), R.style.DialogTheme ,this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+            datePickerDialog.show();
         }
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        //TODO: reload the posts fragment with the new date.
     }
 
     @Override
