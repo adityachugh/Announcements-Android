@@ -68,7 +68,7 @@ public class OnboardingActivity extends ActionBarActivity {
     }
 
     private void startSignInUpActivity(Intent i) {
-        if (App.isLollipopOrHigher) {
+        if (App.isKitkatOrHigher) {
             ActivityOptionsCompat options = ActivityOptionsCompat.
                     makeSceneTransitionAnimation(OnboardingActivity.this, mAppLogoAndTitle, getString(R.string.onboaring_to_signup_animation));
             startActivity(i, options.toBundle());

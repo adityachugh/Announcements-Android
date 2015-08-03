@@ -5,12 +5,16 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.transition.Scene;
+import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import io.mindbend.android.announcements.App;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.TabbedActivity;
 import io.mindbend.android.announcements.reusableFrags.PostCommentsFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsCardsFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsFeedAdapter;
@@ -54,6 +58,7 @@ public class TodayFragment extends Fragment implements PostsFeedAdapter.PostInte
         Fragment postsFragment = PostsCardsFragment.newInstance("test", "test");
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.add(R.id.today_framelayout, postsFragment).commit();
+
         return v;
     }
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -70,14 +71,19 @@ public class PostsCardsFragment extends Fragment {
         //TODO: query posts from parse, pass into list, then set adapter
         List<Post> posts = new ArrayList<>();
 
-        //THE FOLLOWING IS A FAKE TEST POST
+        //THE FOLLOWING ARE FAKE TEST POSTS
         Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio");
         posts.add(testPost1);
+
+        Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        posts.add(testPost2);
+
+        Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        posts.add(testPost3);
 
         //Initialize and set the adapter
         mPostFeedAdapter = new PostsFeedAdapter(getActivity(), posts);
         recyclerView.setAdapter(mPostFeedAdapter);
-
 
         return v;
     }

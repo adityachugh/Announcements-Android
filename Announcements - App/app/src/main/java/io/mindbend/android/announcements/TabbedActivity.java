@@ -22,6 +22,7 @@ import it.neokree.materialtabs.MaterialTabListener;
 
 
 public class TabbedActivity extends ActionBarActivity implements MaterialTabListener, ViewPager.OnPageChangeListener {
+    
 
     //tab bar
     private MaterialTabHost mTabBar;
@@ -118,17 +119,18 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
         if (id == R.id.action_settings) {
             return true;
         }
-        if (id == android.R.id.home){
-            switch (mViewPager.getCurrentItem()){
-                case 0:
-                    if(mTodayFragment.isOnComments){
-                        mTodayFragment.returnFromComments();
-                    }
-                    return true;
-            }
-        }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        switch (mViewPager.getCurrentItem()){
+            case 0:
+                if(mTodayFragment.isOnComments){
+                    mTodayFragment.returnFromComments();
+                }
+        }
     }
 
     private class PagerAdapter extends FragmentStatePagerAdapter{
