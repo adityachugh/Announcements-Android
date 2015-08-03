@@ -32,6 +32,7 @@ public class TodayFragment extends Fragment implements PostsFeedAdapter.PostInte
 
     //to allow the activity to figure out if the today frag is on posts or comments
     public boolean isOnComments = false;
+    private Fragment mCurrentComments;
 
 
     public TodayFragment() {
@@ -70,13 +71,18 @@ public class TodayFragment extends Fragment implements PostsFeedAdapter.PostInte
     @Override
     public void pressedPost(Post postPressed) {
         isOnComments = true;
-        Fragment postComments = PostCommentsFragment.newInstance(postPressed);
+        mCurrentComments = PostCommentsFragment.newInstance(postPressed);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.today_framelayout, postComments).addToBackStack(COMMENTS_FRAG).commit();
+        transaction.replace(R.id.today_framelayout, mCurrentComments).addToBackStack(COMMENTS_FRAG).commit();
     }
 
     public void returnFromComments(){
         isOnComments = false;
+        getChildFragmentManager()
+                .beginTransaction()
+                .remove(mCurrentComments)
+                .commit();
+        mCurrentComments = null;
         getChildFragmentManager().popBackStack();
     }
 }
