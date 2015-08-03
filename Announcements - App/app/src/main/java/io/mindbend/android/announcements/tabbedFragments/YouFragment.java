@@ -13,10 +13,10 @@ import io.mindbend.android.announcements.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MoreFragment extends Fragment {
+public class YouFragment extends Fragment {
 
 
-    public MoreFragment() {
+    public YouFragment() {
         // Required empty public constructor
     }
 
@@ -26,7 +26,7 @@ public class MoreFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         setRetainInstance(true);
-        return inflater.inflate(R.layout.fragment_more, container, false);
+        return inflater.inflate(R.layout.fragment_you, container, false);
     }
 
 
