@@ -22,7 +22,7 @@ import it.neokree.materialtabs.MaterialTabListener;
 
 
 public class TabbedActivity extends ActionBarActivity implements MaterialTabListener, ViewPager.OnPageChangeListener {
-    
+
 
     //tab bar
     private MaterialTabHost mTabBar;

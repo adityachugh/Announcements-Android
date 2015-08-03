@@ -8,6 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -80,6 +82,12 @@ public class PostCommentsFragment extends Fragment {
         //instantiate and set the adapter
         mCommentsAdapter = new PostCommentsAdapter(getActivity(), mComments);
         recyclerView.setAdapter(mCommentsAdapter);
+
+        //the animation for the recycler view to slide in from the bottom of the view
+        TranslateAnimation trans = new TranslateAnimation(0, 0, 1000, 0);
+        trans.setDuration(500);
+        trans.setInterpolator(new DecelerateInterpolator(1.0f));
+        recyclerView.startAnimation(trans);
 
         return v;
     }

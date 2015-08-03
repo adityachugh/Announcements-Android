@@ -1,15 +1,15 @@
 package io.mindbend.android.announcements.reusableFrags;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.TranslateAnimation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +84,12 @@ public class PostsCardsFragment extends Fragment {
         //Initialize and set the adapter
         mPostFeedAdapter = new PostsFeedAdapter(getActivity(), posts);
         recyclerView.setAdapter(mPostFeedAdapter);
+
+        //the animation for the recycler view to slide in from the bottom of the view
+        TranslateAnimation trans = new TranslateAnimation(0, 0, 1000, 0);
+        trans.setDuration(500);
+        trans.setInterpolator(new DecelerateInterpolator(1.0f));
+        recyclerView.startAnimation(trans);
 
         return v;
     }
