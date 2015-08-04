@@ -77,7 +77,7 @@ public class ProfileFragment extends Fragment {
         TextView category = (TextView) v.findViewById(R.id.user_category);
 
         //FAKE USER FOR TESTING
-        User testUser = new User("Aditya", "Chugh", "Computer Science", "node.js", "#Grade12", 3);
+        User testUser = new User("Aditya", "Chugh", "getting paper", "node.js", "#Grade12", 9);
 
         //Adapter not necessary, few elements on page
         name.setText(testUser.getName());
