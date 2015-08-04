@@ -3,7 +3,9 @@ package io.mindbend.android.announcements.reusableFrags;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,9 @@ import io.mindbend.android.announcements.R;
  * create an instance of this fragment.
  */
 public class ProfileFragment extends Fragment {
+
+    private static final String TAG = "ProfileFragment";
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -61,7 +66,16 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+        View v = inflater.inflate(R.layout.fragment_profile, container, false);
+
+        Log.d(TAG, "Profile Frag oncreateview called");
+
+        //TODO: Fetch followed orgs OR organization's announcements (generic fragment)
+        Fragment contentFragment = OrgsGridFragment.newInstance("test", "test");
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.add(R.id.profile_content_framelayout, contentFragment).commit();
+
+        return v;
     }
 
     @Override
