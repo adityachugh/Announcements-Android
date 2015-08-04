@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 
 import io.mindbend.android.announcements.tabbedFragments.AdminFragment;
 import io.mindbend.android.announcements.tabbedFragments.DiscoverFragment;
-import io.mindbend.android.announcements.tabbedFragments.MoreFragment;
+import io.mindbend.android.announcements.tabbedFragments.YouFragment;
 import io.mindbend.android.announcements.tabbedFragments.NotificationsFragment;
 import io.mindbend.android.announcements.tabbedFragments.TodayFragment;
 import it.neokree.materialtabs.MaterialTab;
@@ -35,7 +35,7 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
     private NotificationsFragment mNotificationsFragment;
     private AdminFragment mAdminFragment;
     private DiscoverFragment mDiscoverFragment;
-    private MoreFragment mMoreFragment;
+    private YouFragment mYouFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,8 +156,8 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
                     if (mDiscoverFragment == null) mDiscoverFragment = new DiscoverFragment();
                     return mDiscoverFragment;
                 case 3:
-                    if (mMoreFragment == null) mMoreFragment = new MoreFragment();
-                    return mMoreFragment;
+                    if (mYouFragment == null) mYouFragment = new YouFragment();
+                    return mYouFragment;
                 case 4:
                     if (mAdminFragment == null) mAdminFragment = new AdminFragment();
                     return mAdminFragment;
