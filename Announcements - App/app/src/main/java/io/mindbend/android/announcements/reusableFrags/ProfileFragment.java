@@ -9,8 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.User;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -68,8 +70,22 @@ public class ProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        Log.d(TAG, "Profile Frag oncreateview called");
+        //UI elements to be filled
+        TextView name = (TextView) v.findViewById(R.id.profile_name);
+        TextView orgsFollowed = (TextView) v.findViewById(R.id.user_orgs_followed);
+        TextView interests = (TextView) v.findViewById(R.id.user_interests);
+        TextView category = (TextView) v.findViewById(R.id.user_category);
 
+        //FAKE USER FOR TESTING
+        User testUser = new User("Aditya", "Chugh", "Computer Science", "node.js", "#Grade12", 3);
+
+        //Adapter not necessary, few elements on page
+        name.setText(testUser.getName());
+        orgsFollowed.setText(testUser.getNumberOfOrganizationsFollowed());
+        interests.setText(testUser.getInterests());
+        category.setText(testUser.getUserCategory());
+
+        //Fill bottom fragment with discover grid (temporary)
         //TODO: Fetch followed orgs OR organization's announcements (generic fragment)
         Fragment contentFragment = OrgsGridFragment.newInstance("test", "test");
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
