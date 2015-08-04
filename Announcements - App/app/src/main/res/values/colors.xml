@@ -4,8 +4,10 @@
     <color name="primary_dark">#169C81</color>
     <color name="primary_light">#24EEC6</color>
     <color name="accent">#E91E63</color>
+    <color name="accent_dark">#A11B4C</color>
     <color name="text_primary">#212121</color>
     <color name="text_secondary">#727272</color>
     <color name="text_tertiary">#B6B6B6</color>
     <color name="divider_color">#DDDDDD</color>
+    <color name="fab_shadow">#4000</color>
 </resources>

@@ -1,7 +1,6 @@
 package io.mindbend.android.announcements.reusableFrags;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.TranslateAnimation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,14 +71,25 @@ public class PostsCardsFragment extends Fragment {
         //TODO: query posts from parse, pass into list, then set adapter
         List<Post> posts = new ArrayList<>();
 
-        //THE FOLLOWING IS A FAKE TEST POST
+        //THE FOLLOWING ARE FAKE TEST POSTS
         Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio");
         posts.add(testPost1);
+
+        Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        posts.add(testPost2);
+
+        Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        posts.add(testPost3);
 
         //Initialize and set the adapter
         mPostFeedAdapter = new PostsFeedAdapter(getActivity(), posts);
         recyclerView.setAdapter(mPostFeedAdapter);
 
+        //the animation for the recycler view to slide in from the bottom of the view
+        TranslateAnimation trans = new TranslateAnimation(0, 0, 1000, 0);
+        trans.setDuration(500);
+        trans.setInterpolator(new DecelerateInterpolator(1.0f));
+        recyclerView.startAnimation(trans);
 
         return v;
     }

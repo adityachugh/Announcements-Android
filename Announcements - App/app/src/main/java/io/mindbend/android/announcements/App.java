@@ -12,6 +12,7 @@ import com.parse.Parse;
 public class App extends Application {
     private static final String APP_STARTED = "APP STARTED";
     public static boolean isLollipopOrHigher = false;
+    public static boolean isKitkatOrHigher = false;
 
     @Override
     public void onCreate() {
@@ -27,7 +28,11 @@ public class App extends Application {
 //        set if the device is running lollipop or higher to decide whether to run animations or not
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             isLollipopOrHigher = true;
-            Log.d(APP_STARTED, "device is running lollipop or higher, animations turned on");
+            isKitkatOrHigher = true;
+            Log.d(APP_STARTED, "device is running lollipop or higher");
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            isKitkatOrHigher = true;
+            Log.d(APP_STARTED, "device is running kitkat or higher, animation framework turned on");
         }
 
     }
