@@ -5,12 +5,23 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.nirhart.parallaxscroll.views.ParallaxScrollView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
 
@@ -31,6 +42,7 @@ public class ProfileFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private OrgsGridAdapter mOrgsAdapter;
 
 
     /**
@@ -84,6 +96,15 @@ public class ProfileFragment extends Fragment {
         orgsFollowed.setText(testUser.getNumberOfOrganizationsFollowed());
         interests.setText(testUser.getInterests());
         category.setText(testUser.getUserCategory());
+
+        //Get scrollview, scroll to top
+        //TODO: not working!
+        ParallaxScrollView parallaxScrollView = (ParallaxScrollView)v.findViewById(R.id.profile_scrollview);
+        parallaxScrollView.scrollTo(0, 0);
+
+        //Get framelayout (HIERARCHY: FrameLayout > RecyclerView > CardView)
+        //TODO: set height manually, based on number of grandchildren populated in framelayout
+        FrameLayout profileContentFrameLayout = (FrameLayout)v.findViewById(R.id.profile_content_framelayout);
 
         //Fill bottom fragment with discover grid (temporary)
         //TODO: Fetch followed orgs OR organization's announcements (generic fragment)

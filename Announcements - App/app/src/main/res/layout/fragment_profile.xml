@@ -5,90 +5,108 @@
              android:layout_height="match_parent"
              tools:context="io.mindbend.android.announcements.reusableFrags.ProfileFragment">
 
-
-    <LinearLayout
+    <com.nirhart.parallaxscroll.views.ParallaxScrollView
+        android:id="@+id/profile_scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        app:parallax_factor="1.9">
 
-        <com.avikhasija.materialannouncements.RatioLayout
-            android:id="@+id/user_profile_header"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:ratio="0.5625">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <ImageView
+            <com.avikhasija.materialannouncements.RatioLayout
+                android:id="@+id/user_profile_header"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/landscape"/>
+                android:layout_height="wrap_content"
+                app:ratio="0.5625">
 
-            <LinearLayout
-                android:paddingTop="5dp"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/landscape"/>
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/profile_photo"
-                    android:layout_width="90dp"
-                    android:layout_height="90dp"
-                    android:layout_gravity="center_horizontal"
-                    android:src="@drawable/profilephoto"/>
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="5dp"/>
-                <TextView
-                    android:layout_gravity="center_horizontal"
-                    style="@style/TextAppearance.AppCompat.Title"
-                    android:textSize="26sp"
-                    android:textColor="@android:color/white"
-                    android:id="@+id/profile_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="5dp"/>
-                <TextView
-                    android:layout_gravity="center_horizontal"
-                    style="@style/TextAppearance.AppCompat.Title"
-                    android:textColor="@android:color/white"
-                    android:id="@+id/user_orgs_followed"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="5dp"/>
                 <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        style="@style/TextAppearance.AppCompat.Body1"
-                        android:textColor="@android:color/white"
-                        android:id="@+id/user_interests"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:paddingTop="5dp">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/profile_photo"
+                        android:layout_width="90dp"
+                        android:layout_height="90dp"
+                        android:layout_gravity="center_horizontal"
+                        android:src="@drawable/profilephoto"/>
+
                     <View
-                        android:layout_width="4dp"
-                        android:layout_height="0dp"/>
+                        android:layout_width="0dp"
+                        android:layout_height="5dp"/>
+
                     <TextView
-                        style="@style/TextAppearance.AppCompat.Body1"
-                        android:textColor="@android:color/white"
-                        android:id="@+id/user_category"
+                        android:id="@+id/profile_name"
+                        style="@style/TextAppearance.AppCompat.Title"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:textColor="@android:color/white"
+                        android:textSize="26sp"/>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="5dp"/>
+
+                    <TextView
+                        android:id="@+id/user_orgs_followed"
+                        style="@style/TextAppearance.AppCompat.Title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:textColor="@android:color/white"/>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="5dp"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/user_interests"
+                            style="@style/TextAppearance.AppCompat.Body1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/white"/>
+
+                        <View
+                            android:layout_width="4dp"
+                            android:layout_height="0dp"/>
+
+                        <TextView
+                            android:id="@+id/user_category"
+                            style="@style/TextAppearance.AppCompat.Body1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/white"/>
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
-        </com.avikhasija.materialannouncements.RatioLayout>
+            </com.avikhasija.materialannouncements.RatioLayout>
 
 
-        <FrameLayout
-            android:id="@+id/profile_content_framelayout"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-        </FrameLayout>
-    </LinearLayout>
+            <FrameLayout
+                android:id="@+id/profile_content_framelayout"
+                android:layout_width="match_parent"
+                android:layout_height="1000dp"
+                android:layout_below="@id/user_profile_header"
+                android:background="@android:color/white">
+            </FrameLayout>
+
+
+        </RelativeLayout>
+    </com.nirhart.parallaxscroll.views.ParallaxScrollView>
 </FrameLayout>
