@@ -1,9 +1,11 @@
 package io.mindbend.android.announcements;
 
+import java.io.Serializable;
+
 /**
  * Created by Avik Hasija on 8/3/2015.
  */
-public class User {
+public class User implements Serializable{
     //Class contains details about a user, to be used in various places
     //Current content reflects what is needed for profile page found in "you" tab
 
