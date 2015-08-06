@@ -33,16 +33,20 @@ import io.mindbend.android.announcements.User;
 public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInteractionListener{
 
     private static final String TAG = "ProfileFragment";
-    //TEST: public static final String TODAY_POSTS_FRAG = "today_posts_frag";
+
+    //To add frags to backstack
+    public static final String ORG_PROFILE_FRAG = "org_profile_frag";
+
+    private Fragment mOrgProfile;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_USER= "user";
+    private static final String ARG_ORG = "org";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+
+    private User mUser;
+    private Organization mOrg;
     private OrgsGridAdapter mOrgsAdapter;
 
 
@@ -50,16 +54,16 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param user USER.
+     * @param org ORGANIZATION.
      * @return A new instance of fragment ProfileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(String param1, String param2) {
+    public static ProfileFragment newInstance(User user, Organization org) {
         ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putSerializable(ARG_USER, user);
+        args.putSerializable(ARG_ORG, org);
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,8 +76,8 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mUser = (User) getArguments().getSerializable(ARG_USER);
+            mOrg = (Organization) getArguments().getSerializable(ARG_ORG);
         }
     }
 
@@ -83,12 +87,8 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        //set the listener for the posts feed adapter in order to open the comments feed for a post
+        //set the listener for OrgsGridAdapter in order to profile page for an organization
         OrgsGridAdapter.setListener(this);
-
-        //Get user from parent fragment
-        //TODO: make fragment dynamic so user OR org can be passed.
-        User testUser = (User) getArguments().getSerializable("loggedInUser");
 
         //UI elements to be filled
         TextView name = (TextView) v.findViewById(R.id.profile_name);
@@ -96,12 +96,13 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
         TextView interests = (TextView) v.findViewById(R.id.user_interests);
         TextView category = (TextView) v.findViewById(R.id.user_category);
 
+        //TODO: branch based on whether user or org is null
 
         //Adapter not necessary, few elements on page
-        name.setText(testUser.getName());
-        orgsFollowed.setText(testUser.getNumberOfOrganizationsFollowed());
-        interests.setText(testUser.getInterests());
-        category.setText(testUser.getUserCategory());
+//        name.setText(testUser.getName());
+//        orgsFollowed.setText(testUser.getNumberOfOrganizationsFollowed());
+//        interests.setText(testUser.getInterests());
+//        category.setText(testUser.getUserCategory());
 
         //Get scrollview, scroll to top
         //TODO: not working!
@@ -133,6 +134,11 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
 
     @Override
     public void pressedOrg(Organization orgSelected) {
+
+//        //replace the current profile frag with new org profile frag, while adding it to a backstack
+        mOrgProfile = ProfileFragment.newInstance(null, orgSelected);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.profile_framelayout, mOrgProfile).addToBackStack(ORG_PROFILE_FRAG).commit();
 
         Log.d(TAG, "org has been pressed " + orgSelected.toString());
 

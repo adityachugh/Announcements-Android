@@ -34,15 +34,10 @@ public class YouFragment extends Fragment {
         setRetainInstance(true);
         View v = inflater.inflate(R.layout.fragment_you, container, false);
 
-        Fragment profileFragment = ProfileFragment.newInstance("test", "test");
-
         //FAKE USER FOR TESTING
         User testUser = new User("Aditya", "Chugh", "getting paper", "node.js", "#Grade12", 9);
 
-        //Pass user to profileFrag
-        Bundle args = new Bundle();
-        args.putSerializable("loggedInUser", testUser);
-        profileFragment.setArguments(args);
+        Fragment profileFragment = ProfileFragment.newInstance(testUser, null);
 
         //inflate profileFrag in framelayout
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
