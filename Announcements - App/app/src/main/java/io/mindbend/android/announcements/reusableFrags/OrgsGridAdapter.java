@@ -3,6 +3,7 @@ package io.mindbend.android.announcements.reusableFrags;
 import android.content.Context;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,9 @@ import io.mindbend.android.announcements.R;
  * Created by Akshay Pall on 01/08/2015.
  */
 public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHolder> {
+
+    private static final String TAG = "OrgsGridAdapter";
+
     public class ViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
         private final TextView mTitle;
@@ -26,6 +30,10 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
 
         public ViewHolder(View itemView) {
             super(itemView);
+
+            //Add click listener
+            itemView.setOnClickListener(this);
+
             //getting all the elements part of the card, aside from the image
             mTitle = (TextView) itemView.findViewById(R.id.org_title);
             mDetail = (TextView) itemView.findViewById(R.id.org_banner_detail);
@@ -33,7 +41,7 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
 
         @Override
         public void onClick(View v) {
-
+            Log.d(TAG, "Click registered!! " + getAdapterPosition());
         }
     }
 
