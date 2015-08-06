@@ -4,10 +4,9 @@
              android:layout_height="match_parent"
              tools:context="io.mindbend.android.announcements.tabbedFragments.NotificationsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hello Notif Frag"/>
+        android:id="@+id/notifications_container"/>
 
 </FrameLayout>
