@@ -70,9 +70,6 @@ public class PostOverlayFragment extends Fragment implements PostsFeedAdapter.Po
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_post_overlay, container, false);
 
-        isOnComments = false;
-        mLastPost = null;
-
         android.support.v4.app.Fragment postsFragment = PostsCardsFragment.newInstance(mPosts);
         //set the listener for the posts feed adapter in order to open the comments feed for a post
         PostsFeedAdapter.setListener(this);
