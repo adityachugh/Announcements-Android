@@ -41,9 +41,9 @@ public class ListFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param orgsIfPresent
-     * @param notifsIfPresent
-     * @param usersIfPresent
+     * @param orgsIfPresent list of organizations if this list is used to display organizations
+     * @param notifsIfPresent list of notifications if this list is used to display notifications
+     * @param usersIfPresent list of users if this list is used to display users
      * @return A new instance of fragment ListFragment.
      */
     // TODO: Rename and change types and number of parameters
