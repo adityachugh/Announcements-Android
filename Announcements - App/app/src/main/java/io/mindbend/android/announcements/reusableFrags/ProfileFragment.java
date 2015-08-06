@@ -82,14 +82,16 @@ public class ProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
 
+        //Get user from parent fragment
+        //TODO: make fragment dynamic so user OR org can be passed.
+        User testUser = (User) getArguments().getSerializable("loggedInUser");
+
         //UI elements to be filled
         TextView name = (TextView) v.findViewById(R.id.profile_name);
         TextView orgsFollowed = (TextView) v.findViewById(R.id.user_orgs_followed);
         TextView interests = (TextView) v.findViewById(R.id.user_interests);
         TextView category = (TextView) v.findViewById(R.id.user_category);
 
-        //FAKE USER FOR TESTING
-        User testUser = new User("Aditya", "Chugh", "getting paper", "node.js", "#Grade12", 9);
 
         //Adapter not necessary, few elements on page
         name.setText(testUser.getName());
