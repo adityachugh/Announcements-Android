@@ -30,7 +30,7 @@ import io.mindbend.android.announcements.User;
  * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInteractionListener{
 
     private static final String TAG = "ProfileFragment";
     //TEST: public static final String TODAY_POSTS_FRAG = "today_posts_frag";
@@ -83,6 +83,9 @@ public class ProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
 
+        //set the listener for the posts feed adapter in order to open the comments feed for a post
+        OrgsGridAdapter.setListener(this);
+
         //Get user from parent fragment
         //TODO: make fragment dynamic so user OR org can be passed.
         User testUser = (User) getArguments().getSerializable("loggedInUser");
@@ -115,11 +118,6 @@ public class ProfileFragment extends Fragment {
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.add(R.id.profile_content_framelayout, contentFragment).commit();
 
-        //Test to populate bottom frag with post cards
-//        Fragment postsFragment = PostsCardsFragment.newInstance("test", "test");
-//        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-//        transaction.add(R.id.profile_content_framelayout, postsFragment).addToBackStack(TODAY_POSTS_FRAG).commit();
-
         return v;
     }
 
@@ -133,5 +131,10 @@ public class ProfileFragment extends Fragment {
         super.onDetach();
     }
 
+    @Override
+    public void pressedOrg(Organization orgSelected) {
 
+        Log.d(TAG, "org has been pressed " + orgSelected.toString());
+
+    }
 }

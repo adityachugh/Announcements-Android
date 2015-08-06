@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +29,7 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView mTitle;
         private final TextView mDetail;
+        private final CardView mOrgCard;
 
         //TODO: create private fields for the elements within a single feed item
 
@@ -37,12 +39,17 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
             //getting all the elements part of the card, aside from the image
             mTitle = (TextView) itemView.findViewById(R.id.org_title);
             mDetail = (TextView) itemView.findViewById(R.id.org_banner_detail);
+
+            //get entire card to make clickable
+            mOrgCard = (CardView) itemView.findViewById(R.id.org_card);
         }
     }
 
     //TODO: create private fields for the list
     private List<Organization> mOrgs;
     private Context mContext;
+    private static OrgInteractionListener mOrgListener;
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
@@ -52,7 +59,8 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        Organization org = mOrgs.get(i);
+        final Organization org = mOrgs.get(i);
+
         viewHolder.mTitle.setText(org.getmTitle());
         int orgFollowers = org.getFollowers();
         if (org.isNewOrg()) {
@@ -62,6 +70,14 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
         else {
             viewHolder.mDetail.setText(orgFollowers + " Followers");
         }
+
+        //set clicklistener on card
+        viewHolder.mOrgCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mOrgListener.pressedOrg(org);
+            }
+        });
     }
 
     @Override
@@ -75,4 +91,22 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
         mOrgs = orgs;
     }
 
+    @Override
+    public void onViewAttachedToWindow(ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(ViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        mOrgListener = null;
+    }
+
+    public interface OrgInteractionListener {
+        void pressedOrg (Organization orgSelected);
+    }
+
+    public static void setListener(OrgInteractionListener mOrgListener) {
+        OrgsGridAdapter.mOrgListener = mOrgListener;
+    }
 }
