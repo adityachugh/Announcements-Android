@@ -6,6 +6,7 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
@@ -100,7 +101,7 @@ public class TodayFragment extends Fragment implements View.OnClickListener, Dat
 
     @Override
     public void onClick(View v) {
-        if (mPostsOverlayFragment.isOnComments()){
+        if (((PostOverlayFragment)mPostsOverlayFragment).isOnComments()){
             //TODO: dialogue box to add a comment
             // get prompts.xml view
             LayoutInflater li = LayoutInflater.from(getActivity());
@@ -116,7 +117,7 @@ public class TodayFragment extends Fragment implements View.OnClickListener, Dat
 
             //set the subtext to notify the user on WHOSE post they are commenting on
             TextView subText = (TextView)addCommentView.findViewById(R.id.add_comment_subtext);
-            subText.setText(getString(R.string.add_comment_dialog_subtext, mPostsOverlayFragment.getmLastPost().getmPostClubUsername()));
+            subText.setText(getString(R.string.add_comment_dialog_subtext, ((PostOverlayFragment) mPostsOverlayFragment).getmLastPost().getmPostClubUsername()));
 
             //setting up the spinner(dropdown) to select which user/club to post the comment from
             Spinner spinner = (Spinner)addCommentView.findViewById(R.id.user_spinner);
@@ -167,6 +168,7 @@ public class TodayFragment extends Fragment implements View.OnClickListener, Dat
     public void onCommentsOpened(Post postPressed) {
         //set the fab's src/icon to the "add a new comment" image
         mFab.setImageResource(R.drawable.ic_comment);
+
     }
 
     @Override

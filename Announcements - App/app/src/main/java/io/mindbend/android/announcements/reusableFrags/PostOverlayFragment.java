@@ -18,8 +18,6 @@ import io.mindbend.android.announcements.R;
 
 
 public class PostOverlayFragment extends Fragment implements PostsFeedAdapter.PostInteractionListener {
-    //to allow the activity to figure out if the today frag is on posts or comments
-    private boolean isOnComments = false;
     //in order to add frags to the backstack
     public static final String POSTS_FRAG = "posts_frag";
     public static final String COMMENTS_FRAG = "comments_frag";
@@ -29,18 +27,12 @@ public class PostOverlayFragment extends Fragment implements PostsFeedAdapter.Po
 
     //saving the last post in order to get the club's name, as used in the "add comment" dialog
     private Post mLastPost;
+    //to allow the activity to figure out if the today frag is on posts or comments
+    private boolean isOnComments = false;
 
     private Fragment mCurrentComments;
     private PostsOverlayListener mListener;
     private ArrayList<Post> mPosts;
-
-    public Post getmLastPost() {
-        return mLastPost;
-    }
-
-    public boolean isOnComments() {
-        return isOnComments;
-    }
 
     public static PostOverlayFragment newInstance(ArrayList<Post> posts, PostsOverlayListener listener) {
         PostOverlayFragment fragment = new PostOverlayFragment();
@@ -74,7 +66,7 @@ public class PostOverlayFragment extends Fragment implements PostsFeedAdapter.Po
         //set the listener for the posts feed adapter in order to open the comments feed for a post
         PostsFeedAdapter.setListener(this);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.today_framelayout, postsFragment).addToBackStack(POSTS_FRAG).commit();
+        transaction.add(R.id.posts_overlay_container, postsFragment).addToBackStack(POSTS_FRAG).commit();
 
         return v;
     }
@@ -91,7 +83,7 @@ public class PostOverlayFragment extends Fragment implements PostsFeedAdapter.Po
         //replace the current posts frag with the comments frag, while adding it to a backstack (in case user clicks a commenters profile in which case returning to the comments frag would be required)
         mCurrentComments = PostCommentsFragment.newInstance(postPressed);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.today_framelayout, mCurrentComments).addToBackStack(COMMENTS_FRAG).commit();
+        transaction.replace(R.id.posts_overlay_container, mCurrentComments).addToBackStack(COMMENTS_FRAG).commit();
     }
 
     public void returnFromComments(){
@@ -108,15 +100,23 @@ public class PostOverlayFragment extends Fragment implements PostsFeedAdapter.Po
         mListener.onReturnToPosts();
     }
 
+    public Post getmLastPost() {
+        return mLastPost;
+    }
+
+    public boolean isOnComments() {
+        return isOnComments;
+    }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        try {
-            mListener = (PostsOverlayListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement PostsOverlayListener");
-        }
+//        try {
+//            mListener = (PostsOverlayListener) activity;
+//        } catch (ClassCastException e) {
+//            throw new ClassCastException(activity.toString()
+//                    + " must implement PostsOverlayListener");
+//        }
     }
 
     @Override

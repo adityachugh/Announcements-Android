@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 
+import io.mindbend.android.announcements.reusableFrags.PostOverlayFragment;
 import io.mindbend.android.announcements.tabbedFragments.AdminFragment;
 import io.mindbend.android.announcements.tabbedFragments.DiscoverFragment;
 import io.mindbend.android.announcements.tabbedFragments.YouFragment;
@@ -49,17 +50,17 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
         mViewPager.setOnPageChangeListener(this);
 
         //Get linear layout with tabbar and toolbar in order to add elevation (if API 21+)
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-            LinearLayout toolbarLayout = (LinearLayout)findViewById(R.id.tab_and_toolbar);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            LinearLayout toolbarLayout = (LinearLayout) findViewById(R.id.tab_and_toolbar);
             toolbarLayout.setElevation(8);
         }
 
         //gets backwards compatible toolbar
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         //gets tabBar, adds tabs
-        mTabBar = (MaterialTabHost)findViewById(R.id.tab_bar);
+        mTabBar = (MaterialTabHost) findViewById(R.id.tab_bar);
         mTabBar.addTab(mTabBar.newTab().setText("Today").setTabListener(this));
         mTabBar.addTab(mTabBar.newTab().setText("Notifications").setTabListener(this));
         mTabBar.addTab(mTabBar.newTab().setText("Discover").setTabListener(this));
@@ -125,18 +126,19 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
 
     @Override
     public void onBackPressed() {
-        switch (mViewPager.getCurrentItem()){
+        switch (mViewPager.getCurrentItem()) {
             case 0:
-                if(mTodayFragment.getmPostsOverlayFragment().isOnComments()){
-                    mTodayFragment.getmPostsOverlayFragment().returnFromComments();
+                if (((PostOverlayFragment)mTodayFragment.getmPostsOverlayFragment()).isOnComments()) {
+                    ((PostOverlayFragment)mTodayFragment.getmPostsOverlayFragment()).returnFromComments();
                 }
         }
     }
 
-    private class PagerAdapter extends FragmentStatePagerAdapter{
+    private class PagerAdapter extends FragmentStatePagerAdapter {
         PagerAdapter(FragmentManager fm) {
             super(fm);
         }
+
         @Override
         public int getCount() {
             //TODO: only return 5 IF *****ADMIN*****, otherwise return 4.
@@ -145,12 +147,13 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
 
         @Override
         public android.support.v4.app.Fragment getItem(int position) {
-            switch (position){
+            switch (position) {
                 case 0:
                     if (mTodayFragment == null) mTodayFragment = new TodayFragment();
                     return mTodayFragment;
                 case 1:
-                    if (mNotificationsFragment == null) mNotificationsFragment = new NotificationsFragment();
+                    if (mNotificationsFragment == null)
+                        mNotificationsFragment = new NotificationsFragment();
                     return mNotificationsFragment;
                 case 2:
                     if (mDiscoverFragment == null) mDiscoverFragment = new DiscoverFragment();
