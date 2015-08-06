@@ -25,8 +25,7 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
 
     private static final String TAG = "OrgsGridAdapter";
 
-    public class ViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView mTitle;
         private final TextView mDetail;
 
@@ -35,34 +34,9 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
         public ViewHolder(View itemView) {
             super(itemView);
 
-            //Add click listener
-            itemView.setOnClickListener(this);
-
             //getting all the elements part of the card, aside from the image
             mTitle = (TextView) itemView.findViewById(R.id.org_title);
             mDetail = (TextView) itemView.findViewById(R.id.org_banner_detail);
-        }
-
-        @Override
-        public void onClick(View v) {
-            //verify click registered
-            Log.d(TAG, "Click registered!! " + getAdapterPosition());
-
-            //get clicked org
-            Organization orgClicked = mOrgs.get(getAdapterPosition());
-
-            //Create new instance of profile frag
-            Fragment profileFragment = ProfileFragment.newInstance("test", "test");
-
-            //Pass org to profileFrag
-            Bundle args = new Bundle();
-            args.putSerializable("selectedOrg", orgClicked);
-            profileFragment.setArguments(args);
-
-
-            //inflate profileFrag in framelayout
-//            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-//            transaction.add(R.id.you_framelayout, profileFragment).commit();
         }
     }
 
