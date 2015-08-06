@@ -45,7 +45,7 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         Organization org = mOrgs.get(i);
         viewHolder.mTitle.setText(org.getmTitle());
-        String bannerDetail = org.getmBannerDetail();
+        String bannerDetail = org.getDescription();
         if (bannerDetail.equals("NEW")){
             viewHolder.mDetail.setTextColor(mContext.getResources().getColor(R.color.accent));
         }

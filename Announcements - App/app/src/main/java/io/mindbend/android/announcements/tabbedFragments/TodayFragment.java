@@ -25,6 +25,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import io.mindbend.android.announcements.App;
 import io.mindbend.android.announcements.Post;
@@ -79,11 +80,23 @@ public class TodayFragment extends Fragment implements PostsFeedAdapter.PostInte
         mFab = (ImageButton)v.findViewById(R.id.today_fab);
         mFab.setOnClickListener(this);
 
+        //TODO: query today's posts data from Parse, then pass that data into a PostsCardFragment that will be created using the PostsCardsFragment.NewInstance static method
+        //in the meantime, here is fake data
+        ArrayList<Post> posts = new ArrayList<>();
+
+        //THE FOLLOWING ARE FAKE TEST POSTS
+        Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        posts.add(testPost1);
+
+        Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        posts.add(testPost2);
+
+        Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        posts.add(testPost3);
+
+        Fragment postsFragment = PostsCardsFragment.newInstance(posts);
         //set the listener for the posts feed adapter in order to open the comments feed for a post
         PostsFeedAdapter.setListener(this);
-
-        //TODO: query today's posts data from Parse, then pass that data into a PostsCardFragment that will be created using the PostsCardsFragment.NewInstance static method
-        Fragment postsFragment = PostsCardsFragment.newInstance("test", "test");
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.add(R.id.today_framelayout, postsFragment).addToBackStack(TODAY_POSTS_FRAG).commit();
 
@@ -104,7 +117,7 @@ public class TodayFragment extends Fragment implements PostsFeedAdapter.PostInte
             alertDialogBuilder.setView(addCommentView);
 
             //work with all the elements in the dialog
-            final EditText userInput = (EditText) addCommentView.findViewById(R.id.add_comment_edittext);
+            EditText userInput = (EditText) addCommentView.findViewById(R.id.add_comment_edittext);
 
             //set the subtext to notify the user on WHOSE post they are commenting on
             TextView subText = (TextView)addCommentView.findViewById(R.id.add_comment_subtext);

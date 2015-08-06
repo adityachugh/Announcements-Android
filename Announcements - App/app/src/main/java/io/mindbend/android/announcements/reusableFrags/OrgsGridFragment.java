@@ -69,13 +69,13 @@ public class OrgsGridFragment extends Fragment {
         List<Organization> orgs = new ArrayList<>();
 
         //THE FOLLOWING IS A FAKE TEST POST
-        Organization testOrg1 = new Organization("test Id", "Software Dev Club", "NEW"); //TODO: change "NEW" to be a dynamically chosen banner
+        Organization testOrg1 = new Organization("test Id", "Software Dev Club", "idk lolz", 5, "TEST", false, true); //TODO: change "NEW" to be a dynamically chosen banner
         orgs.add(testOrg1);
 
-        Organization testOrg2 = new Organization("test Id", "Math Club", "54 Followers"); //TODO: change "NEW" to be a dynamically chosen banner
+        Organization testOrg2 = new Organization("test Id", "Math Club", "idk lolz", 5, "TEST", false, true); //TODO: change "NEW" to be a dynamically chosen banner
         orgs.add(testOrg2);
 
-        Organization testOrg3 = new Organization("test Id", "Mindbend Studio", "NEW"); //TODO: change "NEW" to be a dynamically chosen banner
+        Organization testOrg3 = new Organization("test Id", "Mindbend Studio", "idk lolz", 5, "TEST", false, true); //TODO: change "NEW" to be a dynamically chosen banner
         orgs.add(testOrg3);
 
         //Initialize and set the adapter
