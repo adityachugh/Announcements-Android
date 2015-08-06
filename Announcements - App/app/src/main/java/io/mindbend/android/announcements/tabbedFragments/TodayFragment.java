@@ -32,6 +32,7 @@ import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.TabbedActivity;
 import io.mindbend.android.announcements.reusableFrags.PostCommentsFragment;
+import io.mindbend.android.announcements.reusableFrags.PostOverlayFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsCardsFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsFeedAdapter;
 
@@ -39,20 +40,11 @@ import io.mindbend.android.announcements.reusableFrags.PostsFeedAdapter;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TodayFragment extends Fragment implements PostsFeedAdapter.PostInteractionListener, View.OnClickListener, DatePickerDialog.OnDateSetListener {
-
+public class TodayFragment extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener, PostOverlayFragment.PostsOverlayListener {
+    private ImageButton mFab;
     //in order to add frags to the backstack
     public static final String TODAY_POSTS_FRAG = "today_posts_frag";
-    public static final String COMMENTS_FRAG = "comments_frag";
-
-    //to allow the activity to figure out if the today frag is on posts or comments
-    public boolean isOnComments = false;
-    private Fragment mCurrentComments;
-    private ImageButton mFab;
-
-    //saving the last post in order to get the club's name, as used in the "add comment" dialog
-    Post mLastPost;
-
+    private Fragment mPostsOverlayFragment;
 
     public TodayFragment() {
         // Required empty public constructor
@@ -94,18 +86,21 @@ public class TodayFragment extends Fragment implements PostsFeedAdapter.PostInte
         Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio");
         posts.add(testPost3);
 
-        Fragment postsFragment = PostsCardsFragment.newInstance(posts);
-        //set the listener for the posts feed adapter in order to open the comments feed for a post
-        PostsFeedAdapter.setListener(this);
+        //pass in "this" in order to set the listener for the posts overlay frag in order to open the comments feed for a post
+        mPostsOverlayFragment = PostOverlayFragment.newInstance(posts, this);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.today_framelayout, postsFragment).addToBackStack(TODAY_POSTS_FRAG).commit();
+        transaction.add(R.id.today_framelayout, mPostsOverlayFragment).addToBackStack(TODAY_POSTS_FRAG).commit();
 
         return v;
     }
 
+    public Fragment getmPostsOverlayFragment() {
+        return mPostsOverlayFragment;
+    }
+
     @Override
     public void onClick(View v) {
-        if (isOnComments){
+        if (mPostsOverlayFragment.isOnComments()){
             //TODO: dialogue box to add a comment
             // get prompts.xml view
             LayoutInflater li = LayoutInflater.from(getActivity());
@@ -121,7 +116,7 @@ public class TodayFragment extends Fragment implements PostsFeedAdapter.PostInte
 
             //set the subtext to notify the user on WHOSE post they are commenting on
             TextView subText = (TextView)addCommentView.findViewById(R.id.add_comment_subtext);
-            subText.setText(getString(R.string.add_comment_dialog_subtext, mLastPost.getmPostClubUsername()));
+            subText.setText(getString(R.string.add_comment_dialog_subtext, mPostsOverlayFragment.getmLastPost().getmPostClubUsername()));
 
             //setting up the spinner(dropdown) to select which user/club to post the comment from
             Spinner spinner = (Spinner)addCommentView.findViewById(R.id.user_spinner);
@@ -169,31 +164,14 @@ public class TodayFragment extends Fragment implements PostsFeedAdapter.PostInte
     }
 
     @Override
-    public void pressedPost(Post postPressed) {
-        mLastPost = postPressed;
-
-        isOnComments = true;
-
+    public void onCommentsOpened(Post postPressed) {
         //set the fab's src/icon to the "add a new comment" image
         mFab.setImageResource(R.drawable.ic_comment);
-
-        //replace the current posts frag with the comments frag, while adding it to a backstack (in case user clicks a commenters profile in which case returning to the comments frag would be required)
-        mCurrentComments = PostCommentsFragment.newInstance(postPressed);
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.today_framelayout, mCurrentComments).addToBackStack(COMMENTS_FRAG).commit();
     }
 
-    public void returnFromComments(){
-        isOnComments = false;
-
+    @Override
+    public void onReturnToPosts() {
         //set the fab's src/icon back to the "change date" image
         mFab.setImageResource(R.drawable.ic_date);
-
-        getChildFragmentManager()
-                .beginTransaction()
-                .remove(mCurrentComments)
-                .commit();
-        mCurrentComments = null;
-        getChildFragmentManager().popBackStack();
     }
 }

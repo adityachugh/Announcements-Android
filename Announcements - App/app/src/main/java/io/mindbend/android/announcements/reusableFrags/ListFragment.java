@@ -108,5 +108,4 @@ public class ListFragment extends Fragment {
         // TODO: Update argument type and name
         public void onListItemPressed (Uri uri);
     }
-
 }

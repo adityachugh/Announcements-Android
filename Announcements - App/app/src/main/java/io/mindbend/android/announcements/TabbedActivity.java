@@ -127,8 +127,8 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
     public void onBackPressed() {
         switch (mViewPager.getCurrentItem()){
             case 0:
-                if(mTodayFragment.isOnComments){
-                    mTodayFragment.returnFromComments();
+                if(mTodayFragment.getmPostsOverlayFragment().isOnComments()){
+                    mTodayFragment.getmPostsOverlayFragment().returnFromComments();
                 }
         }
     }
