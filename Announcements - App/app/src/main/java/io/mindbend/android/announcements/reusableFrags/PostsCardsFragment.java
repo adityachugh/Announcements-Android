@@ -23,10 +23,12 @@ public class PostsCardsFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_POSTS = "posts";
+    private static final String ARG_POSTS_LISTENER = "post_touch_listener";
 
     // TODO: Rename and change types of parameters
     private List<Post> mPosts;
     private PostsFeedAdapter mPostFeedAdapter;
+    private PostsFeedAdapter.PostInteractionListener mPostTouchListener;
 
     /**
      * Use this factory method to create a new instance of
@@ -36,10 +38,11 @@ public class PostsCardsFragment extends Fragment {
      * @return A new instance of fragment PostsCardsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PostsCardsFragment newInstance(ArrayList<Post> posts) {
+    public static PostsCardsFragment newInstance(ArrayList<Post> posts, PostsFeedAdapter.PostInteractionListener postTouchListener) {
         PostsCardsFragment fragment = new PostsCardsFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_POSTS, posts);
+        args.putSerializable(ARG_POSTS_LISTENER, postTouchListener);
         fragment.setArguments(args);
         return fragment;
     }
@@ -53,6 +56,7 @@ public class PostsCardsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mPosts = getArguments().getParcelableArrayList(ARG_POSTS);
+            mPostTouchListener = (PostsFeedAdapter.PostInteractionListener)getArguments().getSerializable(ARG_POSTS_LISTENER);
         }
     }
 
@@ -66,7 +70,7 @@ public class PostsCardsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         //Initialize and set the adapter
-        mPostFeedAdapter = new PostsFeedAdapter(getActivity(), mPosts);
+        mPostFeedAdapter = new PostsFeedAdapter(getActivity(), mPosts, mPostTouchListener);
         recyclerView.setAdapter(mPostFeedAdapter);
 
         //the animation for the recycler view to slide in from the bottom of the view

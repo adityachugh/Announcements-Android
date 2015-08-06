@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +31,9 @@ public class ListFragment extends Fragment {
      * 2 = users
      * **/
     private int whatObjectList; //REMEMBER: defaultly, ints = 0
+    private static final int ORGS_SELECTED = 0;
+    private static final int NOTIFS_SELECTED = 1;
+    private static final int USERS_SELECTED = 2;
 
     //lists of all possible items passed into the frag
     private List<Organization> mOrgs;
@@ -67,15 +72,15 @@ public class ListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments().getParcelableArrayList(ARG_ORGS) != null)  {
-            whatObjectList = 0;
+            whatObjectList = ORGS_SELECTED;
             mOrgs = getArguments().getParcelableArrayList(ARG_ORGS);
         }
 //        else if (getArguments().getParcelableArrayList(ARG_NOTIFS) != null)  {
-//            whatObjectList = 1;
+//            whatObjectList = NOTIFS_SELECTED;
 //            mNotifs = getArguments().getParcelableArray(ARG_NOTIFS);
 //        }
         else if (getArguments().getParcelableArrayList(ARG_USERS) != null)  {
-            whatObjectList = 2;
+            whatObjectList = USERS_SELECTED;
             mUsers = getArguments().getParcelableArrayList(ARG_USERS);
         }
     }
@@ -84,7 +89,29 @@ public class ListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_list, container, false);
+        View v = inflater.inflate(R.layout.fragment_list, container, false);
+
+        //get the recycler view
+        RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.list_recyclerview);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        switch (whatObjectList){
+            case ORGS_SELECTED:
+                OrgsListAdapter orgsAdapter = new OrgsListAdapter(getActivity(), mOrgs);
+                recyclerView.setAdapter(orgsAdapter);
+                break;
+            case NOTIFS_SELECTED:
+                NotifsListAdapter notifsAdapter = new NotifsListAdapter(getActivity(), mNotifs);
+                recyclerView.setAdapter(notifsAdapter);
+                break;
+            case USERS_SELECTED:
+                UserListAdapter userAdapter = new UserListAdapter(getActivity(), mUsers);
+                recyclerView.setAdapter(userAdapter);
+                break;
+
+        }
+
+        return v;
     }
 
     @Override

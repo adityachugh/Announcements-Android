@@ -70,10 +70,11 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
         return mPosts.size();
     }
 
-    public PostsFeedAdapter(Context context, List<Post> posts){
+    public PostsFeedAdapter(Context context, List<Post> posts, PostInteractionListener listener){
         //save the mPosts private field as what is passed in
         mContext = context;
         mPosts = posts;
+        mListener = listener;
     }
 
     @Override
@@ -93,11 +94,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
         mListener = null;
     }
 
-    public interface PostInteractionListener {
+    public interface PostInteractionListener extends Serializable{
         void pressedPost(Post postPressed);
-    }
-
-    public static void setListener(PostInteractionListener mListener) {
-        PostsFeedAdapter.mListener = mListener;
     }
 }
