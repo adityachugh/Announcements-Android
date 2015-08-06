@@ -102,10 +102,18 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
         //TODO: branch based on whether user or org is null
 
         //Adapter not necessary, few elements on page
-//        name.setText(testUser.getName());
-//        orgsFollowed.setText(testUser.getNumberOfOrganizationsFollowed());
-//        interests.setText(testUser.getInterests());
-//        category.setText(testUser.getUserCategory());
+        if (mUser != null) {
+            name.setText(mUser.getName());
+            orgsFollowed.setText(mUser.getNumberOfOrganizationsFollowed());
+            interests.setText(mUser.getInterests());
+            category.setText(mUser.getUserCategory());
+
+            //Fill bottom fragment with discover grid if user(temporary)
+            //TODO: Fetch followed orgs OR organization's announcements (generic fragment)
+            Fragment contentFragment = OrgsGridFragment.newInstance("test", "test");
+            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+            transaction.add(R.id.profile_content_framelayout, contentFragment).commit();
+        }
 
         //Get scrollview, scroll to top
         //TODO: not working!
@@ -115,12 +123,6 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
         //Get framelayout (HIERARCHY: FrameLayout > RecyclerView > CardView)
         //TODO: set height manually, based on number of grandchildren populated in framelayout
         FrameLayout profileContentFrameLayout = (FrameLayout)v.findViewById(R.id.profile_content_framelayout);
-
-        //Fill bottom fragment with discover grid (temporary)
-        //TODO: Fetch followed orgs OR organization's announcements (generic fragment)
-        Fragment contentFragment = OrgsGridFragment.newInstance("test", "test");
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.profile_content_framelayout, contentFragment).commit();
 
         return v;
     }
