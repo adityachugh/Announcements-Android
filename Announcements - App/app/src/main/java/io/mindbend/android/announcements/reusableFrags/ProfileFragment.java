@@ -60,6 +60,9 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
      */
     // TODO: Rename and change types and number of parameters
     public static ProfileFragment newInstance(User user, Organization org) {
+        
+        //***NOTE*** : one of user or org must be null
+
         ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_USER, user);
