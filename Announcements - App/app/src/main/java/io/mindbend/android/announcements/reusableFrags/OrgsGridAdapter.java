@@ -17,17 +17,23 @@ import io.mindbend.android.announcements.R;
  * Created by Akshay Pall on 01/08/2015.
  */
 public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHolder> {
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener {
         private final TextView mTitle;
         private final TextView mDetail;
 
         //TODO: create private fields for the elements within a single feed item
 
-        public ViewHolder(View itemView){
+        public ViewHolder(View itemView) {
             super(itemView);
             //getting all the elements part of the card, aside from the image
-            mTitle = (TextView)itemView.findViewById(R.id.org_title);
-            mDetail = (TextView)itemView.findViewById(R.id.org_banner_detail);
+            mTitle = (TextView) itemView.findViewById(R.id.org_title);
+            mDetail = (TextView) itemView.findViewById(R.id.org_banner_detail);
+        }
+
+        @Override
+        public void onClick(View v) {
+
         }
     }
 
@@ -46,7 +52,7 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
         Organization org = mOrgs.get(i);
         viewHolder.mTitle.setText(org.getmTitle());
         String bannerDetail = org.getmBannerDetail();
-        if (bannerDetail.equals("NEW")){
+        if (bannerDetail.equals("NEW")) {
             viewHolder.mDetail.setTextColor(mContext.getResources().getColor(R.color.accent));
         }
         viewHolder.mDetail.setText(bannerDetail);
@@ -57,9 +63,10 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
         return mOrgs.size();
     }
 
-    public OrgsGridAdapter(Context context, List<Organization> orgs){
+    public OrgsGridAdapter(Context context, List<Organization> orgs) {
         //save the mPosts private field as what is passed in
         mContext = context;
         mOrgs = orgs;
     }
+
 }
