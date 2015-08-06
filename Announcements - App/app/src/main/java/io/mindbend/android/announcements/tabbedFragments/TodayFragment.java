@@ -23,6 +23,7 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -42,7 +43,7 @@ import io.mindbend.android.announcements.reusableFrags.PostsFeedAdapter;
  * A simple {@link Fragment} subclass.
  */
 public class TodayFragment extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener, PostOverlayFragment.PostsOverlayListener {
-    private ImageButton mFab;
+    private transient ImageButton mFab;
     //in order to add frags to the backstack
     public static final String TODAY_POSTS_FRAG = "today_posts_frag";
     private Fragment mPostsOverlayFragment;

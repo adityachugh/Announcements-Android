@@ -23,4 +23,6 @@
     <string name="post_comment_button">Comment</string>
     <string name="post_share_button">Share</string>
     <string name="add_comment_dialog_subtext">You are about to comment on this post.</string>
+    <string name="sharing_post">Check out this announcement by %1$s: %2$s</string>
+    <string name="send_to">Share this post</string>
 </resources>

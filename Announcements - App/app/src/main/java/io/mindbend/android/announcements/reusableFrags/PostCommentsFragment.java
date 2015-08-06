@@ -2,23 +2,27 @@ package io.mindbend.android.announcements.reusableFrags;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,13 +30,15 @@ import io.mindbend.android.announcements.Comment;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 
-public class PostCommentsFragment extends Fragment {
+public class PostCommentsFragment extends Fragment implements Serializable {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_POST = "post";
+    private static final String SHARE_TAG = "Share_post_tag";
 
     private Post mPost;
     private PostCommentsAdapter mCommentsAdapter;
     private List<Comment> mComments;
+    private transient ImageButton mFab;
 
     /**
      * Use this factory method to create a new instance of
@@ -95,8 +101,8 @@ public class PostCommentsFragment extends Fragment {
         trans.setInterpolator(new DecelerateInterpolator(1.0f));
         recyclerView.startAnimation(trans);
 
-        ImageButton fab = (ImageButton) v.findViewById(R.id.comments_fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mFab = (ImageButton) v.findViewById(R.id.comments_fab);
+        mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //TODO: dialogue box to add a comment
@@ -144,6 +150,24 @@ public class PostCommentsFragment extends Fragment {
 
                 // show it
                 alertDialog.show();
+            }
+        });
+
+        //sharing the post
+        Button shareButton = (Button)v.findViewById(R.id.post_share_button);
+        final String sharingPostText = getActivity().getResources().getString(R.string.sharing_post);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String toShareString = String.format(sharingPostText, mPost.getmPostClubUsername(), mPost.getmPostDetail());
+                Intent sendIntent = new Intent(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, toShareString);
+                sendIntent.setType("text/plain");
+                try {
+                    getActivity().startActivity(Intent.createChooser(sendIntent, getActivity().getResources().getText(R.string.send_to)));
+                } catch (Exception e){
+                    Log.d(SHARE_TAG, "An error occured");
+                }
             }
         });
 
