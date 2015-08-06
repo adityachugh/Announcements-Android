@@ -6,7 +6,8 @@
     android:paddingRight="@dimen/card_inner_margin"
     android:paddingTop="@dimen/card_outer_margin"
     android:paddingBottom="@dimen/card_outer_margin"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    android:id="@+id/notif_list">
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="@dimen/circle_avatar_size"
         android:layout_height="@dimen/circle_avatar_size"

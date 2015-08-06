@@ -41,7 +41,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
     //TODO: create private fields for the list
     private List<Post> mPosts;
     private Context mContext;
-    private static PostInteractionListener mListener;
+    private PostInteractionListener mListener;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, final int i) {

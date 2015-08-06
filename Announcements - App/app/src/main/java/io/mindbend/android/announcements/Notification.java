@@ -7,6 +7,8 @@ import android.os.Parcelable;
  * Created by Akshay Pall on 06/08/2015.
  */
 public class Notification implements Parcelable {
+
+
     Notification(){
         //TODO: make notif
     }
