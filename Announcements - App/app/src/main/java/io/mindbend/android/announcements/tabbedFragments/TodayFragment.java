@@ -70,7 +70,7 @@ public class TodayFragment extends Fragment implements View.OnClickListener, Dat
         setRetainInstance(true);
 
         //instantiate the fab so that you can change its onClick method and src logo when switching between posts and comments fragments
-        mFab = (ImageButton)v.findViewById(R.id.today_fab);
+        mFab = (ImageButton) v.findViewById(R.id.today_fab);
         mFab.setOnClickListener(this);
 
         //TODO: query today's posts data from Parse, then pass that data into a PostsCardFragment that will be created using the PostsCardsFragment.NewInstance static method
@@ -101,62 +101,13 @@ public class TodayFragment extends Fragment implements View.OnClickListener, Dat
 
     @Override
     public void onClick(View v) {
-        if (((PostOverlayFragment)mPostsOverlayFragment).isOnComments()){
-            //TODO: dialogue box to add a comment
-            // get prompts.xml view
-            LayoutInflater li = LayoutInflater.from(getActivity());
-            View addCommentView = li.inflate(R.layout.add_comment_dialog, null);
+        //TODO: dialogue box to change today date
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date()); //new Date gets the current date and time
 
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-
-            // set the dialog's view to alertdialog builder
-            alertDialogBuilder.setView(addCommentView);
-
-            //work with all the elements in the dialog
-            EditText userInput = (EditText) addCommentView.findViewById(R.id.add_comment_edittext);
-
-            //set the subtext to notify the user on WHOSE post they are commenting on
-            TextView subText = (TextView)addCommentView.findViewById(R.id.add_comment_subtext);
-            subText.setText(getString(R.string.add_comment_dialog_subtext, ((PostOverlayFragment) mPostsOverlayFragment).getmLastPost().getmPostClubUsername()));
-
-            //setting up the spinner(dropdown) to select which user/club to post the comment from
-            Spinner spinner = (Spinner)addCommentView.findViewById(R.id.user_spinner);
-            //TODO: dynamically create the user list
-            String[] userArray = {"User 1", "User 2"};
-            ArrayAdapter<String> userAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, userArray);
-            spinner.setAdapter(userAdapter);
-
-            // set dialog message
-            alertDialogBuilder
-                    .setCancelable(false)
-                    .setPositiveButton("Post",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,int id) {
-                                    //TODO: add a comment to the comments post
-                                }
-                            })
-                    .setNegativeButton("Cancel",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
-
-            // create alert dialog
-            AlertDialog alertDialog = alertDialogBuilder.create();
-
-            // show it
-            alertDialog.show();
-        }
-        else {
-            //TODO: dialogue box to change today date
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new Date()); //new Date gets the current date and time
-
-            //instantiate the date picker dialog and implement the onDateSet method (it is implemented by the today frag)
-            DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), R.style.DialogTheme ,this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-            datePickerDialog.show();
-        }
+        //instantiate the date picker dialog and implement the onDateSet method (it is implemented by the today frag)
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), R.style.DialogTheme, this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.show();
     }
 
     @Override
@@ -166,14 +117,14 @@ public class TodayFragment extends Fragment implements View.OnClickListener, Dat
 
     @Override
     public void onCommentsOpened(Post postPressed) {
-        //set the fab's src/icon to the "add a new comment" image
-        mFab.setImageResource(R.drawable.ic_comment);
+        //remove the date fab so that the comments fab can be seen
+        mFab.setVisibility(View.GONE);
 
     }
 
     @Override
     public void onReturnToPosts() {
-        //set the fab's src/icon back to the "change date" image
-        mFab.setImageResource(R.drawable.ic_date);
+        //bring back the date fab
+        mFab.setVisibility(View.VISIBLE);
     }
 }
