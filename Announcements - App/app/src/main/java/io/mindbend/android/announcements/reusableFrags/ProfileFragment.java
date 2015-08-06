@@ -33,6 +33,7 @@ import io.mindbend.android.announcements.User;
 public class ProfileFragment extends Fragment {
 
     private static final String TAG = "ProfileFragment";
+    //TEST: public static final String TODAY_POSTS_FRAG = "today_posts_frag";
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -113,6 +114,11 @@ public class ProfileFragment extends Fragment {
         Fragment contentFragment = OrgsGridFragment.newInstance("test", "test");
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.add(R.id.profile_content_framelayout, contentFragment).commit();
+
+        //Test to populate bottom frag with post cards
+//        Fragment postsFragment = PostsCardsFragment.newInstance("test", "test");
+//        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+//        transaction.add(R.id.profile_content_framelayout, postsFragment).addToBackStack(TODAY_POSTS_FRAG).commit();
 
         return v;
     }

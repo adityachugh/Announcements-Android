@@ -10,20 +10,20 @@ public class Organization implements Serializable{
     //this is used in the discover tab and on people's profiles.
     private String mObjectId;
     private String mTitle;
-    private String mBannerDetail;
     private String mDescription;
     private int mFollowers;
     private String mTag;
     private boolean mPrivateOrg;
+    private boolean mNewOrg;
 
-    public Organization(String objectId, String title, String bannerDetail, String description, int followers, String tag, boolean privateOrg){
+    public Organization(String objectId, String title, String description, int followers, String tag, boolean privateOrg, boolean newOrg){
         mObjectId = objectId;
         mTitle = title;
-        mBannerDetail = bannerDetail;
-        description = mDescription;
-        followers = mFollowers;
-        tag = mTag;
-        privateOrg = mPrivateOrg;
+        mDescription = description;
+        mFollowers = followers;
+        mTag = tag;
+        mPrivateOrg = privateOrg;
+        mNewOrg = newOrg;
     }
 
     public String getmObjectId() {
@@ -34,7 +34,23 @@ public class Organization implements Serializable{
         return mTitle;
     }
 
-    public String getmBannerDetail() {
-        return mBannerDetail;
+    public String getDescription() {
+        return mDescription;
+    }
+
+    public int getFollowers() {
+        return mFollowers;
+    }
+
+    public String getTag() {
+        return mTag;
+    }
+
+    public boolean isPrivateOrg(){
+        return mPrivateOrg;
+    }
+
+    public boolean isNewOrg(){
+        return mNewOrg;
     }
 }

@@ -1,7 +1,11 @@
 package io.mindbend.android.announcements.reusableFrags;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,7 +45,24 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
 
         @Override
         public void onClick(View v) {
+            //verify click registered
             Log.d(TAG, "Click registered!! " + getAdapterPosition());
+
+            //get clicked org
+            Organization orgClicked = mOrgs.get(getAdapterPosition());
+
+            //Create new instance of profile frag
+            Fragment profileFragment = ProfileFragment.newInstance("test", "test");
+
+            //Pass org to profileFrag
+            Bundle args = new Bundle();
+            args.putSerializable("selectedOrg", orgClicked);
+            profileFragment.setArguments(args);
+
+
+            //inflate profileFrag in framelayout
+//            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+//            transaction.add(R.id.you_framelayout, profileFragment).commit();
         }
     }
 
@@ -59,11 +80,14 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         Organization org = mOrgs.get(i);
         viewHolder.mTitle.setText(org.getmTitle());
-        String bannerDetail = org.getmBannerDetail();
-        if (bannerDetail.equals("NEW")) {
+        int orgFollowers = org.getFollowers();
+        if (org.isNewOrg()) {
             viewHolder.mDetail.setTextColor(mContext.getResources().getColor(R.color.accent));
+            viewHolder.mDetail.setText("NEW");
         }
-        viewHolder.mDetail.setText(bannerDetail);
+        else {
+            viewHolder.mDetail.setText(orgFollowers + " Followers");
+        }
     }
 
     @Override

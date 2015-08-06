@@ -68,14 +68,15 @@ public class OrgsGridFragment extends Fragment {
         //TODO: query posts from parse, pass into list, then set adapter
         List<Organization> orgs = new ArrayList<>();
 
-        //THE FOLLOWING IS A FAKE TEST POST
-        Organization testOrg1 = new Organization("test Id", "Software Dev Club", "NEW"); //TODO: change "NEW" to be a dynamically chosen banner
+        //ORG CONSTRUCTOR: String objectId, String title, String description, int followers, String tag, boolean privateOrg, boolean newOrg
+        //FAKE ORGANIZATIONS TO TEST
+        Organization testOrg1 = new Organization("test Id", "Software Dev Club", "Learn to make apps! Android! Fun!", 803, "#SoftwareDevClub", false, true); //TODO: change "NEW" to be a dynamically chosen banner
         orgs.add(testOrg1);
 
-        Organization testOrg2 = new Organization("test Id", "Math Club", "54 Followers"); //TODO: change "NEW" to be a dynamically chosen banner
+        Organization testOrg2 = new Organization("test Id", "Math Club", "We had that one meeting that one time", 11, "#MathClub", false, false); //TODO: change "NEW" to be a dynamically chosen banner
         orgs.add(testOrg2);
 
-        Organization testOrg3 = new Organization("test Id", "Mindbend Studio", "NEW"); //TODO: change "NEW" to be a dynamically chosen banner
+        Organization testOrg3 = new Organization("test Id", "Mindbend Studio", "The best dev firm hello@mindbend.io", 80, "#BendBoundaries", true, true); //TODO: change "NEW" to be a dynamically chosen banner
         orgs.add(testOrg3);
 
         //Initialize and set the adapter
