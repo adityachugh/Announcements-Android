@@ -47,7 +47,7 @@ public class Organization implements Serializable, Parcelable {
         return mObjectId;
     }
 
-    public String getmTitle() {
+    public String getTitle() {
         return mTitle;
     }
 

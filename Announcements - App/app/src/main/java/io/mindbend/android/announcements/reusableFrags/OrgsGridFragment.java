@@ -91,7 +91,7 @@ public class OrgsGridFragment extends Fragment implements OrgsGridAdapter.OrgInt
     @Override
     public void pressedOrg(Organization orgSelected) {
         //replace the current profile frag with new org profile frag, while adding it to a backstack
-        mOrgProfile = ProfileFragment.newInstance(null,null, orgSelected);
+        mOrgProfile = ProfileFragment.newInstance(null, orgSelected);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.orgs_grid_framelayout, mOrgProfile).addToBackStack(ORG_PROFILE_FRAG).commit();
         Log.d(TAG, "org has been pressed on discover page " + orgSelected.toString());

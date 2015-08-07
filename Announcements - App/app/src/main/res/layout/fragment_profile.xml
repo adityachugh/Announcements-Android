@@ -1,9 +1,9 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout android:id="@+id/profile_framelayout"
+             xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:app="http://schemas.android.com/apk/res-auto"
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             android:id="@+id/profile_framelayout"
              tools:context="io.mindbend.android.announcements.reusableFrags.ProfileFragment">
 
     <com.nirhart.parallaxscroll.views.ParallaxScrollView
@@ -52,6 +52,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
+                        android:text="Aditya Chugh"
                         android:textColor="@android:color/white"
                         android:textSize="26sp"/>
 
@@ -60,7 +61,7 @@
                         android:layout_height="5dp"/>
 
                     <TextView
-                        android:id="@+id/user_orgs_followed"
+                        android:id="@+id/follow_count"
                         style="@style/TextAppearance.AppCompat.Title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -71,30 +72,27 @@
                         android:layout_width="0dp"
                         android:layout_height="5dp"/>
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/profile_detail"
+                        style="@style/TextAppearance.AppCompat.Body1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:orientation="horizontal">
+                        android:text="Interested in getting paid gettin laid gatorade"
+                        android:textColor="@android:color/white"/>
 
-                        <TextView
-                            android:id="@+id/user_interests"
-                            style="@style/TextAppearance.AppCompat.Body1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@android:color/white"/>
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="5dp"/>
 
-                        <View
-                            android:layout_width="4dp"
-                            android:layout_height="0dp"/>
-
-                        <TextView
-                            android:id="@+id/user_category"
-                            style="@style/TextAppearance.AppCompat.Body1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@android:color/white"/>
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/profile_tag"
+                        style="@style/TextAppearance.AppCompat.Body1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="#Grade12"
+                        android:textColor="@android:color/white"/>
                 </LinearLayout>
             </com.avikhasija.materialannouncements.RatioLayout>
 

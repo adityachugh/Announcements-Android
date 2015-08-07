@@ -21,7 +21,7 @@ import io.mindbend.android.announcements.reusableFrags.ProfileFragment;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class YouFragment extends Fragment implements OrgsGridAdapter.OrgInteractionListener {
+public class YouFragment extends Fragment {
     private static final String TAG = "TAG";
 
     //NOTE: Opens child ProfileFragment, which has a grandchild for user followed organizations/ organization announcements
@@ -43,7 +43,7 @@ public class YouFragment extends Fragment implements OrgsGridAdapter.OrgInteract
         //FAKE USER FOR TESTING
         User testUser = new User("Aditya", "Chugh", "getting paper", "node.js", "#Grade12", 9);
 
-        Fragment profileFragment = ProfileFragment.newInstance(testUser, this, null, null);
+        Fragment profileFragment = ProfileFragment.newInstance(testUser, null);
 
         //inflate profileFrag in framelayout
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
@@ -52,9 +52,4 @@ public class YouFragment extends Fragment implements OrgsGridAdapter.OrgInteract
         return v;
     }
 
-    @Override
-    public void pressedOrg(Organization orgSelected) {
-        //TODO: do stuff
-        Log.d(TAG, "Org selected");
-    }
 }

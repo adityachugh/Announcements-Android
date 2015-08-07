@@ -62,7 +62,7 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         final Organization org = mOrgs.get(i);
 
-        viewHolder.mTitle.setText(org.getmTitle());
+        viewHolder.mTitle.setText(org.getTitle());
 
         int orgFollowers = org.getFollowers();
         if (org.isNewOrg()) {

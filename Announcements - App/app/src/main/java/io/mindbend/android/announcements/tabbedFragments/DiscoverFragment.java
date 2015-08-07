@@ -56,7 +56,7 @@ public class DiscoverFragment extends Fragment implements OrgsGridAdapter.OrgInt
         Organization testOrg3 = new Organization("test Id", "Mindbend Studio", "The best dev firm hello@mindbend.io", 80, "#BendBoundaries", true, true); //TODO: change "NEW" to be a dynamically chosen banner
         orgs.add(testOrg3);
 
-        Fragment orgsGridFrag = OrgsGridFragment.newInstance(orgs, this, this);
+        Fragment orgsGridFrag = OrgsGridFragment.newInstance(orgs, this);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.add(R.id.discover_framelayout, orgsGridFrag).commit();
         return v;
@@ -65,7 +65,7 @@ public class DiscoverFragment extends Fragment implements OrgsGridAdapter.OrgInt
     @Override
     public void pressedOrg(Organization orgSelected) {
         //replace the current profile frag with new org profile frag, while adding it to a backstack
-        mOrgProfile = ProfileFragment.newInstance(null, null, orgSelected, this);
+        mOrgProfile = ProfileFragment.newInstance(null, orgSelected);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.orgs_grid_framelayout, mOrgProfile).addToBackStack(ORG_PROFILE_FRAG).commit();
         Log.d(TAG, "org has been pressed on discover page " + orgSelected.toString());

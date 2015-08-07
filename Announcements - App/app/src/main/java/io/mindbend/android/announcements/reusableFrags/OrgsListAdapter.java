@@ -44,7 +44,7 @@ public class OrgsListAdapter extends RecyclerView.Adapter<OrgsListAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         final Organization org = mOrgs.get(i);
-        viewHolder.mName.setText(org.getmTitle());
+        viewHolder.mName.setText(org.getTitle());
 
         viewHolder.mOrgLayout.setOnClickListener(new View.OnClickListener() {
             @Override

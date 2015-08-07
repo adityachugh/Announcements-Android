@@ -44,14 +44,12 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_USER = "user";
     private static final String ARG_ORG = "org";
-    private static final String ARG_ORG_INTERFACE = "org_interface";
 
     private User mUser;
     private Organization mOrg;
     private OrgsGridAdapter mOrgsAdapter;
 
-    private PostsFeedAdapter.PostInteractionListener mPostListener;
-    private OrgsGridAdapter.OrgInteractionListener mOrgListener;
+    private OrgsGridAdapter.OrgInteractionListener mOrgListener = this;
 
 
     /**
@@ -63,7 +61,7 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
      * @return A new instance of fragment ProfileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(User user, OrgsGridAdapter.OrgInteractionListener orgListener, Organization org) {
+    public static ProfileFragment newInstance(User user, Organization org) {
 
         //***NOTE*** : one of user or org must be null
 
@@ -71,7 +69,6 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
         Bundle args = new Bundle();
         args.putSerializable(ARG_USER, user);
         args.putSerializable(ARG_ORG, org);
-        args.putSerializable(ARG_ORG_INTERFACE, orgListener);
         fragment.setArguments(args);
         return fragment;
     }
@@ -86,7 +83,6 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
         if (getArguments() != null) {
             mUser = (User) getArguments().getSerializable(ARG_USER);
             mOrg = (Organization) getArguments().getSerializable(ARG_ORG);
-            mOrgListener = (OrgsGridAdapter.OrgInteractionListener)getArguments().getSerializable(ARG_ORG_INTERFACE);
         }
     }
 
@@ -98,18 +94,18 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
 
         //UI elements to be filled
         TextView name = (TextView) v.findViewById(R.id.profile_name);
-        TextView orgsFollowed = (TextView) v.findViewById(R.id.user_orgs_followed);
-        TextView interests = (TextView) v.findViewById(R.id.user_interests);
-        TextView category = (TextView) v.findViewById(R.id.user_category);
+        TextView followCount = (TextView) v.findViewById(R.id.follow_count);
+        TextView profileDetail = (TextView) v.findViewById(R.id.profile_detail);
+        TextView profileTag = (TextView) v.findViewById(R.id.profile_tag);
 
         //TODO: branch based on whether user or org is null
 
         //Adapter not necessary, few elements on page
         if (mUser != null) {
             name.setText(mUser.getName());
-            orgsFollowed.setText(mUser.getNumberOfOrganizationsFollowed());
-            interests.setText(mUser.getInterests());
-            category.setText(mUser.getUserCategory());
+            followCount.setText(mUser.getNumberOfOrganizationsFollowed());
+            profileDetail.setText(mUser.getInterests());
+            profileTag.setText(mUser.getUserCategory());
 
             //Fill bottom fragment with discover grid if user(temporary)
             //TODO: Fetch followed orgs OR organization's announcements (generic fragment)
@@ -126,9 +122,25 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
             Organization testOrg3 = new Organization("test Id", "Mindbend Studio", "The best dev firm hello@mindbend.io", 80, "#BendBoundaries", true, true); //TODO: change "NEW" to be a dynamically chosen banner
             orgs.add(testOrg3);
 
+            //add grid frag to bottom of user profile
             Fragment contentFragment = OrgsGridFragment.newInstance(orgs, mOrgListener);
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
             transaction.add(R.id.profile_content_framelayout, contentFragment).commit();
+        }
+
+        if(mOrg != null){
+            if (mOrg.isPrivateOrg()){
+                name.setText(mOrg.getTitle() + " [PRIVATE]");
+                //TODO: add imageview of lock to indicate private
+            }
+            else {
+                name.setText(mOrg.getTitle());
+            }
+            followCount.setText(mOrg.getFollowers() + " Followers");
+            profileDetail.setText(mOrg.getDescription());
+            profileTag.setText(mOrg.getTag());
+
+
         }
 
         //Get scrollview, scroll to top
@@ -158,7 +170,7 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
     public void pressedOrg(Organization orgSelected) {
 
 //        replace the current profile frag with new org profile frag, while adding it to a backstack
-        mOrgProfile = ProfileFragment.newInstance(null, null, orgSelected);
+        mOrgProfile = ProfileFragment.newInstance(null, orgSelected);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.profile_framelayout, mOrgProfile).addToBackStack(ORG_PROFILE_FRAG).commit();
 
