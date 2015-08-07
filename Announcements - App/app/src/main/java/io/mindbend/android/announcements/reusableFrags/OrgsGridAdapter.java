@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.util.List;
 
 import io.mindbend.android.announcements.Organization;
@@ -48,7 +49,7 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
     //TODO: create private fields for the list
     private List<Organization> mOrgs;
     private Context mContext;
-    private static OrgInteractionListener mOrgListener;
+    private OrgInteractionListener mOrgListener;
 
 
     @Override
@@ -86,10 +87,11 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
         return mOrgs.size();
     }
 
-    public OrgsGridAdapter(Context context, List<Organization> orgs) {
+    public OrgsGridAdapter(Context context, List<Organization> orgs, OrgInteractionListener listener) {
         //save the mPosts private field as what is passed in
         mContext = context;
         mOrgs = orgs;
+        mOrgListener = listener;
     }
 
     @Override
@@ -103,11 +105,7 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
         mOrgListener = null;
     }
 
-    public interface OrgInteractionListener {
+    public interface OrgInteractionListener extends Serializable{
         void pressedOrg (Organization orgSelected);
-    }
-
-    public static void setListener(OrgInteractionListener mOrgListener) {
-        OrgsGridAdapter.mOrgListener = mOrgListener;
     }
 }
