@@ -79,6 +79,12 @@ public class OnboardingActivity extends ActionBarActivity {
     }
 
     @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+//        the back button does not do anything on this activity to PREVENT users who have signed out from returning to the tabbed activity.
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_onboarding, menu);

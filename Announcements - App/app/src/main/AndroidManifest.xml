@@ -28,6 +28,10 @@
             android:name=".onboardingAndSignupin.SignInUpActivity"
             android:label="@string/title_activity_sign_in_up" >
         </activity>
+        <activity
+            android:name=".MoreActivity"
+            android:label="@string/title_activity_more" >
+        </activity>
     </application>
 
 </manifest>
