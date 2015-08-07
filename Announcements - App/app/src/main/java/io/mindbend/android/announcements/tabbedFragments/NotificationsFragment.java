@@ -24,6 +24,7 @@ public class NotificationsFragment extends Fragment implements NotifsListAdapter
 
 
     private static final String NOTIFS_FRAG = "notifications_list_fragment";
+    private Fragment mNotifsList;
 
     public NotificationsFragment() {
         // Required empty public constructor
@@ -40,10 +41,14 @@ public class NotificationsFragment extends Fragment implements NotifsListAdapter
         //the following is test data
         ArrayList<Notification> testNotifs = new ArrayList<>();
 
-        Fragment notifsList = ListFragment.newInstance(null, null, testNotifs, this, null, null);
+        mNotifsList = ListFragment.newInstance(null, null, testNotifs, this, null, null);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.notifications_container, notifsList).addToBackStack(NOTIFS_FRAG).commit();
+        transaction.add(R.id.notifications_container, mNotifsList).addToBackStack(NOTIFS_FRAG).commit();
         return v;
+    }
+
+    public Fragment getmNotifsList() {
+        return mNotifsList;
     }
 
     @Override

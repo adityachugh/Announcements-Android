@@ -28,11 +28,11 @@
             android:text="@string/app_name"/>
     </LinearLayout>
 
-    <HorizontalScrollView
-        android:id="@+id/onboarding_scrollview"
+    <ViewPager
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </HorizontalScrollView>
+        android:layout_height="wrap_content"
+        android:id="@+id/onboarding_viewpager">
+    </ViewPager>
 
     <LinearLayout
         android:layout_alignParentBottom="true"

@@ -17,6 +17,7 @@ import io.mindbend.android.announcements.reusableFrags.ProfileFragment;
  * A simple {@link Fragment} subclass.
  */
 public class YouFragment extends Fragment {
+    private Fragment mProfileFragment;
 
     //NOTE: Opens child ProfileFragment, which has a grandchild for user followed organizations/ organization announcements
     //Makes Profile fragment generic (useable by both users and organizations)
@@ -37,14 +38,16 @@ public class YouFragment extends Fragment {
         //FAKE USER FOR TESTING
         User testUser = new User("Aditya", "Chugh", "getting paper", "node.js", "#Grade12", 9);
 
-        Fragment profileFragment = ProfileFragment.newInstance(testUser, null);
+        mProfileFragment = ProfileFragment.newInstance(testUser, null);
 
         //inflate profileFrag in framelayout
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.you_framelayout, profileFragment).commit();
+        transaction.add(R.id.you_framelayout, mProfileFragment).commit();
 
         return v;
     }
 
-
+    public Fragment getmProfileFragment() {
+        return mProfileFragment;
+    }
 }

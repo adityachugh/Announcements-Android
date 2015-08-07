@@ -134,6 +134,19 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
                 if (((PostOverlayFragment)mTodayFragment.getmPostsOverlayFragment()).isOnComments()) {
                     ((PostOverlayFragment)mTodayFragment.getmPostsOverlayFragment()).returnFromComments();
                 }
+                break;
+            case 1:
+                mNotificationsFragment.getmNotifsList().getChildFragmentManager().popBackStack();
+                break;
+            case 2:
+                mDiscoverFragment.getmOrgsGridFrag().getChildFragmentManager().popBackStack();
+                break;
+            case 3:
+                mYouFragment.getmProfileFragment().getChildFragmentManager().popBackStack();
+                break;
+            case 4:
+                //TODO: popBackStack of admin frag
+                break;
         }
     }
 

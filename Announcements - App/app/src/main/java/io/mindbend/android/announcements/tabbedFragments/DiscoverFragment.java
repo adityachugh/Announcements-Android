@@ -19,6 +19,8 @@ import io.mindbend.android.announcements.reusableFrags.PostsCardsFragment;
 public class DiscoverFragment extends Fragment {
 
 
+    private Fragment mOrgsGridFrag;
+
     public DiscoverFragment() {
         // Required empty public constructor
     }
@@ -31,11 +33,13 @@ public class DiscoverFragment extends Fragment {
         View v =inflater.inflate(R.layout.fragment_discover, container, false);
         setRetainInstance(true);
         //TODO: query discover_clubs data from Parse, then pass that data into an OrgsGridFragment that will be created using the OrgsGridFragment.NewInstance static method
-        Fragment orgsGridFrag = OrgsGridFragment.newInstance("test", "test");
+        mOrgsGridFrag = OrgsGridFragment.newInstance("test", "test");
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.discover_framelayout, orgsGridFrag).commit();
+        transaction.add(R.id.discover_framelayout, mOrgsGridFrag).commit();
         return v;
     }
 
-
+    public Fragment getmOrgsGridFrag() {
+        return mOrgsGridFrag;
+    }
 }
