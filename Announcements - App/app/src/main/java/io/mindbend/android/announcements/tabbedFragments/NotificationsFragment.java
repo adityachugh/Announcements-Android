@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ import io.mindbend.android.announcements.reusableFrags.NotifsListAdapter;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NotificationsFragment extends Fragment implements NotifsListAdapter.NotifInteractionListener {
+public class NotificationsFragment extends Fragment implements NotifsListAdapter.NotifInteractionListener, Serializable {
 
 
     private static final String NOTIFS_FRAG = "notifications_list_fragment";
