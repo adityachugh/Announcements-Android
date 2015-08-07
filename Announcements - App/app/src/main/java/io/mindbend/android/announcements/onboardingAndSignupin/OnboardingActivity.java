@@ -146,9 +146,9 @@ public class OnboardingActivity extends ActionBarActivity implements ViewPager.O
         public android.support.v4.app.Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return new OnboardingInfoCardFragment(info here);
+                    return OnboardingInfoCardFragment.newInstance("TEXt", "TEXT 1");
                 case 1:
-                    return new OnboardingInfoCardFragment(more_info here);
+                    return OnboardingInfoCardFragment.newInstance("TEXt", "TEXT 2");
             }
             return null;
         }

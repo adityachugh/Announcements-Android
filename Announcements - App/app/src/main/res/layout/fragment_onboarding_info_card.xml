@@ -40,7 +40,9 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/accent"/>
+                    android:background="@color/accent"
+                    android:src="@color/accent"
+                    android:id="@+id/info_card_image"/>
             </com.avikhasija.materialannouncements.RatioLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
