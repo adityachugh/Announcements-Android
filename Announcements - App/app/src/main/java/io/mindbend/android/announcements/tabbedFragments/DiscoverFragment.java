@@ -31,6 +31,8 @@ public class DiscoverFragment extends Fragment implements OrgsGridAdapter.OrgInt
     private static final String ORG_PROFILE_FRAG = "ORG_PROFILE_FRAGMENT";
     private ProfileFragment mOrgProfile;
 
+    private Fragment mOrgsGridFrag;
+
     public DiscoverFragment() {
         // Required empty public constructor
     }
@@ -43,6 +45,7 @@ public class DiscoverFragment extends Fragment implements OrgsGridAdapter.OrgInt
         View v =inflater.inflate(R.layout.fragment_discover, container, false);
         setRetainInstance(true);
         //TODO: query discover_clubs data from Parse, then pass that data into an OrgsGridFragment that will be created using the OrgsGridFragment.NewInstance static method
+
         ArrayList<Organization> orgs = new ArrayList<>();
 
         //ORG CONSTRUCTOR: String objectId, String title, String description, int followers, String tag, boolean privateOrg, boolean newOrg
@@ -56,9 +59,9 @@ public class DiscoverFragment extends Fragment implements OrgsGridAdapter.OrgInt
         Organization testOrg3 = new Organization("test Id", "Mindbend Studio", "The best dev firm hello@mindbend.io", 80, "#BendBoundaries", true, true); //TODO: change "NEW" to be a dynamically chosen banner
         orgs.add(testOrg3);
 
-        Fragment orgsGridFrag = OrgsGridFragment.newInstance(orgs, this);
+        mOrgsGridFrag = OrgsGridFragment.newInstance(orgs, this);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.discover_framelayout, orgsGridFrag).commit();
+        transaction.add(R.id.discover_framelayout, mOrgsGridFrag).commit();
         return v;
     }
 
@@ -75,5 +78,8 @@ public class DiscoverFragment extends Fragment implements OrgsGridAdapter.OrgInt
     public void pressedPost(Post postPressed) {
         //TODO: do stuff, although switching to comments frag is already handled
         Log.d(TAG, "post pressed");
+    }
+    public Fragment getmOrgsGridFrag() {
+        return mOrgsGridFrag;
     }
 }

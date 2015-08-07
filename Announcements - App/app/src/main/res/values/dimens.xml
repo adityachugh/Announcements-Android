@@ -27,4 +27,5 @@
     <dimen name="fab_elevation">8dp</dimen>
     <dimen name="dialog_material_title_size">20sp</dimen>
     <dimen name="list_text_size">16sp</dimen>
+    <dimen name="more_logo_size">320dp</dimen>
 </resources>

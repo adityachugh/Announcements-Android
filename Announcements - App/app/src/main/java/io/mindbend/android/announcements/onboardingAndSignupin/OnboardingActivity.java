@@ -1,7 +1,12 @@
 package io.mindbend.android.announcements.onboardingAndSignupin;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,12 +14,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ViewSwitcher;
 
 import io.mindbend.android.announcements.App;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.reusableFrags.OnboardingInfoCardFragment;
 
 
-public class OnboardingActivity extends ActionBarActivity {
+public class OnboardingActivity extends ActionBarActivity implements ViewPager.OnPageChangeListener{
 
     //Tells SignInUp activity which button has been clicked
     public static final String EXTRA = "WhichButton";
@@ -64,6 +71,10 @@ public class OnboardingActivity extends ActionBarActivity {
             }
         });
 
+        ViewPager viewPager = (ViewPager)findViewById(R.id.onboarding_viewpager);
+        PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(adapter);
+        viewPager.setOnPageChangeListener(this);
 
     }
 
@@ -76,6 +87,27 @@ public class OnboardingActivity extends ActionBarActivity {
         else {
             startActivity(i);
         }
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+//        the back button does not do anything on this activity to PREVENT users who have signed out from returning to the tabbed activity.
     }
 
     @Override
@@ -98,5 +130,27 @@ public class OnboardingActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private class PagerAdapter extends FragmentStatePagerAdapter {
+        PagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public android.support.v4.app.Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    return OnboardingInfoCardFragment.newInstance("TEXt", "TEXT 1");
+                case 1:
+                    return OnboardingInfoCardFragment.newInstance("TEXt", "TEXT 2");
+            }
+            return null;
+        }
     }
 }
