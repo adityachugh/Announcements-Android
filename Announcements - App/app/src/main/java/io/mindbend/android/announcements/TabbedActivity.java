@@ -1,5 +1,6 @@
 package io.mindbend.android.announcements;
 
+import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -117,7 +118,9 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_more) {
+            Intent i = new Intent(this, MoreActivity.class);
+            startActivity(i);
             return true;
         }
 
