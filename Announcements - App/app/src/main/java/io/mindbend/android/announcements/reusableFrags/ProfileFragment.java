@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.mindbend.android.announcements.Organization;
+import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.tabbedFragments.TodayFragment;
@@ -31,7 +32,7 @@ import io.mindbend.android.announcements.tabbedFragments.TodayFragment;
  * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInteractionListener {
+public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInteractionListener, PostOverlayFragment.PostsOverlayListener {
 
     private static final String TAG = "ProfileFragment";
 
@@ -50,6 +51,7 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
     private OrgsGridAdapter mOrgsAdapter;
 
     private OrgsGridAdapter.OrgInteractionListener mOrgListener = this;
+    private PostOverlayFragment.PostsOverlayListener mPostsOverlayListener = this;
 
 
     /**
@@ -123,9 +125,9 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
             orgs.add(testOrg3);
 
             //add grid frag to bottom of user profile
-            Fragment contentFragment = OrgsGridFragment.newInstance(orgs, mOrgListener);
+            Fragment userOrgsFollowedFragment = OrgsGridFragment.newInstance(orgs, mOrgListener);
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-            transaction.add(R.id.profile_content_framelayout, contentFragment).commit();
+            transaction.add(R.id.profile_content_framelayout, userOrgsFollowedFragment).commit();
         }
 
         if(mOrg != null){
@@ -140,7 +142,25 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
             profileDetail.setText(mOrg.getDescription());
             profileTag.setText(mOrg.getTag());
 
+            if (mOrg.isPrivateOrg() == false){
 
+                //TODO: query org's posts from parse, populate arraylist of posts
+                ArrayList<Post> orgPosts = new ArrayList<>();
+                //THE FOLLOWING ARE FAKE TEST POSTS
+                Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio");
+                orgPosts.add(testPost1);
+
+                Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio");
+                orgPosts.add(testPost2);
+
+                Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio");
+                orgPosts.add(testPost3);
+
+                //add posts frag to bottom of org profile
+                Fragment orgPostsFragment = PostOverlayFragment.newInstance(orgPosts, mPostsOverlayListener);
+                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                transaction.add(R.id.profile_content_framelayout, orgPostsFragment).commit();
+            }
         }
 
         //Get scrollview, scroll to top
@@ -175,6 +195,15 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
         transaction.replace(R.id.profile_framelayout, mOrgProfile).addToBackStack(ORG_PROFILE_FRAG).commit();
 
         Log.d(TAG, "org has been pressed on profile page " + orgSelected.toString());
+    }
 
+    @Override
+    public void onReturnToPosts() {
+        //required empty method for post overlay listener
+    }
+
+    @Override
+    public void onCommentsOpened(Post postPressed) {
+        //required empty method for post overlay listener
     }
 }
