@@ -44,7 +44,6 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_USER = "user";
     private static final String ARG_ORG = "org";
-    private static final String ARG_USER_INTERFACE = "user_interface";
     private static final String ARG_ORG_INTERFACE = "org_interface";
 
     private User mUser;
@@ -64,15 +63,13 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
      * @return A new instance of fragment ProfileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(User user, OrgsGridAdapter.OrgInteractionListener orgListener,
-                                              Organization org, PostsFeedAdapter.PostInteractionListener postListener) {
+    public static ProfileFragment newInstance(User user, OrgsGridAdapter.OrgInteractionListener orgListener, Organization org) {
 
         //***NOTE*** : one of user or org must be null
 
         ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_USER, user);
-        args.putSerializable(ARG_USER_INTERFACE, postListener);
         args.putSerializable(ARG_ORG, org);
         args.putSerializable(ARG_ORG_INTERFACE, orgListener);
         fragment.setArguments(args);
@@ -89,7 +86,6 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
         if (getArguments() != null) {
             mUser = (User) getArguments().getSerializable(ARG_USER);
             mOrg = (Organization) getArguments().getSerializable(ARG_ORG);
-            mPostListener = (PostsFeedAdapter.PostInteractionListener)getArguments().getSerializable(ARG_USER_INTERFACE);
             mOrgListener = (OrgsGridAdapter.OrgInteractionListener)getArguments().getSerializable(ARG_ORG_INTERFACE);
         }
     }
@@ -130,7 +126,7 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
             Organization testOrg3 = new Organization("test Id", "Mindbend Studio", "The best dev firm hello@mindbend.io", 80, "#BendBoundaries", true, true); //TODO: change "NEW" to be a dynamically chosen banner
             orgs.add(testOrg3);
 
-            Fragment contentFragment = OrgsGridFragment.newInstance(orgs, mOrgListener, mPostListener);
+            Fragment contentFragment = OrgsGridFragment.newInstance(orgs, mOrgListener);
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
             transaction.add(R.id.profile_content_framelayout, contentFragment).commit();
         }
@@ -162,7 +158,7 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
     public void pressedOrg(Organization orgSelected) {
 
 //        replace the current profile frag with new org profile frag, while adding it to a backstack
-        mOrgProfile = ProfileFragment.newInstance(null, null, orgSelected, mPostListener);
+        mOrgProfile = ProfileFragment.newInstance(null, null, orgSelected);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.profile_framelayout, mOrgProfile).addToBackStack(ORG_PROFILE_FRAG).commit();
 

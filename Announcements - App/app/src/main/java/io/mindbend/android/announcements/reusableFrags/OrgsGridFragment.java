@@ -27,11 +27,9 @@ public class OrgsGridFragment extends Fragment implements OrgsGridAdapter.OrgInt
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_LISTENER = "orgs_listener";
     private static final String ARG_ORGS_LIST = "orgs";
-    private static final String ARG_POST_LISTENER = "post_listener";
 
     // TODO: Rename and change types of parameters
     private OrgsGridAdapter.OrgInteractionListener mOrgsListener;
-    private PostsFeedAdapter.PostInteractionListener mPostsListener;
     private ArrayList<Organization> mOrgs;
     private OrgsGridAdapter mOrgsAdapter;
 
@@ -42,12 +40,11 @@ public class OrgsGridFragment extends Fragment implements OrgsGridAdapter.OrgInt
      * @return A new instance of fragment OrgsGridFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static OrgsGridFragment newInstance(ArrayList<Organization> orgs, OrgsGridAdapter.OrgInteractionListener orgListener, PostsFeedAdapter.PostInteractionListener postListener) {
+    public static OrgsGridFragment newInstance(ArrayList<Organization> orgs, OrgsGridAdapter.OrgInteractionListener orgListener) {
         OrgsGridFragment fragment = new OrgsGridFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_ORGS_LIST, orgs);
         args.putSerializable(ARG_LISTENER, orgListener);
-        args.putSerializable(ARG_POST_LISTENER, postListener);
         fragment.setArguments(args);
         return fragment;
     }
@@ -62,7 +59,6 @@ public class OrgsGridFragment extends Fragment implements OrgsGridAdapter.OrgInt
         if (getArguments() != null) {
             mOrgs = getArguments().getParcelableArrayList(ARG_ORGS_LIST);
             mOrgsListener = (OrgsGridAdapter.OrgInteractionListener)getArguments().getSerializable(ARG_LISTENER);
-            mPostsListener = (PostsFeedAdapter.PostInteractionListener)getArguments().getSerializable(ARG_POST_LISTENER);
         }
     }
 
@@ -95,7 +91,7 @@ public class OrgsGridFragment extends Fragment implements OrgsGridAdapter.OrgInt
     @Override
     public void pressedOrg(Organization orgSelected) {
         //replace the current profile frag with new org profile frag, while adding it to a backstack
-        mOrgProfile = ProfileFragment.newInstance(null,null, orgSelected, mPostsListener);
+        mOrgProfile = ProfileFragment.newInstance(null,null, orgSelected);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.orgs_grid_framelayout, mOrgProfile).addToBackStack(ORG_PROFILE_FRAG).commit();
         Log.d(TAG, "org has been pressed on discover page " + orgSelected.toString());
