@@ -24,6 +24,7 @@ import java.util.List;
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
+import io.mindbend.android.announcements.tabbedFragments.TodayFragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -91,7 +92,7 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
 
         //set the listener for OrgsGridAdapter in order to profile page for an organization
-        OrgsGridAdapter.setListener(this);
+//        OrgsGridAdapter.setListener(this);
 
         //UI elements to be filled
         TextView name = (TextView) v.findViewById(R.id.profile_name);
@@ -110,9 +111,9 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
 
             //Fill bottom fragment with discover grid if user(temporary)
             //TODO: Fetch followed orgs OR organization's announcements (generic fragment)
-            Fragment contentFragment = OrgsGridFragment.newInstance("test", "test");
-            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-            transaction.add(R.id.profile_content_framelayout, contentFragment).commit();
+//            Fragment contentFragment = OrgsGridFragment.newInstance("test", "test");
+//            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+//            transaction.add(R.id.profile_content_framelayout, contentFragment).commit();
         }
 
         //Get scrollview, scroll to top
@@ -141,12 +142,12 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
     @Override
     public void pressedOrg(Organization orgSelected) {
 
-        //replace the current profile frag with new org profile frag, while adding it to a backstack
-        mOrgProfile = ProfileFragment.newInstance(null, orgSelected);
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.profile_framelayout, mOrgProfile).addToBackStack(ORG_PROFILE_FRAG).commit();
-
-        Log.d(TAG, "org has been pressed on profile page " + orgSelected.toString());
+//        //replace the current profile frag with new org profile frag, while adding it to a backstack
+//        mOrgProfile = ProfileFragment.newInstance(null, orgSelected);
+//        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+//        transaction.replace(R.id.profile_framelayout, mOrgProfile).addToBackStack(ORG_PROFILE_FRAG).commit();
+//
+//        Log.d(TAG, "org has been pressed on profile page " + orgSelected.toString());
 
     }
 }
