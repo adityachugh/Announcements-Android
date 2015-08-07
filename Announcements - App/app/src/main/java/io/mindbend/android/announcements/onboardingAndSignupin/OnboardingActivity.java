@@ -81,7 +81,7 @@ public class OnboardingActivity extends ActionBarActivity {
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();
-//        the back button does not do anything on this activity to PREVENT users who have signed out from returning to the tabbed activity. 
+//        the back button does not do anything on this activity to PREVENT users who have signed out from returning to the tabbed activity.
     }
 
     @Override

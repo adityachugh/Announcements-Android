@@ -18,6 +18,14 @@
             android:scaleType="centerCrop"
             android:src="@drawable/mindbend_logo"/>
     </com.avikhasija.materialannouncements.RatioLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mindbend Studio © 2015"
+        android:layout_gravity="center_horizontal"
+        android:textSize="@dimen/list_text_size"
+        android:layout_marginBottom="@dimen/card_inner_margin"/>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

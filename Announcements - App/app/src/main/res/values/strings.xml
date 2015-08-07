@@ -27,7 +27,17 @@
     <string name="send_to">Share this post</string>
     <string name="more_activity_selected">More</string>
     <string name="title_activity_more">MoreActivity</string>
+
+
     <string name="more_report_bug">Report a Bug</string>
     <string name="more_review_app">Review App on Play Store</string>
     <string name="more_sign_out">Sign Out</string>
+    <string-array name="report_bug_emails">
+        <item>hello@mindbend.io</item>
+        <item>akshay@mindbend.io</item>
+        <item>aditya@mindbend.io</item>
+        <item>avik@mindbend.io</item>
+    </string-array>
+    <string name="report_bug_email_subject">I found a bug!</string>
+    <string name="report_bug_email_text">Please detail your bug here...</string>
 </resources>
