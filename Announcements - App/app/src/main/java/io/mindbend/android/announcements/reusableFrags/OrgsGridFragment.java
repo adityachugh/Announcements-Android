@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +18,14 @@ import java.util.List;
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
 
-public class OrgsGridFragment extends Fragment {
+public class OrgsGridFragment extends Fragment implements OrgsGridAdapter.OrgInteractionListener{
+
+    private static final String TAG = "OrgsGridFragment";
+
+    public static final String ORG_PROFILE_FRAG = "org_profile_frag";
+
+    private Fragment mOrgProfile;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -63,6 +72,9 @@ public class OrgsGridFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_orgs_grid, container, false);
+
+        OrgsGridAdapter.setListener(this);
+
         RecyclerView recyclerView = (RecyclerView)v.findViewById(R.id.orgs_recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         //TODO: query posts from parse, pass into list, then set adapter
@@ -96,4 +108,13 @@ public class OrgsGridFragment extends Fragment {
         super.onDetach();
     }
 
+    @Override
+    public void pressedOrg(Organization orgSelected) {
+        //replace the current profile frag with new org profile frag, while adding it to a backstack
+        mOrgProfile = ProfileFragment.newInstance(null, orgSelected);
+        FragmentTransaction transaction = getParentFragment().getFragmentManager().beginTransaction();
+        transaction.replace(R.id.orgs_grid_framelayout, mOrgProfile).addToBackStack(ORG_PROFILE_FRAG).commit();
+
+        Log.d(TAG, "org has been pressed on discover page " + orgSelected.toString());
+    }
 }
