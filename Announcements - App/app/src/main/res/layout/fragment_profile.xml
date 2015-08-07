@@ -104,8 +104,6 @@
                 android:layout_below="@id/user_profile_header"
                 android:background="@android:color/white">
             </FrameLayout>
-
-
         </RelativeLayout>
     </com.nirhart.parallaxscroll.views.ParallaxScrollView>
 </FrameLayout>
