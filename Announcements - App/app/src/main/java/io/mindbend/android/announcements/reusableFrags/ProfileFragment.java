@@ -135,17 +135,18 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
     @Override
     public void onDetach() {
         super.onDetach();
+
     }
 
     @Override
     public void pressedOrg(Organization orgSelected) {
 
-//        //replace the current profile frag with new org profile frag, while adding it to a backstack
+        //replace the current profile frag with new org profile frag, while adding it to a backstack
         mOrgProfile = ProfileFragment.newInstance(null, orgSelected);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.profile_framelayout, mOrgProfile).addToBackStack(ORG_PROFILE_FRAG).commit();
 
-        Log.d(TAG, "org has been pressed " + orgSelected.toString());
+        Log.d(TAG, "org has been pressed on profile page " + orgSelected.toString());
 
     }
 }

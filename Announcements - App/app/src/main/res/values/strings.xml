@@ -22,5 +22,7 @@
     <string name="onboaring_to_signup_animation">onboarding_logo_and_title_to_signupin</string>
     <string name="post_comment_button">Comment</string>
     <string name="post_share_button">Share</string>
-    <string name="add_comment_dialog_subtext">Commenting on %1$s\'s post.</string>
+    <string name="add_comment_dialog_subtext">You are about to comment on this post.</string>
+    <string name="sharing_post">Check out this announcement by %1$s: %2$s</string>
+    <string name="send_to">Share this post</string>
 </resources>

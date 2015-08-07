@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/card_inner_margin"
+    android:paddingRight="@dimen/card_inner_margin"
+    android:paddingTop="@dimen/card_outer_margin"
+    android:paddingBottom="@dimen/card_outer_margin"
+    android:background="@android:color/white"
+    android:id="@+id/user_list">
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="@dimen/circle_avatar_size"
+        android:layout_height="@dimen/circle_avatar_size"
+        android:src="@color/primary"
+        android:id="@+id/user_list_image"/>
+    <TextView
+        android:layout_marginLeft="@dimen/card_outer_margin"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:text="John Cena"
+        android:layout_gravity="center_vertical"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textSize="@dimen/list_text_size"
+        android:id="@+id/user_name"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/ic_chevron_grey"
+        android:tint="@color/text_tertiary"/>
+</LinearLayout>

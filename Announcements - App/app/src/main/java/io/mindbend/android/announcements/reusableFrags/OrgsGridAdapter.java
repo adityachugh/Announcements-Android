@@ -62,6 +62,7 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
         final Organization org = mOrgs.get(i);
 
         viewHolder.mTitle.setText(org.getmTitle());
+
         int orgFollowers = org.getFollowers();
         if (org.isNewOrg()) {
             viewHolder.mDetail.setTextColor(mContext.getResources().getColor(R.color.accent));

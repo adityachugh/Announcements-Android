@@ -2,6 +2,8 @@ package io.mindbend.android.announcements.reusableFrags;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,29 +22,27 @@ import io.mindbend.android.announcements.R;
 public class PostsCardsFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_POSTS = "posts";
+    private static final String ARG_POSTS_LISTENER = "post_touch_listener";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private List<Post> mPosts;
     private PostsFeedAdapter mPostFeedAdapter;
+    private PostsFeedAdapter.PostInteractionListener mPostTouchListener;
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param posts a bundle containing a List<Post> of al posts
      * @return A new instance of fragment PostsCardsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PostsCardsFragment newInstance(String param1, String param2) {
-        //TODO: in the future, the arguments passed in should be a query of the posts THEMSELVES.
+    public static PostsCardsFragment newInstance(ArrayList<Post> posts, PostsFeedAdapter.PostInteractionListener postTouchListener) {
         PostsCardsFragment fragment = new PostsCardsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putParcelableArrayList(ARG_POSTS, posts);
+        args.putSerializable(ARG_POSTS_LISTENER, postTouchListener);
         fragment.setArguments(args);
         return fragment;
     }
@@ -55,8 +55,8 @@ public class PostsCardsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mPosts = getArguments().getParcelableArrayList(ARG_POSTS);
+            mPostTouchListener = (PostsFeedAdapter.PostInteractionListener)getArguments().getSerializable(ARG_POSTS_LISTENER);
         }
     }
 
@@ -68,21 +68,9 @@ public class PostsCardsFragment extends Fragment {
 
         RecyclerView recyclerView = (RecyclerView)v.findViewById(R.id.posts_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        //TODO: query posts from parse, pass into list, then set adapter
-        List<Post> posts = new ArrayList<>();
-
-        //THE FOLLOWING ARE FAKE TEST POSTS
-        Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio");
-        posts.add(testPost1);
-
-        Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio");
-        posts.add(testPost2);
-
-        Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio");
-        posts.add(testPost3);
 
         //Initialize and set the adapter
-        mPostFeedAdapter = new PostsFeedAdapter(getActivity(), posts);
+        mPostFeedAdapter = new PostsFeedAdapter(getActivity(), mPosts, mPostTouchListener);
         recyclerView.setAdapter(mPostFeedAdapter);
 
         //the animation for the recycler view to slide in from the bottom of the view

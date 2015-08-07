@@ -1,11 +1,14 @@
 package io.mindbend.android.announcements;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 /**
  * Created by Avik Hasija on 8/3/2015.
  */
-public class User implements Serializable{
+public class User implements Serializable, Parcelable{
     //Class contains details about a user, to be used in various places
     //Current content reflects what is needed for profile page found in "you" tab
 
@@ -32,6 +35,15 @@ public class User implements Serializable{
         mNumberOfOrganizationsFollowed = numberOfOrganizationsFollowed;
     }
 
+    public  User (Parcel in){
+        mFirstName = in.readString();
+        mLastName = in.readString();
+        mInterestOne = in.readString();
+        mInterestTwo = in.readString();
+        mUserCategory = in.readString();
+        mNumberOfOrganizationsFollowed = in.readInt();
+    }
+
     public String getName() {
         //Returns full name
         return (mFirstName + " " + mLastName);
@@ -47,7 +59,33 @@ public class User implements Serializable{
         return (mNumberOfOrganizationsFollowed + " Groups");
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mFirstName);
+        dest.writeString(mLastName);
+        dest.writeString(mInterestOne);
+        dest.writeString(mInterestTwo);
+        dest.writeString(mUserCategory);
+        dest.writeInt(mNumberOfOrganizationsFollowed);
+    }
+
     public String getUserCategory() {
         return mUserCategory;
     }
+
+    public static final Parcelable.Creator<User> CREATOR
+            = new Parcelable.Creator<User>() {
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 }
