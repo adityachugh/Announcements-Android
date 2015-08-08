@@ -7,13 +7,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.Serializable;
+
 import io.mindbend.android.announcements.R;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AdminFragment extends Fragment {
+public class AdminFragment extends Fragment implements Serializable {
 
 
     public AdminFragment() {

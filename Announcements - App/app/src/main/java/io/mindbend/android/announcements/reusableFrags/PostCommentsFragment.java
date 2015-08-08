@@ -33,24 +33,29 @@ import io.mindbend.android.announcements.R;
 public class PostCommentsFragment extends Fragment implements Serializable {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_POST = "post";
+    private static final String ARG_LISTENER = "comment_listener";
+
     private static final String SHARE_TAG = "Share_post_tag";
 
     private Post mPost;
     private PostCommentsAdapter mCommentsAdapter;
     private List<Comment> mComments;
     private transient ImageButton mFab;
+    private CommentsInteractionListener mListener;
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @param postClicked POST
+     * @param commentListener CommentsInteractionListener
      * @return A new instance of fragment PostCommentsFragment.
      */
-    public static PostCommentsFragment newInstance(Post postClicked) {
+    public static PostCommentsFragment newInstance(Post postClicked, CommentsInteractionListener commentListener) {
         PostCommentsFragment fragment = new PostCommentsFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_POST, postClicked);
+        args.putSerializable(ARG_LISTENER, commentListener);
         fragment.setArguments(args);
         return fragment;
     }
@@ -64,6 +69,7 @@ public class PostCommentsFragment extends Fragment implements Serializable {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mPost = (Post) getArguments().getSerializable(ARG_POST);
+            mListener = (CommentsInteractionListener) getArguments().getSerializable(ARG_LISTENER);
         }
     }
 
@@ -188,6 +194,15 @@ public class PostCommentsFragment extends Fragment implements Serializable {
         postTime.setText(mPost.getmPostTimeSince());
         postClubName.setText(mPost.getmPostClubUsername());
         //TODO: SET UP IMAGES AS WELL
+
+        //the back button to return to the posts list from the comments
+        Button backButton = (Button)v.findViewById(R.id.back_to_posts_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.pressedBackToPosts();
+            }
+        });
     }
 
 
@@ -199,6 +214,10 @@ public class PostCommentsFragment extends Fragment implements Serializable {
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    public interface CommentsInteractionListener  extends Serializable{
+        void pressedBackToPosts();
     }
 
 }

@@ -12,6 +12,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 
+import java.io.Serializable;
+
 import io.mindbend.android.announcements.reusableFrags.PostOverlayFragment;
 import io.mindbend.android.announcements.tabbedFragments.AdminFragment;
 import io.mindbend.android.announcements.tabbedFragments.DiscoverFragment;
@@ -23,14 +25,14 @@ import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
 
 
-public class TabbedActivity extends ActionBarActivity implements MaterialTabListener, ViewPager.OnPageChangeListener {
+public class TabbedActivity extends ActionBarActivity implements MaterialTabListener, ViewPager.OnPageChangeListener, Serializable {
 
 
     //tab bar
-    private MaterialTabHost mTabBar;
+    private transient MaterialTabHost mTabBar;
 
     //viewpager; what allows the swiping between fragments
-    private android.support.v4.view.ViewPager mViewPager;
+    private transient android.support.v4.view.ViewPager mViewPager;
     private PagerAdapter mAdapter;
     //all fragments under TabbedActivity
     private TodayFragment mTodayFragment;
@@ -131,18 +133,16 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
     public void onBackPressed() {
         switch (mViewPager.getCurrentItem()) {
             case 0:
-                if (((PostOverlayFragment)mTodayFragment.getmPostsOverlayFragment()).isOnComments()) {
-                    ((PostOverlayFragment)mTodayFragment.getmPostsOverlayFragment()).returnFromComments();
-                }
+                mTodayFragment.getChildFragmentManager().popBackStack();
                 break;
             case 1:
-                mNotificationsFragment.getmNotifsList().getChildFragmentManager().popBackStack();
+                mNotificationsFragment.getChildFragmentManager().popBackStack();
                 break;
             case 2:
-                mDiscoverFragment.getmOrgsGridFrag().getChildFragmentManager().popBackStack();
+                mDiscoverFragment.getChildFragmentManager().popBackStack();
                 break;
             case 3:
-                mYouFragment.getmProfileFragment().getChildFragmentManager().popBackStack();
+                mYouFragment.getChildFragmentManager().popBackStack();
                 break;
             case 4:
                 //TODO: popBackStack of admin frag
@@ -150,7 +150,7 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
         }
     }
 
-    private class PagerAdapter extends FragmentStatePagerAdapter {
+    private class PagerAdapter extends FragmentStatePagerAdapter implements Serializable {
         PagerAdapter(FragmentManager fm) {
             super(fm);
         }

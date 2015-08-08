@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +19,7 @@ import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
 
-public class ListFragment extends Fragment {
+public class ListFragment extends Fragment implements Serializable {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_ORGS = "param_orgs";

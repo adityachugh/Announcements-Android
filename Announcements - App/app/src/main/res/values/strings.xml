@@ -40,4 +40,5 @@
     </string-array>
     <string name="report_bug_email_subject">I found a bug!</string>
     <string name="report_bug_email_text">Please detail your bug here...</string>
+    <string name="back_button">Back</string>
 </resources>

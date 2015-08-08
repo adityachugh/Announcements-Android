@@ -23,7 +23,7 @@ import io.mindbend.android.announcements.R;
 /**
  * Created by Akshay Pall on 01/08/2015.
  */
-public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHolder> {
+public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHolder> implements Serializable {
 
     private static final String TAG = "OrgsGridAdapter";
 

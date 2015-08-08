@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.Serializable;
+
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
@@ -21,7 +23,7 @@ import io.mindbend.android.announcements.reusableFrags.ProfileFragment;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class YouFragment extends Fragment {
+public class YouFragment extends Fragment implements Serializable {
     private static final String TAG = "TAG";
     private Fragment mProfileFragment;
 

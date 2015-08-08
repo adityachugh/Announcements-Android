@@ -17,7 +17,7 @@ import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 
 
-public class PostOverlayFragment extends Fragment implements PostsFeedAdapter.PostInteractionListener {
+public class PostOverlayFragment extends Fragment implements PostsFeedAdapter.PostInteractionListener, PostCommentsFragment.CommentsInteractionListener {
     //in order to add frags to the backstack
     public static final String POSTS_FRAG = "posts_frag";
     public static final String COMMENTS_FRAG = "comments_frag";
@@ -80,9 +80,14 @@ public class PostOverlayFragment extends Fragment implements PostsFeedAdapter.Po
         mListener.onCommentsOpened(postPressed);
 
         //replace the current posts frag with the comments frag, while adding it to a backstack (in case user clicks a commenters profile in which case returning to the comments frag would be required)
-        mCurrentComments = PostCommentsFragment.newInstance(postPressed);
+        mCurrentComments = PostCommentsFragment.newInstance(postPressed, this);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.posts_overlay_container, mCurrentComments).addToBackStack(COMMENTS_FRAG).commit();
+    }
+
+    @Override
+    public void pressedBackToPosts() {
+        returnFromComments();
     }
 
     public void returnFromComments(){
