@@ -133,16 +133,20 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
     public void onBackPressed() {
         switch (mViewPager.getCurrentItem()) {
             case 0:
-                mTodayFragment.getChildFragmentManager().popBackStack();
+                if (!mTodayFragment.getmPostsOverlayFragment().isVisible())
+                    mTodayFragment.getChildFragmentManager().popBackStack();
                 break;
             case 1:
-                mNotificationsFragment.getChildFragmentManager().popBackStack();
+                if (!mNotificationsFragment.getmNotifsList().isVisible())
+                    mNotificationsFragment.getChildFragmentManager().popBackStack();
                 break;
             case 2:
-                mDiscoverFragment.getChildFragmentManager().popBackStack();
+                if(!mDiscoverFragment.getmOrgsGridFrag().isVisible())
+                    mDiscoverFragment.getChildFragmentManager().popBackStack();
                 break;
             case 3:
-                mYouFragment.getChildFragmentManager().popBackStack();
+                if(!mYouFragment.getmProfileFragment().isVisible())
+                    mYouFragment.getChildFragmentManager().popBackStack();
                 break;
             case 4:
                 //TODO: popBackStack of admin frag
