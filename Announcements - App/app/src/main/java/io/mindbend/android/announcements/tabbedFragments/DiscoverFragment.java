@@ -24,14 +24,11 @@ import io.mindbend.android.announcements.reusableFrags.ProfileFragment;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DiscoverFragment extends Fragment implements OrgsGridAdapter.OrgInteractionListener, PostsFeedAdapter.PostInteractionListener {
+public class DiscoverFragment extends Fragment implements OrgsGridAdapter.OrgInteractionListener, PostsFeedAdapter.PostInteractionListener, ProfileFragment.ProfileInteractionListener, OrgsGridFragment.OrgsGridInteractionListener{
 
 
     private static final String TAG = "TAG";
     private static final String ORG_PROFILE_FRAG = "ORG_PROFILE_FRAGMENT";
-    private ProfileFragment mOrgProfile;
-
-    private Fragment mOrgsGridFrag;
 
     public DiscoverFragment() {
         // Required empty public constructor
@@ -59,18 +56,18 @@ public class DiscoverFragment extends Fragment implements OrgsGridAdapter.OrgInt
         Organization testOrg3 = new Organization("test Id", "Mindbend Studio", "The best dev firm hello@mindbend.io", 80, "#BendBoundaries", true, true); //TODO: change "NEW" to be a dynamically chosen banner
         orgs.add(testOrg3);
 
-        mOrgsGridFrag = OrgsGridFragment.newInstance(orgs, this);
+        OrgsGridFragment orgsGridFrag = OrgsGridFragment.newInstance(orgs, this, this);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.discover_framelayout, mOrgsGridFrag).commit();
+        transaction.add(R.id.discover_framelayout, orgsGridFrag).commit();
         return v;
     }
 
     @Override
     public void pressedOrg(Organization orgSelected) {
         //replace the current profile frag with new org profile frag, while adding it to a backstack
-        mOrgProfile = ProfileFragment.newInstance(null, orgSelected);
+        ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, this);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.orgs_grid_framelayout, mOrgProfile).addToBackStack(ORG_PROFILE_FRAG).commit();
+        transaction.replace(R.id.discover_framelayout, orgProfile).addToBackStack(null).commit();
         Log.d(TAG, "org has been pressed on discover page " + orgSelected.toString());
     }
 
@@ -79,7 +76,19 @@ public class DiscoverFragment extends Fragment implements OrgsGridAdapter.OrgInt
         //TODO: do stuff, although switching to comments frag is already handled
         Log.d(TAG, "post pressed");
     }
-    public Fragment getmOrgsGridFrag() {
-        return mOrgsGridFrag;
+
+    @Override
+    public void userProfileToOrgProfile(Organization orgSelected) {
+        pressedOrg(orgSelected);
+    }
+
+    @Override
+    public void pressedOrgFromGrid(Organization orgPressed) {
+        pressedOrg(orgPressed);
+    }
+
+    @Override
+    public void pressedOrgFromProfile(Organization orgPressed) {
+        pressedOrgFromGrid(orgPressed);
     }
 }

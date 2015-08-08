@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.nirhart.parallaxscroll.views.ParallaxScrollView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,26 +33,26 @@ import io.mindbend.android.announcements.tabbedFragments.TodayFragment;
  * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInteractionListener, PostOverlayFragment.PostsOverlayListener {
+public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInteractionListener, PostOverlayFragment.PostsOverlayListener, OrgsGridFragment.OrgsGridInteractionListener {
 
     private static final String TAG = "ProfileFragment";
 
     //To add frags to backstack
     public static final String ORG_PROFILE_FRAG = "org_profile_frag";
-
     private Fragment mOrgProfile;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_USER = "user";
+    private static final String ARG_PROFILE_LISTENER = "profile_listener_interface";
     private static final String ARG_ORG = "org";
 
     private User mUser;
     private Organization mOrg;
-    private OrgsGridAdapter mOrgsAdapter;
 
     private OrgsGridAdapter.OrgInteractionListener mOrgListener = this;
     private PostOverlayFragment.PostsOverlayListener mPostsOverlayListener = this;
+    private ProfileInteractionListener mListener;
 
 
     /**
@@ -63,7 +64,7 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
      * @return A new instance of fragment ProfileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(User user, Organization org) {
+    public static ProfileFragment newInstance(User user, Organization org, ProfileInteractionListener profileListener) {
 
         //***NOTE*** : one of user or org must be null
 
@@ -71,6 +72,7 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
         Bundle args = new Bundle();
         args.putSerializable(ARG_USER, user);
         args.putSerializable(ARG_ORG, org);
+        args.putSerializable(ARG_PROFILE_LISTENER, profileListener);
         fragment.setArguments(args);
         return fragment;
     }
@@ -85,6 +87,7 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
         if (getArguments() != null) {
             mUser = (User) getArguments().getSerializable(ARG_USER);
             mOrg = (Organization) getArguments().getSerializable(ARG_ORG);
+            mListener = (ProfileInteractionListener) getArguments().getSerializable(ARG_PROFILE_LISTENER);
         }
     }
 
@@ -125,7 +128,7 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
             orgs.add(testOrg3);
 
             //add grid frag to bottom of user profile
-            Fragment userOrgsFollowedFragment = OrgsGridFragment.newInstance(orgs, mOrgListener);
+            Fragment userOrgsFollowedFragment = OrgsGridFragment.newInstance(orgs, mOrgListener, this);
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
             transaction.add(R.id.profile_content_framelayout, userOrgsFollowedFragment).commit();
         }
@@ -188,13 +191,7 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
 
     @Override
     public void pressedOrg(Organization orgSelected) {
-
-//        replace the current profile frag with new org profile frag, while adding it to a backstack
-        mOrgProfile = ProfileFragment.newInstance(null, orgSelected);
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.profile_framelayout, mOrgProfile).addToBackStack(ORG_PROFILE_FRAG).commit();
-
-        Log.d(TAG, "org has been pressed on profile page " + orgSelected.toString());
+        mListener.userProfileToOrgProfile(orgSelected);
     }
 
     @Override
@@ -205,5 +202,15 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
     @Override
     public void onCommentsOpened(Post postPressed) {
         //required empty method for post overlay listener
+    }
+
+    public interface ProfileInteractionListener extends Serializable{
+        void userProfileToOrgProfile (Organization orgSelected);
+        void pressedOrgFromProfile(Organization orgPressed);
+    }
+
+    @Override
+    public void pressedOrgFromGrid(Organization orgPressed) {
+        mListener.pressedOrgFromProfile(orgPressed);
     }
 }
