@@ -7,14 +7,21 @@ import java.io.Serializable;
  */
 public class Comment implements Serializable {
     private String mUserId;
+    private User mUser;
     private String mText;
     private String mTimeSince;
     //TODO: setup passing in image for the comment
 
-    public Comment(String userID, String text, String timeSince){
+    public Comment(String userID, User user, String text, String timeSince){
         mUserId = userID;
+        mUser = user;
         mText = text;
         mTimeSince = timeSince;
+    }
+
+    //To fetch user from comment
+    public User getUser(){
+        return mUser;
     }
 
     public String getmUserId() {

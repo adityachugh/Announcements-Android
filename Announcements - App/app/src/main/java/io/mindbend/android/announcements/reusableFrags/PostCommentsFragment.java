@@ -29,6 +29,7 @@ import java.util.List;
 import io.mindbend.android.announcements.Comment;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.User;
 
 public class PostCommentsFragment extends Fragment implements Serializable {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -87,14 +88,19 @@ public class PostCommentsFragment extends Fragment implements Serializable {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mComments = new ArrayList<>();
 
+        //fake userd to test
+        User testUser1 = new User("Aditya", "Chugh", "getting paper", "node.js", "#Grade12", 9);
+        User testUser2 = new User("Avik", "Hasija", "Aditya Chugh", "Windows Phone", "#Grade12", 7);
+        User testUser3 = new User("Akshay", "Kumar Pall Sharma", "iPhones", "weeaboos", "#Grade12", 12);
+
         //the following is fake data
-        Comment testComment1 = new Comment("ID- NeedNameHere", "Wow what a great announcement!", "1 minute ago");
+        Comment testComment1 = new Comment("ID- NeedNameHere", testUser1, "Wow what a great announcement!", "1 minute ago");
         mComments.add(testComment1);
 
-        Comment testComment2 = new Comment("ID- NeedNameHere", "This is a test comment with a long string of text to see how comments look when stretched. This is super cool wow much happiness.", "Now");
+        Comment testComment2 = new Comment("ID- NeedNameHere", testUser2, "This is a test comment with a long string of text to see how comments look when stretched. This is super cool wow much happiness.", "Now");
         mComments.add(testComment2);
 
-        Comment testComment3 = new Comment("ID- NeedNameHere", "Wow what a great announcement!This is a test comment with a long string of text to see how comments look when stretched. This is super cool wow much happiness.", "Now");
+        Comment testComment3 = new Comment("ID- NeedNameHere", testUser3, "Wow what a great announcement!This is a test comment with a long string of text to see how comments look when stretched. This is super cool wow much happiness.", "Now");
         mComments.add(testComment3);
 
         //instantiate and set the adapter

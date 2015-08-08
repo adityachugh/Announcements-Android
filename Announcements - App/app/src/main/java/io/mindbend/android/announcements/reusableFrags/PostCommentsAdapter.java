@@ -13,6 +13,7 @@ import org.w3c.dom.Comment;
 import java.util.List;
 
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.User;
 
 /**
  * Created by Akshay Pall on 02/08/2015.
@@ -48,9 +49,16 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         final io.mindbend.android.announcements.Comment comment = mComments.get(i);
-        viewHolder.mCommenterName.setText(comment.getmUserId());
+
+        //get user from comment
+        User user = comment.getUser();
+
+        //fill fields with user + comment data
+        viewHolder.mCommenterName.setText(user.getName());
         viewHolder.mCommentText.setText(comment.getmText());
         viewHolder.mTimeSince.setText(comment.getmTimeSince());
+
+        //TODO: fill imageview with user profile photo
     }
 
     @Override
