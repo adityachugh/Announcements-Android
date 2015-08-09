@@ -34,7 +34,7 @@ public class PostOverlayFragment extends Fragment implements PostsFeedAdapter.Po
     private Fragment mCurrentComments;
     private PostsOverlayListener mListener;
     private ArrayList<Post> mPosts;
-    private View mView;
+    private transient View mView;
 
     public static PostOverlayFragment newInstance(ArrayList<Post> posts, PostsOverlayListener listener) {
         PostOverlayFragment fragment = new PostOverlayFragment();

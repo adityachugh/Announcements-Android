@@ -29,7 +29,7 @@ public class PostsCardsFragment extends Fragment {
     private List<Post> mPosts;
     private PostsFeedAdapter mPostFeedAdapter;
     private PostsFeedAdapter.PostInteractionListener mPostTouchListener;
-    private View mView;
+    private transient View mView;
 
     /**
      * Use this factory method to create a new instance of

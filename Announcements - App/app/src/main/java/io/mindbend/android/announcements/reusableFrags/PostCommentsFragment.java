@@ -43,7 +43,7 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
     private List<Comment> mComments;
     private transient ImageButton mFab;
     private CommentsInteractionListener mListener;
-    private View mView;
+    private transient View mView;
 
     /**
      * Use this factory method to create a new instance of

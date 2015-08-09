@@ -47,7 +47,7 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
     private OrgsGridAdapter.OrgInteractionListener mOrgListener = this;
     private PostOverlayFragment.PostsOverlayListener mPostsOverlayListener = this;
     private ProfileInteractionListener mListener;
-    private View mView;
+    private transient View mView;
 
 
     /**
