@@ -152,10 +152,14 @@ public class PostOverlayFragment extends Fragment implements PostsFeedAdapter.Po
     @Override
     public void pressedUserImage(User userPressed) {
         //replace current frag with user profile
-        ProfileFragment userProfile = ProfileFragment.newInstance(userPressed, null, mProfileListener);
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.posts_overlay_container, userProfile).commit();
+//        ProfileFragment userProfile = ProfileFragment.newInstance(userPressed, null, mProfileListener);
+//        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+//        transaction.replace(R.id.posts_overlay_container, userProfile).commit();
+//
+//        Log.d(TAG, "Clicked user image, load user profile");
+    }
 
-        Log.d(TAG, "Clicked user image, load user profile");
+    public interface CommentToProfileListener  extends Serializable{
+        void userSelected (User userSelected);
     }
 }
