@@ -45,7 +45,7 @@ import io.mindbend.android.announcements.reusableFrags.ProfileFragment;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TodayFragment extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener, PostOverlayFragment.PostsOverlayListener, ProfileFragment.ProfileInteractionListener {
+public class TodayFragment extends Fragment implements Serializable, View.OnClickListener, DatePickerDialog.OnDateSetListener, PostOverlayFragment.PostsOverlayListener, ProfileFragment.ProfileInteractionListener {
     private transient ImageButton mFab;
     //in order to add frags to the backstack
     public static final String TODAY_POSTS_FRAG = "today_posts_frag";

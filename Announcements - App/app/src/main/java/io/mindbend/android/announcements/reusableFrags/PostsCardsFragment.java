@@ -29,6 +29,7 @@ public class PostsCardsFragment extends Fragment {
     private List<Post> mPosts;
     private PostsFeedAdapter mPostFeedAdapter;
     private PostsFeedAdapter.PostInteractionListener mPostTouchListener;
+    private View mView;
 
     /**
      * Use this factory method to create a new instance of
@@ -63,23 +64,25 @@ public class PostsCardsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_posts_cards, container, false);
+        if (mView == null){
+            // Inflate the layout for this fragment
+            mView = inflater.inflate(R.layout.fragment_posts_cards, container, false);
 
-        RecyclerView recyclerView = (RecyclerView)v.findViewById(R.id.posts_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            RecyclerView recyclerView = (RecyclerView) mView.findViewById(R.id.posts_recycler_view);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        //Initialize and set the adapter
-        mPostFeedAdapter = new PostsFeedAdapter(getActivity(), mPosts, mPostTouchListener);
-        recyclerView.setAdapter(mPostFeedAdapter);
+            //Initialize and set the adapter
+            mPostFeedAdapter = new PostsFeedAdapter(getActivity(), mPosts, mPostTouchListener);
+            recyclerView.setAdapter(mPostFeedAdapter);
 
-        //the animation for the recycler view to slide in from the bottom of the view
-        TranslateAnimation trans = new TranslateAnimation(0, 0, 1000, 0);
-        trans.setDuration(500);
-        trans.setInterpolator(new DecelerateInterpolator(1.0f));
-        recyclerView.startAnimation(trans);
+            //the animation for the recycler view to slide in from the bottom of the view
+            TranslateAnimation trans = new TranslateAnimation(0, 0, 1000, 0);
+            trans.setDuration(500);
+            trans.setInterpolator(new DecelerateInterpolator(1.0f));
+            recyclerView.startAnimation(trans);
+        }
 
-        return v;
+        return mView;
     }
 
     @Override

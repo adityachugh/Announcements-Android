@@ -34,6 +34,7 @@ public class PostOverlayFragment extends Fragment implements PostsFeedAdapter.Po
     private Fragment mCurrentComments;
     private PostsOverlayListener mListener;
     private ArrayList<Post> mPosts;
+    private View mView;
 
     public static PostOverlayFragment newInstance(ArrayList<Post> posts, PostsOverlayListener listener) {
         PostOverlayFragment fragment = new PostOverlayFragment();
@@ -60,15 +61,17 @@ public class PostOverlayFragment extends Fragment implements PostsFeedAdapter.Po
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_post_overlay, container, false);
+       if (mView == null){
+           // Inflate the layout for this fragment
+           mView = inflater.inflate(R.layout.fragment_post_overlay, container, false);
 
-        android.support.v4.app.Fragment postsFragment = PostsCardsFragment.newInstance(mPosts, this);
-        //set the listener for the posts feed adapter in order to open the comments feed for a post
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.posts_overlay_container, postsFragment).addToBackStack(POSTS_FRAG).commit();
-
-        return v;
+           android.support.v4.app.Fragment postsFragment = PostsCardsFragment.newInstance(mPosts, this);
+           //set the listener for the posts feed adapter in order to open the comments feed for a post
+           FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+           if (transaction.isEmpty())
+               transaction.add(R.id.posts_overlay_container, postsFragment).addToBackStack(POSTS_FRAG).commit();
+       }
+        return mView;
     }
 
     @Override

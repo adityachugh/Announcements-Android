@@ -5,28 +5,21 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.nirhart.parallaxscroll.views.ParallaxScrollView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
-import io.mindbend.android.announcements.tabbedFragments.TodayFragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,6 +32,7 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
 
     //To add frags to backstack
     public static final String ORG_PROFILE_FRAG = "org_profile_frag";
+    private static final String BOTTOM_FRAG_TAG = "tag_for_bottom_frag_of_orgs_and_profiles";
     private Fragment mOrgProfile;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -53,6 +47,7 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
     private OrgsGridAdapter.OrgInteractionListener mOrgListener = this;
     private PostOverlayFragment.PostsOverlayListener mPostsOverlayListener = this;
     private ProfileInteractionListener mListener;
+    private View mView;
 
 
     /**
@@ -94,88 +89,92 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_profile, container, false);
+        if (mView == null){
+            // Inflate the layout for this fragment
+            mView = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        //UI elements to be filled
-        TextView name = (TextView) v.findViewById(R.id.profile_name);
-        TextView followCount = (TextView) v.findViewById(R.id.follow_count);
-        TextView profileDetail = (TextView) v.findViewById(R.id.profile_detail);
-        TextView profileTag = (TextView) v.findViewById(R.id.profile_tag);
+            //UI elements to be filled
+            TextView name = (TextView) mView.findViewById(R.id.profile_name);
+            TextView followCount = (TextView) mView.findViewById(R.id.follow_count);
+            TextView profileDetail = (TextView) mView.findViewById(R.id.profile_detail);
+            TextView profileTag = (TextView) mView.findViewById(R.id.profile_tag);
 
-        //TODO: branch based on whether user or org is null
+            //TODO: branch based on whether user or org is null
 
-        //Adapter not necessary, few elements on page
-        if (mUser != null) {
-            name.setText(mUser.getName());
-            followCount.setText(mUser.getNumberOfOrganizationsFollowed());
-            profileDetail.setText(mUser.getInterests());
-            profileTag.setText(mUser.getUserCategory());
+            //Adapter not necessary, few elements on page
+            if (mUser != null) {
+                name.setText(mUser.getName());
+                followCount.setText(mUser.getNumberOfOrganizationsFollowed());
+                profileDetail.setText(mUser.getInterests());
+                profileTag.setText(mUser.getUserCategory());
 
-            //Fill bottom fragment with discover grid if user(temporary)
-            //TODO: Fetch followed orgs OR organization's announcements (generic fragment)
-            ArrayList<Organization> orgs = new ArrayList<>();
+                //Fill bottom fragment with discover grid if user(temporary)
+                //TODO: Fetch followed orgs OR organization's announcements (generic fragment)
+                ArrayList<Organization> orgs = new ArrayList<>();
 
-            //ORG CONSTRUCTOR: String objectId, String title, String description, int followers, String tag, boolean privateOrg, boolean newOrg
-            //FAKE ORGANIZATIONS TO TEST
-            Organization testOrg1 = new Organization("test Id", "Software Dev Club", "Learn to make apps! Android! Fun!", 803, "#SoftwareDevClub", false, true); //TODO: change "NEW" to be a dynamically chosen banner
-            orgs.add(testOrg1);
+                //ORG CONSTRUCTOR: String objectId, String title, String description, int followers, String tag, boolean privateOrg, boolean newOrg
+                //FAKE ORGANIZATIONS TO TEST
+                Organization testOrg1 = new Organization("test Id", "Software Dev Club", "Learn to make apps! Android! Fun!", 803, "#SoftwareDevClub", false, true); //TODO: change "NEW" to be a dynamically chosen banner
+                orgs.add(testOrg1);
 
-            Organization testOrg2 = new Organization("test Id", "Math Club", "We had that one meeting that one time", 11, "#MathClub", false, false); //TODO: change "NEW" to be a dynamically chosen banner
-            orgs.add(testOrg2);
+                Organization testOrg2 = new Organization("test Id", "Math Club", "We had that one meeting that one time", 11, "#MathClub", false, false); //TODO: change "NEW" to be a dynamically chosen banner
+                orgs.add(testOrg2);
 
-            Organization testOrg3 = new Organization("test Id", "Mindbend Studio", "The best dev firm hello@mindbend.io", 80, "#BendBoundaries", true, true); //TODO: change "NEW" to be a dynamically chosen banner
-            orgs.add(testOrg3);
+                Organization testOrg3 = new Organization("test Id", "Mindbend Studio", "The best dev firm hello@mindbend.io", 80, "#BendBoundaries", true, true); //TODO: change "NEW" to be a dynamically chosen banner
+                orgs.add(testOrg3);
 
-            //add grid frag to bottom of user profile
-            Fragment userOrgsFollowedFragment = OrgsGridFragment.newInstance(orgs, mOrgListener, this);
-            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-            transaction.add(R.id.profile_content_framelayout, userOrgsFollowedFragment).commit();
-        }
-
-        if(mOrg != null){
-            if (mOrg.isPrivateOrg()){
-                name.setText(mOrg.getTitle() + " [PRIVATE]");
-                //TODO: add imageview of lock to indicate private
-            }
-            else {
-                name.setText(mOrg.getTitle());
-            }
-            followCount.setText(mOrg.getFollowers() + " Followers");
-            profileDetail.setText(mOrg.getDescription());
-            profileTag.setText(mOrg.getTag());
-
-            if (mOrg.isPrivateOrg() == false){
-
-                //TODO: query org's posts from parse, populate arraylist of posts
-                ArrayList<Post> orgPosts = new ArrayList<>();
-                //THE FOLLOWING ARE FAKE TEST POSTS
-                Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio");
-                orgPosts.add(testPost1);
-
-                Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio");
-                orgPosts.add(testPost2);
-
-                Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio");
-                orgPosts.add(testPost3);
-
-                //add posts frag to bottom of org profile
-                Fragment orgPostsFragment = PostOverlayFragment.newInstance(orgPosts, mPostsOverlayListener);
+                //add grid frag to bottom of user profile
+                Fragment userOrgsFollowedFragment = OrgsGridFragment.newInstance(orgs, mOrgListener, this);
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                transaction.add(R.id.profile_content_framelayout, orgPostsFragment).commit();
+                if (transaction.isEmpty())
+                    transaction.add(R.id.profile_content_framelayout, userOrgsFollowedFragment, BOTTOM_FRAG_TAG).commit();
             }
+
+            if(mOrg != null){
+                if (mOrg.isPrivateOrg()){
+                    name.setText(mOrg.getTitle() + " [PRIVATE]");
+                    //TODO: add imageview of lock to indicate private
+                }
+                else {
+                    name.setText(mOrg.getTitle());
+                }
+                followCount.setText(mOrg.getFollowers() + " Followers");
+                profileDetail.setText(mOrg.getDescription());
+                profileTag.setText(mOrg.getTag());
+
+                if (mOrg.isPrivateOrg() == false){
+
+                    //TODO: query org's posts from parse, populate arraylist of posts
+                    ArrayList<Post> orgPosts = new ArrayList<>();
+                    //THE FOLLOWING ARE FAKE TEST POSTS
+                    Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio");
+                    orgPosts.add(testPost1);
+
+                    Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio");
+                    orgPosts.add(testPost2);
+
+                    Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio");
+                    orgPosts.add(testPost3);
+
+                    //add posts frag to bottom of org profile
+                    Fragment orgPostsFragment = PostOverlayFragment.newInstance(orgPosts, mPostsOverlayListener);
+                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                    if (transaction.isEmpty())
+                        transaction.add(R.id.profile_content_framelayout, orgPostsFragment, BOTTOM_FRAG_TAG).commit();
+                }
+            }
+
+            //Get scrollview, scroll to top
+            //TODO: not working!
+            ParallaxScrollView parallaxScrollView = (ParallaxScrollView) mView.findViewById(R.id.profile_scrollview);
+            parallaxScrollView.scrollTo(0, 0);
+
+            //Get framelayout (HIERARCHY: FrameLayout > RecyclerView > CardView)
+            //TODO: set height manually, based on number of grandchildren populated in framelayout
+            FrameLayout profileContentFrameLayout = (FrameLayout) mView.findViewById(R.id.profile_content_framelayout);
         }
 
-        //Get scrollview, scroll to top
-        //TODO: not working!
-        ParallaxScrollView parallaxScrollView = (ParallaxScrollView) v.findViewById(R.id.profile_scrollview);
-        parallaxScrollView.scrollTo(0, 0);
-
-        //Get framelayout (HIERARCHY: FrameLayout > RecyclerView > CardView)
-        //TODO: set height manually, based on number of grandchildren populated in framelayout
-        FrameLayout profileContentFrameLayout = (FrameLayout) v.findViewById(R.id.profile_content_framelayout);
-
-        return v;
+        return mView;
     }
 
     @Override
