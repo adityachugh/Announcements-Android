@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
 
-public class OrgsGridFragment extends Fragment implements OrgsGridAdapter.OrgInteractionListener{
+public class OrgsGridFragment extends Fragment implements OrgsGridAdapter.OrgInteractionListener, Serializable{
 
     private static final String TAG = "OrgsGridFragment";
 

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import io.mindbend.android.announcements.Organization;
@@ -25,7 +26,7 @@ import io.mindbend.android.announcements.reusableFrags.ProfileFragment;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DiscoverFragment extends Fragment implements OrgsGridAdapter.OrgInteractionListener, PostsFeedAdapter.PostInteractionListener, ProfileFragment.ProfileInteractionListener, OrgsGridFragment.OrgsGridInteractionListener{
+public class DiscoverFragment extends Fragment implements Serializable, OrgsGridAdapter.OrgInteractionListener, PostsFeedAdapter.PostInteractionListener, ProfileFragment.ProfileInteractionListener, OrgsGridFragment.OrgsGridInteractionListener{
 
 
     private static final String TAG = "TAG";

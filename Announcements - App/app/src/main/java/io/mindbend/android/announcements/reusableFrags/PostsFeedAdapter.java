@@ -21,7 +21,7 @@ import io.mindbend.android.announcements.TabbedActivity;
 /**
  * Created by Akshay Pall on 01/08/2015.
  */
-public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.ViewHolder> {
+public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.ViewHolder> implements Serializable{
     private static final String SHARE_TAG = "Share_post_tag";
 
     public class ViewHolder extends RecyclerView.ViewHolder{

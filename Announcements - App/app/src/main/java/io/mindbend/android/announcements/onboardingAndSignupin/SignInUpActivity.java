@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.io.Serializable;
+
 import io.mindbend.android.announcements.R;
 
 
-public class SignInUpActivity extends ActionBarActivity {
+public class SignInUpActivity extends ActionBarActivity implements Serializable{
     //Fragments used in this Activity
     private SignInFragment mSignInFragment;
     private SignUpFragment mSignUpFragment;

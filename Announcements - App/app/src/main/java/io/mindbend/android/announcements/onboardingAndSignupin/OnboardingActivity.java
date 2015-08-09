@@ -16,12 +16,14 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ViewSwitcher;
 
+import java.io.Serializable;
+
 import io.mindbend.android.announcements.App;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.reusableFrags.OnboardingInfoCardFragment;
 
 
-public class OnboardingActivity extends ActionBarActivity implements ViewPager.OnPageChangeListener{
+public class OnboardingActivity extends ActionBarActivity implements Serializable, ViewPager.OnPageChangeListener{
 
     //Tells SignInUp activity which button has been clicked
     public static final String EXTRA = "WhichButton";

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -16,7 +17,7 @@ import io.mindbend.android.announcements.User;
 /**
  * Created by Akshay Pall on 02/08/2015.
  */
-public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapter.ViewHolder> implements View.OnClickListener {
+public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapter.ViewHolder> implements View.OnClickListener, Serializable {
     private CommenterInteractionListener mListener;
     private io.mindbend.android.announcements.Comment mCurrentComment;
 

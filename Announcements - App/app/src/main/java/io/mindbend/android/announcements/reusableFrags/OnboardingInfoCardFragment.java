@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.io.Serializable;
+
 import io.mindbend.android.announcements.R;
 
 /**
@@ -17,7 +19,7 @@ import io.mindbend.android.announcements.R;
  * Use the {@link OnboardingInfoCardFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class OnboardingInfoCardFragment extends Fragment {
+public class OnboardingInfoCardFragment extends Fragment implements Serializable{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_TITLE = "title";

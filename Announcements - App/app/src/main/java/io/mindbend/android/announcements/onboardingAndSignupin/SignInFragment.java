@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.io.Serializable;
+
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.TabbedActivity;
 
@@ -18,7 +20,7 @@ import io.mindbend.android.announcements.TabbedActivity;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SignInFragment extends Fragment {
+public class SignInFragment extends Fragment implements Serializable{
 
 
     private ForgotPasswordFragment mForgotPasswordFragment;

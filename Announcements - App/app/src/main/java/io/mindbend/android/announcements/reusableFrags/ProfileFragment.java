@@ -26,7 +26,7 @@ import io.mindbend.android.announcements.User;
  * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInteractionListener, PostOverlayFragment.PostsOverlayListener, OrgsGridFragment.OrgsGridInteractionListener {
+public class ProfileFragment extends Fragment implements Serializable, OrgsGridAdapter.OrgInteractionListener, PostOverlayFragment.PostsOverlayListener, OrgsGridFragment.OrgsGridInteractionListener {
 
     private static final String TAG = "ProfileFragment";
 

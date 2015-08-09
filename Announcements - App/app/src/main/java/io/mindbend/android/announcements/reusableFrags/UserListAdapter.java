@@ -17,7 +17,7 @@ import io.mindbend.android.announcements.User;
 /**
  * Created by Akshay Pall on 06/08/2015.
  */
-public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHolder> {
+public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHolder> implements Serializable {
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView mName;

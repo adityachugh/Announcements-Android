@@ -17,7 +17,7 @@ import io.mindbend.android.announcements.R;
 /**
  * Created by Akshay Pall on 06/08/2015.
  */
-public class OrgsListAdapter extends RecyclerView.Adapter<OrgsListAdapter.ViewHolder> {
+public class OrgsListAdapter extends RecyclerView.Adapter<OrgsListAdapter.ViewHolder> implements Serializable {
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView mName;

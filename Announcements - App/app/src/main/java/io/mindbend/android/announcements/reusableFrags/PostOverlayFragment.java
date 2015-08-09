@@ -18,7 +18,7 @@ import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
 
 
-public class PostOverlayFragment extends Fragment implements PostsFeedAdapter.PostInteractionListener, PostCommentsFragment.CommentsInteractionListener {
+public class PostOverlayFragment extends Fragment implements Serializable, PostsFeedAdapter.PostInteractionListener, PostCommentsFragment.CommentsInteractionListener {
     //in order to add frags to the backstack
     public static final String POSTS_FRAG = "posts_frag";
     public static final String COMMENTS_FRAG = "comments_frag";

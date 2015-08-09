@@ -13,13 +13,14 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 
-public class PostsCardsFragment extends Fragment {
+public class PostsCardsFragment extends Fragment implements Serializable {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_POSTS = "posts";
