@@ -70,6 +70,11 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
     }
 
     @Override
+    public void pressedUserFromComment(User userPressed) {
+
+    }
+
+    @Override
     public void pressedOrgFromProfile(Organization orgPressed) {
         userProfileToOrgProfile(orgPressed);
     }

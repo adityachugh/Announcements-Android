@@ -160,7 +160,7 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
                 orgPosts.add(testPost3);
 
                 //add posts frag to bottom of org profile
-                Fragment orgPostsFragment = PostOverlayFragment.newInstance(orgPosts, mPostsOverlayListener);
+                Fragment orgPostsFragment = PostOverlayFragment.newInstance(orgPosts, mPostsOverlayListener, mListener);
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                 transaction.add(R.id.profile_content_framelayout, orgPostsFragment).commit();
             }
@@ -207,6 +207,7 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
     public interface ProfileInteractionListener extends Serializable{
         void userProfileToOrgProfile (Organization orgSelected);
         void pressedOrgFromProfile(Organization orgPressed);
+        void pressedUserFromComment (User userPressed);
     }
 
     @Override

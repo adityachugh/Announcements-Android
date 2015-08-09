@@ -60,6 +60,7 @@ public class OrgsGridFragment extends Fragment implements OrgsGridAdapter.OrgInt
         if (getArguments() != null) {
             mOrgs = getArguments().getParcelableArrayList(ARG_ORGS_LIST);
             mOrgsListener = (OrgsGridAdapter.OrgInteractionListener)getArguments().getSerializable(ARG_ORGS_LISTENER);
+            mListener = (OrgsGridInteractionListener) getArguments().getSerializable(ARG_GRID_LISTENER);
         }
     }
 

@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,17 +14,23 @@ import android.view.ViewGroup;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.User;
 
 
-public class PostOverlayFragment extends Fragment implements PostsFeedAdapter.PostInteractionListener, PostCommentsFragment.CommentsInteractionListener {
+public class PostOverlayFragment extends Fragment implements PostsFeedAdapter.PostInteractionListener, PostCommentsAdapter.UserInteractionListener, PostCommentsFragment.CommentsInteractionListener {
     //in order to add frags to the backstack
     public static final String POSTS_FRAG = "posts_frag";
     public static final String COMMENTS_FRAG = "comments_frag";
 
     private static final String ARG_POSTS = "posts";
     private static final String ARG_LISTENER = "posts_overlay_listener";
+    private static final String ARG_PROFILE_LISTENER = "profile_interaction_listener";
+
+    private static final String TAG = "PostOverlayFragment";
+
 
     //saving the last post in order to get the club's name, as used in the "add comment" dialog
     private Post mLastPost;
@@ -33,12 +40,14 @@ public class PostOverlayFragment extends Fragment implements PostsFeedAdapter.Po
     private Fragment mCurrentComments;
     private PostsOverlayListener mListener;
     private ArrayList<Post> mPosts;
+    private ProfileFragment.ProfileInteractionListener mProfileListener;
 
-    public static PostOverlayFragment newInstance(ArrayList<Post> posts, PostsOverlayListener listener) {
+    public static PostOverlayFragment newInstance(ArrayList<Post> posts, PostsOverlayListener listener, ProfileFragment.ProfileInteractionListener profileInteractionListener) {
         PostOverlayFragment fragment = new PostOverlayFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_POSTS, posts);
         args.putSerializable(ARG_LISTENER, listener);
+        args.putSerializable(ARG_PROFILE_LISTENER, profileInteractionListener);
         fragment.setArguments(args);
         return fragment;
     }
@@ -53,6 +62,7 @@ public class PostOverlayFragment extends Fragment implements PostsFeedAdapter.Po
         if (getArguments() != null) {
             mPosts = getArguments().getParcelableArrayList(ARG_POSTS);
             mListener = (PostsOverlayListener)getArguments().getSerializable(ARG_LISTENER);
+            mProfileListener = (ProfileFragment.ProfileInteractionListener)getArguments().getSerializable(ARG_PROFILE_LISTENER);
         }
     }
 
@@ -80,7 +90,7 @@ public class PostOverlayFragment extends Fragment implements PostsFeedAdapter.Po
         mListener.onCommentsOpened(postPressed);
 
         //replace the current posts frag with the comments frag, while adding it to a backstack (in case user clicks a commenters profile in which case returning to the comments frag would be required)
-        mCurrentComments = PostCommentsFragment.newInstance(postPressed, this);
+        mCurrentComments = PostCommentsFragment.newInstance(postPressed, this, this);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.posts_overlay_container, mCurrentComments).addToBackStack(COMMENTS_FRAG).commit();
     }
@@ -132,5 +142,20 @@ public class PostOverlayFragment extends Fragment implements PostsFeedAdapter.Po
     public interface PostsOverlayListener extends Serializable {
         public void onCommentsOpened (Post postPressed);
         public void onReturnToPosts();
+    }
+
+    @Override
+    public void pressedUserImageInComment(User userPressed) {
+
+    }
+
+    @Override
+    public void pressedUserImage(User userPressed) {
+        //replace current frag with user profile
+        ProfileFragment userProfile = ProfileFragment.newInstance(userPressed, null, mProfileListener);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.posts_overlay_container, userProfile).commit();
+
+        Log.d(TAG, "Clicked user image, load user profile");
     }
 }

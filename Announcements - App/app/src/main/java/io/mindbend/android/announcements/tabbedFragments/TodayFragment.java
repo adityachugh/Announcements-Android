@@ -30,19 +30,22 @@ import java.util.Date;
 import java.util.List;
 
 import io.mindbend.android.announcements.App;
+import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.TabbedActivity;
+import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.reusableFrags.PostCommentsFragment;
 import io.mindbend.android.announcements.reusableFrags.PostOverlayFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsCardsFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsFeedAdapter;
+import io.mindbend.android.announcements.reusableFrags.ProfileFragment;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TodayFragment extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener, PostOverlayFragment.PostsOverlayListener {
+public class TodayFragment extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener, PostOverlayFragment.PostsOverlayListener, ProfileFragment.ProfileInteractionListener {
     private transient ImageButton mFab;
     //in order to add frags to the backstack
     public static final String TODAY_POSTS_FRAG = "today_posts_frag";
@@ -89,7 +92,7 @@ public class TodayFragment extends Fragment implements View.OnClickListener, Dat
         posts.add(testPost3);
 
         //pass in "this" in order to set the listener for the posts overlay frag in order to open the comments feed for a post
-        mPostsOverlayFragment = PostOverlayFragment.newInstance(posts, this);
+        mPostsOverlayFragment = PostOverlayFragment.newInstance(posts, this, this);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.add(R.id.today_framelayout, mPostsOverlayFragment).addToBackStack(TODAY_POSTS_FRAG).commit();
 
@@ -127,5 +130,20 @@ public class TodayFragment extends Fragment implements View.OnClickListener, Dat
     public void onReturnToPosts() {
         //bring back the date fab
         mFab.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void pressedOrgFromProfile(Organization orgPressed) {
+
+    }
+
+    @Override
+    public void pressedUserFromComment(User userPressed) {
+
+    }
+
+    @Override
+    public void userProfileToOrgProfile(Organization orgSelected) {
+
     }
 }

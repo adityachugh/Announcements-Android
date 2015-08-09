@@ -27,23 +27,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.mindbend.android.announcements.Comment;
+import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
 
-public class PostCommentsFragment extends Fragment implements Serializable {
+public class PostCommentsFragment extends Fragment implements PostCommentsAdapter.UserInteractionListener{
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_POST = "post";
-    private static final String ARG_LISTENER = "comment_listener";
+    private static final String ARG_USER_LISTENER = "comment_listener";
+    private static final String ARG_COMMENT_LISTENER = "comment_listener";
 
     private static final String SHARE_TAG = "Share_post_tag";
 
     private Post mPost;
+    private PostCommentsAdapter.UserInteractionListener mUserListener;
     private PostCommentsAdapter mCommentsAdapter;
     private List<Comment> mComments;
     private transient ImageButton mFab;
     private CommentsInteractionListener mListener;
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -52,11 +54,12 @@ public class PostCommentsFragment extends Fragment implements Serializable {
      * @param commentListener CommentsInteractionListener
      * @return A new instance of fragment PostCommentsFragment.
      */
-    public static PostCommentsFragment newInstance(Post postClicked, CommentsInteractionListener commentListener) {
+    public static PostCommentsFragment newInstance(Post postClicked, PostCommentsAdapter.UserInteractionListener userListener, CommentsInteractionListener commentListener) {
         PostCommentsFragment fragment = new PostCommentsFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_POST, postClicked);
-        args.putSerializable(ARG_LISTENER, commentListener);
+        args.putSerializable(ARG_USER_LISTENER, userListener);
+        args.putSerializable(ARG_COMMENT_LISTENER, commentListener);
         fragment.setArguments(args);
         return fragment;
     }
@@ -70,7 +73,8 @@ public class PostCommentsFragment extends Fragment implements Serializable {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mPost = (Post) getArguments().getSerializable(ARG_POST);
-            mListener = (CommentsInteractionListener) getArguments().getSerializable(ARG_LISTENER);
+            mUserListener = (PostCommentsAdapter.UserInteractionListener) getArguments().getSerializable(ARG_USER_LISTENER);
+            mListener = (CommentsInteractionListener) getArguments().getSerializable(ARG_COMMENT_LISTENER);
         }
     }
 
@@ -104,7 +108,7 @@ public class PostCommentsFragment extends Fragment implements Serializable {
         mComments.add(testComment3);
 
         //instantiate and set the adapter
-        mCommentsAdapter = new PostCommentsAdapter(getActivity(), mComments);
+        mCommentsAdapter = new PostCommentsAdapter(getActivity(), mComments, mUserListener);
         recyclerView.setAdapter(mCommentsAdapter);
 
         //the animation for the recycler view to slide in from the bottom of the view
@@ -211,6 +215,10 @@ public class PostCommentsFragment extends Fragment implements Serializable {
         });
     }
 
+    @Override
+    public void pressedUserImage(User userPressed) {
+        mListener.pressedUserImageInComment(userPressed);
+    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -224,6 +232,6 @@ public class PostCommentsFragment extends Fragment implements Serializable {
 
     public interface CommentsInteractionListener  extends Serializable{
         void pressedBackToPosts();
+        void pressedUserImageInComment (User userPressed);
     }
-
 }
