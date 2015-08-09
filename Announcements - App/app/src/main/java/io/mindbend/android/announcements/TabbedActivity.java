@@ -3,6 +3,7 @@ package io.mindbend.android.announcements;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
@@ -50,6 +51,7 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
         mViewPager = (android.support.v4.view.ViewPager) findViewById(R.id.viewpager);
         mAdapter = new PagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mAdapter);
+        mViewPager.setOffscreenPageLimit(5); //this makes sure that all 5 fragments are saved at a time
         mViewPager.setOnPageChangeListener(this);
 
         //Get linear layout with tabbar and toolbar in order to add elevation (if API 21+)
@@ -154,7 +156,7 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
         }
     }
 
-    private class PagerAdapter extends FragmentStatePagerAdapter implements Serializable {
+    private class PagerAdapter extends FragmentPagerAdapter implements Serializable {
         PagerAdapter(FragmentManager fm) {
             super(fm);
         }
