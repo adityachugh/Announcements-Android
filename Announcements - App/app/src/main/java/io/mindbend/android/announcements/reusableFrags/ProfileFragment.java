@@ -214,4 +214,9 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
     public void pressedOrgFromGrid(Organization orgPressed) {
         mListener.pressedOrgFromProfile(orgPressed);
     }
+
+    @Override
+    public void launchUserProfile(User selectedUser) {
+
+    }
 }

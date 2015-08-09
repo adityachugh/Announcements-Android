@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.transition.Scene;
 import android.transition.TransitionManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,7 @@ import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.TabbedActivity;
 import io.mindbend.android.announcements.User;
+import io.mindbend.android.announcements.reusableFrags.PostCommentsAdapter;
 import io.mindbend.android.announcements.reusableFrags.PostCommentsFragment;
 import io.mindbend.android.announcements.reusableFrags.PostOverlayFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsCardsFragment;
@@ -45,7 +47,10 @@ import io.mindbend.android.announcements.reusableFrags.ProfileFragment;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TodayFragment extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener, PostOverlayFragment.PostsOverlayListener, ProfileFragment.ProfileInteractionListener {
+public class TodayFragment extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener, PostOverlayFragment.PostsOverlayListener, ProfileFragment.ProfileInteractionListener, PostCommentsAdapter.UserInteractionListener {
+
+    private static final String TAG = "Today Fragment";
+
     private transient ImageButton mFab;
     //in order to add frags to the backstack
     public static final String TODAY_POSTS_FRAG = "today_posts_frag";
@@ -144,6 +149,21 @@ public class TodayFragment extends Fragment implements View.OnClickListener, Dat
 
     @Override
     public void userProfileToOrgProfile(Organization orgSelected) {
+
+    }
+
+    @Override
+    public void launchUserProfile(User selectedUser) {
+        Log.d(TAG, "Clicked profilephoto on comment, launch user profile");
+
+        //replace current frag with user profile
+        ProfileFragment userProfile = ProfileFragment.newInstance(selectedUser, null, this);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.today_framelayout, userProfile).addToBackStack(TODAY_POSTS_FRAG).commit();
+    }
+
+    @Override
+    public void pressedUserImage(User userPressed) {
 
     }
 }
