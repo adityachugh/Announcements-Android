@@ -97,7 +97,7 @@ public class TodayFragment extends Fragment implements View.OnClickListener, Dat
         posts.add(testPost3);
 
         //pass in "this" in order to set the listener for the posts overlay frag in order to open the comments feed for a post
-        mPostsOverlayFragment = PostOverlayFragment.newInstance(posts, this, this);
+        mPostsOverlayFragment = PostOverlayFragment.newInstance(posts, this);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.add(R.id.today_framelayout, mPostsOverlayFragment).addToBackStack(TODAY_POSTS_FRAG).commit();
 

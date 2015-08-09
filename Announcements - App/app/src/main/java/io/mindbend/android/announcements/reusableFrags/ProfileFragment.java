@@ -160,7 +160,7 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
                 orgPosts.add(testPost3);
 
                 //add posts frag to bottom of org profile
-                Fragment orgPostsFragment = PostOverlayFragment.newInstance(orgPosts, mPostsOverlayListener, mListener);
+                Fragment orgPostsFragment = PostOverlayFragment.newInstance(orgPosts, mPostsOverlayListener);
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                 transaction.add(R.id.profile_content_framelayout, orgPostsFragment).commit();
             }

@@ -27,7 +27,6 @@ public class PostOverlayFragment extends Fragment implements PostsFeedAdapter.Po
 
     private static final String ARG_POSTS = "posts";
     private static final String ARG_LISTENER = "posts_overlay_listener";
-    private static final String ARG_PROFILE_LISTENER = "profile_interaction_listener";
 
     private static final String TAG = "PostOverlayFragment";
 
@@ -40,14 +39,12 @@ public class PostOverlayFragment extends Fragment implements PostsFeedAdapter.Po
     private Fragment mCurrentComments;
     private PostsOverlayListener mListener;
     private ArrayList<Post> mPosts;
-    private ProfileFragment.ProfileInteractionListener mProfileListener;
 
-    public static PostOverlayFragment newInstance(ArrayList<Post> posts, PostsOverlayListener listener, ProfileFragment.ProfileInteractionListener profileInteractionListener) {
+    public static PostOverlayFragment newInstance(ArrayList<Post> posts, PostsOverlayListener listener) {
         PostOverlayFragment fragment = new PostOverlayFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_POSTS, posts);
         args.putSerializable(ARG_LISTENER, listener);
-        args.putSerializable(ARG_PROFILE_LISTENER, profileInteractionListener);
         fragment.setArguments(args);
         return fragment;
     }
@@ -62,7 +59,6 @@ public class PostOverlayFragment extends Fragment implements PostsFeedAdapter.Po
         if (getArguments() != null) {
             mPosts = getArguments().getParcelableArrayList(ARG_POSTS);
             mListener = (PostsOverlayListener)getArguments().getSerializable(ARG_LISTENER);
-            mProfileListener = (ProfileFragment.ProfileInteractionListener)getArguments().getSerializable(ARG_PROFILE_LISTENER);
         }
     }
 
