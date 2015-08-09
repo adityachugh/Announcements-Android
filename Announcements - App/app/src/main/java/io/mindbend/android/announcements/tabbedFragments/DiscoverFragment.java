@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridAdapter;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsCardsFragment;
@@ -95,5 +96,12 @@ public class DiscoverFragment extends Fragment implements OrgsGridAdapter.OrgInt
     @Override
     public void pressedOrgFromProfile(Organization orgPressed) {
         pressedOrgFromGrid(orgPressed);
+    }
+
+    @Override
+    public void pressedUserFromCommentOfOrgPost(User userPressed) {
+        ProfileFragment userToVisit = ProfileFragment.newInstance(userPressed, null, this);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.discover_framelayout, userToVisit).addToBackStack(null).commit();
     }
 }

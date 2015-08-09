@@ -73,4 +73,11 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
     public void pressedOrgFromProfile(Organization orgPressed) {
         userProfileToOrgProfile(orgPressed);
     }
+
+    @Override
+    public void pressedUserFromCommentOfOrgPost(User userPressed) {
+        ProfileFragment userToVisit = ProfileFragment.newInstance(userPressed, null, this);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.you_framelayout, userToVisit).addToBackStack(null).commit();
+    }
 }

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.User;
 
 
 public class PostOverlayFragment extends Fragment implements PostsFeedAdapter.PostInteractionListener, PostCommentsFragment.CommentsInteractionListener {
@@ -90,6 +91,11 @@ public class PostOverlayFragment extends Fragment implements PostsFeedAdapter.Po
         returnFromComments();
     }
 
+    @Override
+    public void pressedCommenterProfile(User commenterPressed) {
+        mListener.visitCommentersProfile(commenterPressed);
+    }
+
     public void returnFromComments(){
         isOnComments = false;
 
@@ -130,7 +136,8 @@ public class PostOverlayFragment extends Fragment implements PostsFeedAdapter.Po
     }
 
     public interface PostsOverlayListener extends Serializable {
-        public void onCommentsOpened (Post postPressed);
-        public void onReturnToPosts();
+        void onCommentsOpened (Post postPressed);
+        void onReturnToPosts();
+        void visitCommentersProfile(User commenterToBeVisited);
     }
 }

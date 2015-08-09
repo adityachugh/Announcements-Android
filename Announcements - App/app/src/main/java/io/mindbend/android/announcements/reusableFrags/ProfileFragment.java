@@ -207,10 +207,16 @@ public class ProfileFragment extends Fragment implements OrgsGridAdapter.OrgInte
     public interface ProfileInteractionListener extends Serializable{
         void userProfileToOrgProfile (Organization orgSelected);
         void pressedOrgFromProfile(Organization orgPressed);
+        void pressedUserFromCommentOfOrgPost(User userPressed);
     }
 
     @Override
     public void pressedOrgFromGrid(Organization orgPressed) {
         mListener.pressedOrgFromProfile(orgPressed);
+    }
+
+    @Override
+    public void visitCommentersProfile(User commenterToBeVisited) {
+        mListener.pressedUserFromCommentOfOrgPost(commenterToBeVisited);
     }
 }

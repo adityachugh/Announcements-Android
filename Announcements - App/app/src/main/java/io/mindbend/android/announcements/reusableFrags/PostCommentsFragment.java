@@ -29,8 +29,9 @@ import java.util.List;
 import io.mindbend.android.announcements.Comment;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.User;
 
-public class PostCommentsFragment extends Fragment implements Serializable {
+public class PostCommentsFragment extends Fragment implements Serializable, PostCommentsAdapter.CommenterInteractionListener {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_POST = "post";
     private static final String ARG_LISTENER = "comment_listener";
@@ -98,7 +99,7 @@ public class PostCommentsFragment extends Fragment implements Serializable {
         mComments.add(testComment3);
 
         //instantiate and set the adapter
-        mCommentsAdapter = new PostCommentsAdapter(getActivity(), mComments);
+        mCommentsAdapter = new PostCommentsAdapter(getActivity(), mComments, this);
         recyclerView.setAdapter(mCommentsAdapter);
 
         //the animation for the recycler view to slide in from the bottom of the view
@@ -218,6 +219,11 @@ public class PostCommentsFragment extends Fragment implements Serializable {
 
     public interface CommentsInteractionListener  extends Serializable{
         void pressedBackToPosts();
+        void pressedCommenterProfile(User commenterPressed);
     }
 
+    @Override
+    public void commenterProfilePressed(User commenterPressed) {
+        mListener.pressedCommenterProfile(commenterPressed);
+    }
 }

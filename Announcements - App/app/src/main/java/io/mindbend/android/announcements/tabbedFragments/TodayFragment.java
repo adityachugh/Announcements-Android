@@ -30,19 +30,22 @@ import java.util.Date;
 import java.util.List;
 
 import io.mindbend.android.announcements.App;
+import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.TabbedActivity;
+import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.reusableFrags.PostCommentsFragment;
 import io.mindbend.android.announcements.reusableFrags.PostOverlayFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsCardsFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsFeedAdapter;
+import io.mindbend.android.announcements.reusableFrags.ProfileFragment;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TodayFragment extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener, PostOverlayFragment.PostsOverlayListener {
+public class TodayFragment extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener, PostOverlayFragment.PostsOverlayListener, ProfileFragment.ProfileInteractionListener {
     private transient ImageButton mFab;
     //in order to add frags to the backstack
     public static final String TODAY_POSTS_FRAG = "today_posts_frag";
@@ -127,5 +130,29 @@ public class TodayFragment extends Fragment implements View.OnClickListener, Dat
     public void onReturnToPosts() {
         //bring back the date fab
         mFab.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void visitCommentersProfile(User commenterToBeVisited) {
+        ProfileFragment commenterVisited = ProfileFragment.newInstance(commenterToBeVisited, null, this);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.today_framelayout, commenterVisited).addToBackStack(null).commit();
+    }
+
+    @Override
+    public void userProfileToOrgProfile(Organization orgSelected) {
+        ProfileFragment orgToVisit = ProfileFragment.newInstance(null, orgSelected, this);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.today_framelayout, orgToVisit).addToBackStack(null).commit();
+    }
+
+    @Override
+    public void pressedOrgFromProfile(Organization orgPressed) {
+        userProfileToOrgProfile(orgPressed);
+    }
+
+    @Override
+    public void pressedUserFromCommentOfOrgPost(User userPressed) {
+        visitCommentersProfile(userPressed);
     }
 }
