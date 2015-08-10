@@ -1,0 +1,57 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="io.mindbend.android.announcements.onboardingAndSignupin.SignInUpActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/banner_signupin"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/banner_height_landscape"
+                android:background="@color/primary"
+                android:gravity="center">
+            </ImageView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:transitionName="@string/onboaring_to_signup_animation">
+
+                <ImageView
+                    android:id="@+id/app_logo"
+                    android:layout_width="@dimen/app_logo_size"
+                    android:layout_height="@dimen/app_logo_size"
+                    android:src="@drawable/ic_templogo" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="@string/app_name"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/app_name_size"/>
+            </LinearLayout>
+        </RelativeLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <FrameLayout
+                android:id="@+id/fragment_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </FrameLayout>
+        </ScrollView>
+    </LinearLayout>
+</RelativeLayout>

@@ -3,8 +3,8 @@ package io.mindbend.android.announcements.onboardingAndSignupin;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,12 +70,12 @@ public class ForgotPasswordFragment extends Fragment implements Serializable {
                             }
                         });
 
-                if (mEmail.equals("")){
+                if (mEmail.equals("")) {
                     //No email inputted
                     //TODO: add condition for invalid email
                     resetPassDialog.setTitle(R.string.forgot_password_invalid_email);
                     resetPassDialog.setMessage(R.string.reset_password_dialog_bad_email);
-                }else {
+                } else {
                     //email inputted
                     resetPassDialog.setTitle(R.string.forgot_password_email_sent);
                     resetPassDialog.setMessage(R.string.reset_password_dialog_text);

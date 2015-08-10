@@ -1,6 +1,7 @@
 package io.mindbend.android.announcements.onboardingAndSignupin;
 
 import android.content.Intent;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -28,28 +29,28 @@ public class SignInUpActivity extends ActionBarActivity implements Serializable{
 
         //put SignInFragment in frag container if "SIGN IN" pressed
         if (mWhichButton.equals(OnboardingActivity.SIGNINTAG)){
-            mSignInFragment = (SignInFragment)getFragmentManager().findFragmentById(R.id.fragment_container);
+            mSignInFragment = (SignInFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_container);
             //create if null
             if (mSignInFragment == null){
                 mSignInFragment = new SignInFragment();
+                //inflate frag
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                if (ft.isEmpty())
+                    ft.add(R.id.fragment_container, mSignInFragment).commit();
             }
-            //inflate frag
-            getFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, mSignInFragment)
-                    .commit();
         }
 
         //put SignUpFragment in frag container if "SIGN UP" pressed
         if (mWhichButton.equals(OnboardingActivity.SIGNUPTAG)){
-            mSignUpFragment = (SignUpFragment)getFragmentManager().findFragmentById(R.id.fragment_container);
+            mSignUpFragment = (SignUpFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_container);
             //create if null
             if (mSignUpFragment == null){
                 mSignUpFragment = new SignUpFragment();
+                //inflate frag
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                if (ft.isEmpty())
+                    ft.add(R.id.fragment_container, mSignUpFragment).commit();
             }
-            //inflate frag
-            getFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, mSignUpFragment)
-                    .commit();
         }
     }
 

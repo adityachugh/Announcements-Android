@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +26,8 @@ import io.mindbend.android.announcements.TabbedActivity;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SignInFragment extends Fragment implements Serializable{
+public class SignInFragment extends Fragment
+        implements Serializable{
 
     private static final String TAG = "SignInFragment";
 
