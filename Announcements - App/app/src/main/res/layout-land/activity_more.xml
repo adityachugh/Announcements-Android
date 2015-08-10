@@ -10,7 +10,7 @@
         android:layout_width="@dimen/more_logo_size"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        app:ratio="1">
+        app:ratio="1.15">
             <FrameLayout
                 android:id="@+id/rebound_framelayout"
                 android:orientation="vertical"
@@ -30,6 +30,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <TextView
+            android:layout_marginTop="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/card_inner_margin"
+            android:text="Mindbend Studio © 2015"
+            android:textSize="@dimen/list_text_size"
+            android:layout_below="@id/rebound_framelayout"
+            android:layout_centerHorizontal="true"/>
 
         <View
             android:layout_width="match_parent"
@@ -143,17 +154,6 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/divider_color"/>
-
-        <TextView
-            android:layout_marginTop="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="@dimen/card_inner_margin"
-            android:text="Mindbend Studio © 2015"
-            android:textSize="@dimen/list_text_size"
-            android:layout_below="@id/rebound_framelayout"
-            android:layout_centerHorizontal="true"/>
     </LinearLayout>
 
 </LinearLayout>
