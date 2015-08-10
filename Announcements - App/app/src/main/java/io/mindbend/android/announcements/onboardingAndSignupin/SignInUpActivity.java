@@ -15,6 +15,7 @@ public class SignInUpActivity extends ActionBarActivity implements Serializable{
     //Fragments used in this Activity
     private SignInFragment mSignInFragment;
     private SignUpFragment mSignUpFragment;
+    private String mWhichButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,33 +24,42 @@ public class SignInUpActivity extends ActionBarActivity implements Serializable{
 
         //lets us know which button has been pressed.
         Intent intent = getIntent();
-        String whichButton = intent.getStringExtra(OnboardingActivity.EXTRA);
+        mWhichButton = intent.getStringExtra(OnboardingActivity.EXTRA);
 
         //put SignInFragment in frag container if "SIGN IN" pressed
-        if (whichButton.equals(OnboardingActivity.SIGNINTAG)){
+        if (mWhichButton.equals(OnboardingActivity.SIGNINTAG)){
             mSignInFragment = (SignInFragment)getFragmentManager().findFragmentById(R.id.fragment_container);
             //create if null
             if (mSignInFragment == null){
                 mSignInFragment = new SignInFragment();
-
-                getFragmentManager().beginTransaction()
-                        .add(R.id.fragment_container, mSignInFragment)
-                        .commit();
             }
+            //inflate frag
+            getFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, mSignInFragment)
+                    .commit();
         }
 
         //put SignUpFragment in frag container if "SIGN UP" pressed
-        if (whichButton.equals(OnboardingActivity.SIGNUPTAG)){
+        if (mWhichButton.equals(OnboardingActivity.SIGNUPTAG)){
             mSignUpFragment = (SignUpFragment)getFragmentManager().findFragmentById(R.id.fragment_container);
             //create if null
             if (mSignUpFragment == null){
                 mSignUpFragment = new SignUpFragment();
-
-                getFragmentManager().beginTransaction()
-                        .add(R.id.fragment_container, mSignUpFragment)
-                        .commit();
             }
+            //inflate frag
+            getFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, mSignUpFragment)
+                    .commit();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mWhichButton.equals(OnboardingActivity.SIGNINTAG) && (!mSignInFragment.isVisible())){
+            mSignInFragment.getFragmentManager().popBackStack();
+        }
+
+        super.onBackPressed();
     }
 
     @Override

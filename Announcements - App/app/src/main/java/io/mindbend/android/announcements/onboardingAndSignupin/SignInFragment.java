@@ -5,11 +5,14 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.parse.Parse;
 
 import java.io.Serializable;
 
@@ -22,12 +25,16 @@ import io.mindbend.android.announcements.TabbedActivity;
  */
 public class SignInFragment extends Fragment implements Serializable{
 
+    private static final String TAG = "SignInFragment";
+
+    public static final String SIGN_IN_FRAG = "sign_in_frag";
 
     private ForgotPasswordFragment mForgotPasswordFragment;
 
 
     public SignInFragment() {
         // Required empty public constructor
+
     }
 
 
@@ -64,10 +71,18 @@ public class SignInFragment extends Fragment implements Serializable{
         forgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Log.d(TAG, "forgot pass clicked");
+
                 //Create fragment if null
                 if (mForgotPasswordFragment == null){
                     mForgotPasswordFragment = new ForgotPasswordFragment();
                 }
+
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, mForgotPasswordFragment)
+                        .addToBackStack(SIGN_IN_FRAG)
+                        .commit();
             }
         });
 
