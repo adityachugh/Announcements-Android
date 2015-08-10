@@ -94,16 +94,17 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 22 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="circleimageview-1.2.1" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-22.1.1" level="project" />
-    <orderEntry type="library" exported="" name="android-ui-1.2" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-22.1.1" level="project" />
     <orderEntry type="library" exported="" name="support-v4-22.1.1" level="project" />
     <orderEntry type="library" exported="" name="picasso-2.5.0" level="project" />
-    <orderEntry type="library" exported="" name="Parse-1.9.4" level="project" />
-    <orderEntry type="library" exported="" name="bolts-android-1.2.0" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-22.1.1" level="project" />
     <orderEntry type="library" exported="" name="parallaxscroll-1.0" level="project" />
+    <orderEntry type="library" exported="" name="circleimageview-1.2.1" level="project" />
+    <orderEntry type="library" exported="" name="rebound-0.3.8" level="project" />
+    <orderEntry type="library" exported="" name="android-ui-1.2" level="project" />
+    <orderEntry type="library" exported="" name="Parse-1.9.4" level="project" />
+    <orderEntry type="library" exported="" name="bolts-android-1.2.0" level="project" />
     <orderEntry type="library" exported="" name="MaterialTabs-0.11" level="project" />
     <orderEntry type="library" exported="" name="cardview-v7-22.1.1" level="project" />
     <orderEntry type="module" module-name="materialannouncements" exported="" />

@@ -1,52 +1,64 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    tools:context="io.mindbend.android.announcements.MoreActivity">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context="io.mindbend.android.announcements.MoreActivity">
 
     <com.avikhasija.materialannouncements.RatioLayout
         android:layout_width="@dimen/more_logo_size"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         app:ratio="1">
-        <ImageView
-            android:id="@+id/more_app_logo"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/mindbend_logo"/>
+        <FrameLayout
+            android:id="@+id/rebound_framelayout"
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+            <ImageView
+                android:id="@+id/more_app_logo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/mindbend_logo"/>
+        </FrameLayout>
+
     </com.avikhasija.materialannouncements.RatioLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Mindbend Studio © 2015"
         android:layout_gravity="center_horizontal"
-        android:textSize="@dimen/list_text_size"
-        android:layout_marginBottom="@dimen/card_inner_margin"/>
+        android:layout_marginBottom="@dimen/card_inner_margin"
+        android:text="Mindbend Studio © 2015"
+        android:textSize="@dimen/list_text_size"/>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/divider_color"/>
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="horizontal" android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/card_inner_margin"
-        android:paddingRight="@dimen/card_inner_margin"
-        android:paddingTop="@dimen/card_outer_margin"
-        android:paddingBottom="@dimen/card_outer_margin"
-        android:background="@android:color/white"
-        android:id="@+id/report_bug">
+
+    <LinearLayout android:id="@+id/report_bug"
+                  xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:background="@android:color/white"
+                  android:orientation="horizontal"
+                  android:paddingBottom="@dimen/card_outer_margin"
+                  android:paddingLeft="@dimen/card_inner_margin"
+                  android:paddingRight="@dimen/card_inner_margin"
+                  android:paddingTop="@dimen/card_outer_margin">
+
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="@string/more_report_bug"
             android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:text="@string/more_report_bug"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textSize="@dimen/list_text_size" />
+            android:textSize="@dimen/list_text_size"/>
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -60,30 +72,33 @@
         android:layout_height="1dp"
         android:background="@color/divider_color"/>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/card_inner_margin"
-    android:paddingRight="@dimen/card_inner_margin"
-    android:paddingTop="@dimen/card_outer_margin"
-    android:paddingBottom="@dimen/card_outer_margin"
-    android:background="@android:color/white"
-    android:id="@+id/review_app">
-    <TextView
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:text="@string/more_review_app"
-        android:layout_gravity="center_vertical"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textSize="@dimen/list_text_size" />
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:src="@drawable/ic_chevron_grey"
-        android:tint="@color/text_tertiary"/>
-</LinearLayout>
+    <LinearLayout android:id="@+id/review_app"
+                  xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:background="@android:color/white"
+                  android:orientation="horizontal"
+                  android:paddingBottom="@dimen/card_outer_margin"
+                  android:paddingLeft="@dimen/card_inner_margin"
+                  android:paddingRight="@dimen/card_inner_margin"
+                  android:paddingTop="@dimen/card_outer_margin">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:text="@string/more_review_app"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="@dimen/list_text_size"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_chevron_grey"
+            android:tint="@color/text_tertiary"/>
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
@@ -99,23 +114,26 @@
         android:layout_height="1dp"
         android:background="@color/divider_color"/>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="horizontal" android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/card_inner_margin"
-        android:paddingRight="@dimen/card_inner_margin"
-        android:paddingTop="@dimen/card_outer_margin"
-        android:paddingBottom="@dimen/card_outer_margin"
-        android:background="@android:color/white"
-        android:id="@+id/more_sign_out">
+    <LinearLayout android:id="@+id/more_sign_out"
+                  xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:background="@android:color/white"
+                  android:orientation="horizontal"
+                  android:paddingBottom="@dimen/card_outer_margin"
+                  android:paddingLeft="@dimen/card_inner_margin"
+                  android:paddingRight="@dimen/card_inner_margin"
+                  android:paddingTop="@dimen/card_outer_margin">
+
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="@string/more_sign_out"
             android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:text="@string/more_sign_out"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textSize="@dimen/list_text_size" />
+            android:textSize="@dimen/list_text_size"/>
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

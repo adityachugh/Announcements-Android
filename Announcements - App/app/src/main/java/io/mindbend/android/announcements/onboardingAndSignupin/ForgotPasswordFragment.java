@@ -41,7 +41,7 @@ public class ForgotPasswordFragment extends Fragment implements Serializable {
 
         //Stop keyboard from automatically popping up
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        
+
         View v = inflater.inflate(R.layout.fragment_forgot_password, container, false);
 
         //Fetch UI fields

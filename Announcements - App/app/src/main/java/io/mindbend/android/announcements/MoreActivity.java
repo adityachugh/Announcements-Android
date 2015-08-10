@@ -7,15 +7,31 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.facebook.rebound.BaseSpringSystem;
+import com.facebook.rebound.SimpleSpringListener;
+import com.facebook.rebound.Spring;
+import com.facebook.rebound.SpringSystem;
+import com.facebook.rebound.SpringUtil;
 import com.parse.ParseUser;
 
 import io.mindbend.android.announcements.onboardingAndSignupin.OnboardingActivity;
 
 public class MoreActivity extends AppCompatActivity {
+
+    private static final String TAG = "MoreActivity";
+
+    private final BaseSpringSystem mSpringSystem = SpringSystem.create();
+    private final ExampleSpringListener mSpringListener = new ExampleSpringListener();
+    private FrameLayout mRootView;
+    private Spring mScaleSpring;
+    private View mLogo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +85,46 @@ public class MoreActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+        //***REBOUND ANIMATION***
+        mRootView = (FrameLayout) findViewById(R.id.rebound_framelayout);
+        mLogo = (ImageView) findViewById(R.id.more_app_logo);
+
+        // Create the animation spring.
+        mScaleSpring = mSpringSystem.createSpring();
+
+        // Add an OnTouchListener to the root view.
+        mRootView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        // When pressed start solving the spring to 1.
+                        mScaleSpring.setEndValue(1);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        // When released start solving the spring to 0.
+                        mScaleSpring.setEndValue(0);
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        // Add a listener to the spring when the Activity resumes.
+        mScaleSpring.addListener(mSpringListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Remove the listener to the spring when the Activity pauses.
+        mScaleSpring.removeListener(mSpringListener);
     }
 
     @Override
@@ -76,6 +132,21 @@ public class MoreActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_more, menu);
         return true;
+    }
+
+    private class ExampleSpringListener extends SimpleSpringListener {
+        @Override
+        public void onSpringUpdate(Spring spring) {
+            // On each update of the spring value, we adjust the scale of the image view to match the
+            // springs new value. We use the SpringUtil linear interpolation function mapValueFromRangeToRange
+            // to translate the spring's 0 to 1 scale to a 100% to 50% scale range and apply that to the View
+            // with setScaleX/Y. Note that rendering is an implementation detail of the application and not
+            // Rebound itself. If you need Gingerbread compatibility consider using NineOldAndroids to update
+            // your view properties in a backwards compatible manner.
+            float mappedValue = (float) SpringUtil.mapValueFromRangeToRange(spring.getCurrentValue(), 0, 1, 1, 0.5);
+            mLogo.setScaleX(mappedValue);
+            mLogo.setScaleY(mappedValue);
+        }
     }
 
     @Override

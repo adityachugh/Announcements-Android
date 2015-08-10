@@ -30,5 +30,6 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:1.2.1'
     compile 'com.squareup.picasso:picasso:2.5.0'
     compile 'com.github.nirhart:parallaxscroll:1.0'
+    compile 'com.facebook.rebound:rebound:0.3.8'
     compile project(':materialannouncements')
 }
