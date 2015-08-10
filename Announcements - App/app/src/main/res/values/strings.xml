@@ -41,4 +41,9 @@
     <string name="report_bug_email_subject">I found a bug!</string>
     <string name="report_bug_email_text">Please detail your bug here...</string>
     <string name="back_button">Back</string>
+    <string name="reset_password_button_text">Reset Password</string>
+    <string name="reset_password_dialog_text">Check your email for a link to reset your password</string>
+    <string name="reset_password_dialog_bad_email">Please enter a valid email address!</string>
+    <string name="forgot_password_email_sent">Email Sent</string>
+    <string name="forgot_password_invalid_email">Invalid Email</string>
 </resources>

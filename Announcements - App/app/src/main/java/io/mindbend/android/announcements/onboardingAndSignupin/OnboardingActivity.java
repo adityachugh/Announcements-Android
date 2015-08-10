@@ -45,7 +45,7 @@ public class OnboardingActivity extends ActionBarActivity implements Serializabl
 
         //button colour backgrounds if under API 21 (default tint will not work)
         //NOTE: TINT DOES NOT WORK ON API 21! Background coloured instead.
-        if (!App.isLollipopOrHigher) {
+        if (!App.isAPI22OrHigher) {
             signInButton.setBackgroundColor(getResources().getColor(android.R.color.white));
             signUpButton.setBackgroundColor(getResources().getColor(R.color.accent));
         }

@@ -13,6 +13,7 @@ public class App extends Application {
     private static final String APP_STARTED = "APP STARTED";
     public static boolean isLollipopOrHigher = false;
     public static boolean isKitkatOrHigher = false;
+    public static boolean isAPI22OrHigher = false;
 
     @Override
     public void onCreate() {
@@ -30,7 +31,11 @@ public class App extends Application {
             isLollipopOrHigher = true;
             isKitkatOrHigher = true;
             Log.i(APP_STARTED, "device is running lollipop or higher");
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        }else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP){
+            //Needed because backgroundTint method used to colour buttons is broken on API 21
+            isAPI22OrHigher = true;
+        }
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             isKitkatOrHigher = true;
             Log.i(APP_STARTED, "device is running kitkat or higher, animation framework turned on");
         }

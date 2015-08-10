@@ -58,8 +58,9 @@ public class SignInUpActivity extends ActionBarActivity implements Serializable{
         if (mWhichButton.equals(OnboardingActivity.SIGNINTAG) && (!mSignInFragment.isVisible())){
             mSignInFragment.getFragmentManager().popBackStack();
         }
-
-        super.onBackPressed();
+        else {
+            super.onBackPressed();
+        }
     }
 
     @Override

@@ -2,6 +2,7 @@ package io.mindbend.android.announcements.onboardingAndSignupin;
 
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -16,6 +17,7 @@ import com.parse.Parse;
 
 import java.io.Serializable;
 
+import io.mindbend.android.announcements.App;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.TabbedActivity;
 
@@ -49,11 +51,11 @@ public class SignInFragment extends Fragment implements Serializable{
         //Fetch Button "Sign In"
         Button signInButton = (Button) v.findViewById(R.id.sign_in_button);
 
-        TextView forgotPassword = (TextView)v.findViewById(R.id.sign_in_forgot_password);
+        final TextView forgotPassword = (TextView)v.findViewById(R.id.sign_in_forgot_password);
 
         //button colour background if under API 21 (default tint will not work)
         //NOTE: TINT DOES NOT WORK ON API 21! Background coloured instead.
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
+        if (!App.isAPI22OrHigher) {
             signInButton.setBackgroundColor(getResources().getColor(R.color.accent));
         }
 
