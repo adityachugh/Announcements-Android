@@ -50,7 +50,6 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
     private PagerAdapter mAdapter;
     //all fragments under TabbedActivity
     private TodayFragment mTodayFragment;
-    private NotificationsFragment mNotificationsFragment;
     private AdminFragment mAdminFragment;
     private DiscoverFragment mDiscoverFragment;
     private YouFragment mYouFragment;
@@ -64,7 +63,7 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
         mViewPager = (android.support.v4.view.ViewPager) findViewById(R.id.viewpager);
         mAdapter = new PagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mAdapter);
-        mViewPager.setOffscreenPageLimit(5); //this makes sure that all 5 fragments are saved at a time
+        mViewPager.setOffscreenPageLimit(4); //this makes sure that all 5 fragments are saved at a time
         mViewPager.setOnPageChangeListener(this);
 
         //Get linear layout with tabbar and toolbar in order to add elevation (if API 21+)
@@ -80,7 +79,6 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
         //gets tabBar, adds tabs
         mTabBar = (MaterialTabHost) findViewById(R.id.tab_bar);
         mTabBar.addTab(mTabBar.newTab().setText("Today").setTabListener(this));
-        mTabBar.addTab(mTabBar.newTab().setText("Notifications").setTabListener(this));
         mTabBar.addTab(mTabBar.newTab().setText("Discover").setTabListener(this));
         mTabBar.addTab(mTabBar.newTab().setText("You").setTabListener(this));
         //TODO: only add admin tag if user is admin
@@ -152,18 +150,14 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
                     mTodayFragment.getChildFragmentManager().popBackStack();
                 break;
             case 1:
-                if (!mNotificationsFragment.getmNotifsList().isVisible())
-                    mNotificationsFragment.getChildFragmentManager().popBackStack();
-                break;
-            case 2:
                 if(!mDiscoverFragment.getmOrgsGridFrag().isVisible())
                     mDiscoverFragment.getChildFragmentManager().popBackStack();
                 break;
-            case 3:
+            case 2:
                 if(!mYouFragment.getmProfileFragment().isVisible())
                     mYouFragment.getChildFragmentManager().popBackStack();
                 break;
-            case 4:
+            case 3:
                 //TODO: popBackStack of admin frag
                 break;
         }
@@ -176,8 +170,8 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
 
         @Override
         public int getCount() {
-            //TODO: only return 5 IF *****ADMIN*****, otherwise return 4.
-            return 5;
+            //TODO: only return 4 IF *****ADMIN*****, otherwise return 3.
+            return 4;
         }
 
         @Override
@@ -187,16 +181,12 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
                     if (mTodayFragment == null) mTodayFragment = new TodayFragment();
                     return mTodayFragment;
                 case 1:
-                    if (mNotificationsFragment == null)
-                        mNotificationsFragment = new NotificationsFragment();
-                    return mNotificationsFragment;
-                case 2:
                     if (mDiscoverFragment == null) mDiscoverFragment = new DiscoverFragment();
                     return mDiscoverFragment;
-                case 3:
+                case 2:
                     if (mYouFragment == null) mYouFragment = new YouFragment();
                     return mYouFragment;
-                case 4:
+                case 3:
                     if (mAdminFragment == null) mAdminFragment = new AdminFragment();
                     return mAdminFragment;
             }
