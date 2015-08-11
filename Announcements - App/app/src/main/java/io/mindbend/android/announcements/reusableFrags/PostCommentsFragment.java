@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +23,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,7 +34,7 @@ import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
 
-public class PostCommentsFragment extends Fragment implements Serializable, PostCommentsAdapter.CommenterInteractionListener {
+public class PostCommentsFragment extends Fragment implements Serializable, PostCommentsAdapter.CommenterInteractionListener, SwipeRefreshLayout.OnRefreshListener {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_POST = "post";
     private static final String ARG_LISTENER = "comment_listener";
@@ -44,6 +47,7 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
     private transient ImageButton mFab;
     private CommentsInteractionListener mListener;
     private transient View mView;
+    private transient SwipeRefreshLayout mRefreshComments;
 
     /**
      * Use this factory method to create a new instance of
@@ -179,6 +183,10 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
                     }
                 }
             });
+
+            mRefreshComments = (SwipeRefreshLayout)mView.findViewById(R.id.comments_refresher);
+            mRefreshComments.setColorSchemeResources(R.color.accent, R.color.primary);
+            mRefreshComments.setOnRefreshListener(this);
         }
 
         return mView;
@@ -218,6 +226,21 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    @Override
+    public void onRefresh() {
+        //TODO: reload comments based on the post clicked
+        Toast startedRefresh = Toast.makeText(getActivity(), "refreshed layout", Toast.LENGTH_LONG);
+        startedRefresh.show();
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //Do something after 1000ms
+                mRefreshComments.setRefreshing(false);
+            }
+        }, 1000);
     }
 
     public interface CommentsInteractionListener  extends Serializable{

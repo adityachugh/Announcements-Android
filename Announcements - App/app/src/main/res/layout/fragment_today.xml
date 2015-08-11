@@ -4,11 +4,10 @@
              android:layout_height="match_parent"
              tools:context="io.mindbend.android.announcements.tabbedFragments.TodayFragment">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/today_framelayout">
-    </FrameLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/today_framelayout"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

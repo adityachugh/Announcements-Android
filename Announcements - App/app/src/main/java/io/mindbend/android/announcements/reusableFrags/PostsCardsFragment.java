@@ -2,9 +2,11 @@ package io.mindbend.android.announcements.reusableFrags;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
+import android.widget.AbsListView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -19,8 +22,9 @@ import java.util.List;
 
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.tabbedFragments.TodayFragment;
 
-public class PostsCardsFragment extends Fragment implements Serializable {
+public class PostsCardsFragment extends Fragment implements Serializable, SwipeRefreshLayout.OnRefreshListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_POSTS = "posts";
@@ -31,6 +35,7 @@ public class PostsCardsFragment extends Fragment implements Serializable {
     private PostsFeedAdapter mPostFeedAdapter;
     private PostsFeedAdapter.PostInteractionListener mPostTouchListener;
     private transient View mView;
+    private transient SwipeRefreshLayout mRefreshTodayPosts;
 
     /**
      * Use this factory method to create a new instance of
@@ -81,6 +86,12 @@ public class PostsCardsFragment extends Fragment implements Serializable {
             trans.setDuration(500);
             trans.setInterpolator(new DecelerateInterpolator(1.0f));
             recyclerView.startAnimation(trans);
+
+            if (getParentFragment().getParentFragment() instanceof TodayFragment){ //so the refresher is ONLY there if the user is viewing the today posts
+                mRefreshTodayPosts = (SwipeRefreshLayout)mView.findViewById(R.id.post_refresher);
+                mRefreshTodayPosts.setColorSchemeResources(R.color.accent, R.color.primary);
+                mRefreshTodayPosts.setOnRefreshListener(this);
+            }
         }
 
         return mView;
@@ -96,4 +107,16 @@ public class PostsCardsFragment extends Fragment implements Serializable {
         super.onDetach();
     }
 
+    @Override
+    public void onRefresh() {
+        //TODO: reload today's posts into this fragment
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //Do something after 1000ms
+                mRefreshTodayPosts.setRefreshing(false);
+            }
+        }, 1000);
+    }
 }
