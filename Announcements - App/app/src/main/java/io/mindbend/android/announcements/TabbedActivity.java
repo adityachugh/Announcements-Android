@@ -1,7 +1,14 @@
 package io.mindbend.android.announcements;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
+import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -9,13 +16,19 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 
+import java.io.FileDescriptor;
+import java.io.IOException;
 import java.io.Serializable;
 
+import io.mindbend.android.announcements.reusableFrags.PostCommentsFragment;
 import io.mindbend.android.announcements.reusableFrags.PostOverlayFragment;
+import io.mindbend.android.announcements.reusableFrags.PostsCardsFragment;
+import io.mindbend.android.announcements.reusableFrags.PostsFeedAdapter;
 import io.mindbend.android.announcements.tabbedFragments.AdminFragment;
 import io.mindbend.android.announcements.tabbedFragments.DiscoverFragment;
 import io.mindbend.android.announcements.tabbedFragments.YouFragment;
@@ -189,5 +202,30 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
             }
             return null;
         }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == PostsFeedAdapter.SELECT_PICTURE) {
+                Log.wtf("test", "intent result was okay");
+                Uri selectedImageUri = data.getData();
+                PostsCardsFragment postsCardsFragment = ((PostOverlayFragment) mTodayFragment.getmPostsOverlayFragment()).getmPostsFragment();
+                try {
+                    Bitmap image = getBitmapFromUri(selectedImageUri);
+                    postsCardsFragment.getmPostFeedAdapter().updatePostImageBitmap(image);
+                } catch (IOException f){
+                    Log.wtf("crash", "sad face");
+                }
+            }
+        }
+    }
+
+    private Bitmap getBitmapFromUri(Uri uri) throws IOException {
+        ParcelFileDescriptor parcelFileDescriptor =
+                getContentResolver().openFileDescriptor(uri, "r");
+        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+        Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+        parcelFileDescriptor.close();
+        return image;
     }
 }

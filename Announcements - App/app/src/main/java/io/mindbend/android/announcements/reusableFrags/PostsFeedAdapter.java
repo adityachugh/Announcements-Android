@@ -1,16 +1,25 @@
 package io.mindbend.android.announcements.reusableFrags;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 
@@ -23,6 +32,7 @@ import io.mindbend.android.announcements.TabbedActivity;
  */
 public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.ViewHolder> implements Serializable{
     private static final String SHARE_TAG = "Share_post_tag";
+    public static final int SELECT_PICTURE = 1;
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView mTitle;
@@ -31,6 +41,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
         private final TextView mClubUsername;
         private final Button mCommentButton;
         private final Button mShareButton;
+        private final de.hdodenhof.circleimageview.CircleImageView mPosterImage;
 
         //TODO: create private fields for the elements within a single feed item
 
@@ -43,6 +54,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
             mClubUsername = (TextView)itemView.findViewById(R.id.post_club_username);
             mCommentButton = (Button)itemView.findViewById(R.id.post_comment_button);
             mShareButton = (Button)itemView.findViewById(R.id.post_share_button);
+            mPosterImage = (de.hdodenhof.circleimageview.CircleImageView)itemView.findViewById(R.id.post_club_image);
         }
     }
 
@@ -50,6 +62,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
     private List<Post> mPosts;
     private Context mContext;
     private PostInteractionListener mListener;
+    private de.hdodenhof.circleimageview.CircleImageView mPressedImage;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, final int i) {
@@ -58,7 +71,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(final ViewHolder viewHolder, int i) {
         final Post post = mPosts.get(i);
         viewHolder.mTitle.setText(post.getmPostTitle());
         viewHolder.mDetail.setText(post.getmPostDetail());
@@ -85,6 +98,22 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
                 } catch (Exception e){
                     Log.d(SHARE_TAG, "An error occured");
                 }
+            }
+        });
+
+        viewHolder.mPosterImage.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mPressedImage = viewHolder.mPosterImage;
+
+                Log.wtf("LOL", "long pressed image");
+
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                ((Activity) mContext).startActivityForResult(Intent.createChooser(intent,
+                        "Select Picture"), SELECT_PICTURE);
+                return true;
             }
         });
     }
@@ -120,5 +149,10 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
 
     public interface PostInteractionListener extends Serializable{
         void pressedPost(Post postPressed);
+    }
+
+    public void updatePostImageBitmap (Bitmap image){
+        //TODO: update data onb parse
+        mPressedImage.setImageBitmap(image);
     }
 }

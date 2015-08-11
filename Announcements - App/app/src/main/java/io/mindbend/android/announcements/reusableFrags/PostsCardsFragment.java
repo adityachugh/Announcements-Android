@@ -54,6 +54,10 @@ public class PostsCardsFragment extends Fragment implements Serializable, SwipeR
         return fragment;
     }
 
+    public PostsFeedAdapter getmPostFeedAdapter() {
+        return mPostFeedAdapter;
+    }
+
     public PostsCardsFragment() {
         // Required empty public constructor
     }

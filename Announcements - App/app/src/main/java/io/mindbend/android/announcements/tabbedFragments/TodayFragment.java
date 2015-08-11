@@ -57,7 +57,7 @@ public class TodayFragment extends Fragment implements Serializable,
     private transient ImageButton mFab;
     //in order to add frags to the backstack
     public static final String TODAY_POSTS_FRAG = "today_posts_frag";
-    private Fragment mPostsOverlayFragment;
+    private transient Fragment mPostsOverlayFragment;
 
     public TodayFragment() {
         // Required empty public constructor
