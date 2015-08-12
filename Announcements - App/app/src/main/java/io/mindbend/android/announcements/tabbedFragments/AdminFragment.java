@@ -3,6 +3,7 @@ package io.mindbend.android.announcements.tabbedFragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import java.io.Serializable;
 
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.adminClasses.AdminMainFragment;
 
 
 /**
@@ -17,6 +19,8 @@ import io.mindbend.android.announcements.R;
  */
 public class AdminFragment extends Fragment implements Serializable {
 
+
+    private static final String MAIN_ADMIN_TAG = "main_admin_frag";
 
     public AdminFragment() {
         // Required empty public constructor
@@ -27,8 +31,15 @@ public class AdminFragment extends Fragment implements Serializable {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        View v =  inflater.inflate(R.layout.fragment_admin, container, false);
         setRetainInstance(true);
-        return inflater.inflate(R.layout.fragment_admin, container, false);
+
+        AdminMainFragment adminMain = AdminMainFragment.newInstance("test", "test");
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        if (ft.isEmpty())
+            ft.add(R.id.admin_framelayout, adminMain, MAIN_ADMIN_TAG).commit();
+
+        return v;
     }
 
 

@@ -4,10 +4,10 @@
              android:layout_height="match_parent"
              tools:context="io.mindbend.android.announcements.tabbedFragments.AdminFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hello Admin Frag"/>
+        android:id="@+id/admin_framelayout">
+    </FrameLayout>
 
 </FrameLayout>
