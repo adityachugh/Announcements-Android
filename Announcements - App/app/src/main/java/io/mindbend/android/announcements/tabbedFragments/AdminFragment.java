@@ -18,8 +18,6 @@ import io.mindbend.android.announcements.adminClasses.AdminMainFragment;
  * A simple {@link Fragment} subclass.
  */
 public class AdminFragment extends Fragment implements Serializable {
-
-
     private static final String MAIN_ADMIN_TAG = "main_admin_frag";
 
     public AdminFragment() {
@@ -31,14 +29,14 @@ public class AdminFragment extends Fragment implements Serializable {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v =  inflater.inflate(R.layout.fragment_admin, container, false);
+        View v = inflater.inflate(R.layout.fragment_admin, container, false);
         setRetainInstance(true);
 
         AdminMainFragment adminMain = AdminMainFragment.newInstance("test", "test");
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        if (ft.isEmpty())
+        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+        if (ft.isEmpty()) {
             ft.add(R.id.admin_framelayout, adminMain, MAIN_ADMIN_TAG).commit();
-
+        }
         return v;
     }
 
