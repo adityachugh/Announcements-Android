@@ -1,6 +1,7 @@
 package io.mindbend.android.announcements.adminClasses;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -10,18 +11,19 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.Serializable;
+
+import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
 
 public class AdminMainFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_ADMIN_LISTENER = "param1";
     private static final String ADMIN_MAIN_TAG = "admin_main_frag";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private AdminInteractionListener mListener;
     private View mView;
 
 
@@ -29,16 +31,14 @@ public class AdminMainFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param adminInteractionListener Parameter 1
      * @return A new instance of fragment AdminMainFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AdminMainFragment newInstance(String param1, String param2) {
+    public static AdminMainFragment newInstance(AdminInteractionListener adminInteractionListener) {
         AdminMainFragment fragment = new AdminMainFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putSerializable(ARG_ADMIN_LISTENER, adminInteractionListener);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,8 +51,7 @@ public class AdminMainFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mListener = (AdminInteractionListener) getArguments().getSerializable(ARG_ADMIN_LISTENER);
         }
     }
 
@@ -120,6 +119,11 @@ public class AdminMainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d(ADMIN_MAIN_TAG, "view children");
+
+                //TODO: get the actual main org of the current user
+                Organization organization = new Organization("fake_data", "PDSB", "The best school board in Ontario", 60000, "#PDSB", false, false);
+
+                mListener.viewChildren(organization);
             }
         });
         LinearLayout addOrgAdmin= (LinearLayout) mView.findViewById(R.id.admin_add_org_admin);
@@ -145,5 +149,19 @@ public class AdminMainFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    public interface AdminInteractionListener extends Serializable{
+        void viewChildren(Organization org);
+    }
 
 }

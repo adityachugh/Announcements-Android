@@ -32,7 +32,6 @@ import io.mindbend.android.announcements.reusableFrags.PostsFeedAdapter;
 import io.mindbend.android.announcements.tabbedFragments.AdminFragment;
 import io.mindbend.android.announcements.tabbedFragments.DiscoverFragment;
 import io.mindbend.android.announcements.tabbedFragments.YouFragment;
-import io.mindbend.android.announcements.tabbedFragments.NotificationsFragment;
 import io.mindbend.android.announcements.tabbedFragments.TodayFragment;
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
@@ -158,7 +157,8 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
                     mYouFragment.getChildFragmentManager().popBackStack();
                 break;
             case 3:
-                //TODO: popBackStack of admin frag
+                if(!mAdminFragment.getmAdminMain().isVisible())
+                mAdminFragment.getChildFragmentManager().popBackStack();
                 break;
         }
     }
