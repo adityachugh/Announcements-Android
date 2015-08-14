@@ -182,13 +182,13 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                     //TODO: query org's posts from parse, populate arraylist of posts
                     ArrayList<Post> orgPosts = new ArrayList<>();
                     //THE FOLLOWING ARE FAKE TEST POSTS
-                    Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data. Yeah! eat sleep rave repeat. Is that a world tour or your girl's tour? Rip meek mill 6ix god 6ix god 6ix god 6ix god 6ix god 6ix god 6ix god 6ix god ", "Mindbend Studio", "");
+                    Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data. Yeah! eat sleep rave repeat. Is that a world tour or your girl's tour? Rip meek mill 6ix god 6ix god 6ix god 6ix god 6ix god 6ix god 6ix god 6ix god ", "Mindbend Studio", "hasImage");
                     orgPosts.add(testPost1);
 
                     Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio", "hasImage");
                     orgPosts.add(testPost2);
 
-                    Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio", "hasImage");
+                    Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio", "");
                     orgPosts.add(testPost3);
                     orgPosts.add(testPost3);
 
@@ -197,17 +197,28 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
                     //**DYNAMIC SIZING FOR ORG POSTS**
-                    final int postCardHeight = 196; //this is defined in the layout xml; card height + padding
-                    int postCards = orgPosts.size();
+                    final int postCardHeight = 204; //this is defined in the layout xml; card height + padding
+                    final int postCardHeightWithImage = 404; //this is defined in the layout xml; card height + padding
+                    int posts = 0;
+                    int postsWithImage = 0;
+
+                    //count number of posts with images, and posts without
+                    for (int i = 0; i < orgPosts.size(); i++) {
+                        if (orgPosts.get(i).getmPostImageURL().equals("")) //no image
+                            posts++;
+                        else //image
+                            postsWithImage++;
+                    }
 
                     //layout params are in px; must convert dps to px on device
-                    int viewHeightInDps = (postCardHeight * postCards);
+                    int viewHeightInDps = (postCardHeight * posts) + (postCardHeightWithImage * postsWithImage);
                     int viewHeightinPx = (int) (viewHeightInDps * mScale + 0.5f);
 
                     if (viewHeightinPx > (mDeviceHeight/2))
                         mProfileContentFrameLayoutEmbedded.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, viewHeightinPx));
 
-                    //TODO: set height to device height - actionbar and tabview (48dp each) when comment open
+                    //TODO: set height to device height - actionbar and tabview (48dp each) when comment open, but also add height of post (image + 10dp per line of text)
+                    //ensures one full page of scrollable comments (no obstruction from long post)
 
                     if (transaction.isEmpty())
                         transaction.add(R.id.profile_content_framelayout, orgPostsFragment, BOTTOM_FRAG_TAG).commit();

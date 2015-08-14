@@ -7,6 +7,8 @@ import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,9 @@ import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 
 public class PostsCardsFragment extends Fragment implements Serializable {
+
+    private static final String TAG = "PostCardsFragment";
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_POSTS = "posts";
@@ -31,6 +36,9 @@ public class PostsCardsFragment extends Fragment implements Serializable {
     private PostsFeedAdapter mPostFeedAdapter;
     private PostsFeedAdapter.PostInteractionListener mPostTouchListener;
     private transient View mView;
+
+    //To pass into feed adapter (dynamic sizing)
+    private float mScale;
 
     /**
      * Use this factory method to create a new instance of
@@ -60,6 +68,10 @@ public class PostsCardsFragment extends Fragment implements Serializable {
             mPosts = getArguments().getParcelableArrayList(ARG_POSTS);
             mPostTouchListener = (PostsFeedAdapter.PostInteractionListener)getArguments().getSerializable(ARG_POSTS_LISTENER);
         }
+
+        mScale = getActivity().getResources().getDisplayMetrics().density;
+
+        Log.d(TAG, "Post Cards Frag - Scale is: " + mScale);
     }
 
     @Override
@@ -73,7 +85,7 @@ public class PostsCardsFragment extends Fragment implements Serializable {
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
             //Initialize and set the adapter
-            mPostFeedAdapter = new PostsFeedAdapter(getActivity(), mPosts, mPostTouchListener);
+            mPostFeedAdapter = new PostsFeedAdapter(getActivity(), mPosts, mPostTouchListener, mScale);
             recyclerView.setAdapter(mPostFeedAdapter);
 
             //the animation for the recycler view to slide in from the bottom of the view
