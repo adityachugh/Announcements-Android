@@ -5,10 +5,13 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nirhart.parallaxscroll.views.ParallaxScrollView;
@@ -48,6 +51,11 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     private PostOverlayFragment.PostsOverlayListener mPostsOverlayListener = this;
     private ProfileInteractionListener mListener;
     private transient View mView;
+
+    //To set height of content framelayout dynamically (need to change height of embedded layout)
+    private RelativeLayout mProfileContentFrameLayoutEmbedded;
+    private int mDeviceHeight;
+    private float mScale;
 
 
     /**
@@ -93,13 +101,25 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
             // Inflate the layout for this fragment
             mView = inflater.inflate(R.layout.fragment_profile, container, false);
 
+            //fetch embedded relativelayout
+            mProfileContentFrameLayoutEmbedded = (RelativeLayout) mView.findViewById(R.id.profile_content_framelayout_embedded);
+
             //UI elements to be filled
             TextView name = (TextView) mView.findViewById(R.id.profile_name);
             TextView followCount = (TextView) mView.findViewById(R.id.follow_count);
             TextView profileDetail = (TextView) mView.findViewById(R.id.profile_detail);
             TextView profileTag = (TextView) mView.findViewById(R.id.profile_tag);
 
-            //TODO: branch based on whether user or org is null
+
+            //get device height and px to dp scale (for dynamic sizing)
+            Display display = getActivity().getWindowManager().getDefaultDisplay();
+            mDeviceHeight = display.getHeight();
+            mScale = getActivity().getResources().getDisplayMetrics().density;
+            Log.d(TAG, "Scale is: " + mScale + ", device height is: " + mDeviceHeight);
+
+            //by default, height of framelayout should be half of device height as this is (approximately) the size of the view
+            mProfileContentFrameLayoutEmbedded.setMinimumHeight(mDeviceHeight / 2);
+
 
             //Adapter not necessary, few elements on page
             if (mUser != null) {
@@ -122,10 +142,25 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
 
                 Organization testOrg3 = new Organization("test Id", "Mindbend Studio", "The best dev firm hello@mindbend.io", 80, "#BendBoundaries", true, true); //TODO: change "NEW" to be a dynamically chosen banner
                 orgs.add(testOrg3);
+                orgs.add(testOrg3);
+                orgs.add(testOrg3);
 
                 //add grid frag to bottom of user profile
                 Fragment userOrgsFollowedFragment = OrgsGridFragment.newInstance(orgs, mOrgListener, this);
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+
+                //**DYNAMIC SIZING FOR USER FOLLOWED ORGS GRID**
+                final int orgCardHeight = 260; //this is defined in the layout xml; card height + padding
+                int orgCardColumns = (orgs.size()/2) + (orgs.size()%2); //adds additional row for odd numbered org
+
+                //layout params are in px; must convert dps to px on device
+                int viewHeightInDps = (orgCardHeight * orgCardColumns);
+                int viewHeightinPx = (int) (viewHeightInDps * mScale + 0.5f);
+
+                if (viewHeightinPx > (mDeviceHeight/2))
+                    mProfileContentFrameLayoutEmbedded.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, viewHeightinPx));
+
+
                 if (transaction.isEmpty())
                     transaction.add(R.id.profile_content_framelayout, userOrgsFollowedFragment, BOTTOM_FRAG_TAG).commit();
             }
@@ -142,12 +177,12 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 profileDetail.setText(mOrg.getDescription());
                 profileTag.setText(mOrg.getTag());
 
-                if (mOrg.isPrivateOrg() == false){
+                if (!mOrg.isPrivateOrg()){
 
                     //TODO: query org's posts from parse, populate arraylist of posts
                     ArrayList<Post> orgPosts = new ArrayList<>();
                     //THE FOLLOWING ARE FAKE TEST POSTS
-                    Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio");
+                    Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data. Yeah! eat sleep rave repeat. Is that a world tour or your girl's tour?", "Mindbend Studio");
                     orgPosts.add(testPost1);
 
                     Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio");
@@ -155,10 +190,25 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
 
                     Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio");
                     orgPosts.add(testPost3);
+                    orgPosts.add(testPost3);
 
                     //add posts frag to bottom of org profile
                     Fragment orgPostsFragment = PostOverlayFragment.newInstance(orgPosts, mPostsOverlayListener);
                     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+
+                    //**DYNAMIC SIZING FOR ORG POSTS**
+                    final int postCardHeight = 196; //this is defined in the layout xml; card height + padding
+                    int postCards = orgPosts.size();
+
+                    //layout params are in px; must convert dps to px on device
+                    int viewHeightInDps = (postCardHeight * postCards);
+                    int viewHeightinPx = (int) (viewHeightInDps * mScale + 0.5f);
+
+                    if (viewHeightinPx > (mDeviceHeight/2))
+                        mProfileContentFrameLayoutEmbedded.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, viewHeightinPx));
+
+                    //TODO: set height to device height - actionbar and tabview (48dp each) when comment open
+
                     if (transaction.isEmpty())
                         transaction.add(R.id.profile_content_framelayout, orgPostsFragment, BOTTOM_FRAG_TAG).commit();
                 }
@@ -168,10 +218,6 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
             //TODO: not working!
             ParallaxScrollView parallaxScrollView = (ParallaxScrollView) mView.findViewById(R.id.profile_scrollview);
             parallaxScrollView.scrollTo(0, 0);
-
-            //Get framelayout (HIERARCHY: FrameLayout > RecyclerView > CardView)
-            //TODO: set height manually, based on number of grandchildren populated in framelayout
-            FrameLayout profileContentFrameLayout = (FrameLayout) mView.findViewById(R.id.profile_content_framelayout);
         }
 
         return mView;

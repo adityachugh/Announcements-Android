@@ -24,6 +24,8 @@ import io.mindbend.android.announcements.TabbedActivity;
 public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.ViewHolder> implements Serializable{
     private static final String SHARE_TAG = "Share_post_tag";
 
+    private static final String TAG = "PostsFeedAdapter";
+
     public class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView mTitle;
         private final TextView mDetail;
@@ -31,6 +33,8 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
         private final TextView mClubUsername;
         private final Button mCommentButton;
         private final Button mShareButton;
+
+        private String mPostDetail;
 
         //TODO: create private fields for the elements within a single feed item
 
@@ -61,10 +65,16 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         final Post post = mPosts.get(i);
         viewHolder.mTitle.setText(post.getmPostTitle());
-        viewHolder.mDetail.setText(post.getmPostDetail());
+
+        //truncate message to 100 characters
+        String postDetail = post.getmPostDetail();
+
+        if (postDetail.length() > 100)
+            postDetail = postDetail.substring(0, 100) + "...";
+
+        viewHolder.mDetail.setText(postDetail);
         viewHolder.mTimeSince.setText(post.getmPostTimeSince());
         viewHolder.mClubUsername.setText(post.getmPostClubUsername());
-
         viewHolder.mCommentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,12 +114,6 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
     @Override
     public void onViewAttachedToWindow(ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
-//        try {
-//            mListener = (PostInteractionListener)holder;
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException(holder.toString()
-//                    + " must implement PostInteractionListener");
-//        }
     }
 
     @Override

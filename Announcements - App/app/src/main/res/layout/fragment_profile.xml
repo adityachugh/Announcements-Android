@@ -100,9 +100,13 @@
             <FrameLayout
                 android:id="@+id/profile_content_framelayout"
                 android:layout_width="match_parent"
-                android:layout_height="1000dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/user_profile_header"
                 android:background="@android:color/white">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/profile_content_framelayout_embedded"/>
             </FrameLayout>
         </RelativeLayout>
     </com.nirhart.parallaxscroll.views.ParallaxScrollView>
