@@ -82,13 +82,13 @@ public class TodayFragment extends Fragment implements Serializable, View.OnClic
         ArrayList<Post> posts = new ArrayList<>();
 
         //THE FOLLOWING ARE FAKE TEST POSTS
-        Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data. Lots and lots of fake data. Yes. I love fake data. This needs to be long as hell. Yum yum yum yum yum yum yum yum yum!!!!", "Mindbend Studio");
+        Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data. Lots and lots of fake data. Yes. I love fake data. This needs to be long as hell. Yum yum yum yum yum yum yum yum yum!!!!", "Mindbend Studio", "");
         posts.add(testPost1);
 
-        Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio", "yes");
         posts.add(testPost2);
 
-        Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio", "");
         posts.add(testPost3);
 
         //pass in "this" in order to set the listener for the posts overlay frag in order to open the comments feed for a post

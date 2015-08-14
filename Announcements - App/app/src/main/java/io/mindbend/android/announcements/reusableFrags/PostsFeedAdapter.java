@@ -57,7 +57,13 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, final int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.post_feed_item, viewGroup, false);
+        View v;
+
+        //branch based on image vs no image
+        if (mPosts.get(i).getmPostImageURL().equals(""))
+            v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.post_feed_item_image, viewGroup, false);
+        else
+            v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.post_feed_item, viewGroup, false);
         return new ViewHolder(v);
     }
 
@@ -66,13 +72,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
         final Post post = mPosts.get(i);
         viewHolder.mTitle.setText(post.getmPostTitle());
 
-        //truncate message to 100 characters
-        String postDetail = post.getmPostDetail();
-
-        if (postDetail.length() > 100)
-            postDetail = postDetail.substring(0, 100) + "...";
-
-        viewHolder.mDetail.setText(postDetail);
+        viewHolder.mDetail.setText(post.getmPostDetail());
         viewHolder.mTimeSince.setText(post.getmPostTimeSince());
         viewHolder.mClubUsername.setText(post.getmPostClubUsername());
         viewHolder.mCommentButton.setOnClickListener(new View.OnClickListener() {

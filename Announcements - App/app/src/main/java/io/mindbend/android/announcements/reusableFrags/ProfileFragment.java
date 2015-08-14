@@ -182,13 +182,13 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                     //TODO: query org's posts from parse, populate arraylist of posts
                     ArrayList<Post> orgPosts = new ArrayList<>();
                     //THE FOLLOWING ARE FAKE TEST POSTS
-                    Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data. Yeah! eat sleep rave repeat. Is that a world tour or your girl's tour?", "Mindbend Studio");
+                    Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data. Yeah! eat sleep rave repeat. Is that a world tour or your girl's tour? Rip meek mill 6ix god 6ix god 6ix god 6ix god 6ix god 6ix god 6ix god 6ix god ", "Mindbend Studio", "");
                     orgPosts.add(testPost1);
 
-                    Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio");
+                    Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio", "hasImage");
                     orgPosts.add(testPost2);
 
-                    Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio");
+                    Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio", "hasImage");
                     orgPosts.add(testPost3);
                     orgPosts.add(testPost3);
 

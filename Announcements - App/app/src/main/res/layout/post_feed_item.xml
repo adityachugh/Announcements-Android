@@ -6,7 +6,7 @@
     android:id="@+id/post"
     android:orientation="vertical">
 
-    8<LinearLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -52,7 +52,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp">
+            android:layout_height="51dp">
             <TextView
                 android:id="@+id/post_detail"
                 android:layout_width="match_parent"
@@ -63,6 +63,8 @@
                 android:text="Located two hours south of Sydney in the Southern Highlands of New South Wales, ..."
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textColor="@color/text_primary"
+                android:ellipsize="end"
+                android:maxLines="2"
                 android:lineSpacingExtra="@dimen/post_description_line_spacing"/>
 
         </LinearLayout>
