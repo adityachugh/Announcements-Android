@@ -31,7 +31,7 @@ public class DiscoverFragment extends Fragment implements Serializable, OrgsGrid
 
     private static final String TAG = "TAG";
     private static final String ORG_PROFILE_FRAG = "ORG_PROFILE_FRAGMENT";
-    private OrgsGridFragment mOrgsGridFrag;
+    private transient OrgsGridFragment mOrgsGridFrag;
 
     public DiscoverFragment() {
         // Required empty public constructor

@@ -16,7 +16,7 @@ import java.io.Serializable;
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
 
-public class AdminMainFragment extends Fragment {
+public class AdminMainFragment extends Fragment implements Serializable {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_ADMIN_LISTENER = "param1";

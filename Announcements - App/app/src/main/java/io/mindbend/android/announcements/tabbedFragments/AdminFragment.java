@@ -25,7 +25,7 @@ import io.mindbend.android.announcements.reusableFrags.ProfileFragment;
  */
 public class AdminFragment extends Fragment implements Serializable, AdminMainFragment.AdminInteractionListener, OrgsGridAdapter.OrgInteractionListener, OrgsGridFragment.OrgsGridInteractionListener, ProfileFragment.ProfileInteractionListener {
     private static final String MAIN_ADMIN_TAG = "main_admin_frag";
-    private AdminMainFragment mAdminMain;
+    private transient AdminMainFragment mAdminMain;
 
     public AdminFragment() {
         // Required empty public constructor
