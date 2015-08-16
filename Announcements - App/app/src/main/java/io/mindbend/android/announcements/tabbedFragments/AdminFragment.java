@@ -15,6 +15,7 @@ import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.adminClasses.AdminMainFragment;
+import io.mindbend.android.announcements.adminClasses.NewAnnouncementFragment;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridAdapter;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridFragment;
 import io.mindbend.android.announcements.reusableFrags.ProfileFragment;
@@ -74,6 +75,19 @@ public class AdminFragment extends Fragment implements Serializable, AdminMainFr
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.admin_framelayout, childrenOrgs).addToBackStack(null).commit();
     }
+
+    @Override
+    public void addAnnouncement(Organization organization) {
+        getChildFragmentManager().beginTransaction()
+                .replace(R.id.admin_framelayout, NewAnnouncementFragment.newInstance(organization))
+                .addToBackStack(null)
+                .commit();
+    }
+
+    /**
+     * The rest of the interfaces (required to have "infinite depth" on the admin tab) are listed below
+     *
+     */
 
     @Override
     public void pressedOrg(Organization orgSelected) {

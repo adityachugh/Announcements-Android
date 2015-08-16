@@ -123,7 +123,7 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
                     LayoutInflater li = LayoutInflater.from(getActivity());
                     View addCommentView = li.inflate(R.layout.add_comment_dialog, null);
 
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
 
                     // set the dialog's view to alertdialog builder
                     alertDialogBuilder.setView(addCommentView);

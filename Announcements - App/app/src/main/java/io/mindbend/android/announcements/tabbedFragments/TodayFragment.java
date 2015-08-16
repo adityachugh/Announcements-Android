@@ -113,7 +113,7 @@ public class TodayFragment extends Fragment implements Serializable,
 
     @Override
     public void onClick(View v) {
-        //TODO: dialogue box to change today date
+        // dialogue box to change today date
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date()); //new Date gets the current date and time
 

@@ -1,0 +1,253 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="io.mindbend.android.announcements.adminClasses.NewAnnouncementFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/card_inner_margin"
+                    android:background="@color/divider_color"/>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/card_inner_margin"
+                    android:paddingRight="@dimen/card_inner_margin"
+                    android:paddingTop="@dimen/card_outer_margin"
+                    android:paddingBottom="@dimen/card_outer_margin"
+                    android:background="@android:color/white">
+                    <TextView
+                        android:layout_marginLeft="@dimen/card_outer_margin"
+                        android:layout_width="50sp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/new_announce_Title"
+                        android:layout_gravity="center_vertical"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textSize="@dimen/list_text_size" />
+                    <EditText
+                        android:maxLength="30"
+                        android:id="@+id/newA_title_ET"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/DialogTheme"/>
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider_color"/>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/card_inner_margin"
+                    android:paddingRight="@dimen/card_inner_margin"
+                    android:paddingTop="@dimen/card_outer_margin"
+                    android:paddingBottom="@dimen/card_outer_margin"
+                    android:background="@android:color/white">
+                    <TextView
+                        android:layout_marginLeft="@dimen/card_outer_margin"
+                        android:layout_width="50sp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/new_announce_Body"
+                        android:layout_gravity="center_vertical"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textSize="@dimen/list_text_size" />
+                    <EditText
+                        android:id="@+id/newA_body_ET"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/DialogTheme"/>
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider_color"/>
+                <LinearLayout
+                    android:id="@+id/newA_image_field"
+                    android:orientation="horizontal" android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/card_inner_margin"
+                    android:paddingRight="@dimen/card_inner_margin"
+                    android:paddingTop="@dimen/card_outer_margin"
+                    android:paddingBottom="@dimen/card_outer_margin"
+                    android:background="@android:color/white">
+                    <TextView
+                        android:layout_marginLeft="@dimen/card_outer_margin"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/new_announce_Image"
+                        android:layout_gravity="center_vertical"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textSize="@dimen/list_text_size" />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_chevron_grey"
+                        android:tint="@color/text_tertiary"/>
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider_color"/>
+                <View
+                    android:layout_marginTop="@dimen/card_inner_margin"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider_color"/>
+                <LinearLayout
+                    android:id="@+id/newA_start_date_field"
+                    android:orientation="horizontal" android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/card_inner_margin"
+                    android:paddingRight="@dimen/card_inner_margin"
+                    android:paddingTop="@dimen/card_outer_margin"
+                    android:paddingBottom="@dimen/card_outer_margin"
+                    android:background="@android:color/white">
+                    <TextView
+                        android:layout_marginLeft="@dimen/card_outer_margin"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/new_announce_Start_Date"
+                        android:layout_gravity="center_vertical"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textSize="@dimen/list_text_size" />
+                    <TextView
+                        android:id="@+id/newA_start_date_TV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:text="August 16, 2015"/>
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider_color"/>
+                <LinearLayout
+                    android:id="@+id/newA_end_date_field"
+                    android:orientation="horizontal" android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/card_inner_margin"
+                    android:paddingRight="@dimen/card_inner_margin"
+                    android:paddingTop="@dimen/card_outer_margin"
+                    android:paddingBottom="@dimen/card_outer_margin"
+                    android:background="@android:color/white">
+                    <TextView
+                        android:layout_marginLeft="@dimen/card_outer_margin"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/new_announce_End_Date"
+                        android:layout_gravity="center_vertical"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textSize="@dimen/list_text_size" />
+                    <TextView
+                        android:id="@+id/newA_end_date_TV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:text="August 20, 2015"/>
+                </LinearLayout>
+                <View
+                    android:layout_marginTop="@dimen/card_inner_margin"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider_color"/>
+                <LinearLayout
+                    android:orientation="horizontal" android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/card_inner_margin"
+                    android:paddingRight="@dimen/card_inner_margin"
+                    android:paddingTop="@dimen/card_outer_margin"
+                    android:paddingBottom="@dimen/card_outer_margin"
+                    android:background="@android:color/white">
+                    <TextView
+                        android:layout_marginLeft="@dimen/card_outer_margin"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/new_announce_Allow_Comments"
+                        android:layout_gravity="center_vertical"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textSize="@dimen/list_text_size" />
+                    <Switch
+                        android:id="@+id/newA_allow_comments_SWITCH"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/DialogTheme" />
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider_color"/>
+                <LinearLayout
+                    android:orientation="horizontal" android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/card_inner_margin"
+                    android:paddingRight="@dimen/card_inner_margin"
+                    android:paddingTop="@dimen/card_outer_margin"
+                    android:paddingBottom="@dimen/card_outer_margin"
+                    android:background="@android:color/white">
+                    <TextView
+                        android:layout_marginLeft="@dimen/card_outer_margin"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/new_announce_Notify"
+                        android:layout_gravity="center_vertical"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textSize="@dimen/list_text_size" />
+                    <Switch
+                        android:id="@+id/newA_post_in_parent_SWITCH"
+                        android:textColor="@android:color/white"
+                        android:showText="true"
+                        android:textOff="@string/format_Org_NAME"
+                        android:textOn="@string/format_Org_NAME"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/DialogTheme" />
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider_color"/>
+            </LinearLayout>
+        </ScrollView>
+
+        <ImageButton
+            android:id="@+id/upload_announcement_fab"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/fab_side_margin"
+            android:layout_marginBottom="@dimen/fab_side_margin"
+            android:layout_width="@dimen/fab_size"
+            android:layout_height="@dimen/fab_size"
+            android:background="@drawable/fab"
+            android:src="@drawable/ic_upload"
+            android:elevation="@dimen/fab_elevation" />
+
+        <ProgressBar
+            android:id="@+id/newA_submition_progressbar"
+            android:visibility="invisible"
+            android:layout_centerInParent="true"
+            style="@style/DialogTheme"
+            android:layout_width="@dimen/progress_bar_LARGE"
+            android:layout_height="@dimen/progress_bar_LARGE" />
+
+    </RelativeLayout>
+
+</FrameLayout>

@@ -20,11 +20,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.Serializable;
 
+import io.mindbend.android.announcements.adminClasses.NewAnnouncementFragment;
 import io.mindbend.android.announcements.reusableFrags.PostCommentsFragment;
 import io.mindbend.android.announcements.reusableFrags.PostOverlayFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsCardsFragment;
@@ -205,6 +208,23 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
                     postsCardsFragment.getmPostFeedAdapter().updatePostImageBitmap(image);
                 } catch (IOException f){
                     Log.wtf("crash", "sad face");
+                    Toast.makeText(this, "Failed to add image", Toast.LENGTH_LONG).show();
+                }
+            }
+            if (requestCode == NewAnnouncementFragment.ADD_PHOTO) {
+                Log.wtf("Image", "intent result was okay");
+                Uri selectedImageUri = data.getData();
+                try {
+                    Bitmap image = getBitmapFromUri(selectedImageUri);
+                    Log.wtf("Image", "Bitmap is: " + image.toString());
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    image.compress(Bitmap.CompressFormat.JPEG, 70, stream);
+                    byte[] imageBytes = stream.toByteArray();
+                    Log.wtf("Image", "Converted bytes are: " + imageBytes);
+                    mAdminFragment.getmAdminMain().getmNewAnnouncementFragment().setmImageBytes(imageBytes);
+                } catch (IOException f){
+                    Log.wtf("crash", "sad face");
+                    Toast.makeText(this, "Failed to add image", Toast.LENGTH_LONG).show();
                 }
             }
         }

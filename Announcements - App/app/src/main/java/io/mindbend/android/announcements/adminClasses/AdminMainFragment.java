@@ -25,6 +25,7 @@ public class AdminMainFragment extends Fragment implements Serializable {
     // TODO: Rename and change types of parameters
     private AdminInteractionListener mListener;
     private View mView;
+    private NewAnnouncementFragment mNewAnnouncementFragment;
 
 
     /**
@@ -98,6 +99,9 @@ public class AdminMainFragment extends Fragment implements Serializable {
          * the following Linearlayouts are the various possible "buttons" to click to complete various actions
          */
 
+        //TODO: get the actual main org of the current user
+        final Organization organization = new Organization("fake_data", "PDSB", "The best school board in Ontario", 60000, "#PDSB", false, false);
+
         //TODO: only add certain layouts if the user is a certain level of admin
 
         LinearLayout addOrgAnnouncement = (LinearLayout) mView.findViewById(R.id.admin_add_org_announcement);
@@ -105,8 +109,12 @@ public class AdminMainFragment extends Fragment implements Serializable {
             @Override
             public void onClick(View v) {
                 Log.d(ADMIN_MAIN_TAG, "add announcement");
+                mNewAnnouncementFragment = NewAnnouncementFragment.newInstance(organization);
+                mListener.addAnnouncement(organization);
             }
         });
+
+
         LinearLayout allOrgAnnouncements= (LinearLayout) mView.findViewById(R.id.admin_all_org_announcements);
         allOrgAnnouncements.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,18 +122,19 @@ public class AdminMainFragment extends Fragment implements Serializable {
                 Log.d(ADMIN_MAIN_TAG, "view announcements");
             }
         });
+
+
         LinearLayout viewChildrenOrgs= (LinearLayout) mView.findViewById(R.id.admin_view_children);
         viewChildrenOrgs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(ADMIN_MAIN_TAG, "view children");
 
-                //TODO: get the actual main org of the current user
-                Organization organization = new Organization("fake_data", "PDSB", "The best school board in Ontario", 60000, "#PDSB", false, false);
-
                 mListener.viewChildren(organization);
             }
         });
+
+
         LinearLayout addOrgAdmin= (LinearLayout) mView.findViewById(R.id.admin_add_org_admin);
         addOrgAdmin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,6 +142,8 @@ public class AdminMainFragment extends Fragment implements Serializable {
                 Log.d(ADMIN_MAIN_TAG, "add admin");
             }
         });
+
+
         LinearLayout viewOrgAdmins= (LinearLayout) mView.findViewById(R.id.admin_view_org_admins);
         viewOrgAdmins.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,6 +151,8 @@ public class AdminMainFragment extends Fragment implements Serializable {
                 Log.d(ADMIN_MAIN_TAG, "view admins");
             }
         });
+
+
         LinearLayout changeOrgPhoto= (LinearLayout) mView.findViewById(R.id.admin_change_org_picture);
         changeOrgPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,6 +175,10 @@ public class AdminMainFragment extends Fragment implements Serializable {
 
     public interface AdminInteractionListener extends Serializable{
         void viewChildren(Organization org);
+        void addAnnouncement(Organization organization);
     }
 
+    public NewAnnouncementFragment getmNewAnnouncementFragment() {
+        return mNewAnnouncementFragment;
+    }
 }

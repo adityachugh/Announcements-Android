@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Announcements</string>
+    <string name="app_name">Infor[me]</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -52,4 +52,12 @@
     <string name="format_view_org_admin">View %1$s Admins</string>
     <string name="format_change_org_photo">Change %1$s Photo</string>
     <string name="format_all_org_announcements">All %1$s Announcements</string>
+    <string name="new_announce_Title">Title</string>
+    <string name="new_announce_Body">Body</string>
+    <string name="new_announce_Image">Image</string>
+    <string name="new_announce_Start_Date">Start</string>
+    <string name="new_announce_End_Date">End</string>
+    <string name="new_announce_Allow_Comments">Allow Comments</string>
+    <string name="new_announce_Notify">Notify</string>
+    <string name="format_Org_NAME">%1$s</string>
 </resources>
