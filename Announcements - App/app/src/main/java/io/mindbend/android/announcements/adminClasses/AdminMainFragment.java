@@ -2,6 +2,7 @@ package io.mindbend.android.announcements.adminClasses;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -25,6 +26,7 @@ public class AdminMainFragment extends Fragment implements Serializable {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_ADMIN_LISTENER = "param1";
     private static final String ADMIN_MAIN_TAG = "admin_main_frag";
+    public static final int CHANGE_PARENT_PHOTO = 4;
 
     // TODO: Rename and change types of parameters
     private AdminInteractionListener mListener;
@@ -166,6 +168,11 @@ public class AdminMainFragment extends Fragment implements Serializable {
             @Override
             public void onClick(View v) {
                 Log.d(ADMIN_MAIN_TAG, "change photo");
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                getActivity().startActivityForResult(Intent.createChooser(intent,
+                        "Select Picture"), CHANGE_PARENT_PHOTO);
             }
         });
     }
