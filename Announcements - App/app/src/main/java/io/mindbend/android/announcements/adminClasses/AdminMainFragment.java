@@ -12,9 +12,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.User;
+import io.mindbend.android.announcements.reusableFrags.ListFragment;
+import io.mindbend.android.announcements.reusableFrags.UserListAdapter;
 
 public class AdminMainFragment extends Fragment implements Serializable {
     // TODO: Rename parameter arguments, choose names that match
@@ -152,6 +156,7 @@ public class AdminMainFragment extends Fragment implements Serializable {
             @Override
             public void onClick(View v) {
                 Log.d(ADMIN_MAIN_TAG, "view admins");
+                mListener.userListOpened();
             }
         });
 
@@ -180,6 +185,7 @@ public class AdminMainFragment extends Fragment implements Serializable {
         void viewChildren(Organization org);
         void addAnnouncement(Organization organization);
         void addChildOrganization (Organization parentOrg);
+        void userListOpened();
     }
 
     public NewAnnouncementFragment getmNewAnnouncementFragment() {

@@ -17,15 +17,22 @@ import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.adminClasses.AdminMainFragment;
 import io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment;
 import io.mindbend.android.announcements.adminClasses.NewAnnouncementFragment;
+import io.mindbend.android.announcements.reusableFrags.ListFragment;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridAdapter;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridFragment;
 import io.mindbend.android.announcements.reusableFrags.ProfileFragment;
+import io.mindbend.android.announcements.reusableFrags.UserListAdapter;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AdminFragment extends Fragment implements Serializable, AdminMainFragment.AdminInteractionListener, OrgsGridAdapter.OrgInteractionListener, OrgsGridFragment.OrgsGridInteractionListener, ProfileFragment.ProfileInteractionListener {
+public class AdminFragment extends Fragment implements Serializable,
+        AdminMainFragment.AdminInteractionListener,
+        OrgsGridAdapter.OrgInteractionListener,
+        OrgsGridFragment.OrgsGridInteractionListener,
+        ProfileFragment.ProfileInteractionListener,
+        UserListAdapter.UserListInteractionListener{
     private static final String MAIN_ADMIN_TAG = "main_admin_frag";
     private transient AdminMainFragment mAdminMain;
 
@@ -93,6 +100,22 @@ public class AdminFragment extends Fragment implements Serializable, AdminMainFr
                 .commit();
     }
 
+    @Override
+    public void userListOpened() {
+        ArrayList<User> users = new ArrayList<User>();
+        users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
+        users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
+        users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
+        users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
+        users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
+
+        ListFragment adminList = ListFragment.newInstance(null, null, null, null, users, AdminFragment.this);
+        getChildFragmentManager().beginTransaction()
+                .replace(R.id.admin_framelayout, adminList)
+                .addToBackStack(null)
+                .commit();
+    }
+
     /**
      * The rest of the interfaces (required to have "infinite depth" on the admin tab) are listed below
      *
@@ -124,5 +147,10 @@ public class AdminFragment extends Fragment implements Serializable, AdminMainFr
     public void pressedUserFromCommentOfOrgPost(User userPressed) {
         ProfileFragment userProfile = ProfileFragment.newInstance(userPressed, null, this);
         getChildFragmentManager().beginTransaction().replace(R.id.admin_framelayout, userProfile).addToBackStack(null).commit();
+    }
+
+    @Override
+    public void userSelected(User user) {
+        pressedUserFromCommentOfOrgPost(user);
     }
 }
