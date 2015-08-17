@@ -66,5 +66,5 @@
     <string name="private_org">Private</string>
     <string name="public_org">Public</string>
     <string name="new_org_access_code">Access Code</string>
-    <string name="newO_access_code_explanation">Users will need this to submit a follow request if this organization is private.</string>
+    <string name="newO_access_code_explanation">Users will use this to submit a follow request if this organization is private. If you leave this blank, any user may submit a follow request, however they will still not be able to view any other information about your organization.</string>
 </resources>

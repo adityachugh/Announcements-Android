@@ -81,7 +81,7 @@ public class ModifyOrganizationFragment extends Fragment {
         updateOrCreateOrgFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mName.getText().toString().equals("") || mHandle.getText().toString().equals("")){
+                if (mName.getText().toString().equals("") || mHandle.getText().toString().equals("")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
                     builder.setMessage("Cannot have an empty name or handle for an organization.")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -91,29 +91,41 @@ public class ModifyOrganizationFragment extends Fragment {
                                 }
                             });
                     AlertDialog alertDialog = builder.show();
-                } else if(!mOrgType.isChecked() && mAccessCode.getText().toString().equals("")) {
+                } else if (!mOrgType.isChecked() && mAccessCode.getText().toString().equals("")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
-                    builder.setMessage("A private organization must have an access code. Make sure to remember this code!")
+                    builder.setMessage("If your private organization does not have an access code, any user will be able to submit a follow request to your administrators. Is this okay?")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    submitOrg();
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     //nothing
                                 }
                             });
                     AlertDialog alertDialog = builder.show();
-                } else if(mOrgToModify != null){
-                    //this is where you UPDATE the org that was passed in
-                    //TODO: update org in database
-                }else {
-                    /**
-                     * Create the new org in Parse (with an access code if necessary)
-                     */
-                    //TODO: create new org in database
+                } else {
+                    submitOrg();
                 }
             }
         });
 
         return v;
+    }
+
+    private void submitOrg() {
+        if(mOrgToModify != null){
+            //this is where you UPDATE the org that was passed in
+            //TODO: update org in database
+        }else {
+            /**
+             * Create the new org in Parse (with an access code if necessary)
+             */
+            //TODO: create new org in database
+        }
     }
 
     public void setImageBytes(byte[] imageBytes) {
