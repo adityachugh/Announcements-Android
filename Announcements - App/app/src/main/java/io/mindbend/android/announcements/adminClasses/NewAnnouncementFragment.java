@@ -2,10 +2,11 @@ package io.mindbend.android.announcements.adminClasses;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,9 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import org.joda.time.DateTime;
+import org.joda.time.Days;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -79,7 +83,18 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
         uploadFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: check all fields
+                //checking dates
+                if (!areDatesAppropriate()) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
+                    builder.setMessage("The end date for an announcement must be 0-5 days after the start date")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //nothing
+                                }
+                            });
+                    AlertDialog alertDialog = builder.show();
+                }
             }
         });
 
@@ -99,12 +114,7 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
             public void onClick(View v) {
                 selectingStartDate = true;
                 // dialogue box to change today date
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(new Date()); //new Date gets the current date and time
-
-                //instantiate the date picker dialog and implement the onDateSet method (it is implemented by the today frag)
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), R.style.DialogTheme, NewAnnouncementFragment.this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-                datePickerDialog.show();
+                openDatePickerDialog();
             }
         });
 
@@ -115,12 +125,7 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
             @Override
             public void onClick(View v) {
                 selectingStartDate = false;
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(new Date()); //new Date gets the current date and time
-
-                //instantiate the date picker dialog and implement the onDateSet method (it is implemented by the today frag)
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), R.style.DialogTheme, NewAnnouncementFragment.this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-                datePickerDialog.show();
+                openDatePickerDialog();
             }
         });
 
@@ -142,6 +147,15 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
         mOrgToNotify.setTextOff(mOrg.getTitle()); //TODO: GET PARENT TYPE
     }
 
+    private void openDatePickerDialog() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date()); //new Date gets the current date and time
+
+        //instantiate the date picker dialog and implement the onDateSet method (it is implemented by the today frag)
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), R.style.DialogTheme, NewAnnouncementFragment.this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.show();
+    }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -159,10 +173,11 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
 
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-        Date date = new Date(year, monthOfYear, dayOfMonth);
+        Date date = new Date(year-1900, monthOfYear, dayOfMonth); //have to subtract 1900 as it otherwise returns 39xx
         if (selectingStartDate){
             mStartDate = date;
             mStartDateTV.setText(dateToString(date));
+
         }
         else {
             mEndDate = date;
@@ -172,5 +187,17 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
 
     public void setmImageBytes(byte[] mImageBytes) {
         this.mImageBytes = mImageBytes;
+    }
+
+    private boolean areDatesAppropriate(){
+        DateTime start = new DateTime(mStartDate);
+        DateTime end = new DateTime(mEndDate);
+
+        if (end.isBefore(start))
+            return false;
+        else {
+            int daysBetween = Days.daysBetween(start, end).getDays();
+            return (daysBetween < 5);
+        }
     }
 }
