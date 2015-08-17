@@ -26,6 +26,7 @@ public class AdminMainFragment extends Fragment implements Serializable {
     private AdminInteractionListener mListener;
     private View mView;
     private NewAnnouncementFragment mNewAnnouncementFragment;
+    private ModifyOrganizationFragment mModifyOrganizationFragment;
 
 
     /**
@@ -140,6 +141,7 @@ public class AdminMainFragment extends Fragment implements Serializable {
             @Override
             public void onClick(View v) {
                 Log.d(ADMIN_MAIN_TAG, "add admin");
+                mModifyOrganizationFragment = ModifyOrganizationFragment.newInstance(organization, null);
                 mListener.addChildOrganization(organization);
             }
         });
@@ -182,5 +184,9 @@ public class AdminMainFragment extends Fragment implements Serializable {
 
     public NewAnnouncementFragment getmNewAnnouncementFragment() {
         return mNewAnnouncementFragment;
+    }
+
+    public ModifyOrganizationFragment getmModifyOrganizationFragment() {
+        return mModifyOrganizationFragment;
     }
 }

@@ -2,15 +2,18 @@ package io.mindbend.android.announcements.adminClasses;
 
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -27,14 +30,16 @@ import io.mindbend.android.announcements.R;
 public class ModifyOrganizationFragment extends Fragment {
     private static final String ARG_PARENT = "parent_org";
     private static final String ARG_ORG = "if_to_modify_org";
+    public static final int UPLOAD_OR_MODIFY_PHOTO = 3;
     private Organization mParentOrg;
     private Organization mOrgToModify;
 
-    EditText mName;
-    EditText mHandle;
-    Switch mClubType;
-    EditText mAccessCode;
-    TextView mAccessCodeTitle;
+    private EditText mName;
+    private EditText mHandle;
+    private Switch mClubType;
+    private EditText mAccessCode;
+    private TextView mAccessCodeTitle;
+    private byte[] imageBytes;
 
     public static ModifyOrganizationFragment newInstance(Organization parentOrg, Organization orgToModifyIfNeeded) {
         ModifyOrganizationFragment fragment = new ModifyOrganizationFragment();
@@ -76,7 +81,7 @@ public class ModifyOrganizationFragment extends Fragment {
             public void onClick(View v) {
                 if (mName.getText().toString().equals("") || mHandle.getText().toString().equals("")){
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
-                    builder.setMessage("Cannot have an empty name or handle for an organization.!")
+                    builder.setMessage("Cannot have an empty name or handle for an organization.")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -105,6 +110,10 @@ public class ModifyOrganizationFragment extends Fragment {
         return v;
     }
 
+    public void setImageBytes(byte[] imageBytes) {
+        this.imageBytes = imageBytes;
+    }
+
     private void setupViews(View v) {
         mName = (EditText)v.findViewById(R.id.newO_name);
         mHandle = (EditText)v.findViewById(R.id.newO_handle);
@@ -115,15 +124,29 @@ public class ModifyOrganizationFragment extends Fragment {
         mClubType.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked){
+                if (isChecked) {
                     mAccessCode.setEnabled(false);
                     mAccessCodeTitle.setTextColor(getResources().getColor(R.color.text_secondary));
-                }
-                else {
+                } else {
                     mAccessCode.setEnabled(true);
                     mAccessCodeTitle.setTextColor(getResources().getColor(R.color.text_primary));
                 }
             }
         });
+
+        LinearLayout imageField = (LinearLayout)v.findViewById(R.id.newO_image_field);
+        imageField.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.wtf("Image", "image selection begun");
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                getActivity().startActivityForResult(Intent.createChooser(intent,
+                        "Select Picture"), UPLOAD_OR_MODIFY_PHOTO);
+            }
+        });
+
+
     }
 }

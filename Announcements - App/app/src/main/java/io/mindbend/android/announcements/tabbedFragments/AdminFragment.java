@@ -80,7 +80,7 @@ public class AdminFragment extends Fragment implements Serializable, AdminMainFr
     @Override
     public void addAnnouncement(Organization organization) {
         getChildFragmentManager().beginTransaction()
-                .replace(R.id.admin_framelayout, NewAnnouncementFragment.newInstance(organization))
+                .replace(R.id.admin_framelayout, mAdminMain.getmNewAnnouncementFragment())
                 .addToBackStack(null)
                 .commit();
     }
