@@ -17,8 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
 
@@ -36,7 +34,8 @@ public class ModifyOrganizationFragment extends Fragment {
 
     private EditText mName;
     private EditText mHandle;
-    private Switch mClubType;
+    private TextView mHandleTV;
+    private Switch mOrgType;
     private EditText mAccessCode;
     private TextView mAccessCodeTitle;
     private byte[] imageBytes;
@@ -69,11 +68,14 @@ public class ModifyOrganizationFragment extends Fragment {
         // Inflate the layout for this fragment
         View v =  inflater.inflate(R.layout.fragment_modify_organization, container, false);
 
-        if (mOrgToModify != null){
-            //TODO: load in data from org and lock certain features (club handle)
-        }
-
         setupViews(v);
+
+        if (mOrgToModify != null){
+            mHandle.setText(mOrgToModify.getTag());
+            mHandle.setEnabled(false);
+            mHandleTV.setTextColor(getResources().getColor(R.color.text_secondary));
+            mOrgType.setChecked(!mOrgToModify.isPrivateOrg());
+        }
 
         ImageButton updateOrCreateOrgFab = (ImageButton)v.findViewById(R.id.new_OR_modify_org_fab);
         updateOrCreateOrgFab.setOnClickListener(new View.OnClickListener() {
@@ -89,7 +91,7 @@ public class ModifyOrganizationFragment extends Fragment {
                                 }
                             });
                     AlertDialog alertDialog = builder.show();
-                } else if(!mClubType.isChecked() && mAccessCode.getText().toString().equals("")) {
+                } else if(!mOrgType.isChecked() && mAccessCode.getText().toString().equals("")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
                     builder.setMessage("A private organization must have an access code. Make sure to remember this code!")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -99,10 +101,14 @@ public class ModifyOrganizationFragment extends Fragment {
                                 }
                             });
                     AlertDialog alertDialog = builder.show();
-                } else {
+                } else if(mOrgToModify != null){
+                    //this is where you UPDATE the org that was passed in
+                    //TODO: update org in database
+                }else {
                     /**
-                     * everything is okay. Create the org in Parse (with an access code if necessary)
+                     * Create the new org in Parse (with an access code if necessary)
                      */
+                    //TODO: create new org in database
                 }
             }
         });
@@ -117,11 +123,12 @@ public class ModifyOrganizationFragment extends Fragment {
     private void setupViews(View v) {
         mName = (EditText)v.findViewById(R.id.newO_name);
         mHandle = (EditText)v.findViewById(R.id.newO_handle);
+        mHandleTV = (TextView)v.findViewById(R.id.newO_handle_TV);
         mAccessCode = (EditText)v.findViewById(R.id.newO_access_code_ET);
         mAccessCodeTitle = (TextView)v.findViewById(R.id.newO_access_code_TV);
-        mClubType = (Switch)v.findViewById(R.id.newO_org_type);
+        mOrgType = (Switch)v.findViewById(R.id.newO_org_type);
 
-        mClubType.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mOrgType.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
