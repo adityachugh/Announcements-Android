@@ -26,6 +26,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import io.mindbend.android.announcements.Organization;
+import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 
 public class NewAnnouncementFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
@@ -83,8 +84,20 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
         uploadFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //check text
+                if (mTitle.getText().toString().equals("") || mBody.getText().toString().equals("")){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
+                    builder.setMessage("Cannot leave title or body of announcement empty!")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //nothing
+                                }
+                            });
+                    AlertDialog alertDialog = builder.show();
+                }
                 //checking dates
-                if (!areDatesAppropriate()) {
+                else if (!areDatesAppropriate()) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
                     builder.setMessage("The end date for an announcement must be 0-5 days after the start date")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -94,6 +107,16 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
                                 }
                             });
                     AlertDialog alertDialog = builder.show();
+                }
+
+                //everything's good
+                else {
+                    String title = mTitle.getText().toString();
+                    String body = mBody.getText().toString();
+                    boolean notifyParent = mOrgToNotify.isChecked();
+                    boolean areCommentsAllowed = mAllowComments.isChecked();
+                    //TODO: only send imageBytes if not null
+                    //TODO: send data to parse
                 }
             }
         });
