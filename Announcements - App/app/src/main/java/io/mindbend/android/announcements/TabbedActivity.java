@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -19,6 +20,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -58,10 +60,15 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
     private DiscoverFragment mDiscoverFragment;
     private YouFragment mYouFragment;
 
+    private Bundle mSavedInstanceState;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tabbed);
+
+        //to fix the "rotate & back button" crashing bug
+        mSavedInstanceState = savedInstanceState;
 
         //initialize the viewpager
         mViewPager = (android.support.v4.view.ViewPager) findViewById(R.id.viewpager);
@@ -183,19 +190,48 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
         public android.support.v4.app.Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    if (mTodayFragment == null) mTodayFragment = new TodayFragment();
+                    if (mSavedInstanceState != null)
+                        mTodayFragment = (TodayFragment)getSupportFragmentManager().findFragmentById(R.id.today_frag);
+                    else if (mTodayFragment == null) mTodayFragment = new TodayFragment();
                     return mTodayFragment;
                 case 1:
-                    if (mDiscoverFragment == null) mDiscoverFragment = new DiscoverFragment();
+                    if (mSavedInstanceState != null)
+                        mDiscoverFragment = (DiscoverFragment)getSupportFragmentManager().findFragmentById(R.id.discove_frag);
+                    else if (mDiscoverFragment == null) mDiscoverFragment = new DiscoverFragment();
                     return mDiscoverFragment;
                 case 2:
-                    if (mYouFragment == null) mYouFragment = new YouFragment();
+                    if (mSavedInstanceState != null)
+                        mYouFragment = (YouFragment)getSupportFragmentManager().findFragmentById(R.id.you_frag);
+                    else if (mYouFragment == null) mYouFragment = new YouFragment();
                     return mYouFragment;
                 case 3:
-                    if (mAdminFragment == null) mAdminFragment = new AdminFragment();
+                    if (mSavedInstanceState != null)
+                        mAdminFragment = (AdminFragment)getSupportFragmentManager().findFragmentById(R.id.admin_frag);
+                    else if (mAdminFragment == null) mAdminFragment = new AdminFragment();
                     return mAdminFragment;
             }
             return null;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment fragment = (Fragment)super.instantiateItem(container, position);
+            switch (position){
+                case 0:
+                    mTodayFragment = (TodayFragment)fragment;
+                    break;
+                case 1:
+                    mDiscoverFragment = (DiscoverFragment)fragment;
+                    break;
+                case 2:
+                    mYouFragment = (YouFragment)fragment;
+                    break;
+                case 3:
+                    mAdminFragment = (AdminFragment)fragment;
+                    break;
+            }
+
+            return fragment;
         }
     }
 
