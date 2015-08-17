@@ -1,0 +1,207 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/card_inner_margin"
+                    android:background="@color/divider_color"/>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/card_inner_margin"
+                    android:paddingRight="@dimen/card_inner_margin"
+                    android:paddingTop="@dimen/card_outer_margin"
+                    android:paddingBottom="@dimen/card_outer_margin"
+                    android:background="@android:color/white">
+                    <TextView
+                        android:layout_marginLeft="@dimen/card_outer_margin"
+                        android:layout_width="51sp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/new_org_Name"
+                        android:layout_gravity="center_vertical"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textSize="@dimen/list_text_size" />
+                    <EditText
+                        android:maxLength="30"
+                        android:id="@+id/newO_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/DialogTheme"/>
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider_color"/>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/card_inner_margin"
+                    android:paddingRight="@dimen/card_inner_margin"
+                    android:paddingTop="@dimen/card_outer_margin"
+                    android:paddingBottom="@dimen/card_outer_margin"
+                    android:background="@android:color/white">
+                    <TextView
+                        android:layout_marginLeft="@dimen/card_outer_margin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/new_org_Handle"
+                        android:layout_gravity="center_vertical"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textSize="@dimen/list_text_size" />
+                    <EditText
+                        android:id="@+id/newO_handle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/DialogTheme"/>
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider_color"/>
+                <LinearLayout
+                    android:id="@+id/newO_image_field"
+                    android:orientation="horizontal" android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/card_inner_margin"
+                    android:paddingRight="@dimen/card_inner_margin"
+                    android:paddingTop="@dimen/card_outer_margin"
+                    android:paddingBottom="@dimen/card_outer_margin"
+                    android:background="@android:color/white">
+                    <TextView
+                        android:layout_marginLeft="@dimen/card_outer_margin"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/new_announce_Image"
+                        android:layout_gravity="center_vertical"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textSize="@dimen/list_text_size" />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_chevron_grey"
+                        android:tint="@color/text_tertiary"/>
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider_color"/>
+                <View
+                    android:layout_marginTop="@dimen/card_inner_margin"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider_color"/>
+                <LinearLayout
+                    android:orientation="horizontal" android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/card_inner_margin"
+                    android:paddingRight="@dimen/card_inner_margin"
+                    android:paddingTop="@dimen/card_outer_margin"
+                    android:paddingBottom="@dimen/card_outer_margin"
+                    android:background="@android:color/white">
+                    <TextView
+                        android:layout_marginLeft="@dimen/card_outer_margin"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/new_org_club_type"
+                        android:layout_gravity="center_vertical"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textSize="@dimen/list_text_size" />
+                    <Switch
+                        android:id="@+id/newO_org_type"
+                        android:textColor="@android:color/white"
+                        android:showText="true"
+                        android:textOff="@string/private_org"
+                        android:textOn="@string/public_org"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/DialogTheme" />
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider_color"/>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/card_inner_margin"
+                    android:paddingRight="@dimen/card_inner_margin"
+                    android:paddingTop="@dimen/card_outer_margin"
+                    android:paddingBottom="@dimen/card_outer_margin"
+                    android:background="@android:color/white">
+                    <TextView
+                        android:id="@+id/newO_access_code_TV"
+                        android:layout_marginLeft="@dimen/card_outer_margin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/new_org_access_code"
+                        android:layout_gravity="center_vertical"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textSize="@dimen/list_text_size" />
+                    <EditText
+                        android:inputType="number"
+                        android:id="@+id/newO_access_code_ET"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/DialogTheme"/>
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider_color"/>
+
+                <TextView
+                    android:gravity="center_horizontal"
+                    android:paddingLeft="@dimen/card_inner_margin"
+                    android:paddingRight="@dimen/card_inner_margin"
+                    android:layout_marginTop="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_height="wrap_content"
+                    android:text="@string/newO_access_code_explanation"
+                    android:textColor="@color/text_secondary"/>
+            </LinearLayout>
+        </ScrollView>
+
+        <ImageButton
+            android:id="@+id/new_OR_modify_org_fab"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/fab_side_margin"
+            android:layout_marginBottom="@dimen/fab_side_margin"
+            android:layout_width="@dimen/fab_size"
+            android:layout_height="@dimen/fab_size"
+            android:background="@drawable/fab"
+            android:src="@drawable/ic_upload"
+            android:elevation="@dimen/fab_elevation" />
+
+        <ProgressBar
+            android:id="@+id/newO_creation_progressbar"
+            android:visibility="invisible"
+            android:layout_centerInParent="true"
+            style="@style/DialogTheme"
+            android:layout_width="@dimen/progress_bar_LARGE"
+            android:layout_height="@dimen/progress_bar_LARGE" />
+
+    </RelativeLayout>
+
+</FrameLayout>

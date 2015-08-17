@@ -84,8 +84,8 @@ public class AdminMainFragment extends Fragment implements Serializable {
         TextView viewChildrenOrgs= (TextView) mView.findViewById(R.id.text_view_children);
         viewChildrenOrgs.setText(getString(R.string.format_view_children, typeOfChild));
 
-        TextView addOrgAdmin= (TextView) mView.findViewById(R.id.text_add_org_admin);
-        addOrgAdmin.setText(getString(R.string.format_add_org_admin, typeOfOrg));
+        TextView addChildOrg= (TextView) mView.findViewById(R.id.text_add_child_org);
+        addChildOrg.setText(getString(R.string.format_add_child_org, typeOfChild));
 
         TextView viewOrgAdmins= (TextView) mView.findViewById(R.id.text_view_org_admins);
         viewOrgAdmins.setText(getString(R.string.format_view_org_admin, typeOfOrg));
@@ -135,11 +135,12 @@ public class AdminMainFragment extends Fragment implements Serializable {
         });
 
 
-        LinearLayout addOrgAdmin= (LinearLayout) mView.findViewById(R.id.admin_add_org_admin);
-        addOrgAdmin.setOnClickListener(new View.OnClickListener() {
+        LinearLayout addChildOrg= (LinearLayout) mView.findViewById(R.id.admin_add_child_org);
+        addChildOrg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(ADMIN_MAIN_TAG, "add admin");
+                mListener.addChildOrganization(organization);
             }
         });
 
@@ -176,6 +177,7 @@ public class AdminMainFragment extends Fragment implements Serializable {
     public interface AdminInteractionListener extends Serializable{
         void viewChildren(Organization org);
         void addAnnouncement(Organization organization);
+        void addChildOrganization (Organization parentOrg);
     }
 
     public NewAnnouncementFragment getmNewAnnouncementFragment() {

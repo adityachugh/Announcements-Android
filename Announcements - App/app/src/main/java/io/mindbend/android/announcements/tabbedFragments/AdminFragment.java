@@ -15,6 +15,7 @@ import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.adminClasses.AdminMainFragment;
+import io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment;
 import io.mindbend.android.announcements.adminClasses.NewAnnouncementFragment;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridAdapter;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridFragment;
@@ -80,6 +81,14 @@ public class AdminFragment extends Fragment implements Serializable, AdminMainFr
     public void addAnnouncement(Organization organization) {
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.admin_framelayout, NewAnnouncementFragment.newInstance(organization))
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void addChildOrganization(Organization parentOrg) {
+        getChildFragmentManager().beginTransaction()
+                .replace(R.id.admin_framelayout, ModifyOrganizationFragment.newInstance(parentOrg, null))
                 .addToBackStack(null)
                 .commit();
     }
