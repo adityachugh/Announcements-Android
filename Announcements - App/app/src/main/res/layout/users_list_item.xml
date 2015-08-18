@@ -23,7 +23,27 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="@dimen/list_text_size"
         android:id="@+id/user_name"/>
+    <ImageButton
+        android:visibility="gone"
+        android:id="@+id/pending_user_accept_button"
+        android:layout_gravity="center_vertical"
+        android:layout_width="@dimen/pending_user_buttons_size"
+        android:layout_height="@dimen/pending_user_buttons_size"
+        android:background="@drawable/accept_pending_user"
+        android:src="@drawable/ic_accept"
+        android:layout_marginRight="4dp"
+        />
+    <ImageButton
+        android:visibility="gone"
+        android:id="@+id/pending_user_deny_button"
+        android:layout_gravity="center_vertical"
+        android:layout_width="@dimen/pending_user_buttons_size"
+        android:layout_height="@dimen/pending_user_buttons_size"
+        android:background="@drawable/deny_pending_user"
+        android:src="@drawable/ic_deny"
+        />
     <ImageView
+        android:id="@+id/user_list_right_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"

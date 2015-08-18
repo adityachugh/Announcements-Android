@@ -1,10 +1,14 @@
 package io.mindbend.android.announcements.reusableFrags;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -22,18 +26,32 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 
         private final TextView mName;
         private final LinearLayout mUserLayout;
+        private final ImageView mUserIcon;
+
+        //for the accept and decline buttons, if a pending user
+        private final ImageButton mAcceptUser;
+        private final ImageButton mDenyUser;
 
         public ViewHolder(View itemView) {
             super(itemView);
             //getting all the elements part of the card, aside from the image
             mName = (TextView) itemView.findViewById(R.id.user_name);
             mUserLayout = (LinearLayout)itemView.findViewById(R.id.user_list);
+            mUserIcon = (ImageView)itemView.findViewById(R.id.user_list_right_icon);
+            mAcceptUser = (ImageButton)itemView.findViewById(R.id.pending_user_accept_button);
+            mDenyUser = (ImageButton)itemView.findViewById(R.id.pending_user_deny_button);
         }
     }
+
+    public static final int USERS_MEMBERS = 0;
+    public static final int USERS_ADMINS = 1;
+    public static final int USERS_PENDING = 2;
+
 
     private List<User> mUsers;
     private Context mContext;
     private UserListInteractionListener mListener;
+    private int mTypeOfUsers;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
@@ -53,6 +71,29 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
                 mListener.userSelected(user);
             }
         });
+
+        if (mTypeOfUsers == USERS_ADMINS)
+            viewHolder.mUserIcon.setImageResource(R.drawable.ic_admin);
+        else if (mTypeOfUsers == USERS_PENDING){
+            viewHolder.mAcceptUser.setVisibility(View.VISIBLE);
+            viewHolder.mDenyUser.setVisibility(View.VISIBLE);
+
+            viewHolder.mAcceptUser.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO: interface for acceptance here
+                    Log.wtf("pending user", "accept");
+                }
+            });
+
+            viewHolder.mDenyUser.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO: interface for decline here
+                    Log.wtf("pending user", "deny");
+                }
+            });
+        }
     }
 
     @Override
@@ -60,11 +101,12 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         return mUsers.size();
     }
 
-    public UserListAdapter (Context context, List<User> users, UserListInteractionListener listener) {
+    public UserListAdapter (Context context, List<User> users, UserListInteractionListener listener, int typeOfUsers) {
         //save the mPosts private field as what is passed in
         mContext = context;
         mUsers = users;
         mListener = listener;
+        mTypeOfUsers = typeOfUsers;
     }
 
     @Override

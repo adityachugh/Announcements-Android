@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Random;
 
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
@@ -109,7 +110,11 @@ public class AdminFragment extends Fragment implements Serializable,
         users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
         users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
 
-        ListFragment adminList = ListFragment.newInstance(null, null, null, null, users, AdminFragment.this);
+        //for test purposes, randomly selects what type of users list to display (admin, pending, or normal)
+        Random random = new Random();
+        int typeOfUser = random.nextInt(3);
+
+        ListFragment adminList = ListFragment.newInstance(null, null, null, null, users, AdminFragment.this, typeOfUser);
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.admin_framelayout, adminList)
                 .addToBackStack(null)
