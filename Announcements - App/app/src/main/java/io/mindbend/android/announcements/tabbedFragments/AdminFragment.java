@@ -53,7 +53,7 @@ public class AdminFragment extends Fragment implements Serializable,
         mAdminMain = AdminMainFragment.newInstance(this);
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         if (ft.isEmpty()) {
-            ft.add(R.id.admin_framelayout, mAdminMain, MAIN_ADMIN_TAG).addToBackStack(MAIN_ADMIN_TAG).commit();
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.admin_framelayout, mAdminMain, MAIN_ADMIN_TAG).addToBackStack(MAIN_ADMIN_TAG).commit();
         }
         return v;
     }
@@ -83,12 +83,13 @@ public class AdminFragment extends Fragment implements Serializable,
 
         OrgsGridFragment childrenOrgs = OrgsGridFragment.newInstance(orgs, this, this);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.admin_framelayout, childrenOrgs).addToBackStack(null).commit();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, childrenOrgs).addToBackStack(null).commit();
     }
 
     @Override
     public void addAnnouncement(Organization organization) {
         getChildFragmentManager().beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.admin_framelayout, mAdminMain.getmNewAnnouncementFragment())
                 .addToBackStack(null)
                 .commit();
@@ -97,6 +98,7 @@ public class AdminFragment extends Fragment implements Serializable,
     @Override
     public void addChildOrganization(Organization parentOrg) {
         getChildFragmentManager().beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.admin_framelayout, ModifyOrganizationFragment.newInstance(parentOrg, null))
                 .addToBackStack(null)
                 .commit();
@@ -120,6 +122,7 @@ public class AdminFragment extends Fragment implements Serializable,
 
         ListFragment adminList = ListFragment.newInstance(null, null, null, null, users, AdminFragment.this, typeOfUsers);
         getChildFragmentManager().beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.admin_framelayout, adminList)
                 .addToBackStack(null)
                 .commit();
@@ -155,7 +158,7 @@ public class AdminFragment extends Fragment implements Serializable,
     @Override
     public void pressedUserFromCommentOfOrgPost(User userPressed) {
         ProfileFragment userProfile = ProfileFragment.newInstance(userPressed, null, this);
-        getChildFragmentManager().beginTransaction().replace(R.id.admin_framelayout, userProfile).addToBackStack(null).commit();
+        getChildFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, userProfile).addToBackStack(null).commit();
     }
 
     @Override

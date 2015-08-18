@@ -102,7 +102,7 @@ public class TodayFragment extends Fragment implements Serializable,
         //pass in "this" in order to set the listener for the posts overlay frag in order to open the comments feed for a post
         mPostsOverlayFragment = PostOverlayFragment.newInstance(posts, this);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.today_framelayout, mPostsOverlayFragment).addToBackStack(TODAY_POSTS_FRAG).commit();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.today_framelayout, mPostsOverlayFragment).addToBackStack(TODAY_POSTS_FRAG).commit();
 
         return v;
     }
@@ -144,14 +144,14 @@ public class TodayFragment extends Fragment implements Serializable,
     public void visitCommentersProfile(User commenterToBeVisited) {
         ProfileFragment commenterVisited = ProfileFragment.newInstance(commenterToBeVisited, null, this);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.today_framelayout, commenterVisited).addToBackStack(null).commit();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.today_framelayout, commenterVisited).addToBackStack(null).commit();
     }
 
     @Override
     public void userProfileToOrgProfile(Organization orgSelected) {
         ProfileFragment orgToVisit = ProfileFragment.newInstance(null, orgSelected, this);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.today_framelayout, orgToVisit).addToBackStack(null).commit();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.today_framelayout, orgToVisit).addToBackStack(null).commit();
     }
 
     @Override

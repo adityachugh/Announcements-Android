@@ -51,7 +51,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
 
         //inflate profileFrag in framelayout
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.you_framelayout, mProfileFragment).addToBackStack(DEFAULT).commit();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.you_framelayout, mProfileFragment).addToBackStack(DEFAULT).commit();
 
         return v;
     }
@@ -64,7 +64,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
 //        replace the current profile frag with new org profile frag, while adding it to a backstack
         ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, this);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.you_framelayout, orgProfile).addToBackStack(null).commit();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.you_framelayout, orgProfile).addToBackStack(null).commit();
 
         Log.d(TAG, "org has been pressed on profile page " + orgSelected.toString());
     }
@@ -78,6 +78,6 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
     public void pressedUserFromCommentOfOrgPost(User userPressed) {
         ProfileFragment userToVisit = ProfileFragment.newInstance(userPressed, null, this);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.you_framelayout, userToVisit).addToBackStack(null).commit();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.you_framelayout, userToVisit).addToBackStack(null).commit();
     }
 }
