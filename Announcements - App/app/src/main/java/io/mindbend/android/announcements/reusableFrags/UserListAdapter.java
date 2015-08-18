@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 
 import io.mindbend.android.announcements.R;
@@ -51,7 +52,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
     private List<User> mUsers;
     private Context mContext;
     private UserListInteractionListener mListener;
-    private int mTypeOfUsers;
+    private HashMap<User, Integer> mTypeOfUsers;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
@@ -72,9 +73,9 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
             }
         });
 
-        if (mTypeOfUsers == USERS_ADMINS)
+        if (mTypeOfUsers.get(user) == USERS_ADMINS)
             viewHolder.mUserIcon.setImageResource(R.drawable.ic_admin);
-        else if (mTypeOfUsers == USERS_PENDING){
+        else if (mTypeOfUsers.get(user) == USERS_PENDING){
             viewHolder.mAcceptUser.setVisibility(View.VISIBLE);
             viewHolder.mDenyUser.setVisibility(View.VISIBLE);
 
@@ -101,7 +102,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         return mUsers.size();
     }
 
-    public UserListAdapter (Context context, List<User> users, UserListInteractionListener listener, int typeOfUsers) {
+    public UserListAdapter (Context context, List<User> users, UserListInteractionListener listener, HashMap<User, Integer> typeOfUsers) {
         //save the mPosts private field as what is passed in
         mContext = context;
         mUsers = users;

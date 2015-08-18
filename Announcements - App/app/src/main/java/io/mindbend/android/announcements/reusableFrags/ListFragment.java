@@ -5,12 +5,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import io.mindbend.android.announcements.Notification;
@@ -19,8 +21,6 @@ import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
 
 public class ListFragment extends Fragment implements Serializable {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_ORGS = "param_orgs";
     private static final String ARG_NOTIFS = "param_notifs";
     private static final String ARG_USERS = "param_users";
@@ -46,7 +46,7 @@ public class ListFragment extends Fragment implements Serializable {
     OrgsListAdapter.OrgListInteractionListener mOrgListener;
     NotifsListAdapter.NotifInteractionListener mNotifListener;
     UserListAdapter.UserListInteractionListener mUserListener;
-    int mTypeOfUsers; //this is to detail if the users are members, admins, or pending members
+    HashMap<User, Integer> mTypeOfUsers; //this is to detail if the users are members, admins, or pending members
 
     /**
      * Use this factory method to create a new instance of
@@ -60,7 +60,7 @@ public class ListFragment extends Fragment implements Serializable {
     // TODO: Rename and change types and number of parameters
     public static ListFragment newInstance(ArrayList<Organization> orgsIfPresent, OrgsListAdapter.OrgListInteractionListener orgListenerIfPresent,
                                            ArrayList<Notification> notifsIfPresent, NotifsListAdapter.NotifInteractionListener notifListenerIfPresent,
-                                           ArrayList<User> usersIfPresent, UserListAdapter.UserListInteractionListener userListenerIfPresent, int typeOfUser) {
+                                           ArrayList<User> usersIfPresent, UserListAdapter.UserListInteractionListener userListenerIfPresent, HashMap<User, Integer> typeOfUser) {
         ListFragment fragment = new ListFragment();
         Bundle args = new Bundle();
 
@@ -75,7 +75,7 @@ public class ListFragment extends Fragment implements Serializable {
         if (usersIfPresent != null) {
             args.putParcelableArrayList(ARG_USERS, usersIfPresent);
             args.putSerializable(ARG_INTERFACE, userListenerIfPresent);
-            args.putInt(ARG_USERS_TYPE, typeOfUser);
+            args.putSerializable(ARG_USERS_TYPE, typeOfUser);
         }
 
         fragment.setArguments(args);
@@ -103,7 +103,7 @@ public class ListFragment extends Fragment implements Serializable {
             whatObjectList = USERS_SELECTED;
             mUsers = getArguments().getParcelableArrayList(ARG_USERS);
             mUserListener = (UserListAdapter.UserListInteractionListener)getArguments().getSerializable(ARG_INTERFACE);
-            mTypeOfUsers = getArguments().getInt(ARG_USERS_TYPE);
+            mTypeOfUsers = (HashMap<User, Integer>)getArguments().getSerializable(ARG_USERS_TYPE);
         }
     }
 
