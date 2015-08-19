@@ -85,6 +85,7 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
 
         //gets backwards compatible toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(getString(R.string.format_tabbed_activity_toolbar_text, "Akshay")); //TODO: pull in user's name
         setSupportActionBar(toolbar);
 
         //gets tabBar, adds tabs

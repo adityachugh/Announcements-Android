@@ -26,6 +26,7 @@
     <string name="sharing_post">Check out this announcement by %1$s: %2$s</string>
     <string name="send_to">Share this post</string>
     <string name="more_activity_selected">More</string>
+    <string name="search_widget_pressed">Search</string>
     <string name="title_activity_more">MoreActivity</string>
 
 
@@ -67,4 +68,7 @@
     <string name="public_org">Public</string>
     <string name="new_org_access_code">Access Code</string>
     <string name="newO_access_code_explanation">Users will use this to submit a follow request if this organization is private. If you leave this blank, any user may submit a follow request, however they will still not be able to view any other information about your organization.</string>
+    <string name="format_tabbed_activity_toolbar_text">Infor[%1$s]</string>
+    <string name="title_activity_searchable">Add Admins</string>
+    <string name="searchable_activity_toggle_text">Search within parent organization</string>
 </resources>

@@ -1,7 +1,9 @@
 package io.mindbend.android.announcements.reusableFrags;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,12 +22,14 @@ import java.util.List;
 import io.mindbend.android.announcements.Notification;
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.SearchableActivity;
 import io.mindbend.android.announcements.User;
 
 public class ListFragment extends Fragment implements Serializable, View.OnClickListener {
     private static final String ARG_ORGS = "param_orgs";
     private static final String ARG_NOTIFS = "param_notifs";
     private static final String ARG_USERS = "param_users";
+    private static final String ARG_ORG_OF_USERS = "the_org_of_the_users";
     private static final String ARG_USERS_TYPE = "type_of_users";
     private static final String ARG_INTERFACE = "interface_passed_in";
     private static final String ARG_IS_ADMIN = "is_current_user_admin_of_list";
@@ -46,11 +50,12 @@ public class ListFragment extends Fragment implements Serializable, View.OnClick
     private List<User> mUsers;
 
     //corresponding interfaces (listeners) passed in
-    OrgsListAdapter.OrgListInteractionListener mOrgListener;
-    NotifsListAdapter.NotifInteractionListener mNotifListener;
-    UserListAdapter.UserListInteractionListener mUserListener;
-    HashMap<User, Integer> mTypeOfUsers; //this is to detail if the users are members, admins, or pending members
-    boolean mIsAdmin;
+    private OrgsListAdapter.OrgListInteractionListener mOrgListener;
+    private NotifsListAdapter.NotifInteractionListener mNotifListener;
+    private Organization mOrgOfUsers;
+    private UserListAdapter.UserListInteractionListener mUserListener;
+    private HashMap<User, Integer> mTypeOfUsers; //this is to detail if the users are members, admins, or pending members
+    private boolean mIsAdmin;
 
     /**
      * Use this factory method to create a new instance of
@@ -65,7 +70,7 @@ public class ListFragment extends Fragment implements Serializable, View.OnClick
     public static ListFragment newInstance(boolean isAdmin,
                                            ArrayList<Organization> orgsIfPresent, OrgsListAdapter.OrgListInteractionListener orgListenerIfPresent,
                                            ArrayList<Notification> notifsIfPresent, NotifsListAdapter.NotifInteractionListener notifListenerIfPresent,
-                                           ArrayList<User> usersIfPresent, UserListAdapter.UserListInteractionListener userListenerIfPresent, HashMap<User, Integer> typeOfUser) {
+                                           ArrayList<User> usersIfPresent, UserListAdapter.UserListInteractionListener userListenerIfPresent, HashMap<User, Integer> typeOfUser, Organization orgOfUsers) {
         ListFragment fragment = new ListFragment();
         Bundle args = new Bundle();
 
@@ -80,6 +85,7 @@ public class ListFragment extends Fragment implements Serializable, View.OnClick
         }
         if (usersIfPresent != null) {
             args.putParcelableArrayList(ARG_USERS, usersIfPresent);
+            args.putSerializable(ARG_ORG_OF_USERS, orgOfUsers);
             args.putSerializable(ARG_INTERFACE, userListenerIfPresent);
             args.putSerializable(ARG_USERS_TYPE, typeOfUser);
         }
@@ -95,6 +101,10 @@ public class ListFragment extends Fragment implements Serializable, View.OnClick
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mIsAdmin = getArguments().getBoolean(ARG_IS_ADMIN);
+        mOrgOfUsers = (Organization)getArguments().getSerializable(ARG_ORG_OF_USERS);
+
         if (getArguments().getParcelableArrayList(ARG_ORGS) != null)  {
             whatObjectList = ORGS_SELECTED;
             mOrgs = getArguments().getParcelableArrayList(ARG_ORGS);
@@ -108,6 +118,7 @@ public class ListFragment extends Fragment implements Serializable, View.OnClick
         else if (getArguments().getParcelableArrayList(ARG_USERS) != null)  {
             whatObjectList = USERS_SELECTED;
             mUsers = getArguments().getParcelableArrayList(ARG_USERS);
+            mOrgOfUsers = (Organization)getArguments().getSerializable(ARG_ORG_OF_USERS);
             mUserListener = (UserListAdapter.UserListInteractionListener)getArguments().getSerializable(ARG_INTERFACE);
             mTypeOfUsers = (HashMap<User, Integer>)getArguments().getSerializable(ARG_USERS_TYPE);
         }
@@ -135,11 +146,13 @@ public class ListFragment extends Fragment implements Serializable, View.OnClick
             case USERS_SELECTED:
                 UserListAdapter userAdapter = new UserListAdapter(getActivity(), mUsers, mUserListener, mTypeOfUsers);
                 recyclerView.setAdapter(userAdapter);
-                //the add admin fab
-                ImageButton addAdminFab = (ImageButton)v.findViewById(R.id.list_fab);
-                addAdminFab.setVisibility(View.VISIBLE);
-                addAdminFab.setImageResource(R.drawable.ic_add_admin);
-                addAdminFab.setOnClickListener(this);
+                if (mIsAdmin){
+                    //the add admin fab
+                    ImageButton addAdminFab = (ImageButton)v.findViewById(R.id.list_fab);
+                    addAdminFab.setVisibility(View.VISIBLE);
+                    addAdminFab.setImageResource(R.drawable.ic_add_admin);
+                    addAdminFab.setOnClickListener(this);
+                }
                 break;
         }
 
@@ -166,8 +179,10 @@ public class ListFragment extends Fragment implements Serializable, View.OnClick
                 break;
             case USERS_SELECTED:
                 //add an admin to the org
-                Log.wtf("List Fab", "Add Admin Fab pressed");
+                Log.wtf("List Fab", "Add Admin Fab pressed, intent launching");
+                
                 break;
         }
     }
+
 }

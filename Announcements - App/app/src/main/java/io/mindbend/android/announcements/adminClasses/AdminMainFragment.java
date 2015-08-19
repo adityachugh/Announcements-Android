@@ -158,7 +158,7 @@ public class AdminMainFragment extends Fragment implements Serializable {
             @Override
             public void onClick(View v) {
                 Log.d(ADMIN_MAIN_TAG, "view admins");
-                mListener.userListOpened();
+                mListener.userListOpened(organization);
             }
         });
 
@@ -192,7 +192,7 @@ public class AdminMainFragment extends Fragment implements Serializable {
         void viewChildren(Organization org);
         void addAnnouncement(Organization organization);
         void addChildOrganization (Organization parentOrg);
-        void userListOpened();
+        void userListOpened(Organization parentOrg);
     }
 
     public NewAnnouncementFragment getmNewAnnouncementFragment() {

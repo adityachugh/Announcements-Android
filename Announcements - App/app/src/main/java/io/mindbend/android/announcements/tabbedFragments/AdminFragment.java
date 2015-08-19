@@ -4,6 +4,7 @@ package io.mindbend.android.announcements.tabbedFragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -105,7 +106,7 @@ public class AdminFragment extends Fragment implements Serializable,
     }
 
     @Override
-    public void userListOpened() {
+    public void userListOpened(Organization parentOrg) {
         ArrayList<User> users = new ArrayList<User>();
         users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
         users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
@@ -120,7 +121,7 @@ public class AdminFragment extends Fragment implements Serializable,
             typeOfUsers.put(user, r.nextInt(3));
         }
 
-        ListFragment adminList = ListFragment.newInstance(true, null, null, null, null, users, AdminFragment.this, typeOfUsers);
+        ListFragment adminList = ListFragment.newInstance(true , null, null, null, null, users, AdminFragment.this, typeOfUsers, parentOrg);
         getChildFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.admin_framelayout, adminList)
