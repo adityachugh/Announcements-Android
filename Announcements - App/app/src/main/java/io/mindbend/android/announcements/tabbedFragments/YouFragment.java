@@ -98,7 +98,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
     public void modifyOrg(Organization org) {
         getChildFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .replace(R.id.today_framelayout, ModifyOrganizationFragment.newInstance(null, org))
+                .replace(R.id.you_framelayout, ModifyOrganizationFragment.newInstance(null, org))
                 .addToBackStack(null)
                 .commit();
     }
@@ -160,7 +160,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
     public void searchForAdmins(Organization organization) {
         //TODO: open searchfrag here
         SearchableFrag searchableFrag = SearchableFrag.newInstance(SearchableFrag.USERS_TYPE, organization, YouFragment.this);
-        getChildFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.today_framelayout, searchableFrag).addToBackStack(null).commit();
+        getChildFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.you_framelayout, searchableFrag).addToBackStack(null).commit();
     }
 
     @Override
