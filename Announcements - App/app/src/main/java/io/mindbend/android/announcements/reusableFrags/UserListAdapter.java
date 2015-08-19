@@ -132,7 +132,6 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
     @Override
     public void onViewDetachedFromWindow(ViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        mListener = null;
     }
 
     public interface UserListInteractionListener extends Serializable {

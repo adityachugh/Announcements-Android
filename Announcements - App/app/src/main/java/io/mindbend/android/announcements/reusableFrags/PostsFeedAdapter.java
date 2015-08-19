@@ -22,6 +22,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Random;
 
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
@@ -32,7 +33,6 @@ import io.mindbend.android.announcements.TabbedActivity;
  */
 public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.ViewHolder> implements Serializable{
     private static final String SHARE_TAG = "Share_post_tag";
-    public static final int SELECT_PICTURE = 1;
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView mTitle;
@@ -42,6 +42,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
         private final Button mCommentButton;
         private final Button mShareButton;
         private final de.hdodenhof.circleimageview.CircleImageView mPosterImage;
+        private final TextView mAnnouncementState;
 
         //TODO: create private fields for the elements within a single feed item
 
@@ -55,6 +56,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
             mCommentButton = (Button)itemView.findViewById(R.id.post_comment_button);
             mShareButton = (Button)itemView.findViewById(R.id.post_share_button);
             mPosterImage = (de.hdodenhof.circleimageview.CircleImageView)itemView.findViewById(R.id.post_club_image);
+            mAnnouncementState = (TextView)itemView.findViewById(R.id.announcements_state_TV);
         }
     }
 
@@ -63,6 +65,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
     private Context mContext;
     private PostInteractionListener mListener;
     private de.hdodenhof.circleimageview.CircleImageView mPressedImage;
+    private boolean mIsViewingState;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, final int i) {
@@ -78,44 +81,58 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
         viewHolder.mTimeSince.setText(post.getmPostTimeSince());
         viewHolder.mClubUsername.setText(post.getmPostClubUsername());
 
-        viewHolder.mCommentButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.pressedPost(post);
-            }
-        });
+        if(mIsViewingState){
+            viewHolder.mCommentButton.setVisibility(View.GONE);
+            viewHolder.mShareButton.setVisibility(View.GONE);
+            viewHolder.mAnnouncementState.setVisibility(View.VISIBLE);
 
-        final String sharingPostText = mContext.getResources().getString(R.string.sharing_post);
-        viewHolder.mShareButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String toShareString = String.format(sharingPostText, post.getmPostClubUsername(), post.getmPostDetail());
-                Intent sendIntent = new Intent(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, toShareString);
-                sendIntent.setType("text/plain");
-                try {
-                    mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getText(R.string.send_to)));
-                } catch (Exception e){
-                    Log.d(SHARE_TAG, "An error occured");
+            int textColor;
+            String typeString;
+            //TODO: grab state of current announce. Randomly selected for now
+            Random r = new Random();
+            int test = r.nextInt(3);
+            switch (test){
+                case 0:
+                    textColor = mContext.getResources().getColor(R.color.announcement_accepted);
+                    typeString = mContext.getResources().getString(R.string.announcement_approved);
+                    break;
+                case 1:
+                    textColor = mContext.getResources().getColor(R.color.announcement_declined);
+                    typeString = mContext.getResources().getString(R.string.announcement_declined);
+                    break;
+                default:
+                    textColor = mContext.getResources().getColor(R.color.announcement_pending);
+                    typeString = mContext.getResources().getString(R.string.announcement_pending);
+                    break;
+            }
+            viewHolder.mAnnouncementState.setTextColor(textColor);
+            viewHolder.mAnnouncementState.setText(typeString);
+        }
+        else {
+            //normal view
+            viewHolder.mCommentButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.pressedPost(post);
                 }
-            }
-        });
+            });
 
-        viewHolder.mPosterImage.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                mPressedImage = viewHolder.mPosterImage;
-
-                Log.wtf("LOL", "long pressed image");
-
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                ((Activity) mContext).startActivityForResult(Intent.createChooser(intent,
-                        "Select Picture"), SELECT_PICTURE);
-                return true;
-            }
-        });
+            final String sharingPostText = mContext.getResources().getString(R.string.sharing_post);
+            viewHolder.mShareButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String toShareString = String.format(sharingPostText, post.getmPostClubUsername(), post.getmPostDetail());
+                    Intent sendIntent = new Intent(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, toShareString);
+                    sendIntent.setType("text/plain");
+                    try {
+                        mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getText(R.string.send_to)));
+                    } catch (Exception e){
+                        Log.d(SHARE_TAG, "An error occured");
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -123,11 +140,18 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
         return mPosts.size();
     }
 
-    public PostsFeedAdapter(Context context, List<Post> posts, PostInteractionListener listener){
+    public PostsFeedAdapter(Context context, List<Post> posts, PostInteractionListener listener, boolean isViewingState) {
         //save the mPosts private field as what is passed in
         mContext = context;
         mPosts = posts;
+
+        /**
+         * The listener should be NULL only if the @param isViewingState is TRUE
+         */
+
         mListener = listener;
+
+        mIsViewingState = isViewingState;
     }
 
     @Override
@@ -144,15 +168,9 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
     @Override
     public void onViewDetachedFromWindow(ViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        mListener = null;
     }
 
     public interface PostInteractionListener extends Serializable{
         void pressedPost(Post postPressed);
-    }
-
-    public void updatePostImageBitmap (Bitmap image){
-        //TODO: update data onb parse
-        mPressedImage.setImageBitmap(image);
     }
 }

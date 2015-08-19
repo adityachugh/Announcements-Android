@@ -89,7 +89,7 @@ public class AdminMainFragment extends Fragment implements Serializable {
         allOrgAnnouncements.setText(getString(R.string.format_all_org_announcements, typeOfOrg));
 
         TextView viewChildrenOrgs= (TextView) mView.findViewById(R.id.text_view_children);
-        viewChildrenOrgs.setText(getString(R.string.format_view_children, typeOfChild));
+        viewChildrenOrgs.setText(getString(R.string.format_view_children, typeOfChild+"s"));
 
         TextView addChildOrg= (TextView) mView.findViewById(R.id.text_add_child_org);
         addChildOrg.setText(getString(R.string.format_add_child_org, typeOfChild));
@@ -127,6 +127,7 @@ public class AdminMainFragment extends Fragment implements Serializable {
             @Override
             public void onClick(View v) {
                 Log.d(ADMIN_MAIN_TAG, "view announcements");
+                mListener.viewAnnouncementsState(organization);
             }
         });
 
@@ -193,6 +194,7 @@ public class AdminMainFragment extends Fragment implements Serializable {
         void addAnnouncement(Organization organization);
         void addChildOrganization (Organization parentOrg);
         void userListOpened(Organization parentOrg);
+        void viewAnnouncementsState(Organization organization);
     }
 
     public NewAnnouncementFragment getmNewAnnouncementFragment() {

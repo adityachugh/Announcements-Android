@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 import io.mindbend.android.announcements.Organization;
+import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.adminClasses.AdminMainFragment;
@@ -23,6 +24,7 @@ import io.mindbend.android.announcements.adminClasses.NewAnnouncementFragment;
 import io.mindbend.android.announcements.reusableFrags.ListFragment;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridAdapter;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridFragment;
+import io.mindbend.android.announcements.reusableFrags.PostsCardsFragment;
 import io.mindbend.android.announcements.reusableFrags.ProfileFragment;
 import io.mindbend.android.announcements.reusableFrags.SearchableFrag;
 import io.mindbend.android.announcements.reusableFrags.UserListAdapter;
@@ -126,6 +128,30 @@ public class AdminFragment extends Fragment implements Serializable,
         getChildFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.admin_framelayout, adminList)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void viewAnnouncementsState(Organization organization) {
+        //TODO: query today's posts data from Parse, then pass that data into a PostsCardFragment that will be created using the PostsCardsFragment.NewInstance static method
+        //in the meantime, here is fake data
+        ArrayList<Post> posts = new ArrayList<>();
+
+        //THE FOLLOWING ARE FAKE TEST POSTS
+        Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        posts.add(testPost1);
+
+        Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        posts.add(testPost2);
+
+        Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        posts.add(testPost3);
+
+        PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true);
+        getChildFragmentManager().beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .replace(R.id.admin_framelayout, announcementsStateList)
                 .addToBackStack(null)
                 .commit();
     }

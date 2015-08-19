@@ -70,7 +70,6 @@ public class NotifsListAdapter extends RecyclerView.Adapter<NotifsListAdapter.Vi
     @Override
     public void onViewDetachedFromWindow(ViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        mListener = null;
     }
 
     public interface NotifInteractionListener extends Serializable {

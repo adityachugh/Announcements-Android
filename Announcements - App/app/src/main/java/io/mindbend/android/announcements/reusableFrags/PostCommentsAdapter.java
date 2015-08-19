@@ -91,7 +91,6 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
     @Override
     public void onViewDetachedFromWindow(ViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        mListener = null;
     }
 
     public interface CommenterInteractionListener {

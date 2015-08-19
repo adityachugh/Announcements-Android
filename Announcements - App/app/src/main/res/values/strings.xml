@@ -72,4 +72,7 @@
     <string name="title_activity_searchable">Add Admins</string>
     <string name="searchable_activity_toggle_text">Search within parent organization</string>
     <string name="discover_search_hint">Search for organizations...</string>
+    <string name="announcement_approved">Approved</string>
+    <string name="announcement_declined">Declined</string>
+    <string name="announcement_pending">Pending</string>
 </resources>

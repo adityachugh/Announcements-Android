@@ -15,4 +15,8 @@
     <color name="accept_pending_user_dark">#00AA00</color>
     <color name="deny_pending_user">#FF0000</color>
     <color name="deny_pending_user_dark">#AA0000</color>
+
+    <color name="announcement_accepted">#00CC00</color>
+    <color name="announcement_declined">#CC0000</color>
+    <color name="announcement_pending">#FFFF00</color>
 </resources>

@@ -69,7 +69,6 @@ public class OrgsListAdapter extends RecyclerView.Adapter<OrgsListAdapter.ViewHo
     @Override
     public void onViewDetachedFromWindow(ViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        mListener = null;
     }
 
     public interface OrgListInteractionListener extends Serializable {

@@ -241,18 +241,6 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == PostsFeedAdapter.SELECT_PICTURE) {
-                Log.wtf("test", "intent result was okay");
-                Uri selectedImageUri = data.getData();
-                PostsCardsFragment postsCardsFragment = ((PostOverlayFragment) mTodayFragment.getmPostsOverlayFragment()).getmPostsFragment();
-                try {
-                    Bitmap image = getBitmapFromUri(selectedImageUri);
-                    postsCardsFragment.getmPostFeedAdapter().updatePostImageBitmap(image);
-                } catch (IOException f){
-                    Log.wtf("crash", "sad face");
-                    Toast.makeText(this, "Failed to add image", Toast.LENGTH_LONG).show();
-                }
-            }
             if (requestCode == NewAnnouncementFragment.ADD_PHOTO) {
                 Log.wtf("Image", "intent result was okay");
                 Uri selectedImageUri = data.getData();

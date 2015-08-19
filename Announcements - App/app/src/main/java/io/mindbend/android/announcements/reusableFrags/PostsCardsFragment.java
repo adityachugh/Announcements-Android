@@ -29,6 +29,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, SwipeR
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_POSTS = "posts";
     private static final String ARG_POSTS_LISTENER = "post_touch_listener";
+    private static final String ARG_IS_VIEWING_STATE = "is_viewing_announcements_state";
 
     // TODO: Rename and change types of parameters
     private List<Post> mPosts;
@@ -36,6 +37,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, SwipeR
     private PostsFeedAdapter.PostInteractionListener mPostTouchListener;
     private transient View mView;
     private transient SwipeRefreshLayout mRefreshTodayPosts;
+    private boolean mIsViewingState;
 
     /**
      * Use this factory method to create a new instance of
@@ -45,11 +47,12 @@ public class PostsCardsFragment extends Fragment implements Serializable, SwipeR
      * @return A new instance of fragment PostsCardsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PostsCardsFragment newInstance(ArrayList<Post> posts, PostsFeedAdapter.PostInteractionListener postTouchListener) {
+    public static PostsCardsFragment newInstance(ArrayList<Post> posts, PostsFeedAdapter.PostInteractionListener postTouchListener, boolean isViewingState) {
         PostsCardsFragment fragment = new PostsCardsFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_POSTS, posts);
         args.putSerializable(ARG_POSTS_LISTENER, postTouchListener);
+        args.putBoolean(ARG_IS_VIEWING_STATE, isViewingState);
         fragment.setArguments(args);
         return fragment;
     }
@@ -68,6 +71,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, SwipeR
         if (getArguments() != null) {
             mPosts = getArguments().getParcelableArrayList(ARG_POSTS);
             mPostTouchListener = (PostsFeedAdapter.PostInteractionListener)getArguments().getSerializable(ARG_POSTS_LISTENER);
+            mIsViewingState = getArguments().getBoolean(ARG_IS_VIEWING_STATE);
         }
     }
 
@@ -82,7 +86,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, SwipeR
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
             //Initialize and set the adapter
-            mPostFeedAdapter = new PostsFeedAdapter(getActivity(), mPosts, mPostTouchListener);
+            mPostFeedAdapter = new PostsFeedAdapter(getActivity(), mPosts, mPostTouchListener, mIsViewingState);
             recyclerView.setAdapter(mPostFeedAdapter);
 
             //the animation for the recycler view to slide in from the bottom of the view
