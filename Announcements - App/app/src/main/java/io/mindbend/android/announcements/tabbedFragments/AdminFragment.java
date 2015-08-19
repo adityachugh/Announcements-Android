@@ -171,7 +171,7 @@ public class AdminFragment extends Fragment implements Serializable,
     @Override
     public void searchForAdmins(Organization organization) {
         //TODO: open searchfrag here
-        SearchableFrag searchableFrag = SearchableFrag.newInstance(organization, AdminFragment.this);
+        SearchableFrag searchableFrag = SearchableFrag.newInstance(SearchableFrag.USERS_TYPE, organization, AdminFragment.this);
         getChildFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, searchableFrag).addToBackStack(null).commit();
     }
 
