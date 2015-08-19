@@ -22,7 +22,6 @@ import java.util.List;
 import io.mindbend.android.announcements.Notification;
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
-import io.mindbend.android.announcements.SearchableActivity;
 import io.mindbend.android.announcements.User;
 
 public class ListFragment extends Fragment implements Serializable, View.OnClickListener {
@@ -180,7 +179,7 @@ public class ListFragment extends Fragment implements Serializable, View.OnClick
             case USERS_SELECTED:
                 //add an admin to the org
                 Log.wtf("List Fab", "Add Admin Fab pressed, intent launching");
-                
+
                 break;
         }
     }
