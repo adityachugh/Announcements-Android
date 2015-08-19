@@ -31,6 +31,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -40,11 +41,15 @@ import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.TabbedActivity;
 import io.mindbend.android.announcements.User;
+import io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment;
+import io.mindbend.android.announcements.reusableFrags.ListFragment;
 import io.mindbend.android.announcements.reusableFrags.PostCommentsFragment;
 import io.mindbend.android.announcements.reusableFrags.PostOverlayFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsCardsFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsFeedAdapter;
 import io.mindbend.android.announcements.reusableFrags.ProfileFragment;
+import io.mindbend.android.announcements.reusableFrags.SearchableFrag;
+import io.mindbend.android.announcements.reusableFrags.UserListAdapter;
 
 
 /**
@@ -54,7 +59,7 @@ public class TodayFragment extends Fragment implements Serializable,
         View.OnClickListener,
         DatePickerDialog.OnDateSetListener,
         PostOverlayFragment.PostsOverlayListener,
-        ProfileFragment.ProfileInteractionListener {
+        ProfileFragment.ProfileInteractionListener, ListFragment.ListFabListener, UserListAdapter.UserListInteractionListener, SearchableFrag.SearchInterface {
     private transient ImageButton mFab;
     //in order to add frags to the backstack
     public static final String TODAY_POSTS_FRAG = "today_posts_frag";
@@ -169,5 +174,84 @@ public class TodayFragment extends Fragment implements Serializable,
     @Override
     public void pressedUserFromCommentOfOrgPost(User userPressed) {
         visitCommentersProfile(userPressed);
+    }
+
+    @Override
+    public void modifyOrg(Organization org) {
+        getChildFragmentManager().beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .replace(R.id.today_framelayout, ModifyOrganizationFragment.newInstance(null, org))
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void viewMembers(Organization org) {
+        ArrayList<User> users = new ArrayList<User>();
+        users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
+        users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
+        users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
+        users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
+        users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
+
+        //for test purposes, randomly selects what type of users list to display (admin, pending, or normal)
+        HashMap<User, Integer> typeOfUsers = new HashMap<>();
+        for (User user : users){
+            Random r = new Random();
+            typeOfUsers.put(user, r.nextInt(3));
+        }
+
+        ListFragment adminList = ListFragment.newInstance(true, TodayFragment.this, false, null, null, null, null, users, TodayFragment.this, typeOfUsers, org);
+        getChildFragmentManager().beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .replace(R.id.today_framelayout, adminList)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void viewAnnouncementsState(Organization org) {
+        //TODO: query today's posts data from Parse, then pass that data into a PostsCardFragment that will be created using the PostsCardsFragment.NewInstance static method
+        //in the meantime, here is fake data
+        ArrayList<Post> posts = new ArrayList<>();
+
+        //THE FOLLOWING ARE FAKE TEST POSTS
+        Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        posts.add(testPost1);
+
+        Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        posts.add(testPost2);
+
+        Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        posts.add(testPost3);
+
+        PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true);
+        getChildFragmentManager().beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .replace(R.id.today_framelayout, announcementsStateList)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void userSelected(User userPressed) {
+        pressedUserFromCommentOfOrgPost(userPressed);
+    }
+
+    @Override
+    public void searchForAdmins(Organization organization) {
+        //TODO: open searchfrag here
+        SearchableFrag searchableFrag = SearchableFrag.newInstance(SearchableFrag.USERS_TYPE, organization, TodayFragment.this);
+        getChildFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.today_framelayout, searchableFrag).addToBackStack(null).commit();
+    }
+
+    @Override
+    public void searchUserPressed(User userPressed) {
+        pressedUserFromCommentOfOrgPost(userPressed);
+    }
+
+    @Override
+    public void searchOrgPressed(Organization orgPressed) {
+        pressedOrgFromProfile(orgPressed);
     }
 }

@@ -2,6 +2,8 @@ package io.mindbend.android.announcements.reusableFrags;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -115,6 +117,32 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                         Log.wtf("ProfileFrag", "modify profile");
                         if (mOrg != null) {
                             //modify org
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
+                            builder.setTitle("Options");
+                            builder.setItems(getResources().getStringArray(R.array.profile_edit_org_dialog_options), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    /**
+                                     * 0 = Modify, 1 = View Members, 2 = View Announcements
+                                     */
+                                    final int MODIFY = 0;
+                                    final int VIEW_MEMBERS = 1;
+                                    final int VIEW_ANNOUNCEMENTS = 2;
+
+                                    switch (which) {
+                                        case MODIFY:
+                                            mListener.modifyOrg(mOrg);
+                                            break;
+                                        case VIEW_MEMBERS:
+                                            mListener.viewMembers(mOrg);
+                                            break;
+                                        case VIEW_ANNOUNCEMENTS:
+                                            mListener.viewAnnouncementsState(mOrg);
+                                            break;
+                                    }
+                                }
+                            });
+                            builder.show();
                         } else {
                             //modify user
                         }
@@ -233,6 +261,9 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         void userProfileToOrgProfile (Organization orgSelected);
         void pressedOrgFromProfile(Organization orgPressed);
         void pressedUserFromCommentOfOrgPost(User userPressed);
+        void modifyOrg(Organization org);
+        void viewMembers(Organization org);
+        void viewAnnouncementsState(Organization org);
     }
 
     @Override

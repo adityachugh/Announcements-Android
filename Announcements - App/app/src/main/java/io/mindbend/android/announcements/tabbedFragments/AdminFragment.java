@@ -196,6 +196,20 @@ public class AdminFragment extends Fragment implements Serializable,
     }
 
     @Override
+    public void modifyOrg(Organization org) {
+        getChildFragmentManager().beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .replace(R.id.admin_framelayout, ModifyOrganizationFragment.newInstance(null, org))
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void viewMembers(Organization org) {
+        userListOpened(org);
+    }
+
+    @Override
     public void userSelected(User user) {
         pressedUserFromCommentOfOrgPost(user);
     }

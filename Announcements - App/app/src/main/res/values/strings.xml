@@ -75,4 +75,11 @@
     <string name="announcement_approved">Approved</string>
     <string name="announcement_declined">Declined</string>
     <string name="announcement_pending">Pending</string>
+
+    <string-array
+        name="profile_edit_org_dialog_options">
+        <item>Modify</item>
+        <item>View All Members</item>
+        <item>View Announcements</item>
+    </string-array>
 </resources>
