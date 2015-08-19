@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,9 +95,11 @@ public class PostsCardsFragment extends Fragment implements Serializable {
             trans.setInterpolator(new DecelerateInterpolator(1.0f));
             recyclerView.startAnimation(trans);
         }
-
         return mView;
     }
+
+
+
 
     @Override
     public void onAttach(Activity activity) {

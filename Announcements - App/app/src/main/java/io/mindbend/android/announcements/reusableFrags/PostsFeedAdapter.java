@@ -2,6 +2,7 @@ package io.mindbend.android.announcements.reusableFrags;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Display;
@@ -39,6 +40,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
         private final TextView mClubUsername;
         private final Button mCommentButton;
         private final Button mShareButton;
+        private final CardView mPostCard;
 
         //TODO: create private fields for the elements within a single feed item
 
@@ -52,6 +54,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
             mClubUsername = (TextView) itemView.findViewById(R.id.post_club_username);
             mCommentButton = (Button) itemView.findViewById(R.id.post_comment_button);
             mShareButton = (Button) itemView.findViewById(R.id.post_share_button);
+            mPostCard = (CardView) itemView.findViewById(R.id.post_card);
         }
     }
 
@@ -89,6 +92,14 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
             @Override
             public void onClick(View v) {
                 mListener.pressedPost(post);
+            }
+        });
+
+        viewHolder.mPostCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.pressedPostCard(post);
+                Log.d(TAG, "Post card pressed");
             }
         });
 
@@ -135,5 +146,6 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
 
     public interface PostInteractionListener extends Serializable {
         void pressedPost(Post postPressed);
+        void pressedPostCard (Post post);
     }
 }

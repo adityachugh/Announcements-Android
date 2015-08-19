@@ -85,6 +85,11 @@ public class DiscoverFragment extends Fragment implements Serializable, OrgsGrid
     }
 
     @Override
+    public void pressedPostCard(Post post) {
+
+    }
+
+    @Override
     public void userProfileToOrgProfile(Organization orgSelected) {
         pressedOrg(orgSelected);
     }

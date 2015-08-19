@@ -15,13 +15,15 @@ import java.util.ArrayList;
 
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.TabbedActivity;
 import io.mindbend.android.announcements.User;
 
 
-public class PostOverlayFragment extends Fragment implements Serializable, PostsFeedAdapter.PostInteractionListener, PostCommentsFragment.CommentsInteractionListener {
+public class PostOverlayFragment extends Fragment implements Serializable, PostsFeedAdapter.PostInteractionListener, PostCommentsFragment.CommentsInteractionListener, PostCardFullFragment.FullPostInteractionListener {
     //in order to add frags to the backstack
     public static final String POSTS_FRAG = "posts_frag";
     public static final String COMMENTS_FRAG = "comments_frag";
+    public static final String FULL_POST_FRAG = "full_post_frag";
 
     private static final String ARG_POSTS = "posts";
     private static final String ARG_LISTENER = "posts_overlay_listener";
@@ -32,9 +34,11 @@ public class PostOverlayFragment extends Fragment implements Serializable, Posts
     private boolean isOnComments = false;
 
     private Fragment mCurrentComments;
+    private Fragment mFullPost;
     private PostsOverlayListener mListener;
     private ArrayList<Post> mPosts;
     private transient View mView;
+    private View mTodayView;
 
     public static PostOverlayFragment newInstance(ArrayList<Post> posts, PostsOverlayListener listener) {
         PostOverlayFragment fragment = new PostOverlayFragment();
@@ -90,6 +94,18 @@ public class PostOverlayFragment extends Fragment implements Serializable, Posts
     }
 
     @Override
+    public void pressedPostCard(Post post) {
+        mLastPost = post;
+
+        //to let the parent frags know that we returned to frags (ex. for today tab to update fab)
+        mListener.onCommentsOpened(post);
+
+        mFullPost = PostCardFullFragment.newInstance(post, this);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.posts_overlay_container, mFullPost).addToBackStack(FULL_POST_FRAG).commit();
+    }
+
+    @Override
     public void pressedBackToPosts() {
         returnFromComments();
     }
@@ -113,11 +129,17 @@ public class PostOverlayFragment extends Fragment implements Serializable, Posts
         mListener.onReturnToPosts();
     }
 
+    @Override
+    public void CommentButtonClicked(Post postComments) {
+        pressedPost(postComments);
+    }
+
+
     public Post getmLastPost() {
         return mLastPost;
     }
 
-    public boolean isOnComments() {
+    public boolean getIsOnComments() {
         return isOnComments;
     }
 

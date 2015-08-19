@@ -154,6 +154,9 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
                 //TODO: popBackStack of admin frag
                 break;
         }
+
+//        if (mTodayFragment.getmPostsOverlayFragment().getIsOnComments())
+//            mTodayFragment.getmPostsOverlayFragment().getChildFragmentManager().popBackStack();
     }
 
     private class PagerAdapter extends FragmentPagerAdapter implements Serializable {
@@ -189,5 +192,9 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
             }
             return null;
         }
+    }
+
+    public ViewPager getViewPager() {
+        return mViewPager;
     }
 }

@@ -49,7 +49,7 @@ public class TodayFragment extends Fragment implements Serializable, View.OnClic
     private transient ImageButton mFab;
     //in order to add frags to the backstack
     public static final String TODAY_POSTS_FRAG = "today_posts_frag";
-    private Fragment mPostsOverlayFragment;
+    private PostOverlayFragment mPostsOverlayFragment;
 
     public TodayFragment() {
         // Required empty public constructor
@@ -99,7 +99,7 @@ public class TodayFragment extends Fragment implements Serializable, View.OnClic
         return v;
     }
 
-    public Fragment getmPostsOverlayFragment() {
+    public PostOverlayFragment getmPostsOverlayFragment() {
         return mPostsOverlayFragment;
     }
 
