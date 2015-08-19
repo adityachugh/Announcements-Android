@@ -1,6 +1,7 @@
 package io.mindbend.android.announcements.reusableFrags;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -8,6 +9,8 @@ import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -67,8 +70,6 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 if(ft.isEmpty())
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag, searchListFrag).commit();
-                mSearchView.setOnQueryTextListener(this);
-                mSearchView.onActionViewExpanded();
                 break;
             case ORGS_TYPE:
                 ArrayList<Organization> orgs = new ArrayList<>();
@@ -84,14 +85,17 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
                 Organization testOrg3 = new Organization("test Id", "Mindbend Studio", "The best dev firm hello@mindbend.io", 80, "#BendBoundaries", true, true); //TODO: change "NEW" to be a dynamically chosen banner
                 orgs.add(testOrg3);
 
-                OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(orgs, SearchableFrag.this, SearchableFrag.this);
+                OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(orgs, this, this);
                 FragmentTransaction ft2 = getFragmentManager().beginTransaction();
                 if(ft2.isEmpty())
                     ft2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag, orgsGridFragment).commit();
-                mSearchView.setOnQueryTextListener(this);
-                mSearchView.onActionViewExpanded();
                 break;
         }
+
+        mSearchView.setOnQueryTextListener(this);
+        mSearchView.onActionViewExpanded();
+        //Stop keyboard from automatically popping up
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         return v;
     }
@@ -136,7 +140,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
             case ORGS_TYPE:
                 //TODO: query results from database
                 ArrayList<Organization> orgs = new ArrayList<>();
-                orgs.add(new Organization("test", query, query, 54, query, true, true));
+                orgs.add(new Organization("test", query, query, 54, query, false, true));
                 OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(orgs, this, this);
                 FragmentTransaction ft2 = getFragmentManager().beginTransaction();
                 ft2.replace(R.id.searchable_frag, orgsGridFragment).commit();

@@ -27,7 +27,7 @@ import io.mindbend.android.announcements.reusableFrags.SearchableFrag;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DiscoverFragment extends Fragment implements Serializable, OrgsGridAdapter.OrgInteractionListener, PostsFeedAdapter.PostInteractionListener, ProfileFragment.ProfileInteractionListener, OrgsGridFragment.OrgsGridInteractionListener, SearchableFrag.SearchInterface {
+public class DiscoverFragment extends Fragment implements Serializable, PostsFeedAdapter.PostInteractionListener, ProfileFragment.ProfileInteractionListener, SearchableFrag.SearchInterface {
 
 
     private static final String TAG = "TAG";
@@ -57,14 +57,6 @@ public class DiscoverFragment extends Fragment implements Serializable, OrgsGrid
         return mOrgsGridFrag;
     }
 
-    @Override
-    public void pressedOrg(Organization orgSelected) {
-        //replace the current profile frag with new org profile frag, while adding it to a backstack
-        ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, this);
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, orgProfile).addToBackStack(null).commit();
-        Log.d(TAG, "org has been pressed on discover page " + orgSelected.toString());
-    }
 
     @Override
     public void pressedPost(Post postPressed) {
@@ -74,17 +66,16 @@ public class DiscoverFragment extends Fragment implements Serializable, OrgsGrid
 
     @Override
     public void userProfileToOrgProfile(Organization orgSelected) {
-        pressedOrg(orgSelected);
-    }
-
-    @Override
-    public void pressedOrgFromGrid(Organization orgPressed) {
-        pressedOrg(orgPressed);
+        pressedOrgFromProfile(orgSelected);
     }
 
     @Override
     public void pressedOrgFromProfile(Organization orgPressed) {
-        pressedOrgFromGrid(orgPressed);
+        //replace the current profile frag with new org profile frag, while adding it to a backstack
+        ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgPressed, this);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, orgProfile).addToBackStack(null).commit();
+        Log.d(TAG, "org has been pressed on discover page " + orgPressed.toString());
     }
 
     @Override
@@ -101,6 +92,6 @@ public class DiscoverFragment extends Fragment implements Serializable, OrgsGrid
 
     @Override
     public void searchOrgPressed(Organization orgPressed) {
-        pressedOrg(orgPressed);
+        pressedOrgFromProfile(orgPressed);
     }
 }

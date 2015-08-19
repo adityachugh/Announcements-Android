@@ -21,25 +21,15 @@ public class OrgsGridFragment extends Fragment implements OrgsGridAdapter.OrgInt
 
     public static final String ORG_PROFILE_FRAG = "org_profile_frag";
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_ORGS_LISTENER = "orgs_listener";
     private static final String ARG_ORGS_LIST = "orgs";
     private static final String ARG_GRID_LISTENER = "grid_listener";
 
-    // TODO: Rename and change types of parameters
     private OrgsGridAdapter.OrgInteractionListener mOrgsListener;
     private ArrayList<Organization> mOrgs;
     private OrgsGridAdapter mOrgsAdapter;
     private OrgsGridInteractionListener mListener;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment OrgsGridFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static OrgsGridFragment newInstance(ArrayList<Organization> orgs, OrgsGridAdapter.OrgInteractionListener orgListener, OrgsGridInteractionListener gridListener) {
         OrgsGridFragment fragment = new OrgsGridFragment();
         Bundle args = new Bundle();
@@ -60,6 +50,7 @@ public class OrgsGridFragment extends Fragment implements OrgsGridAdapter.OrgInt
         if (getArguments() != null) {
             mOrgs = getArguments().getParcelableArrayList(ARG_ORGS_LIST);
             mOrgsListener = (OrgsGridAdapter.OrgInteractionListener)getArguments().getSerializable(ARG_ORGS_LISTENER);
+            mListener = (OrgsGridInteractionListener)getArguments().getSerializable(ARG_GRID_LISTENER);
         }
     }
 

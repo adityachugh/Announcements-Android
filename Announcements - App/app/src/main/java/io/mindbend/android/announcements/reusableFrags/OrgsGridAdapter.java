@@ -32,8 +32,6 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
         private final TextView mDetail;
         private final CardView mOrgCard;
 
-        //TODO: create private fields for the elements within a single feed item
-
         public ViewHolder(View itemView) {
             super(itemView);
 
@@ -46,7 +44,7 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
         }
     }
 
-    //TODO: create private fields for the list
+
     private List<Organization> mOrgs;
     private Context mContext;
     private OrgInteractionListener mOrgListener;
