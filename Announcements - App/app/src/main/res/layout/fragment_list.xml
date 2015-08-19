@@ -5,9 +5,24 @@
     android:layout_height="match_parent"
     tools:context="io.mindbend.android.announcements.reusableFrags.ListFragment">
 
-    <android.support.v7.widget.RecyclerView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/list_recyclerview"/>
+        android:layout_height="match_parent">
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/list_recyclerview"/>
+        <ImageButton
+            android:visibility="gone"
+            android:elevation="@dimen/fab_elevation"
+            android:layout_width="@dimen/fab_size"
+            android:layout_height="@dimen/fab_size"
+            android:layout_marginRight="@dimen/fab_side_margin"
+            android:layout_marginBottom="@dimen/fab_side_margin"
+            android:background="@drawable/fab"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:id="@+id/list_fab"/>
+    </RelativeLayout>
 
 </FrameLayout>

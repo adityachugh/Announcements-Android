@@ -120,7 +120,7 @@ public class AdminFragment extends Fragment implements Serializable,
             typeOfUsers.put(user, r.nextInt(3));
         }
 
-        ListFragment adminList = ListFragment.newInstance(null, null, null, null, users, AdminFragment.this, typeOfUsers);
+        ListFragment adminList = ListFragment.newInstance(true, null, null, null, null, users, AdminFragment.this, typeOfUsers);
         getChildFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.admin_framelayout, adminList)
