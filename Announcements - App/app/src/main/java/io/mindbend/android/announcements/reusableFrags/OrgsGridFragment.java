@@ -78,6 +78,8 @@ public class OrgsGridFragment extends Fragment implements OrgsGridAdapter.OrgInt
     @Override
     public void onDetach() {
         super.onDetach();
+        mListener = null;
+        mOrgsListener = null;
     }
 
     @Override
