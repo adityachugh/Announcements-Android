@@ -139,7 +139,7 @@ public class AdminFragment extends Fragment implements Serializable,
     public void pressedOrg(Organization orgSelected) {
         //load up orgs
         ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, this);
-        getChildFragmentManager().beginTransaction().replace(R.id.admin_framelayout, orgProfile).addToBackStack(null).commit();
+        getChildFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, orgProfile).addToBackStack(null).commit();
     }
 
     @Override
@@ -178,5 +178,10 @@ public class AdminFragment extends Fragment implements Serializable,
     @Override
     public void searchUserPressed(User userPressed) {
         pressedUserFromCommentOfOrgPost(userPressed);
+    }
+
+    @Override
+    public void searchOrgPressed(Organization orgPressed) {
+        pressedOrg(orgPressed);
     }
 }

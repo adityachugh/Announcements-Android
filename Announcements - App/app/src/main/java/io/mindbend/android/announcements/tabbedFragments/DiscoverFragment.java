@@ -21,17 +21,18 @@ import io.mindbend.android.announcements.reusableFrags.OrgsGridFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsCardsFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsFeedAdapter;
 import io.mindbend.android.announcements.reusableFrags.ProfileFragment;
+import io.mindbend.android.announcements.reusableFrags.SearchableFrag;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DiscoverFragment extends Fragment implements Serializable, OrgsGridAdapter.OrgInteractionListener, PostsFeedAdapter.PostInteractionListener, ProfileFragment.ProfileInteractionListener, OrgsGridFragment.OrgsGridInteractionListener{
+public class DiscoverFragment extends Fragment implements Serializable, OrgsGridAdapter.OrgInteractionListener, PostsFeedAdapter.PostInteractionListener, ProfileFragment.ProfileInteractionListener, OrgsGridFragment.OrgsGridInteractionListener, SearchableFrag.SearchInterface {
 
 
     private static final String TAG = "TAG";
     private static final String ORG_PROFILE_FRAG = "ORG_PROFILE_FRAGMENT";
-    private transient OrgsGridFragment mOrgsGridFrag;
+    private transient SearchableFrag mOrgsGridFrag;
 
     public DiscoverFragment() {
         // Required empty public constructor
@@ -46,26 +47,13 @@ public class DiscoverFragment extends Fragment implements Serializable, OrgsGrid
         setRetainInstance(true);
         //TODO: query discover_clubs data from Parse, then pass that data into an OrgsGridFragment that will be created using the OrgsGridFragment.NewInstance static method
 
-        ArrayList<Organization> orgs = new ArrayList<>();
-
-        //ORG CONSTRUCTOR: String objectId, String title, String description, int followers, String tag, boolean privateOrg, boolean newOrg
-        //FAKE ORGANIZATIONS TO TEST
-        Organization testOrg1 = new Organization("test Id", "Software Dev Club", "Learn to make apps! Android! Fun!", 803, "#SoftwareDevClub", false, true); //TODO: change "NEW" to be a dynamically chosen banner
-        orgs.add(testOrg1);
-
-        Organization testOrg2 = new Organization("test Id", "Math Club", "We had that one meeting that one time", 11, "#MathClub", false, false); //TODO: change "NEW" to be a dynamically chosen banner
-        orgs.add(testOrg2);
-
-        Organization testOrg3 = new Organization("test Id", "Mindbend Studio", "The best dev firm hello@mindbend.io", 80, "#BendBoundaries", true, true); //TODO: change "NEW" to be a dynamically chosen banner
-        orgs.add(testOrg3);
-
-        mOrgsGridFrag = OrgsGridFragment.newInstance(orgs, this, this);
+        mOrgsGridFrag = SearchableFrag.newInstance(SearchableFrag.ORGS_TYPE, null, this);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.discover_framelayout, mOrgsGridFrag).commit();
         return v;
     }
 
-    public OrgsGridFragment getmOrgsGridFrag() {
+    public SearchableFrag getmOrgsGridFrag() {
         return mOrgsGridFrag;
     }
 
@@ -104,5 +92,15 @@ public class DiscoverFragment extends Fragment implements Serializable, OrgsGrid
         ProfileFragment userToVisit = ProfileFragment.newInstance(userPressed, null, this);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, userToVisit).addToBackStack(null).commit();
+    }
+
+    @Override
+    public void searchUserPressed(User userPressed) {
+        pressedUserFromCommentOfOrgPost(userPressed);
+    }
+
+    @Override
+    public void searchOrgPressed(Organization orgPressed) {
+        pressedOrg(orgPressed);
     }
 }
