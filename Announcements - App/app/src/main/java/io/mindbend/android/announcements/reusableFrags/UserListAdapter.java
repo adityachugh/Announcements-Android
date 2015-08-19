@@ -11,11 +11,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 
+import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
 
@@ -53,6 +55,8 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
     private Context mContext;
     private UserListInteractionListener mListener;
     private HashMap<User, Integer> mTypeOfUsers;
+    private boolean mIsSearching;
+    private Organization mOrg;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
@@ -73,27 +77,40 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
             }
         });
 
-        if (mTypeOfUsers.get(user) == USERS_ADMINS)
-            viewHolder.mUserIcon.setImageResource(R.drawable.ic_admin);
-        else if (mTypeOfUsers.get(user) == USERS_PENDING){
-            viewHolder.mAcceptUser.setVisibility(View.VISIBLE);
-            viewHolder.mDenyUser.setVisibility(View.VISIBLE);
-
-            viewHolder.mAcceptUser.setOnClickListener(new View.OnClickListener() {
+        if(mIsSearching){
+            viewHolder.mUserIcon.setImageResource(R.drawable.ic_accept);
+            viewHolder.mUserIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO: interface for acceptance here
-                    Log.wtf("pending user", "accept");
+                    //TODO: add user as admin
+                    Toast.makeText(mContext, user.getName()+" is now an admin", Toast.LENGTH_LONG).show();
                 }
             });
+        }
 
-            viewHolder.mDenyUser.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //TODO: interface for decline here
-                    Log.wtf("pending user", "deny");
-                }
-            });
+        if (mTypeOfUsers != null){
+            if (mTypeOfUsers.get(user) == USERS_ADMINS)
+                viewHolder.mUserIcon.setImageResource(R.drawable.ic_admin);
+            else if (mTypeOfUsers.get(user) == USERS_PENDING){
+                viewHolder.mAcceptUser.setVisibility(View.VISIBLE);
+                viewHolder.mDenyUser.setVisibility(View.VISIBLE);
+
+                viewHolder.mAcceptUser.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //TODO: interface for acceptance here
+                        Log.wtf("pending user", "accept");
+                    }
+                });
+
+                viewHolder.mDenyUser.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //TODO: interface for decline here
+                        Log.wtf("pending user", "deny");
+                    }
+                });
+            }
         }
     }
 
@@ -102,12 +119,14 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         return mUsers.size();
     }
 
-    public UserListAdapter (Context context, List<User> users, UserListInteractionListener listener, HashMap<User, Integer> typeOfUsers) {
+    public UserListAdapter (Context context, List<User> users, UserListInteractionListener listener, HashMap<User, Integer> typeOfUsers, boolean isSearching, Organization parentOrgIfSearching) {
         //save the mPosts private field as what is passed in
         mContext = context;
         mUsers = users;
         mListener = listener;
         mTypeOfUsers = typeOfUsers;
+        mIsSearching = isSearching;
+        mOrg = parentOrgIfSearching;
     }
 
     @Override

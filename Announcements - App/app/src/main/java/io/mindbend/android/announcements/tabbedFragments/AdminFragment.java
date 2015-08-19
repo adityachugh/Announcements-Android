@@ -24,6 +24,7 @@ import io.mindbend.android.announcements.reusableFrags.ListFragment;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridAdapter;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridFragment;
 import io.mindbend.android.announcements.reusableFrags.ProfileFragment;
+import io.mindbend.android.announcements.reusableFrags.SearchableFrag;
 import io.mindbend.android.announcements.reusableFrags.UserListAdapter;
 
 
@@ -35,7 +36,7 @@ public class AdminFragment extends Fragment implements Serializable,
         OrgsGridAdapter.OrgInteractionListener,
         OrgsGridFragment.OrgsGridInteractionListener,
         ProfileFragment.ProfileInteractionListener,
-        UserListAdapter.UserListInteractionListener, ListFragment.ListFabListener {
+        UserListAdapter.UserListInteractionListener, ListFragment.ListFabListener, SearchableFrag.SearchInterface {
     private static final String MAIN_ADMIN_TAG = "main_admin_frag";
     private transient AdminMainFragment mAdminMain;
 
@@ -121,7 +122,7 @@ public class AdminFragment extends Fragment implements Serializable,
             typeOfUsers.put(user, r.nextInt(3));
         }
 
-        ListFragment adminList = ListFragment.newInstance(true, this, null, null, null, null, users, AdminFragment.this, typeOfUsers, parentOrg);
+        ListFragment adminList = ListFragment.newInstance(true, this, false, null, null, null, null, users, AdminFragment.this, typeOfUsers, parentOrg);
         getChildFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.admin_framelayout, adminList)
@@ -170,5 +171,12 @@ public class AdminFragment extends Fragment implements Serializable,
     @Override
     public void searchForAdmins(Organization organization) {
         //TODO: open searchfrag here
+        SearchableFrag searchableFrag = SearchableFrag.newInstance(organization, AdminFragment.this);
+        getChildFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, searchableFrag).addToBackStack(null).commit();
+    }
+
+    @Override
+    public void searchUserPressed(User userPressed) {
+        pressedUserFromCommentOfOrgPost(userPressed);
     }
 }

@@ -29,6 +29,7 @@ import io.mindbend.android.announcements.User;
 
 public class ListFragment extends Fragment implements Serializable {
     private final static String ARG_LISTENER = "fab_listener";
+    private final static String ARG_IS_SEARCHING = "is_searching";
     private static final String ARG_ORGS = "param_orgs";
     private static final String ARG_NOTIFS = "param_notifs";
     private static final String ARG_USERS = "param_users";
@@ -62,6 +63,8 @@ public class ListFragment extends Fragment implements Serializable {
     private ListFabListener mListener;
     private ImageButton mAddAdminFab;
 
+    private boolean mIsSearching;
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -72,7 +75,7 @@ public class ListFragment extends Fragment implements Serializable {
      * @return A new instance of fragment ListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ListFragment newInstance(boolean isAdmin, ListFabListener listener,
+    public static ListFragment newInstance(boolean isAdmin, ListFabListener listener, boolean isSearching,
                                            ArrayList<Organization> orgsIfPresent, OrgsListAdapter.OrgListInteractionListener orgListenerIfPresent,
                                            ArrayList<Notification> notifsIfPresent, NotifsListAdapter.NotifInteractionListener notifListenerIfPresent,
                                            ArrayList<User> usersIfPresent, UserListAdapter.UserListInteractionListener userListenerIfPresent, HashMap<User, Integer> typeOfUser, Organization orgOfUsers) {
@@ -81,6 +84,7 @@ public class ListFragment extends Fragment implements Serializable {
 
         args.putBoolean(ARG_IS_ADMIN, isAdmin);
         args.putSerializable(ARG_LISTENER, listener);
+        args.putBoolean(ARG_IS_SEARCHING, isSearching);
         if (orgsIfPresent != null) {
             args.putParcelableArrayList(ARG_ORGS, orgsIfPresent);
             args.putSerializable(ARG_INTERFACE, orgListenerIfPresent);
@@ -111,6 +115,7 @@ public class ListFragment extends Fragment implements Serializable {
         mIsAdmin = getArguments().getBoolean(ARG_IS_ADMIN);
         mOrgOfUsers = (Organization)getArguments().getSerializable(ARG_ORG_OF_USERS);
         mListener = (ListFabListener)getArguments().getSerializable(ARG_LISTENER);
+        mIsSearching = getArguments().getBoolean(ARG_IS_SEARCHING);
 
         if (getArguments().getParcelableArrayList(ARG_ORGS) != null)  {
             whatObjectList = ORGS_SELECTED;
@@ -151,7 +156,7 @@ public class ListFragment extends Fragment implements Serializable {
                 recyclerView.setAdapter(notifsAdapter);
                 break;
             case USERS_SELECTED:
-                UserListAdapter userAdapter = new UserListAdapter(getActivity(), mUsers, mUserListener, mTypeOfUsers);
+                UserListAdapter userAdapter = new UserListAdapter(getActivity(), mUsers, mUserListener, mTypeOfUsers, mIsSearching, mOrgOfUsers);
                 recyclerView.setAdapter(userAdapter);
                 if (mIsAdmin){
                     //the add admin fab
