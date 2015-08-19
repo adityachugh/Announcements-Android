@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import io.mindbend.android.announcements.App;
 import io.mindbend.android.announcements.Organization;
@@ -142,14 +143,20 @@ public class TodayFragment extends Fragment implements Serializable,
 
     @Override
     public void visitCommentersProfile(User commenterToBeVisited) {
-        ProfileFragment commenterVisited = ProfileFragment.newInstance(commenterToBeVisited, null, this);
+        ProfileFragment commenterVisited = ProfileFragment.newInstance(commenterToBeVisited, null, this, false);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.today_framelayout, commenterVisited).addToBackStack(null).commit();
     }
 
     @Override
     public void userProfileToOrgProfile(Organization orgSelected) {
-        ProfileFragment orgToVisit = ProfileFragment.newInstance(null, orgSelected, this);
+        //TODO: check if the user is an admin of this org
+        //currently choosing randomly
+
+        Random r = new Random();
+        boolean isModifiable = r.nextInt(2) == 1;
+
+        ProfileFragment orgToVisit = ProfileFragment.newInstance(null, orgSelected, this, isModifiable);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.today_framelayout, orgToVisit).addToBackStack(null).commit();
     }

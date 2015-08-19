@@ -31,4 +31,5 @@
     <dimen name="more_logo_size">320dp</dimen>
     <dimen name="progress_bar_LARGE">72dp</dimen>
     <dimen name="pending_user_buttons_size">40dp</dimen>
+    <dimen name="profile_edit_button_size">46dp</dimen>
 </resources>

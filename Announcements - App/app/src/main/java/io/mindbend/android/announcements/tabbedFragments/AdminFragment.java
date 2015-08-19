@@ -163,8 +163,14 @@ public class AdminFragment extends Fragment implements Serializable,
 
     @Override
     public void pressedOrg(Organization orgSelected) {
+        //TODO: check if the user is an admin of this org
+        //currently choosing randomly
+
+        Random r = new Random();
+        boolean isModifiable = r.nextBoolean();
+
         //load up orgs
-        ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, this);
+        ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, this, isModifiable);
         getChildFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, orgProfile).addToBackStack(null).commit();
     }
 
@@ -185,7 +191,7 @@ public class AdminFragment extends Fragment implements Serializable,
 
     @Override
     public void pressedUserFromCommentOfOrgPost(User userPressed) {
-        ProfileFragment userProfile = ProfileFragment.newInstance(userPressed, null, this);
+        ProfileFragment userProfile = ProfileFragment.newInstance(userPressed, null, this, false);
         getChildFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, userProfile).addToBackStack(null).commit();
     }
 

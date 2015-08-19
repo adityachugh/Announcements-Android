@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Random;
 
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.Post;
@@ -71,8 +72,14 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
 
     @Override
     public void pressedOrgFromProfile(Organization orgPressed) {
+        //TODO: check if the user is an admin of this org
+        //currently choosing randomly
+
+        Random r = new Random();
+        boolean isModifiable = r.nextBoolean();
+
         //replace the current profile frag with new org profile frag, while adding it to a backstack
-        ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgPressed, this);
+        ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgPressed, this, isModifiable);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, orgProfile).addToBackStack(null).commit();
         Log.d(TAG, "org has been pressed on discover page " + orgPressed.toString());
@@ -80,7 +87,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
 
     @Override
     public void pressedUserFromCommentOfOrgPost(User userPressed) {
-        ProfileFragment userToVisit = ProfileFragment.newInstance(userPressed, null, this);
+        ProfileFragment userToVisit = ProfileFragment.newInstance(userPressed, null, this, false);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, userToVisit).addToBackStack(null).commit();
     }

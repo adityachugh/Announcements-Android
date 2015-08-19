@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.io.Serializable;
+import java.util.Random;
 
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.Post;
@@ -47,7 +48,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
         //FAKE USER FOR TESTING
         User testUser = new User("Aditya", "Chugh", "getting paper", "node.js", "#Grade12", 9);
 
-        mProfileFragment = ProfileFragment.newInstance(testUser, null, this);
+        mProfileFragment = ProfileFragment.newInstance(testUser, null, this, true);
 
         //inflate profileFrag in framelayout
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
@@ -61,8 +62,14 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
 
     @Override
     public void userProfileToOrgProfile(Organization orgSelected) {
+        //TODO: check if the user is an admin of this org
+        //currently choosing randomly
+
+        Random r = new Random();
+        boolean isModifiable = r.nextBoolean();
+
 //        replace the current profile frag with new org profile frag, while adding it to a backstack
-        ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, this);
+        ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, this, isModifiable);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.you_framelayout, orgProfile).addToBackStack(null).commit();
 
@@ -76,7 +83,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
 
     @Override
     public void pressedUserFromCommentOfOrgPost(User userPressed) {
-        ProfileFragment userToVisit = ProfileFragment.newInstance(userPressed, null, this);
+        ProfileFragment userToVisit = ProfileFragment.newInstance(userPressed, null, this, false);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.you_framelayout, userToVisit).addToBackStack(null).commit();
     }

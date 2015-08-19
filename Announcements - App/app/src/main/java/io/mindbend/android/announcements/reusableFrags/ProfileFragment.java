@@ -5,10 +5,12 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.nirhart.parallaxscroll.views.ParallaxScrollView;
@@ -40,15 +42,16 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     private static final String ARG_USER = "user";
     private static final String ARG_PROFILE_LISTENER = "profile_listener_interface";
     private static final String ARG_ORG = "org";
+    private static final String ARG_TO_EDIT = "to_edit";
 
     private User mUser;
     private Organization mOrg;
+    private boolean mToEdit;
 
     private OrgsGridAdapter.OrgInteractionListener mOrgListener = this;
     private PostOverlayFragment.PostsOverlayListener mPostsOverlayListener = this;
     private ProfileInteractionListener mListener;
     private transient View mView;
-
 
     /**
      * Use this factory method to create a new instance of
@@ -59,7 +62,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
      * @return A new instance of fragment ProfileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(User user, Organization org, ProfileInteractionListener profileListener) {
+    public static ProfileFragment newInstance(User user, Organization org, ProfileInteractionListener profileListener, boolean toEdit) {
 
         //***NOTE*** : one of user or org must be null
 
@@ -68,6 +71,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         args.putSerializable(ARG_USER, user);
         args.putSerializable(ARG_ORG, org);
         args.putSerializable(ARG_PROFILE_LISTENER, profileListener);
+        args.putBoolean(ARG_TO_EDIT, toEdit);
         fragment.setArguments(args);
         return fragment;
     }
@@ -83,6 +87,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
             mUser = (User) getArguments().getSerializable(ARG_USER);
             mOrg = (Organization) getArguments().getSerializable(ARG_ORG);
             mListener = (ProfileInteractionListener) getArguments().getSerializable(ARG_PROFILE_LISTENER);
+            mToEdit = getArguments().getBoolean(ARG_TO_EDIT);
         }
     }
 
@@ -98,6 +103,27 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
             TextView followCount = (TextView) mView.findViewById(R.id.follow_count);
             TextView profileDetail = (TextView) mView.findViewById(R.id.profile_detail);
             TextView profileTag = (TextView) mView.findViewById(R.id.profile_tag);
+            ImageButton modifyButton = (ImageButton)mView.findViewById(R.id.profile_edit_org);
+
+            //if the view is of an org that the user is an admin of, or if the user is viewing his/her own profile
+            if(mToEdit){
+                modifyButton.setVisibility(View.VISIBLE);
+                modifyButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //This is what's called when the imagebutton is pressed to modify an org/user
+                        Log.wtf("ProfileFrag", "modify profile");
+                        if (mOrg != null) {
+                            //modify org
+                        } else {
+                            //modify user
+                        }
+                    }
+                });
+            } else {
+                //should be redundant, but required for some reason
+                modifyButton.setVisibility(View.GONE);
+            }
 
             //TODO: branch based on whether user or org is null
 
