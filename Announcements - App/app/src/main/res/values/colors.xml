@@ -18,5 +18,5 @@
 
     <color name="announcement_accepted">#00CC00</color>
     <color name="announcement_declined">#CC0000</color>
-    <color name="announcement_pending">#FFFF00</color>
+    <color name="announcement_pending">#CCCC00</color>
 </resources>
