@@ -27,7 +27,8 @@ import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
 
-public class ListFragment extends Fragment implements Serializable, View.OnClickListener {
+public class ListFragment extends Fragment implements Serializable {
+    private final static String ARG_LISTENER = "fab_listener";
     private static final String ARG_ORGS = "param_orgs";
     private static final String ARG_NOTIFS = "param_notifs";
     private static final String ARG_USERS = "param_users";
@@ -58,12 +59,7 @@ public class ListFragment extends Fragment implements Serializable, View.OnClick
     private UserListAdapter.UserListInteractionListener mUserListener;
     private HashMap<User, Integer> mTypeOfUsers; //this is to detail if the users are members, admins, or pending members
     private boolean mIsAdmin;
-
-    //the searchview
-    private LinearLayout mSearchLayout;
-    private android.support.v7.widget.SearchView mSearchView;
-    private Button mDoneSearch;
-
+    private ListFabListener mListener;
     private ImageButton mAddAdminFab;
 
     /**
@@ -76,7 +72,7 @@ public class ListFragment extends Fragment implements Serializable, View.OnClick
      * @return A new instance of fragment ListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ListFragment newInstance(boolean isAdmin,
+    public static ListFragment newInstance(boolean isAdmin, ListFabListener listener,
                                            ArrayList<Organization> orgsIfPresent, OrgsListAdapter.OrgListInteractionListener orgListenerIfPresent,
                                            ArrayList<Notification> notifsIfPresent, NotifsListAdapter.NotifInteractionListener notifListenerIfPresent,
                                            ArrayList<User> usersIfPresent, UserListAdapter.UserListInteractionListener userListenerIfPresent, HashMap<User, Integer> typeOfUser, Organization orgOfUsers) {
@@ -84,6 +80,7 @@ public class ListFragment extends Fragment implements Serializable, View.OnClick
         Bundle args = new Bundle();
 
         args.putBoolean(ARG_IS_ADMIN, isAdmin);
+        args.putSerializable(ARG_LISTENER, listener);
         if (orgsIfPresent != null) {
             args.putParcelableArrayList(ARG_ORGS, orgsIfPresent);
             args.putSerializable(ARG_INTERFACE, orgListenerIfPresent);
@@ -113,6 +110,7 @@ public class ListFragment extends Fragment implements Serializable, View.OnClick
 
         mIsAdmin = getArguments().getBoolean(ARG_IS_ADMIN);
         mOrgOfUsers = (Organization)getArguments().getSerializable(ARG_ORG_OF_USERS);
+        mListener = (ListFabListener)getArguments().getSerializable(ARG_LISTENER);
 
         if (getArguments().getParcelableArrayList(ARG_ORGS) != null)  {
             whatObjectList = ORGS_SELECTED;
@@ -143,10 +141,6 @@ public class ListFragment extends Fragment implements Serializable, View.OnClick
         RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.list_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        mSearchView = (SearchView)v.findViewById(R.id.list_searchview);
-        mSearchLayout = (LinearLayout)v.findViewById(R.id.list_searchview_layout);
-        mDoneSearch = (Button)v.findViewById(R.id.list_searchview_done);
-
         switch (whatObjectList){
             case ORGS_SELECTED:
                 OrgsListAdapter orgsAdapter = new OrgsListAdapter(getActivity(), mOrgs, mOrgListener);
@@ -176,9 +170,7 @@ public class ListFragment extends Fragment implements Serializable, View.OnClick
                                 case USERS_SELECTED:
                                     //add an admin to the org
                                     Log.wtf("List Fab", "Add Admin Fab pressed");
-                                    mSearchLayout.setVisibility(View.VISIBLE);
-                                    mAddAdminFab.setVisibility(View.GONE);
-                                    mDoneSearch.setOnClickListener(ListFragment.this);
+                                    mListener.searchForAdmins(mOrgOfUsers);
                                     break;
                             }
                         }
@@ -198,14 +190,11 @@ public class ListFragment extends Fragment implements Serializable, View.OnClick
     @Override
     public void onDetach() {
         super.onDetach();
+        mListener = null;
     }
 
-    @Override
-    public void onClick(View v) {
-        //what to do when done with search
-        mSearchLayout.setVisibility(View.GONE);
-        mAddAdminFab.setVisibility(View.VISIBLE);
-        //TODO: reload data from Parse
+    public interface ListFabListener extends Serializable {
+        void searchForAdmins(Organization organization);
     }
 
 }

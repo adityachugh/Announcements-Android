@@ -35,7 +35,7 @@ public class AdminFragment extends Fragment implements Serializable,
         OrgsGridAdapter.OrgInteractionListener,
         OrgsGridFragment.OrgsGridInteractionListener,
         ProfileFragment.ProfileInteractionListener,
-        UserListAdapter.UserListInteractionListener{
+        UserListAdapter.UserListInteractionListener, ListFragment.ListFabListener {
     private static final String MAIN_ADMIN_TAG = "main_admin_frag";
     private transient AdminMainFragment mAdminMain;
 
@@ -121,7 +121,7 @@ public class AdminFragment extends Fragment implements Serializable,
             typeOfUsers.put(user, r.nextInt(3));
         }
 
-        ListFragment adminList = ListFragment.newInstance(true , null, null, null, null, users, AdminFragment.this, typeOfUsers, parentOrg);
+        ListFragment adminList = ListFragment.newInstance(true, this, null, null, null, null, users, AdminFragment.this, typeOfUsers, parentOrg);
         getChildFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.admin_framelayout, adminList)
@@ -165,5 +165,10 @@ public class AdminFragment extends Fragment implements Serializable,
     @Override
     public void userSelected(User user) {
         pressedUserFromCommentOfOrgPost(user);
+    }
+
+    @Override
+    public void searchForAdmins(Organization organization) {
+        //TODO: open searchfrag here
     }
 }

@@ -71,4 +71,5 @@
     <string name="format_tabbed_activity_toolbar_text">Infor[%1$s]</string>
     <string name="title_activity_searchable">Add Admins</string>
     <string name="searchable_activity_toggle_text">Search within parent organization</string>
+    <string name="discover_search_hint">Search for organizations...</string>
 </resources>
