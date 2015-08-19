@@ -7,12 +7,15 @@ import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -55,6 +58,13 @@ public class ListFragment extends Fragment implements Serializable, View.OnClick
     private UserListAdapter.UserListInteractionListener mUserListener;
     private HashMap<User, Integer> mTypeOfUsers; //this is to detail if the users are members, admins, or pending members
     private boolean mIsAdmin;
+
+    //the searchview
+    private LinearLayout mSearchLayout;
+    private android.support.v7.widget.SearchView mSearchView;
+    private Button mDoneSearch;
+
+    private ImageButton mAddAdminFab;
 
     /**
      * Use this factory method to create a new instance of
@@ -133,6 +143,10 @@ public class ListFragment extends Fragment implements Serializable, View.OnClick
         RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.list_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        mSearchView = (SearchView)v.findViewById(R.id.list_searchview);
+        mSearchLayout = (LinearLayout)v.findViewById(R.id.list_searchview_layout);
+        mDoneSearch = (Button)v.findViewById(R.id.list_searchview_done);
+
         switch (whatObjectList){
             case ORGS_SELECTED:
                 OrgsListAdapter orgsAdapter = new OrgsListAdapter(getActivity(), mOrgs, mOrgListener);
@@ -147,10 +161,28 @@ public class ListFragment extends Fragment implements Serializable, View.OnClick
                 recyclerView.setAdapter(userAdapter);
                 if (mIsAdmin){
                     //the add admin fab
-                    ImageButton addAdminFab = (ImageButton)v.findViewById(R.id.list_fab);
-                    addAdminFab.setVisibility(View.VISIBLE);
-                    addAdminFab.setImageResource(R.drawable.ic_add_admin);
-                    addAdminFab.setOnClickListener(this);
+                    mAddAdminFab = (ImageButton)v.findViewById(R.id.list_fab);
+                    mAddAdminFab.setVisibility(View.VISIBLE);
+                    mAddAdminFab.setImageResource(R.drawable.ic_add_admin);
+                    mAddAdminFab.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //when the fab is clicked
+                            switch (whatObjectList){
+                                case ORGS_SELECTED:
+                                    break;
+                                case NOTIFS_SELECTED:
+                                    break;
+                                case USERS_SELECTED:
+                                    //add an admin to the org
+                                    Log.wtf("List Fab", "Add Admin Fab pressed");
+                                    mSearchLayout.setVisibility(View.VISIBLE);
+                                    mAddAdminFab.setVisibility(View.GONE);
+                                    mDoneSearch.setOnClickListener(ListFragment.this);
+                                    break;
+                            }
+                        }
+                    });
                 }
                 break;
         }
@@ -170,18 +202,10 @@ public class ListFragment extends Fragment implements Serializable, View.OnClick
 
     @Override
     public void onClick(View v) {
-        //when the fab is clicked
-        switch (whatObjectList){
-            case ORGS_SELECTED:
-                break;
-            case NOTIFS_SELECTED:
-                break;
-            case USERS_SELECTED:
-                //add an admin to the org
-                Log.wtf("List Fab", "Add Admin Fab pressed, intent launching");
-
-                break;
-        }
+        //what to do when done with search
+        mSearchLayout.setVisibility(View.GONE);
+        mAddAdminFab.setVisibility(View.VISIBLE);
+        //TODO: reload data from Parse
     }
 
 }
