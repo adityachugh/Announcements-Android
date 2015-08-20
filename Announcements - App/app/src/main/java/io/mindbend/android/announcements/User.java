@@ -49,9 +49,29 @@ public class User implements Serializable, Parcelable{
         return (mFirstName + " " + mLastName);
     }
 
+    public String getInterestOne() {
+        return mInterestOne;
+    }
+
+    public void setInterestOne(String mInterestOne) {
+        this.mInterestOne = mInterestOne;
+    }
+
+    public String getInterestTwo() {
+        return mInterestTwo;
+    }
+
+    public void setInterestTwo(String mInterestTwo) {
+        this.mInterestTwo = mInterestTwo;
+    }
+
     public String getInterests() {
         //Returns both interests
         return ("Interested in " + mInterestOne + " and " + mInterestTwo);
+    }
+
+    public void setUserCategory(String mUserCategory) {
+        this.mUserCategory = mUserCategory;
     }
 
     public String getNumberOfOrganizationsFollowed() {

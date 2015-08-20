@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -60,6 +61,8 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     private transient View mView;
 
     private transient de.hdodenhof.circleimageview.CircleImageView mUserImage;
+    private transient TextView mProfileDetail;
+    private transient TextView mProfileTag;
 
     /**
      * Use this factory method to create a new instance of
@@ -111,8 +114,8 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
             //UI elements to be filled
             TextView name = (TextView) mView.findViewById(R.id.profile_name);
             TextView followCount = (TextView) mView.findViewById(R.id.follow_count);
-            TextView profileDetail = (TextView) mView.findViewById(R.id.profile_detail);
-            TextView profileTag = (TextView) mView.findViewById(R.id.profile_tag);
+            mProfileDetail = (TextView) mView.findViewById(R.id.profile_detail);
+            mProfileTag = (TextView) mView.findViewById(R.id.profile_tag);
             ImageButton modifyButton = (ImageButton) mView.findViewById(R.id.profile_edit_org);
 
             //if the view is of an org that the user is an admin of, or if the user is viewing his/her own profile
@@ -171,6 +174,46 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                         }
                     });
 
+                    mProfileDetail.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            //TODO: open dialog, fill with data, save data;
+                            return true;
+                        }
+                    });
+
+                    mProfileTag.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            AlertDialog.Builder alert = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
+
+                            final EditText edittext= new EditText(getActivity());
+                            edittext.setText(mUser.getUserCategory().substring(1));
+                            alert.setTitle("Update your Tag");
+                            alert.setView(edittext);
+                            alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    //What ever you want to do with the value
+                                    if(!edittext.getText().toString().equals("")){
+                                        //TODO: save to parse
+                                        mUser.setUserCategory("#"+edittext.getText().toString());
+                                        mProfileTag.setText(mUser.getUserCategory());
+                                    }
+
+                                }
+                            });
+
+                            alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    // what ever you want to do with No option.
+                                }
+                            });
+
+                            alert.show();
+                            return true;
+                        }
+                    });
+
                 }
             }
 
@@ -180,8 +223,8 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
             if (mUser != null) {
                 name.setText(mUser.getName());
                 followCount.setText(mUser.getNumberOfOrganizationsFollowed());
-                profileDetail.setText(mUser.getInterests());
-                profileTag.setText(mUser.getUserCategory());
+                mProfileDetail.setText(mUser.getInterests());
+                mProfileTag.setText(mUser.getUserCategory());
 
                 //Fill bottom fragment with discover grid if user(temporary)
                 //TODO: Fetch followed orgs OR organization's announcements (generic fragment)
@@ -213,8 +256,8 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                     name.setText(mOrg.getTitle());
                 }
                 followCount.setText(mOrg.getFollowers() + " Followers");
-                profileDetail.setText(mOrg.getDescription());
-                profileTag.setText(mOrg.getTag());
+                mProfileDetail.setText(mOrg.getDescription());
+                mProfileTag.setText(mOrg.getTag());
 
                 if (!mOrg.isPrivateOrg()) {
 
