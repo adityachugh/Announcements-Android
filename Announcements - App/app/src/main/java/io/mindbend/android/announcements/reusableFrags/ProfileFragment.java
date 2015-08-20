@@ -16,7 +16,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nirhart.parallaxscroll.views.ParallaxScrollView;
 
@@ -177,7 +179,43 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                     mProfileDetail.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View v) {
-                            //TODO: open dialog, fill with data, save data;
+                            AlertDialog.Builder alert = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
+
+                            LinearLayout layout = new LinearLayout(getActivity());
+                            layout.setOrientation(LinearLayout.VERTICAL);
+
+                            final EditText interestOneET = new EditText(getActivity());
+                            interestOneET.setHint("#1: " + mUser.getInterestOne());
+                            layout.addView(interestOneET);
+
+                            final EditText interestTwoET = new EditText(getActivity());
+                            interestTwoET.setHint("#2: " + mUser.getInterestTwo());
+                            layout.addView(interestTwoET);
+
+                            alert.setView(layout);
+                            alert.setTitle("Enter your Interests");
+                            alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    //What ever you want to do with the value
+                                    if(!interestOneET.getText().toString().equals("") && !interestTwoET.getText().toString().equals("")){
+                                        //TODO: save to parse
+                                        mUser.setInterestOne(interestOneET.getText().toString());
+                                        mUser.setInterestTwo(interestTwoET.getText().toString());
+
+                                        mProfileDetail.setText(mUser.getInterests());
+                                    } else
+                                        Toast.makeText(getActivity(), "Cannot leave fields blank!", Toast.LENGTH_LONG).show();
+
+                                }
+                            });
+
+                            alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    // what ever you want to do with No option.
+                                }
+                            });
+
+                            alert.show();
                             return true;
                         }
                     });
@@ -198,8 +236,8 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                                         //TODO: save to parse
                                         mUser.setUserCategory("#"+edittext.getText().toString());
                                         mProfileTag.setText(mUser.getUserCategory());
-                                    }
-
+                                    } else
+                                        Toast.makeText(getActivity(), "Cannot leave fields blank!", Toast.LENGTH_LONG).show();
                                 }
                             });
 
