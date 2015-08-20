@@ -4,6 +4,8 @@ package io.mindbend.android.announcements.reusableFrags;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -20,6 +22,7 @@ import com.nirhart.parallaxscroll.views.ParallaxScrollView;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
@@ -33,6 +36,7 @@ import io.mindbend.android.announcements.User;
 public class ProfileFragment extends Fragment implements Serializable, OrgsGridAdapter.OrgInteractionListener, PostOverlayFragment.PostsOverlayListener, OrgsGridFragment.OrgsGridInteractionListener {
 
     private static final String TAG = "ProfileFragment";
+    public static final int UPDATE_PROFILE_IMAGE = 5;
 
     //To add frags to backstack
     public static final String ORG_PROFILE_FRAG = "org_profile_frag";
@@ -54,6 +58,8 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     private PostOverlayFragment.PostsOverlayListener mPostsOverlayListener = this;
     private ProfileInteractionListener mListener;
     private transient View mView;
+
+    private transient de.hdodenhof.circleimageview.CircleImageView mUserImage;
 
     /**
      * Use this factory method to create a new instance of
@@ -96,26 +102,28 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (mView == null){
+        if (mView == null) {
             // Inflate the layout for this fragment
             mView = inflater.inflate(R.layout.fragment_profile, container, false);
+
+            mUserImage = (CircleImageView)mView.findViewById(R.id.profile_photo);
 
             //UI elements to be filled
             TextView name = (TextView) mView.findViewById(R.id.profile_name);
             TextView followCount = (TextView) mView.findViewById(R.id.follow_count);
             TextView profileDetail = (TextView) mView.findViewById(R.id.profile_detail);
             TextView profileTag = (TextView) mView.findViewById(R.id.profile_tag);
-            ImageButton modifyButton = (ImageButton)mView.findViewById(R.id.profile_edit_org);
+            ImageButton modifyButton = (ImageButton) mView.findViewById(R.id.profile_edit_org);
 
             //if the view is of an org that the user is an admin of, or if the user is viewing his/her own profile
-            if(mToEdit){
-                modifyButton.setVisibility(View.VISIBLE);
-                modifyButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //This is what's called when the imagebutton is pressed to modify an org/user
-                        Log.wtf("ProfileFrag", "modify profile");
-                        if (mOrg != null) {
+            if (mToEdit) {
+                if(mOrg != null){
+                    modifyButton.setVisibility(View.VISIBLE);
+                    modifyButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //This is what's called when the imagebutton is pressed to modify an org/user
+                            Log.wtf("ProfileFrag", "modify profile");
                             //modify org
                             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
                             builder.setTitle("Options");
@@ -143,14 +151,27 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                                 }
                             });
                             builder.show();
-                        } else {
-                            //modify user
                         }
-                    }
-                });
-            } else {
-                //should be redundant, but required for some reason
-                modifyButton.setVisibility(View.GONE);
+                    });
+                }
+                else {
+                    //mUser isn't null
+                    //this case is only true in the youfrag tab
+                    //TODO: setup tap&hold to update photo and interests
+                    mUserImage.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            Log.wtf("Image", "image selection begun");
+                            Intent intent = new Intent();
+                            intent.setType("image/*");
+                            intent.setAction(Intent.ACTION_GET_CONTENT);
+                            getActivity().startActivityForResult(Intent.createChooser(intent,
+                                    "Select Picture"), UPDATE_PROFILE_IMAGE);
+                            return true;
+                        }
+                    });
+
+                }
             }
 
             //TODO: branch based on whether user or org is null
@@ -184,19 +205,18 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                     transaction.add(R.id.profile_content_framelayout, userOrgsFollowedFragment, BOTTOM_FRAG_TAG).commit();
             }
 
-            if(mOrg != null){
-                if (mOrg.isPrivateOrg()){
+            if (mOrg != null) {
+                if (mOrg.isPrivateOrg()) {
                     name.setText(mOrg.getTitle() + " [PRIVATE]");
                     //TODO: add imageview of lock to indicate private
-                }
-                else {
+                } else {
                     name.setText(mOrg.getTitle());
                 }
                 followCount.setText(mOrg.getFollowers() + " Followers");
                 profileDetail.setText(mOrg.getDescription());
                 profileTag.setText(mOrg.getTag());
 
-                if (mOrg.isPrivateOrg() == false){
+                if (!mOrg.isPrivateOrg()) {
 
                     //TODO: query org's posts from parse, populate arraylist of posts
                     ArrayList<Post> orgPosts = new ArrayList<>();
@@ -257,12 +277,17 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         //required empty method for post overlay listener
     }
 
-    public interface ProfileInteractionListener extends Serializable{
-        void userProfileToOrgProfile (Organization orgSelected);
+    public interface ProfileInteractionListener extends Serializable {
+        void userProfileToOrgProfile(Organization orgSelected);
+
         void pressedOrgFromProfile(Organization orgPressed);
+
         void pressedUserFromCommentOfOrgPost(User userPressed);
+
         void modifyOrg(Organization org);
+
         void viewMembers(Organization org);
+
         void viewAnnouncementsState(Organization org);
     }
 
@@ -274,5 +299,9 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     @Override
     public void visitCommentersProfile(User commenterToBeVisited) {
         mListener.pressedUserFromCommentOfOrgPost(commenterToBeVisited);
+    }
+
+    public void updateImage(Bitmap bitmap) {
+        mUserImage.setImageBitmap(bitmap);
     }
 }

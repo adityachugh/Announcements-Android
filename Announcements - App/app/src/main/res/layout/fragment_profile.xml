@@ -47,7 +47,7 @@
                             android:src="@drawable/profilephoto"/>
                         <ImageButton
                             android:id="@+id/profile_edit_org"
-                            android:visibility="visible"
+                            android:visibility="gone"
                             android:layout_alignRight="@id/profile_photo"
                             android:layout_alignBottom="@id/profile_photo"
                             android:layout_width="@dimen/profile_edit_button_size"
