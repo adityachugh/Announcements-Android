@@ -5,23 +5,19 @@ import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.Serializable;
 import java.util.List;
 
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
-import io.mindbend.android.announcements.TabbedActivity;
 
 /**
  * Created by Akshay Pall on 01/08/2015.
@@ -91,7 +87,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
         viewHolder.mCommentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.pressedPost(post);
+                mListener.pressedPostComments(post);
             }
         });
 
@@ -145,7 +141,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
     }
 
     public interface PostInteractionListener extends Serializable {
-        void pressedPost(Post postPressed);
+        void pressedPostComments(Post postPressed);
         void pressedPostCard (Post post);
     }
 }

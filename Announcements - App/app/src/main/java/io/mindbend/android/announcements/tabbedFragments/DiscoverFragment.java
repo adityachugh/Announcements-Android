@@ -79,7 +79,7 @@ public class DiscoverFragment extends Fragment implements Serializable, OrgsGrid
     }
 
     @Override
-    public void pressedPost(Post postPressed) {
+    public void pressedPostComments(Post postPressed) {
         //TODO: do stuff, although switching to comments frag is already handled
         Log.d(TAG, "post pressed");
     }

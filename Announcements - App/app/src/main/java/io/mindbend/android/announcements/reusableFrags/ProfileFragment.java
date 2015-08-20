@@ -2,6 +2,7 @@ package io.mindbend.android.announcements.reusableFrags;
 
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -29,14 +30,15 @@ import io.mindbend.android.announcements.User;
  * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProfileFragment extends Fragment implements Serializable, OrgsGridAdapter.OrgInteractionListener, PostOverlayFragment.PostsOverlayListener, OrgsGridFragment.OrgsGridInteractionListener {
+public class ProfileFragment extends Fragment implements Serializable, OrgsGridAdapter.OrgInteractionListener, PostOverlayFragment.PostsOverlayListener, OrgsGridFragment.OrgsGridInteractionListener, PostCardFullFragment.FullPostInteractionListener, PostCommentsFragment.CommentsInteractionListener {
 
     private static final String TAG = "ProfileFragment";
 
     //To add frags to backstack
     public static final String ORG_PROFILE_FRAG = "org_profile_frag";
     private static final String BOTTOM_FRAG_TAG = "tag_for_bottom_frag_of_orgs_and_profiles";
-    private Fragment mOrgProfile;
+    private Fragment mFullPost;
+    private Fragment mCurrentComments;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -44,11 +46,16 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     private static final String ARG_PROFILE_LISTENER = "profile_listener_interface";
     private static final String ARG_ORG = "org";
 
+    public static final String FULL_POST_FRAG = "full_post_frag";
+    public static final String COMMENTS_FRAG = "comments_frag";
+
     private User mUser;
     private Organization mOrg;
 
     private OrgsGridAdapter.OrgInteractionListener mOrgListener = this;
     private PostOverlayFragment.PostsOverlayListener mPostsOverlayListener = this;
+    private PostCardFullFragment.FullPostInteractionListener mFullPostInteractionListener = this;
+    private PostCommentsFragment.CommentsInteractionListener mCommentsInteractionListener = this;
     private ProfileInteractionListener mListener;
     private transient View mView;
 
@@ -193,7 +200,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                     orgPosts.add(testPost3);
 
                     //add posts frag to bottom of org profile
-                    Fragment orgPostsFragment = PostOverlayFragment.newInstance(orgPosts, mPostsOverlayListener);
+                    Fragment orgPostsFragment = PostOverlayFragment.newInstance(orgPosts, mPostsOverlayListener, true);
                     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
                     //**DYNAMIC SIZING FOR ORG POSTS**
@@ -266,6 +273,10 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         void pressedUserFromCommentOfOrgPost(User userPressed);
     }
 
+    public interface ProfilePostCommentClick extends Serializable{
+        void pressedPostFromProfile (Post postClicked);
+    }
+
     @Override
     public void pressedOrgFromGrid(Organization orgPressed) {
         mListener.pressedOrgFromProfile(orgPressed);
@@ -274,5 +285,36 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     @Override
     public void visitCommentersProfile(User commenterToBeVisited) {
         mListener.pressedUserFromCommentOfOrgPost(commenterToBeVisited);
+    }
+
+    @Override
+    public void fullPostProfile(Post clickedPost) {
+        //Open full post frag in parent frame layout
+        mFullPost = PostCardFullFragment.newInstance(clickedPost, mFullPostInteractionListener);
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.add(R.id.profile_framelayout, mFullPost).addToBackStack(FULL_POST_FRAG).commit();
+    }
+
+    @Override
+    public void profileComments(Post post) {
+        //Open comment frag in parent frame layout
+        mCurrentComments = PostCommentsFragment.newInstance(post, mCommentsInteractionListener);
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.profile_framelayout, mCurrentComments).addToBackStack(COMMENTS_FRAG).commit();
+    }
+
+    @Override
+    public void CommentButtonClicked(Post postComments) {
+        profileComments(postComments);
+    }
+
+    @Override
+    public void pressedBackToPosts() {
+
+    }
+
+    @Override
+    public void pressedCommenterProfile(User commenterPressed) {
+        mPostsOverlayListener.visitCommentersProfile(commenterPressed);
     }
 }

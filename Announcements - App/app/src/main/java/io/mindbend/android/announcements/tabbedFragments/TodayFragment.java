@@ -92,7 +92,7 @@ public class TodayFragment extends Fragment implements Serializable, View.OnClic
         posts.add(testPost3);
 
         //pass in "this" in order to set the listener for the posts overlay frag in order to open the comments feed for a post
-        mPostsOverlayFragment = PostOverlayFragment.newInstance(posts, this);
+        mPostsOverlayFragment = PostOverlayFragment.newInstance(posts, this, false);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.add(R.id.today_framelayout, mPostsOverlayFragment).addToBackStack(TODAY_POSTS_FRAG).commit();
 
@@ -140,6 +140,11 @@ public class TodayFragment extends Fragment implements Serializable, View.OnClic
     }
 
     @Override
+    public void fullPostProfile(Post clickedPost) {
+
+    }
+
+    @Override
     public void userProfileToOrgProfile(Organization orgSelected) {
         ProfileFragment orgToVisit = ProfileFragment.newInstance(null, orgSelected, this);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
@@ -154,5 +159,10 @@ public class TodayFragment extends Fragment implements Serializable, View.OnClic
     @Override
     public void pressedUserFromCommentOfOrgPost(User userPressed) {
         visitCommentersProfile(userPressed);
+    }
+
+    @Override
+    public void profileComments(Post post) {
+
     }
 }
