@@ -14,15 +14,17 @@ public class Post implements Serializable, Parcelable {
     private String mPostTimeSince;
     private String mPostDetail;
     private String mPostClubUsername;
+    private String  mPostImageURL;
     //TODO: setup passing in club image for the post
     //private String mUrlToPicture;
 
-    public Post(String objectId, String title, String timeSinceString, String details, String clubUsername){
+    public Post(String objectId, String title, String timeSinceString, String details, String clubUsername, String imageURL){
         mObjectId = objectId;
         mPostTitle = title;
         mPostTimeSince = timeSinceString;
         mPostDetail = details;
         mPostClubUsername = clubUsername;
+        mPostImageURL = imageURL;
     }
 
     public Post (Parcel post) {
@@ -77,5 +79,9 @@ public class Post implements Serializable, Parcelable {
 
     public String getmPostClubUsername() {
         return mPostClubUsername;
+    }
+
+    public String getmPostImageURL() {
+        return mPostImageURL;
     }
 }

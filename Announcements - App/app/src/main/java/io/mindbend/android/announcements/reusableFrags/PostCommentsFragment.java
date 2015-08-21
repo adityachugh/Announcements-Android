@@ -86,8 +86,6 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
             // Inflate the layout for this fragment
             mView = inflater.inflate(R.layout.fragment_post_comments, container, false);
 
-            setupPost(mView);
-
             //TODO: setup recycler view adapter for comments, along with the recycler view feed item layout (comment).
             //TODO: ensure that the feed item is NOT a card -> the enture comment list will be enclosed in one card (already set up)
             RecyclerView recyclerView = (RecyclerView) mView.findViewById(R.id.comments_recycler_view);
@@ -169,20 +167,20 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
             //sharing the post
             Button shareButton = (Button) mView.findViewById(R.id.post_share_button);
             final String sharingPostText = getActivity().getResources().getString(R.string.sharing_post);
-            shareButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String toShareString = String.format(sharingPostText, mPost.getmPostClubUsername(), mPost.getmPostDetail());
-                    Intent sendIntent = new Intent(Intent.ACTION_SEND);
-                    sendIntent.putExtra(Intent.EXTRA_TEXT, toShareString);
-                    sendIntent.setType("text/plain");
-                    try {
-                        getActivity().startActivity(Intent.createChooser(sendIntent, getActivity().getResources().getText(R.string.send_to)));
-                    } catch (Exception e){
-                        Log.d(SHARE_TAG, "An error occured");
-                    }
-                }
-            });
+//            shareButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    String toShareString = String.format(sharingPostText, mPost.getmPostClubUsername(), mPost.getmPostDetail());
+//                    Intent sendIntent = new Intent(Intent.ACTION_SEND);
+//                    sendIntent.putExtra(Intent.EXTRA_TEXT, toShareString);
+//                    sendIntent.setType("text/plain");
+//                    try {
+//                        getActivity().startActivity(Intent.createChooser(sendIntent, getActivity().getResources().getText(R.string.send_to)));
+//                    } catch (Exception e){
+//                        Log.d(SHARE_TAG, "An error occured");
+//                    }
+//                }
+//            });
 
             mRefreshComments = (SwipeRefreshLayout)mView.findViewById(R.id.comments_refresher);
             mRefreshComments.setColorSchemeResources(R.color.accent, R.color.primary);
@@ -191,32 +189,6 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
 
         return mView;
     }
-
-    private void setupPost(View v) {
-        //retrieving all the
-        TextView postTitle = (TextView) v.findViewById(R.id.post_title);
-        TextView postDetail = (TextView) v.findViewById(R.id.post_detail);
-        TextView postTime = (TextView) v.findViewById(R.id.post_time);
-        TextView postClubName = (TextView) v.findViewById(R.id.post_club_username);
-        ImageView postClubPic = (ImageView) v.findViewById(R.id.post_club_image);
-        ImageView postImage = (ImageView) v.findViewById(R.id.post_image_attached);
-
-        postTitle.setText(mPost.getmPostTitle());
-        postDetail.setText(mPost.getmPostDetail());
-        postTime.setText(mPost.getmPostTimeSince());
-        postClubName.setText(mPost.getmPostClubUsername());
-        //TODO: SET UP IMAGES AS WELL
-
-        //the back button to return to the posts list from the comments
-        Button backButton = (Button)v.findViewById(R.id.back_to_posts_button);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.pressedBackToPosts();
-            }
-        });
-    }
-
 
     @Override
     public void onAttach(Activity activity) {

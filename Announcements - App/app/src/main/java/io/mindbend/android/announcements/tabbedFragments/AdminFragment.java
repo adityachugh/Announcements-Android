@@ -42,6 +42,11 @@ public class AdminFragment extends Fragment implements Serializable,
     private static final String MAIN_ADMIN_TAG = "main_admin_frag";
     private transient AdminMainFragment mAdminMain;
 
+    private boolean onToday = false;
+    private boolean onDiscover = false;
+    private boolean onYou = false;
+    private boolean onAdmin = true;
+
     public AdminFragment() {
         // Required empty public constructor
     }
@@ -139,13 +144,13 @@ public class AdminFragment extends Fragment implements Serializable,
         ArrayList<Post> posts = new ArrayList<>();
 
         //THE FOLLOWING ARE FAKE TEST POSTS
-        Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio", "hasImage");
         posts.add(testPost1);
 
-        Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio", "");
         posts.add(testPost2);
 
-        Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio", "");
         posts.add(testPost3);
 
         PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true);
@@ -170,7 +175,7 @@ public class AdminFragment extends Fragment implements Serializable,
         boolean isModifiable = r.nextBoolean();
 
         //load up orgs
-        ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, this, isModifiable);
+        ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, this, isModifiable, onToday, onDiscover, onYou, onAdmin);
         getChildFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, orgProfile).addToBackStack(null).commit();
     }
 
@@ -191,7 +196,7 @@ public class AdminFragment extends Fragment implements Serializable,
 
     @Override
     public void pressedUserFromCommentOfOrgPost(User userPressed) {
-        ProfileFragment userProfile = ProfileFragment.newInstance(userPressed, null, this, false);
+        ProfileFragment userProfile = ProfileFragment.newInstance(userPressed, null, this, false, onToday, onDiscover, onYou, onAdmin);
         getChildFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, userProfile).addToBackStack(null).commit();
     }
 

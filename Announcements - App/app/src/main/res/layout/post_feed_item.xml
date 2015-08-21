@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView
+    android:id="@+id/post_card"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    android:id="@+id/post"
+    android:clickable="true"
     android:orientation="vertical">
 
     <LinearLayout
@@ -12,17 +14,17 @@
         android:orientation="vertical">
 
         <RelativeLayout
-            android:layout_marginTop="@dimen/card_inner_margin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/card_inner_margin"
             android:layout_marginRight="@dimen/card_inner_margin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_marginTop="@dimen/card_inner_margin">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/post_club_image"
                 android:layout_width="@dimen/circle_avatar_size"
                 android:layout_height="@dimen/circle_avatar_size"
-                android:src="@color/primary" />
+                android:src="@color/primary"/>
 
             <TextView
                 android:id="@+id/post_title"
@@ -31,79 +33,98 @@
                 android:layout_alignTop="@id/post_club_image"
                 android:layout_marginLeft="@dimen/post_title_margin"
                 android:text="Synth polaroid bitter."
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
 
             <TextView
+                android:id="@+id/post_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@id/post_club_image"
                 android:layout_marginLeft="@dimen/post_title_margin"
                 android:text="2hrs"
-                android:id="@+id/post_time"
-                android:textColor="@color/text_tertiary" />
+                android:textColor="@color/text_tertiary"/>
         </RelativeLayout>
 
-        <ImageView
-            android:id="@+id/post_image_attached"
-            android:layout_marginTop="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:src="@color/primary"/>
-
-        <TextView
-            android:id="@+id/post_detail"
-            android:layout_width="match_parent"
+        <RelativeLayout
+            android:id="@+id/post_image_attached_container"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="@dimen/card_inner_margin"
-            android:layout_marginRight="@dimen/card_inner_margin"
-            android:text="Located two hours south of Sydney in the Southern Highlands of New South Wales, ..."
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="@color/text_primary"
-            android:lineSpacingExtra="@dimen/post_description_line_spacing"/>
+            android:layout_marginTop="8dp">
+
+            <ImageView
+                android:id="@+id/post_image_attached"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:src="@color/primary"/>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="51dp">
+
+            <TextView
+                android:id="@+id/post_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/card_inner_margin"
+                android:layout_marginRight="@dimen/card_inner_margin"
+                android:layout_marginTop="8dp"
+                android:ellipsize="end"
+                android:lineSpacingExtra="@dimen/post_description_line_spacing"
+                android:maxLines="2"
+                android:text="Located two hours south of Sydney in the Southern Highlands of New South Wales, ..."
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textColor="@color/text_primary"/>
+        </LinearLayout>
 
         <View
-            android:layout_marginTop="16dp"
             android:layout_width="match_parent"
             android:layout_height="1dp"
+            android:layout_marginTop="16dp"
             android:background="@color/divider_color"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/announcements_state_TV"
-                android:visibility="gone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
-                android:text="@string/announcement_approved"/>
-            <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@string/announcement_approved"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/post_comment_button"
                 style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/post_comment_button"
-                android:textColor="@color/primary"
-                android:id="@+id/post_comment_button"/>
+                android:textColor="@color/primary"/>
+
             <Button
+                android:id="@+id/post_share_button"
+                style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Widget.AppCompat.Button.Borderless"
                 android:text="@string/post_share_button"
-                android:textColor="@color/primary"
-                android:id="@+id/post_share_button"/>
+                android:textColor="@color/primary"/>
+
             <View
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"/>
+
             <TextView
+                android:id="@+id/post_club_username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/post_club_username"
-                android:text="Library"
                 android:layout_marginRight="@dimen/card_inner_margin"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+                android:text="Library"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
         </LinearLayout>
 
     </LinearLayout>

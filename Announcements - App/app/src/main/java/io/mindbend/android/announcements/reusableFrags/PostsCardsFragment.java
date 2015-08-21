@@ -36,6 +36,8 @@ public class PostsCardsFragment extends Fragment implements Serializable, SwipeR
     private PostsFeedAdapter mPostFeedAdapter;
     private PostsFeedAdapter.PostInteractionListener mPostTouchListener;
     private transient View mView;
+    //To pass into feed adapter (dynamic sizing)
+    private float mScale;
     private transient SwipeRefreshLayout mRefreshTodayPosts;
     private boolean mIsViewingState;
 
@@ -72,6 +74,8 @@ public class PostsCardsFragment extends Fragment implements Serializable, SwipeR
             mPosts = getArguments().getParcelableArrayList(ARG_POSTS);
             mPostTouchListener = (PostsFeedAdapter.PostInteractionListener)getArguments().getSerializable(ARG_POSTS_LISTENER);
             mIsViewingState = getArguments().getBoolean(ARG_IS_VIEWING_STATE);
+
+            mScale = getActivity().getResources().getDisplayMetrics().density;
         }
     }
 
@@ -86,7 +90,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, SwipeR
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
             //Initialize and set the adapter
-            mPostFeedAdapter = new PostsFeedAdapter(getActivity(), mPosts, mPostTouchListener, mIsViewingState);
+            mPostFeedAdapter = new PostsFeedAdapter(getActivity(), mPosts, mPostTouchListener, mIsViewingState, mScale);
             recyclerView.setAdapter(mPostFeedAdapter);
 
             //the animation for the recycler view to slide in from the bottom of the view

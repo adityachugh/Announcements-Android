@@ -39,6 +39,12 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
     private static final String ORG_PROFILE_FRAG = "ORG_PROFILE_FRAGMENT";
     private transient SearchableFrag mOrgsGridFrag;
 
+    //pass into profilefrag new instance in this order!
+    private boolean onToday = false;
+    private boolean onDiscover = true;
+    private boolean onYou = false;
+    private boolean onAdmin = false;
+
     public DiscoverFragment() {
         // Required empty public constructor
     }
@@ -64,9 +70,14 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
 
 
     @Override
-    public void pressedPost(Post postPressed) {
+    public void pressedPostComments(Post postPressed) {
         //TODO: do stuff, although switching to comments frag is already handled
         Log.d(TAG, "post pressed");
+    }
+
+    @Override
+    public void pressedPostCard(Post post) {
+
     }
 
     @Override
@@ -83,7 +94,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
         boolean isModifiable = r.nextBoolean();
 
         //replace the current profile frag with new org profile frag, while adding it to a backstack
-        ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgPressed, this, isModifiable);
+        ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgPressed, this, isModifiable, onToday, onDiscover, onYou, onAdmin);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, orgProfile).addToBackStack(null).commit();
         Log.d(TAG, "org has been pressed on discover page " + orgPressed.toString());
@@ -91,7 +102,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
 
     @Override
     public void pressedUserFromCommentOfOrgPost(User userPressed) {
-        ProfileFragment userToVisit = ProfileFragment.newInstance(userPressed, null, this, false);
+        ProfileFragment userToVisit = ProfileFragment.newInstance(userPressed, null, this, false, onToday, onDiscover, onYou, onAdmin);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, userToVisit).addToBackStack(null).commit();
     }
@@ -136,13 +147,13 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
         ArrayList<Post> posts = new ArrayList<>();
 
         //THE FOLLOWING ARE FAKE TEST POSTS
-        Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio", "");
         posts.add(testPost1);
 
-        Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio", "");
         posts.add(testPost2);
 
-        Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio", "hasImage");
         posts.add(testPost3);
 
         PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true);

@@ -60,10 +60,17 @@ public class TodayFragment extends Fragment implements Serializable,
         DatePickerDialog.OnDateSetListener,
         PostOverlayFragment.PostsOverlayListener,
         ProfileFragment.ProfileInteractionListener, ListFragment.ListFabListener, UserListAdapter.UserListInteractionListener, SearchableFrag.SearchInterface {
+
     private transient ImageButton mFab;
     //in order to add frags to the backstack
     public static final String TODAY_POSTS_FRAG = "today_posts_frag";
-    private transient Fragment mPostsOverlayFragment;
+    private transient PostOverlayFragment mPostsOverlayFragment;
+
+    //pass into profilefrag new instance in this order!
+    private boolean onToday = true;
+    private boolean onDiscover = false;
+    private boolean onYou = false;
+    private boolean onAdmin = false;
 
     public TodayFragment() {
         // Required empty public constructor
@@ -96,24 +103,24 @@ public class TodayFragment extends Fragment implements Serializable,
         ArrayList<Post> posts = new ArrayList<>();
 
         //THE FOLLOWING ARE FAKE TEST POSTS
-        Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data. Lots and lots of fake data. Yes. I love fake data. This needs to be long as hell. Yum yum yum yum yum yum yum yum yum!!!!", "Mindbend Studio", "");
         posts.add(testPost1);
 
-        Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio", "hasImage");
         posts.add(testPost2);
 
-        Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio", "hasImage");
         posts.add(testPost3);
 
         //pass in "this" in order to set the listener for the posts overlay frag in order to open the comments feed for a post
-        mPostsOverlayFragment = PostOverlayFragment.newInstance(posts, this);
+        mPostsOverlayFragment = PostOverlayFragment.newInstance(posts, this, false);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.today_framelayout, mPostsOverlayFragment).addToBackStack(TODAY_POSTS_FRAG).commit();
 
         return v;
     }
 
-    public Fragment getmPostsOverlayFragment() {
+    public PostOverlayFragment getmPostsOverlayFragment() {
         return mPostsOverlayFragment;
     }
 
@@ -148,9 +155,14 @@ public class TodayFragment extends Fragment implements Serializable,
 
     @Override
     public void visitCommentersProfile(User commenterToBeVisited) {
-        ProfileFragment commenterVisited = ProfileFragment.newInstance(commenterToBeVisited, null, this, false);
+        ProfileFragment commenterVisited = ProfileFragment.newInstance(commenterToBeVisited, null, this, false, onToday, onDiscover, onYou, onAdmin);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.today_framelayout, commenterVisited).addToBackStack(null).commit();
+    }
+
+    @Override
+    public void fullPostProfile(Post clickedPost) {
+
     }
 
     @Override
@@ -161,7 +173,7 @@ public class TodayFragment extends Fragment implements Serializable,
         Random r = new Random();
         boolean isModifiable = r.nextInt(2) == 1;
 
-        ProfileFragment orgToVisit = ProfileFragment.newInstance(null, orgSelected, this, isModifiable);
+        ProfileFragment orgToVisit = ProfileFragment.newInstance(null, orgSelected, this, isModifiable, onToday, onDiscover, onYou, onAdmin);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.today_framelayout, orgToVisit).addToBackStack(null).commit();
     }
@@ -174,6 +186,11 @@ public class TodayFragment extends Fragment implements Serializable,
     @Override
     public void pressedUserFromCommentOfOrgPost(User userPressed) {
         visitCommentersProfile(userPressed);
+    }
+
+    @Override
+    public void profileComments(Post post) {
+
     }
 
     @Override
@@ -216,13 +233,13 @@ public class TodayFragment extends Fragment implements Serializable,
         ArrayList<Post> posts = new ArrayList<>();
 
         //THE FOLLOWING ARE FAKE TEST POSTS
-        Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio", "hasImage");
         posts.add(testPost1);
 
-        Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio", "hasImage");
         posts.add(testPost2);
 
-        Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio", "");
         posts.add(testPost3);
 
         PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true);

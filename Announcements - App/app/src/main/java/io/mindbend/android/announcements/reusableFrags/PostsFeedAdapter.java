@@ -1,46 +1,41 @@
 package io.mindbend.android.announcements.reusableFrags;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.provider.MediaStore;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Random;
 
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
-import io.mindbend.android.announcements.TabbedActivity;
 
 /**
  * Created by Akshay Pall on 01/08/2015.
  */
 public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.ViewHolder> implements Serializable{
     private static final String SHARE_TAG = "Share_post_tag";
+    private float mScale;
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView mTitle;
         private final TextView mDetail;
+        private final ImageView mPostImage;
         private final TextView mTimeSince;
         private final TextView mClubUsername;
         private final Button mCommentButton;
         private final Button mShareButton;
+        private final CardView mPostCard;
         private final de.hdodenhof.circleimageview.CircleImageView mPosterImage;
         private final TextView mAnnouncementState;
 
@@ -51,10 +46,12 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
             //getting all the elements part of the card, aside from the image
             mTitle = (TextView)itemView.findViewById(R.id.post_title);
             mDetail = (TextView)itemView.findViewById(R.id.post_detail);
+            mPostImage = (ImageView) itemView.findViewById(R.id.post_image_attached);
             mTimeSince = (TextView)itemView.findViewById(R.id.post_time);
             mClubUsername = (TextView)itemView.findViewById(R.id.post_club_username);
             mCommentButton = (Button)itemView.findViewById(R.id.post_comment_button);
             mShareButton = (Button)itemView.findViewById(R.id.post_share_button);
+            mPostCard = (CardView) itemView.findViewById(R.id.post_card);
             mPosterImage = (de.hdodenhof.circleimageview.CircleImageView)itemView.findViewById(R.id.post_club_image);
             mAnnouncementState = (TextView)itemView.findViewById(R.id.announcements_state_TV);
         }
@@ -80,6 +77,24 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
         viewHolder.mDetail.setText(post.getmPostDetail());
         viewHolder.mTimeSince.setText(post.getmPostTimeSince());
         viewHolder.mClubUsername.setText(post.getmPostClubUsername());
+
+        //add image if present
+        if (!post.getmPostImageURL().equals("")){
+            viewHolder.mPostImage.setImageResource(R.drawable.landscape);
+
+            //image height is 200dp
+            int imageHeightinPx = (int) (200 * mScale + 0.5f);
+            viewHolder.mPostImage.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, imageHeightinPx));
+
+            //TODO: click image to open in full screen
+        }
+
+        viewHolder.mPostCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.pressedPostCard(post);
+            }
+        });
 
         if(mIsViewingState){
             viewHolder.mCommentButton.setVisibility(View.GONE);
@@ -113,7 +128,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
             viewHolder.mCommentButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.pressedPost(post);
+                    mListener.pressedPostComments(post);
                 }
             });
 
@@ -140,10 +155,11 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
         return mPosts.size();
     }
 
-    public PostsFeedAdapter(Context context, List<Post> posts, PostInteractionListener listener, boolean isViewingState) {
+    public PostsFeedAdapter(Context context, List<Post> posts, PostInteractionListener listener, boolean isViewingState, float scale) {
         //save the mPosts private field as what is passed in
         mContext = context;
         mPosts = posts;
+        mScale = scale;
 
         /**
          * The listener should be NULL only if the @param isViewingState is TRUE
@@ -157,12 +173,6 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
     @Override
     public void onViewAttachedToWindow(ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
-//        try {
-//            mListener = (PostInteractionListener)holder;
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException(holder.toString()
-//                    + " must implement PostInteractionListener");
-//        }
     }
 
     @Override
@@ -171,6 +181,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
     }
 
     public interface PostInteractionListener extends Serializable{
-        void pressedPost(Post postPressed);
+        void pressedPostComments(Post postPressed);
+        void pressedPostCard (Post post);
     }
 }
