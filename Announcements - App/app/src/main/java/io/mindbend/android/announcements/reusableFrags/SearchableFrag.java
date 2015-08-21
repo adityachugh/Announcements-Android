@@ -95,7 +95,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
         mSearchView.setOnQueryTextListener(this);
         mSearchView.onActionViewExpanded();
         //Stop keyboard from automatically popping up
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        mSearchView.clearFocus();
 
         return v;
     }

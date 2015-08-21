@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.facebook.rebound.BaseSpringSystem;
@@ -19,6 +20,8 @@ import com.facebook.rebound.SimpleSpringListener;
 import com.facebook.rebound.Spring;
 import com.facebook.rebound.SpringSystem;
 import com.facebook.rebound.SpringUtil;
+import com.parse.LogOutCallback;
+import com.parse.ParseException;
 import com.parse.ParseUser;
 
 import io.mindbend.android.announcements.onboardingAndSignupin.OnboardingActivity;
@@ -32,17 +35,20 @@ public class MoreActivity extends AppCompatActivity {
     private FrameLayout mRootView;
     private Spring mScaleSpring;
     private View mLogo;
+    ProgressBar mLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_more);
 
+        //progress bar grabbing
+        mLoading = (ProgressBar)findViewById(R.id.more_progressbar);
+
         LinearLayout reportBug = (LinearLayout)findViewById(R.id.report_bug);
         reportBug.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: email intent to hello@mindbend.io, until support is working
                 Intent emailIntent = new Intent(Intent.ACTION_SEND);
                 emailIntent.setData(Uri.parse("mailto:"));
                 emailIntent.setType("text/plain");
@@ -77,12 +83,16 @@ public class MoreActivity extends AppCompatActivity {
         signOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: sign out user
-//                ParseUser.logOut();
-                //sign out of parse, then...
-
-                Intent i = new Intent(MoreActivity.this, OnboardingActivity.class);
-                startActivity(i);
+                mLoading.setVisibility(View.VISIBLE);
+                ParseUser.logOutInBackground(new LogOutCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        //sign out of parse, then...
+                        mLoading.setVisibility(View.GONE);
+                        Intent i = new Intent(MoreActivity.this, OnboardingActivity.class);
+                        startActivity(i);
+                    }
+                });
             }
         });
 

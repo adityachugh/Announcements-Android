@@ -3,7 +3,9 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              tools:context="io.mindbend.android.announcements.onboardingAndSignupin.SignInFragment">
-
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:orientation="vertical"
@@ -61,6 +63,11 @@
 
     </LinearLayout>
 
-
-
+    <ProgressBar
+        android:layout_width="@dimen/progress_bar_LARGE"
+        android:layout_height="@dimen/progress_bar_LARGE"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:id="@+id/signin_progressbar"/>
+</RelativeLayout>
 </FrameLayout>

@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +43,8 @@ public class SignInFragment extends Fragment
 
     private ForgotPasswordFragment mForgotPasswordFragment;
 
+    private ProgressBar mLoading;
+
 
     public SignInFragment() {
         // Required empty public constructor
@@ -59,6 +62,8 @@ public class SignInFragment extends Fragment
 
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_sign_in, container, false);
+
+        mLoading = (ProgressBar)v.findViewById(R.id.signin_progressbar);
 
         //Fetch Button "Sign In"
         Button signInButton = (Button) v.findViewById(R.id.sign_in_button);
@@ -81,9 +86,11 @@ public class SignInFragment extends Fragment
                 if (username.getText().toString().equals("") || password.getText().toString().equals("")){
                     Toast.makeText(getActivity(), "Please enter in credentials", Toast.LENGTH_SHORT).show();
                 } else {
+                    mLoading.setVisibility(View.VISIBLE);
                     ParseUser.logInInBackground(username.getText().toString(), password.getText().toString(), new LogInCallback() {
                         @Override
                         public void done(ParseUser parseUser, ParseException e) {
+                            mLoading.setVisibility(View.GONE);
                             if (e == null){
                                 //login successful!
                                 Intent i = new Intent(getActivity(), TabbedActivity.class);
