@@ -83,4 +83,5 @@
         <item>View All Members</item>
         <item>View Announcements</item>
     </string-array>
+    <string name="title_activity_signup_select_parent_org">SignupSelectParentOrgActivity</string>
 </resources>

@@ -9,18 +9,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import com.parse.ParseCloud;
 
 import java.io.Serializable;
 
 import io.mindbend.android.announcements.App;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.cloudCode.VerificationDataSource;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class SignUpFragment extends Fragment implements Serializable {
-
+    private EditText mFirstName, mLastName, mUsername, mEmail, mPassword;
+    ProgressBar mLoader;
 
     public SignUpFragment() {
         // Required empty public constructor
@@ -38,6 +45,8 @@ public class SignUpFragment extends Fragment implements Serializable {
 
         View v =  inflater.inflate(R.layout.fragment_sign_up, container, false);
 
+        mLoader = (ProgressBar)v.findViewById(R.id.sign_up_progressbar);
+
         //Fetch Button "Sign Up"
         Button signUpButton = (Button) v.findViewById(R.id.sign_up_button);
 
@@ -46,6 +55,31 @@ public class SignUpFragment extends Fragment implements Serializable {
         if (!App.isAPI22OrHigher) {
             signUpButton.setBackgroundColor(getResources().getColor(R.color.accent));
         }
+
+        //setting up all the edittexts
+        mFirstName = (EditText)v.findViewById(R.id.sign_up_first_name);
+        mLastName = (EditText)v.findViewById(R.id.sign_up_last_name);
+        mUsername = (EditText)v.findViewById(R.id.sign_up_username);
+        mEmail = (EditText)v.findViewById(R.id.sign_up_email);
+        mPassword = (EditText)v.findViewById(R.id.sign_up_password);
+
+        signUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String firstName = mFirstName.getText().toString();
+                String lastName = mLastName.getText().toString();
+                String username = mUsername.getText().toString();
+                String email = mEmail.getText().toString();
+                String password = mPassword.getText().toString();
+
+                if(firstName.equals("") || lastName.equals("") || username.equals("") || email.equals("") || password.equals(""))
+                    Toast.makeText(getActivity(), "Please fill in all fields.", Toast.LENGTH_SHORT).show();
+                else {
+                    //check if fields in use
+                    VerificationDataSource.signupUser(mLoader, getActivity(), firstName, lastName, password, username, email);
+                }
+            }
+        });
 
         return v;
     }

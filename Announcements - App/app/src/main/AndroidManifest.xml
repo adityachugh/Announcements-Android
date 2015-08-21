@@ -33,6 +33,10 @@
             android:name=".MoreActivity"
             android:label="@string/title_activity_more" >
         </activity>
+        <activity
+            android:name=".onboardingAndSignupin.SignupSelectParentOrgActivity"
+            android:label="@string/title_activity_signup_select_parent_org" >
+        </activity>
     </application>
 
 </manifest>
