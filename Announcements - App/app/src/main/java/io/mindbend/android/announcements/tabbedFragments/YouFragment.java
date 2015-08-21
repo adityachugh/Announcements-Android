@@ -36,6 +36,11 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
     private static final String DEFAULT = "default_frag";
     private Fragment mProfileFragment;
 
+    private boolean onToday = false;
+    private boolean onDiscover = false;
+    private boolean onYou = true;
+    private boolean onAdmin = false;
+
     //NOTE: Opens child ProfileFragment, which has a grandchild for user followed organizations/ organization announcements
     //Makes Profile fragment generic (useable by both users and organizations)
 
@@ -55,7 +60,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
         //FAKE USER FOR TESTING
         User testUser = new User("Aditya", "Chugh", "getting paper", "node.js", "#Grade12", 9);
 
-        mProfileFragment = ProfileFragment.newInstance(testUser, null, this, true);
+        mProfileFragment = ProfileFragment.newInstance(testUser, null, this, true, onToday, onDiscover, onYou, onAdmin);
 
         //inflate profileFrag in framelayout
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
@@ -76,7 +81,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
         boolean isModifiable = r.nextBoolean();
 
 //        replace the current profile frag with new org profile frag, while adding it to a backstack
-        ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, this, isModifiable);
+        ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, this, isModifiable, onToday, onDiscover, onYou, onAdmin);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.you_framelayout, orgProfile).addToBackStack(null).commit();
 
@@ -90,7 +95,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
 
     @Override
     public void pressedUserFromCommentOfOrgPost(User userPressed) {
-        ProfileFragment userToVisit = ProfileFragment.newInstance(userPressed, null, this, false);
+        ProfileFragment userToVisit = ProfileFragment.newInstance(userPressed, null, this, false, onToday, onDiscover, onYou, onAdmin);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.you_framelayout, userToVisit).addToBackStack(null).commit();
     }
@@ -134,13 +139,13 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
         ArrayList<Post> posts = new ArrayList<>();
 
         //THE FOLLOWING ARE FAKE TEST POSTS
-        Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio", "hasImage");
         posts.add(testPost1);
 
-        Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio", "");
         posts.add(testPost2);
 
-        Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio");
+        Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio", "hasImage");
         posts.add(testPost3);
 
         PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true);

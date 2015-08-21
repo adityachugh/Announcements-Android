@@ -4,7 +4,7 @@
     android:id="@+id/org_card"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="255dp"
     android:layout_margin="8dp">
 
     <LinearLayout
