@@ -166,32 +166,6 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
         return mView;
     }
 
-//    private void setupPost(View v) {
-//        //retrieving all the
-//        TextView postTitle = (TextView) v.findViewById(R.id.post_title);
-//        TextView postDetail = (TextView) v.findViewById(R.id.post_detail);
-//        TextView postTime = (TextView) v.findViewById(R.id.post_time);
-//        TextView postClubName = (TextView) v.findViewById(R.id.post_club_username);
-//        ImageView postClubPic = (ImageView) v.findViewById(R.id.post_club_image);
-//        ImageView postImage = (ImageView) v.findViewById(R.id.post_image_attached);
-//
-//        postTitle.setText(mPost.getmPostTitle());
-//        postDetail.setText(mPost.getmPostDetail());
-//        postTime.setText(mPost.getmPostTimeSince());
-//        postClubName.setText(mPost.getmPostClubUsername());
-//        //TODO: SET UP IMAGES AS WELL
-//
-//        //the back button to return to the posts list from the comments
-//        Button backButton = (Button)v.findViewById(R.id.back_to_posts_button);
-//        backButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mListener.pressedBackToPosts();
-//            }
-//        });
-//    }
-
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);

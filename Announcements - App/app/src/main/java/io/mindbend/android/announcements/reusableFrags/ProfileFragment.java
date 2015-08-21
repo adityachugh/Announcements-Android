@@ -49,6 +49,11 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     public static final String FULL_POST_FRAG = "full_post_frag";
     public static final String COMMENTS_FRAG = "comments_frag";
 
+    private static final String ON_TODAY = "on_today";
+    private static final String ON_DISCOVER = "on_discover";
+    private static final String ON_YOU = "on_you";
+
+
     private User mUser;
     private Organization mOrg;
 
@@ -64,6 +69,10 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     private int mDeviceHeight;
     private float mScale;
 
+    private boolean mOnToday;
+    private boolean mOnDiscover;
+    private boolean mOnYou;
+
 
     /**
      * Use this factory method to create a new instance of
@@ -73,8 +82,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
      * @param org  ORGANIZATION.
      * @return A new instance of fragment ProfileFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(User user, Organization org, ProfileInteractionListener profileListener) {
+    public static ProfileFragment newInstance(User user, Organization org, ProfileInteractionListener profileListener, boolean onTodayTab, boolean onDiscoverTab, boolean onYouTab) {
 
         //***NOTE*** : one of user or org must be null
 
@@ -83,6 +91,9 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         args.putSerializable(ARG_USER, user);
         args.putSerializable(ARG_ORG, org);
         args.putSerializable(ARG_PROFILE_LISTENER, profileListener);
+        args.putBoolean(ON_TODAY, onTodayTab);
+        args.putBoolean(ON_DISCOVER, onDiscoverTab);
+        args.putBoolean(ON_YOU, onYouTab);
         fragment.setArguments(args);
         return fragment;
     }
@@ -98,13 +109,18 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
             mUser = (User) getArguments().getSerializable(ARG_USER);
             mOrg = (Organization) getArguments().getSerializable(ARG_ORG);
             mListener = (ProfileInteractionListener) getArguments().getSerializable(ARG_PROFILE_LISTENER);
+
+            mOnToday = getArguments().getBoolean(ON_TODAY);
+            mOnDiscover = getArguments().getBoolean(ON_DISCOVER);
+            mOnYou = getArguments().getBoolean(ON_YOU);
+
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (mView == null){
+        if (mView == null) {
             // Inflate the layout for this fragment
             mView = inflater.inflate(R.layout.fragment_profile, container, false);
 
@@ -158,13 +174,13 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
 
                 //**DYNAMIC SIZING FOR USER FOLLOWED ORGS GRID**
                 final int orgCardHeight = 260; //this is defined in the layout xml; card height + padding
-                int orgCardColumns = (orgs.size()/2) + (orgs.size()%2); //adds additional row for odd numbered org
+                int orgCardColumns = (orgs.size() / 2) + (orgs.size() % 2); //adds additional row for odd numbered org
 
                 //layout params are in px; must convert dps to px on device
                 int viewHeightInDps = (orgCardHeight * orgCardColumns);
                 int viewHeightinPx = (int) (viewHeightInDps * mScale + 0.5f);
 
-                if (viewHeightinPx > (mDeviceHeight/2))
+                if (viewHeightinPx > (mDeviceHeight / 2))
                     mProfileContentFrameLayoutEmbedded.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, viewHeightinPx));
 
 
@@ -172,19 +188,18 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                     transaction.add(R.id.profile_content_framelayout, userOrgsFollowedFragment, BOTTOM_FRAG_TAG).commit();
             }
 
-            if(mOrg != null){
-                if (mOrg.isPrivateOrg()){
+            if (mOrg != null) {
+                if (mOrg.isPrivateOrg()) {
                     name.setText(mOrg.getTitle() + " [PRIVATE]");
                     //TODO: add imageview of lock to indicate private
-                }
-                else {
+                } else {
                     name.setText(mOrg.getTitle());
                 }
                 followCount.setText(mOrg.getFollowers() + " Followers");
                 profileDetail.setText(mOrg.getDescription());
                 profileTag.setText(mOrg.getTag());
 
-                if (!mOrg.isPrivateOrg()){
+                if (!mOrg.isPrivateOrg()) {
 
                     //TODO: query org's posts from parse, populate arraylist of posts
                     ArrayList<Post> orgPosts = new ArrayList<>();
@@ -221,7 +236,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                     int viewHeightInDps = (postCardHeight * posts) + (postCardHeightWithImage * postsWithImage);
                     int viewHeightinPx = (int) (viewHeightInDps * mScale + 0.5f);
 
-                    if (viewHeightinPx > (mDeviceHeight/2))
+                    if (viewHeightinPx > (mDeviceHeight / 2))
                         mProfileContentFrameLayoutEmbedded.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, viewHeightinPx));
 
                     //TODO: set height to device height - actionbar and tabview (48dp each) when comment open, but also add height of post (image + 10dp per line of text)
@@ -231,11 +246,6 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                         transaction.add(R.id.profile_content_framelayout, orgPostsFragment, BOTTOM_FRAG_TAG).commit();
                 }
             }
-
-            //Get scrollview, scroll to top
-            //TODO: not working!
-            ParallaxScrollView parallaxScrollView = (ParallaxScrollView) mView.findViewById(R.id.profile_scrollview);
-            parallaxScrollView.scrollTo(0, 0);
         }
 
         return mView;
@@ -267,14 +277,16 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         //required empty method for post overlay listener
     }
 
-    public interface ProfileInteractionListener extends Serializable{
-        void userProfileToOrgProfile (Organization orgSelected);
+    public interface ProfileInteractionListener extends Serializable {
+        void userProfileToOrgProfile(Organization orgSelected);
+
         void pressedOrgFromProfile(Organization orgPressed);
+
         void pressedUserFromCommentOfOrgPost(User userPressed);
     }
 
-    public interface ProfilePostCommentClick extends Serializable{
-        void pressedPostFromProfile (Post postClicked);
+    public interface ProfilePostCommentClick extends Serializable {
+        void pressedPostFromProfile(Post postClicked);
     }
 
     @Override
@@ -292,7 +304,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         //Open full post frag in parent frame layout
         mFullPost = PostCardFullFragment.newInstance(clickedPost, mFullPostInteractionListener);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.add(R.id.profile_framelayout, mFullPost).addToBackStack(FULL_POST_FRAG).commit();
+        transaction.replace(getAppropriateFramelayout(), mFullPost).addToBackStack(FULL_POST_FRAG).commit();
     }
 
     @Override
@@ -300,7 +312,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         //Open comment frag in parent frame layout
         mCurrentComments = PostCommentsFragment.newInstance(post, mCommentsInteractionListener);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.profile_framelayout, mCurrentComments).addToBackStack(COMMENTS_FRAG).commit();
+        transaction.replace(getAppropriateFramelayout(), mCurrentComments).addToBackStack(COMMENTS_FRAG).commit();
     }
 
     @Override
@@ -316,5 +328,14 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     @Override
     public void pressedCommenterProfile(User commenterPressed) {
         mPostsOverlayListener.visitCommentersProfile(commenterPressed);
+    }
+
+    private int getAppropriateFramelayout() {
+        if (mOnToday)
+            return R.id.today_framelayout;
+        if (mOnDiscover)
+            return R.id.discover_framelayout;
+        //if (mOnYou)
+        return R.id.you_framelayout;
     }
 }

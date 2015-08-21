@@ -72,7 +72,7 @@ public class DiscoverFragment extends Fragment implements Serializable, OrgsGrid
     @Override
     public void pressedOrg(Organization orgSelected) {
         //replace the current profile frag with new org profile frag, while adding it to a backstack
-        ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, this);
+        ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, this, false, true, false);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.discover_framelayout, orgProfile).addToBackStack(null).commit();
         Log.d(TAG, "org has been pressed on discover page " + orgSelected.toString());
@@ -106,7 +106,7 @@ public class DiscoverFragment extends Fragment implements Serializable, OrgsGrid
 
     @Override
     public void pressedUserFromCommentOfOrgPost(User userPressed) {
-        ProfileFragment userToVisit = ProfileFragment.newInstance(userPressed, null, this);
+        ProfileFragment userToVisit = ProfileFragment.newInstance(userPressed, null, this, false, true, false);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.discover_framelayout, userToVisit).addToBackStack(null).commit();
     }

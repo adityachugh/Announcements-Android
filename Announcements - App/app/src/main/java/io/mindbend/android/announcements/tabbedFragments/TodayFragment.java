@@ -134,7 +134,8 @@ public class TodayFragment extends Fragment implements Serializable, View.OnClic
 
     @Override
     public void visitCommentersProfile(User commenterToBeVisited) {
-        ProfileFragment commenterVisited = ProfileFragment.newInstance(commenterToBeVisited, null, this);
+        //ProfileFragment newInstance(User user, Organization org, ProfileInteractionListener profileListener, boolean onTodayTab, boolean onDiscoverTab, boolean onYouTab
+        ProfileFragment commenterVisited = ProfileFragment.newInstance(commenterToBeVisited, null, this, true, false, false);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.today_framelayout, commenterVisited).addToBackStack(null).commit();
     }
@@ -146,7 +147,7 @@ public class TodayFragment extends Fragment implements Serializable, View.OnClic
 
     @Override
     public void userProfileToOrgProfile(Organization orgSelected) {
-        ProfileFragment orgToVisit = ProfileFragment.newInstance(null, orgSelected, this);
+        ProfileFragment orgToVisit = ProfileFragment.newInstance(null, orgSelected, this, true, false, false);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.today_framelayout, orgToVisit).addToBackStack(null).commit();
     }

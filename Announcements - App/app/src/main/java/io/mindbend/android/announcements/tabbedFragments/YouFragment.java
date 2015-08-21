@@ -47,7 +47,8 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
         //FAKE USER FOR TESTING
         User testUser = new User("Aditya", "Chugh", "getting paper", "node.js", "#Grade12", 9);
 
-        mProfileFragment = ProfileFragment.newInstance(testUser, null, this);
+        //ProfileFragment newInstance(User user, Organization org, ProfileInteractionListener profileListener, boolean onTodayTab, boolean onDiscoverTab, boolean onYouTab
+        mProfileFragment = ProfileFragment.newInstance(testUser, null, this, false, false, true);
 
         //inflate profileFrag in framelayout
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
@@ -62,7 +63,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
     @Override
     public void userProfileToOrgProfile(Organization orgSelected) {
 //        replace the current profile frag with new org profile frag, while adding it to a backstack
-        ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, this);
+        ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, this, false, false, true);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.you_framelayout, orgProfile).addToBackStack(null).commit();
 
@@ -76,7 +77,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
 
     @Override
     public void pressedUserFromCommentOfOrgPost(User userPressed) {
-        ProfileFragment userToVisit = ProfileFragment.newInstance(userPressed, null, this);
+        ProfileFragment userToVisit = ProfileFragment.newInstance(userPressed, null, this, false, false, true);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.you_framelayout, userToVisit).addToBackStack(null).commit();
     }

@@ -9,7 +9,10 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -109,6 +112,15 @@ public class PostCardFullFragment extends Fragment implements Serializable {
                 }
             });
         }
+
+        FrameLayout fullPostFramelayout = (FrameLayout) mView.findViewById(R.id.full_post_framelayout);
+
+        //animation
+        TranslateAnimation trans = new TranslateAnimation(0, 0, 1000, 0);
+        trans.setDuration(500);
+        trans.setInterpolator(new DecelerateInterpolator(1.0f));
+        fullPostFramelayout.startAnimation(trans);
+
         return mView;
     }
 
