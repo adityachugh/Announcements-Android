@@ -7,6 +7,8 @@ import com.parse.ParseObject;
 
 import java.io.Serializable;
 
+import io.mindbend.android.announcements.cloudCode.OrgsDataSource;
+
 /**
  * Created by Akshay Pall on 01/08/2015.
  */
@@ -21,6 +23,8 @@ public class Organization implements Serializable, Parcelable {
     private boolean mPrivateOrg;
     private boolean mNewOrg;
 
+    private int mRequestCode;
+
     public Organization(String objectId, String title, String description, int followers, String tag, boolean privateOrg, boolean newOrg){
         mObjectId = objectId;
         mTitle = title;
@@ -33,7 +37,13 @@ public class Organization implements Serializable, Parcelable {
 
     public Organization (ParseObject object){
         mObjectId = object.getObjectId();
-        mTitle = object.getString()
+        mTitle = object.getString(OrgsDataSource.ORG_TITLE);
+        mDescription = object.getString(OrgsDataSource.ORG_DESCRIPTION);
+        mFollowers = object.getInt(OrgsDataSource.ORG_FOLLOWER_COUNT);
+        mPrivateOrg = object.getString(OrgsDataSource.ORG_TYPE).equals(OrgsDataSource.ORG_TYPES_PRIVATE);
+        if(mPrivateOrg)
+            mRequestCode = object.getInt(OrgsDataSource.ORG_REQUEST_CODE);
+        mNewOrg = OrgsDataSource.isNew(object);
     }
 
     public Organization(Parcel in){

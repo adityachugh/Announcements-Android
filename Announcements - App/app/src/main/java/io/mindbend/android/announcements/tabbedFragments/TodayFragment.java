@@ -22,10 +22,14 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.parse.FunctionCallback;
+import com.parse.ParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -42,6 +46,7 @@ import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.TabbedActivity;
 import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment;
+import io.mindbend.android.announcements.cloudCode.PostsDataSource;
 import io.mindbend.android.announcements.reusableFrags.ListFragment;
 import io.mindbend.android.announcements.reusableFrags.PostCommentsFragment;
 import io.mindbend.android.announcements.reusableFrags.PostOverlayFragment;
@@ -61,6 +66,7 @@ public class TodayFragment extends Fragment implements Serializable,
         PostOverlayFragment.PostsOverlayListener,
         ProfileFragment.ProfileInteractionListener, ListFragment.ListFabListener, UserListAdapter.UserListInteractionListener, SearchableFrag.SearchInterface {
     private transient ImageButton mFab;
+    private ProgressBar mLoading;
     //in order to add frags to the backstack
     public static final String TODAY_POSTS_FRAG = "today_posts_frag";
     private transient Fragment mPostsOverlayFragment;
@@ -91,24 +97,37 @@ public class TodayFragment extends Fragment implements Serializable,
         mFab = (ImageButton) v.findViewById(R.id.today_fab);
         mFab.setOnClickListener(this);
 
+        mLoading = (ProgressBar)v.findViewById(R.id.today_progressbar);
+
+        PostsDataSource.getRangeOfPostsForDay(mLoading, getActivity(), 0, 10, new Date() , new FunctionCallback<ArrayList<Post>>() {
+            @Override
+            public void done(ArrayList<Post> posts, ParseException e) {
+                if (e == null){
+                    //pass in "this" in order to set the listener for the posts overlay frag in order to open the comments feed for a post
+                    mPostsOverlayFragment = PostOverlayFragment.newInstance(posts, TodayFragment.this);
+                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.today_framelayout, mPostsOverlayFragment).addToBackStack(TODAY_POSTS_FRAG).commit();
+                }
+                else {
+                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        });
+
         //TODO: query today's posts data from Parse, then pass that data into a PostsCardFragment that will be created using the PostsCardsFragment.NewInstance static method
         //in the meantime, here is fake data
-        ArrayList<Post> posts = new ArrayList<>();
-
-        //THE FOLLOWING ARE FAKE TEST POSTS
-        Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio");
-        posts.add(testPost1);
-
-        Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio");
-        posts.add(testPost2);
-
-        Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio");
-        posts.add(testPost3);
-
-        //pass in "this" in order to set the listener for the posts overlay frag in order to open the comments feed for a post
-        mPostsOverlayFragment = PostOverlayFragment.newInstance(posts, this);
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.today_framelayout, mPostsOverlayFragment).addToBackStack(TODAY_POSTS_FRAG).commit();
+//        ArrayList<Post> posts = new ArrayList<>();
+//
+//        //THE FOLLOWING ARE FAKE TEST POSTS
+//        Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio");
+//        posts.add(testPost1);
+//
+//        Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio");
+//        posts.add(testPost2);
+//
+//        Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio");
+//        posts.add(testPost3);
 
         return v;
     }

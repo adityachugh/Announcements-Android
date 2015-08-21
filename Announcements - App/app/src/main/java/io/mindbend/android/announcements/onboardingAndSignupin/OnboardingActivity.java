@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.ViewSwitcher;
 
 import com.parse.ParseUser;
@@ -23,6 +24,7 @@ import java.io.Serializable;
 import io.mindbend.android.announcements.App;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.TabbedActivity;
+import io.mindbend.android.announcements.cloudCode.PostsDataSource;
 import io.mindbend.android.announcements.reusableFrags.OnboardingInfoCardFragment;
 
 
