@@ -14,6 +14,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.Serializable;
@@ -82,8 +83,16 @@ public class PostCardFullFragment extends Fragment implements Serializable {
             postTime.setText(mPost.getmPostTimeSince());
             postClubName.setText(mPost.getmPostClubUsername());
 
-            if (!mPost.getmPostImageURL().equals(""))
+            if (!mPost.getmPostImageURL().equals("")){
+
+                //load image
                 postImage.setImageResource(R.drawable.landscape);
+
+                //image height is 200dp - set layout params from dp to px
+                float scale = getActivity().getResources().getDisplayMetrics().density;
+                int imageHeightinPx = (int) (200 * scale + 0.5f);
+                postImage.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, imageHeightinPx));
+            }
 
             //sharing the post
             Button shareButton = (Button) mView.findViewById(R.id.post_share_button_full);
