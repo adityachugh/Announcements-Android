@@ -16,10 +16,13 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ViewSwitcher;
 
+import com.parse.ParseUser;
+
 import java.io.Serializable;
 
 import io.mindbend.android.announcements.App;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.TabbedActivity;
 import io.mindbend.android.announcements.reusableFrags.OnboardingInfoCardFragment;
 
 
@@ -38,6 +41,12 @@ public class OnboardingActivity extends ActionBarActivity implements Serializabl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_onboarding);
+
+        //checks if user is logged in or nah
+        if (ParseUser.getCurrentUser() != null){
+            Intent i = new Intent(OnboardingActivity.this, TabbedActivity.class);
+            startActivity(i);
+        }
 
         //get sign in and up buttons
         Button signInButton = (Button) findViewById(R.id.sign_in_button_onboarding);

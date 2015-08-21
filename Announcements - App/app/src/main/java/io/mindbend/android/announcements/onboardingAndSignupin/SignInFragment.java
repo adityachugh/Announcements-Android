@@ -1,6 +1,7 @@
 package io.mindbend.android.announcements.onboardingAndSignupin;
 
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -13,9 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.parse.LogInCallback;
 import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseUser;
 
 import java.io.Serializable;
 
@@ -56,8 +62,8 @@ public class SignInFragment extends Fragment
 
         //Fetch Button "Sign In"
         Button signInButton = (Button) v.findViewById(R.id.sign_in_button);
-
         final TextView forgotPassword = (TextView)v.findViewById(R.id.sign_in_forgot_password);
+
 
         //button colour background if under API 21 (default tint will not work)
         //NOTE: TINT DOES NOT WORK ON API 21! Background coloured instead.
@@ -65,13 +71,33 @@ public class SignInFragment extends Fragment
             signInButton.setBackgroundColor(getResources().getColor(R.color.accent));
         }
 
+        final EditText username = (EditText)v.findViewById(R.id.sign_in_username);
+        final EditText password = (EditText)v.findViewById(R.id.sign_in_password);
+
         //Move to tabbed activity once user logs in
-        //TODO: sign in authentication
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), TabbedActivity.class);
-                startActivity(i);
+                if (username.getText().toString().equals("") || password.getText().toString().equals("")){
+                    Toast.makeText(getActivity(), "Please enter in credentials", Toast.LENGTH_SHORT).show();
+                } else {
+                    ParseUser.logInInBackground(username.getText().toString(), password.getText().toString(), new LogInCallback() {
+                        @Override
+                        public void done(ParseUser parseUser, ParseException e) {
+                            if (e == null){
+                                //login successful!
+                                Intent i = new Intent(getActivity(), TabbedActivity.class);
+                                startActivity(i);
+                            } else {
+                                //incorrect credentials!
+                                AlertDialog.Builder failedLogin = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
+                                failedLogin.setTitle(getResources().getString(R.string.incorrect_login_credentials))
+                                        .setPositiveButton("OK", null);
+                                failedLogin.show();
+                            }
+                        }
+                    });
+                }
             }
         });
 

@@ -75,6 +75,7 @@
     <string name="announcement_approved">Approved</string>
     <string name="announcement_declined">Declined</string>
     <string name="announcement_pending">Pending</string>
+    <string name="incorrect_login_credentials">Incorrect username or password.</string>
 
     <string-array
         name="profile_edit_org_dialog_options">
