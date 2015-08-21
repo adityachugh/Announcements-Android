@@ -3,6 +3,8 @@ package io.mindbend.android.announcements;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.parse.ParseObject;
+
 import java.io.Serializable;
 
 /**
@@ -27,6 +29,11 @@ public class Organization implements Serializable, Parcelable {
         mTag = tag;
         mPrivateOrg = privateOrg;
         mNewOrg = newOrg;
+    }
+
+    public Organization (ParseObject object){
+        mObjectId = object.getObjectId();
+        mTitle = object.getString()
     }
 
     public Organization(Parcel in){

@@ -3,7 +3,11 @@ package io.mindbend.android.announcements;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.parse.ParseObject;
+
 import java.io.Serializable;
+
+import io.mindbend.android.announcements.cloudCode.PostsDataSource;
 
 /**
  * Created by Akshay Pall on 01/08/2015.
@@ -14,6 +18,8 @@ public class Post implements Serializable, Parcelable {
     private String mPostTimeSince;
     private String mPostDetail;
     private String mPostClubUsername;
+
+    private Organization mPosterOrg;
     //TODO: setup passing in club image for the post
     //private String mUrlToPicture;
 
@@ -23,6 +29,15 @@ public class Post implements Serializable, Parcelable {
         mPostTimeSince = timeSinceString;
         mPostDetail = details;
         mPostClubUsername = clubUsername;
+    }
+
+    public Post(ParseObject object){
+        mObjectId = object.getObjectId();
+        mPostTitle = object.getString(PostsDataSource.POST_TITLE);
+        mPostDetail = object.getString(PostsDataSource.POST_BODY);
+        mPosterOrg = new Organization(object.getParseObject(PostsDataSource.POST_ORGANIZATION));
+        mPostClubUsername = mPosterOrg.getTitle();
+        mPostTimeSince = object.getCreatedAt().toString();
     }
 
     public Post (Parcel post) {
