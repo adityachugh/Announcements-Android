@@ -66,7 +66,7 @@ public class TodayFragment extends Fragment implements Serializable,
         PostOverlayFragment.PostsOverlayListener,
         ProfileFragment.ProfileInteractionListener, ListFragment.ListFabListener, UserListAdapter.UserListInteractionListener, SearchableFrag.SearchInterface {
     private transient ImageButton mFab;
-    private ProgressBar mLoading;
+    private transient ProgressBar mLoading;
     //in order to add frags to the backstack
     public static final String TODAY_POSTS_FRAG = "today_posts_frag";
     private transient Fragment mPostsOverlayFragment;
