@@ -11,11 +11,13 @@ import android.widget.Toast;
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
+import com.parse.ParseUser;
+import com.parse.SignUpCallback;
 
 import java.util.HashMap;
 
 import io.mindbend.android.announcements.R;
-import io.mindbend.android.announcements.onboardingAndSignupin.SignupSelectParentOrgActivity;
+import io.mindbend.android.announcements.TabbedActivity;
 
 /**
  * Created by Akshay Pall on 21/08/2015.
@@ -47,22 +49,29 @@ public class VerificationDataSource {
                                     if (aBoolean) {
                                         builder.show();
                                     } else {
-                                        Intent i = new Intent(context, SignupSelectParentOrgActivity.class);
-                                        i.putExtra(USER_FIRST_NAME, firsttName);
-                                        i.putExtra(USER_LAST_NAME, lastName);
-                                        i.putExtra(USER_USERNAME, username);
-                                        i.putExtra(USER_EMAIL, email);
-                                        i.putExtra(USER_PASSWORD, password);
-                                        context.startActivity(i);
+                                        ParseUser user = new ParseUser();
+                                        user.setUsername(username);
+                                        user.setPassword(password);
+                                        user.setEmail(email);
+                                        user.put(USER_FIRST_NAME, firsttName);
+                                        user.put(USER_LAST_NAME, lastName);
+
+                                        user.signUpInBackground(new SignUpCallback() {
+                                            @Override
+                                            public void done(ParseException e) {
+                                                Intent i = new Intent(context, TabbedActivity.class);
+                                                context.startActivity(i);
+                                            }
+                                        });
                                     }
-                                } else{
+                                } else {
                                     Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
                                     e.printStackTrace();
                                 }
                             }
                         });
                     }
-                } else{
+                } else {
                     Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
