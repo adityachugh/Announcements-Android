@@ -168,6 +168,9 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
             case 0:
                 if (!mTodayFragment.getmPostsOverlayFragment().isVisible())
                     mTodayFragment.getChildFragmentManager().popBackStack();
+                else if (!mTodayFragment.getmPostsOverlayFragment().getmPostsFragment().isVisible()){
+                    mTodayFragment.getmPostsOverlayFragment().getChildFragmentManager().popBackStack();
+                }
                 break;
             case 1:
                 if(!mDiscoverFragment.getmOrgsGridFrag().isVisible())
