@@ -27,6 +27,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.parse.ParseUser;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -35,6 +37,7 @@ import java.io.Serializable;
 import io.mindbend.android.announcements.adminClasses.AdminMainFragment;
 import io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment;
 import io.mindbend.android.announcements.adminClasses.NewAnnouncementFragment;
+import io.mindbend.android.announcements.cloudCode.VerificationDataSource;
 import io.mindbend.android.announcements.reusableFrags.PostCommentsFragment;
 import io.mindbend.android.announcements.reusableFrags.PostOverlayFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsCardsFragment;
@@ -89,8 +92,6 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
 
         //gets backwards compatible toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(getString(R.string.format_tabbed_activity_toolbar_text, "Akshay")); //TODO: pull in user's name
-        setSupportActionBar(toolbar);
 
         //gets tabBar, adds tabs
         mTabBar = (MaterialTabHost) findViewById(R.id.tab_bar);
@@ -99,6 +100,9 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
         mTabBar.addTab(mTabBar.newTab().setText("You").setTabListener(this));
         //TODO: only add admin tag if user is admin
         mTabBar.addTab(mTabBar.newTab().setText("Admin").setTabListener(this));
+
+        toolbar.setTitle(getString(R.string.format_tabbed_activity_toolbar_text, ParseUser.getCurrentUser().getString(VerificationDataSource.USER_FIRST_NAME))); //TODO: pull in user's name
+        setSupportActionBar(toolbar);
     }
 
     @Override

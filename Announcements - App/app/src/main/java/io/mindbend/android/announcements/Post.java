@@ -40,6 +40,7 @@ public class Post implements Serializable, Parcelable {
         mPosterOrg = new Organization(object.getParseObject(PostsDataSource.POST_ORGANIZATION));
         mPostClubUsername = mPosterOrg.getTitle();
         mPostTimeSince = object.getCreatedAt().toString();
+        mPostImageURL = ""; //TODO: grab from Parse later
     }
 
     public Post (Parcel post) {

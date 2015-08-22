@@ -34,7 +34,7 @@ import io.mindbend.android.announcements.reusableFrags.UserListAdapter;
 public class YouFragment extends Fragment implements Serializable, ProfileFragment.ProfileInteractionListener, SearchableFrag.SearchInterface, ListFragment.ListFabListener, UserListAdapter.UserListInteractionListener {
     private static final String TAG = "TAG";
     private static final String DEFAULT = "default_frag";
-    private Fragment mProfileFragment;
+    private ProfileFragment mProfileFragment;
 
     private boolean onToday = false;
     private boolean onDiscover = false;

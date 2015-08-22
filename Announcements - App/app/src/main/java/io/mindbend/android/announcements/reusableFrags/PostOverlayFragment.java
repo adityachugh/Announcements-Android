@@ -33,12 +33,11 @@ public class PostOverlayFragment extends Fragment implements Serializable, Posts
     //to allow the activity to figure out if the today frag is on posts or comments
     private boolean isOnComments = false;
 
-    private Fragment mCurrentComments;
-    private Fragment mFullPost;
+    private PostCommentsFragment mCurrentComments;
+    private PostCardFullFragment mFullPost;
     private PostsOverlayListener mListener;
     private ArrayList<Post> mPosts;
     private transient View mView;
-    private View mTodayView;
     private boolean mOnProfile;
     private transient PostsCardsFragment mPostsFragment;
 
