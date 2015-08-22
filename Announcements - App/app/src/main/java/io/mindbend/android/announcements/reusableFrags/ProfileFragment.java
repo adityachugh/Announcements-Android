@@ -76,7 +76,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     private transient View mView;
 
     //To set height of content framelayout dynamically (need to change height of embedded layout)
-    private RelativeLayout mProfileContentFrameLayoutEmbedded;
+    private transient RelativeLayout mProfileContentFrameLayoutEmbedded;
     private int mDeviceHeight;
     private float mScale;
 
