@@ -21,6 +21,7 @@ import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment;
 import io.mindbend.android.announcements.reusableFrags.ListFragment;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridAdapter;
+import io.mindbend.android.announcements.reusableFrags.PostOverlayFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsCardsFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsFeedAdapter;
 import io.mindbend.android.announcements.reusableFrags.ProfileFragment;
@@ -31,7 +32,7 @@ import io.mindbend.android.announcements.reusableFrags.UserListAdapter;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class YouFragment extends Fragment implements Serializable, ProfileFragment.ProfileInteractionListener, SearchableFrag.SearchInterface, ListFragment.ListFabListener, UserListAdapter.UserListInteractionListener {
+public class YouFragment extends Fragment implements Serializable, ProfileFragment.ProfileInteractionListener, SearchableFrag.SearchInterface, ListFragment.ListFabListener, UserListAdapter.UserListInteractionListener, PostOverlayFragment.PostsOverlayListener{
     private static final String TAG = "TAG";
     private static final String DEFAULT = "default_frag";
     private ProfileFragment mProfileFragment;
@@ -148,7 +149,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
         Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio", "hasImage");
         posts.add(testPost3);
 
-        PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true);
+        PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true, this);
         getChildFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.you_framelayout, announcementsStateList)
@@ -176,5 +177,35 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
     @Override
     public void searchOrgPressed(Organization orgPressed) {
         pressedOrgFromProfile(orgPressed);
+    }
+
+    @Override
+    public void fullPostProfile(Post clickedPost) {
+
+    }
+
+    @Override
+    public void onCommentsOpened(Post postPressed) {
+
+    }
+
+    @Override
+    public void onReturnToPosts() {
+
+    }
+
+    @Override
+    public void profileComments(Post post) {
+
+    }
+
+    @Override
+    public void refreshPosts() {
+
+    }
+
+    @Override
+    public void visitCommentersProfile(User commenterToBeVisited) {
+
     }
 }

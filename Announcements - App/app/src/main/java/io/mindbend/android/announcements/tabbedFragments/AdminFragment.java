@@ -24,6 +24,7 @@ import io.mindbend.android.announcements.adminClasses.NewAnnouncementFragment;
 import io.mindbend.android.announcements.reusableFrags.ListFragment;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridAdapter;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridFragment;
+import io.mindbend.android.announcements.reusableFrags.PostOverlayFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsCardsFragment;
 import io.mindbend.android.announcements.reusableFrags.ProfileFragment;
 import io.mindbend.android.announcements.reusableFrags.SearchableFrag;
@@ -38,6 +39,7 @@ public class AdminFragment extends Fragment implements Serializable,
         OrgsGridAdapter.OrgInteractionListener,
         OrgsGridFragment.OrgsGridInteractionListener,
         ProfileFragment.ProfileInteractionListener,
+        PostOverlayFragment.PostsOverlayListener,
         UserListAdapter.UserListInteractionListener, ListFragment.ListFabListener, SearchableFrag.SearchInterface {
     private static final String MAIN_ADMIN_TAG = "main_admin_frag";
     private transient AdminMainFragment mAdminMain;
@@ -153,7 +155,7 @@ public class AdminFragment extends Fragment implements Serializable,
         Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio", "");
         posts.add(testPost3);
 
-        PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true);
+        PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true, this);
         getChildFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.admin_framelayout, announcementsStateList)
@@ -234,5 +236,35 @@ public class AdminFragment extends Fragment implements Serializable,
     @Override
     public void searchOrgPressed(Organization orgPressed) {
         pressedOrg(orgPressed);
+    }
+
+    @Override
+    public void fullPostProfile(Post clickedPost) {
+
+    }
+
+    @Override
+    public void onCommentsOpened(Post postPressed) {
+
+    }
+
+    @Override
+    public void onReturnToPosts() {
+
+    }
+
+    @Override
+    public void profileComments(Post post) {
+
+    }
+
+    @Override
+    public void refreshPosts() {
+
+    }
+
+    @Override
+    public void visitCommentersProfile(User commenterToBeVisited) {
+
     }
 }

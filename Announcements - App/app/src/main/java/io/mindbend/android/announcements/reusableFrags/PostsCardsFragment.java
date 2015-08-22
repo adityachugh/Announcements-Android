@@ -22,19 +22,22 @@ import java.util.List;
 
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.tabbedFragments.TodayFragment;
 
-public class PostsCardsFragment extends Fragment implements Serializable, SwipeRefreshLayout.OnRefreshListener {
+public class PostsCardsFragment extends Fragment implements Serializable, SwipeRefreshLayout.OnRefreshListener, PostOverlayFragment.PostsOverlayListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_POSTS = "posts";
     private static final String ARG_POSTS_LISTENER = "post_touch_listener";
+    private static final String ARG_POSTS_OVERLAY_LISTENER = "post_overlay_listener";
     private static final String ARG_IS_VIEWING_STATE = "is_viewing_announcements_state";
 
     // TODO: Rename and change types of parameters
     private List<Post> mPosts;
     private PostsFeedAdapter mPostFeedAdapter;
     private PostsFeedAdapter.PostInteractionListener mPostTouchListener;
+    private PostOverlayFragment.PostsOverlayListener mPostsOverlayListener;
     private transient View mView;
     //To pass into feed adapter (dynamic sizing)
     private float mScale;
@@ -49,11 +52,12 @@ public class PostsCardsFragment extends Fragment implements Serializable, SwipeR
      * @return A new instance of fragment PostsCardsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PostsCardsFragment newInstance(ArrayList<Post> posts, PostsFeedAdapter.PostInteractionListener postTouchListener, boolean isViewingState) {
+    public static PostsCardsFragment newInstance(ArrayList<Post> posts, PostsFeedAdapter.PostInteractionListener postTouchListener, boolean isViewingState, PostOverlayFragment.PostsOverlayListener postsOverlayListener) {
         PostsCardsFragment fragment = new PostsCardsFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_POSTS, posts);
         args.putSerializable(ARG_POSTS_LISTENER, postTouchListener);
+        args.putSerializable(ARG_POSTS_OVERLAY_LISTENER, postsOverlayListener);
         args.putBoolean(ARG_IS_VIEWING_STATE, isViewingState);
         fragment.setArguments(args);
         return fragment;
@@ -74,6 +78,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, SwipeR
             mPosts = getArguments().getParcelableArrayList(ARG_POSTS);
             mPostTouchListener = (PostsFeedAdapter.PostInteractionListener)getArguments().getSerializable(ARG_POSTS_LISTENER);
             mIsViewingState = getArguments().getBoolean(ARG_IS_VIEWING_STATE);
+            mPostsOverlayListener = (PostOverlayFragment.PostsOverlayListener)getArguments().getSerializable(ARG_POSTS_OVERLAY_LISTENER);
 
             mScale = getActivity().getResources().getDisplayMetrics().density;
         }
@@ -99,11 +104,13 @@ public class PostsCardsFragment extends Fragment implements Serializable, SwipeR
             trans.setInterpolator(new DecelerateInterpolator(1.0f));
             recyclerView.startAnimation(trans);
 
-            if (getParentFragment().getParentFragment() instanceof TodayFragment){ //so the refresher is ONLY there if the user is viewing the today posts
-                mRefreshTodayPosts = (SwipeRefreshLayout)mView.findViewById(R.id.post_refresher);
-                mRefreshTodayPosts.setColorSchemeResources(R.color.accent, R.color.primary);
+            mRefreshTodayPosts = (SwipeRefreshLayout)mView.findViewById(R.id.post_refresher);
+            mRefreshTodayPosts.setColorSchemeResources(R.color.accent, R.color.primary);
+
+            if (getParentFragment().getParentFragment() instanceof TodayFragment) //so the refresher is ONLY there if the user is viewing the today posts
                 mRefreshTodayPosts.setOnRefreshListener(this);
-            }
+            else
+                mRefreshTodayPosts.setEnabled(false);
         }
 
         return mView;
@@ -122,6 +129,9 @@ public class PostsCardsFragment extends Fragment implements Serializable, SwipeR
     @Override
     public void onRefresh() {
         //TODO: reload today's posts into this fragment
+
+        refreshPosts();
+
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -130,5 +140,35 @@ public class PostsCardsFragment extends Fragment implements Serializable, SwipeR
                 mRefreshTodayPosts.setRefreshing(false);
             }
         }, 1000);
+    }
+
+    @Override
+    public void fullPostProfile(Post clickedPost) {
+
+    }
+
+    @Override
+    public void onCommentsOpened(Post postPressed) {
+
+    }
+
+    @Override
+    public void onReturnToPosts() {
+
+    }
+
+    @Override
+    public void profileComments(Post post) {
+
+    }
+
+    @Override
+    public void visitCommentersProfile(User commenterToBeVisited) {
+
+    }
+
+    @Override
+    public void refreshPosts() {
+        mPostsOverlayListener.refreshPosts();
     }
 }

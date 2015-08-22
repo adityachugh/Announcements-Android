@@ -474,6 +474,11 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     }
 
     @Override
+    public void refreshPosts() {
+
+    }
+
+    @Override
     public void CommentButtonClicked(Post postComments) {
         profileComments(postComments);
     }

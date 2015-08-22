@@ -22,6 +22,7 @@ import io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment
 import io.mindbend.android.announcements.reusableFrags.ListFragment;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridAdapter;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridFragment;
+import io.mindbend.android.announcements.reusableFrags.PostOverlayFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsCardsFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsFeedAdapter;
 import io.mindbend.android.announcements.reusableFrags.ProfileFragment;
@@ -32,7 +33,7 @@ import io.mindbend.android.announcements.reusableFrags.UserListAdapter;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DiscoverFragment extends Fragment implements Serializable, PostsFeedAdapter.PostInteractionListener, ProfileFragment.ProfileInteractionListener, SearchableFrag.SearchInterface, UserListAdapter.UserListInteractionListener, ListFragment.ListFabListener {
+public class DiscoverFragment extends Fragment implements Serializable, PostsFeedAdapter.PostInteractionListener, ProfileFragment.ProfileInteractionListener, SearchableFrag.SearchInterface, UserListAdapter.UserListInteractionListener, ListFragment.ListFabListener, PostOverlayFragment.PostsOverlayListener {
 
 
     private static final String TAG = "TAG";
@@ -156,7 +157,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
         Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio", "hasImage");
         posts.add(testPost3);
 
-        PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true);
+        PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true, this);
         getChildFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.discover_framelayout, announcementsStateList)
@@ -184,5 +185,35 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
         //TODO: open searchfrag here
         SearchableFrag searchableFrag = SearchableFrag.newInstance(SearchableFrag.USERS_TYPE, organization, DiscoverFragment.this);
         getChildFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, searchableFrag).addToBackStack(null).commit();
+    }
+
+    @Override
+    public void fullPostProfile(Post clickedPost) {
+
+    }
+
+    @Override
+    public void onCommentsOpened(Post postPressed) {
+
+    }
+
+    @Override
+    public void onReturnToPosts() {
+
+    }
+
+    @Override
+    public void profileComments(Post post) {
+
+    }
+
+    @Override
+    public void refreshPosts() {
+
+    }
+
+    @Override
+    public void visitCommentersProfile(User commenterToBeVisited) {
+
     }
 }

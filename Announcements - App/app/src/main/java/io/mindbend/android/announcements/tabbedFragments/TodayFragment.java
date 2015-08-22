@@ -66,6 +66,8 @@ public class TodayFragment extends Fragment implements Serializable,
         PostOverlayFragment.PostsOverlayListener,
         ProfileFragment.ProfileInteractionListener, ListFragment.ListFabListener, UserListAdapter.UserListInteractionListener, SearchableFrag.SearchInterface {
 
+    private static final String TAG = "TodayFragment";
+
     private transient ImageButton mFab;
     private transient ProgressBar mLoading;
     //in order to add frags to the backstack
@@ -106,7 +108,13 @@ public class TodayFragment extends Fragment implements Serializable,
 
         mLoading = (ProgressBar)v.findViewById(R.id.today_progressbar);
 
-        PostsDataSource.getRangeOfPostsForDay(mLoading, getActivity(), 0, 10, new Date() , new FunctionCallback<ArrayList<Post>>() {
+        loadPosts(0, 10);
+
+        return v;
+    }
+
+    private void loadPosts(int startIndex, int numberOfPosts){
+        PostsDataSource.getRangeOfPostsForDay(mLoading, getActivity(), startIndex, numberOfPosts, new Date() , new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null){
@@ -121,21 +129,6 @@ public class TodayFragment extends Fragment implements Serializable,
                 }
             }
         });
-
-        //TODO: query today's posts data from Parse, then pass that data into a PostsCardFragment that will be created using the PostsCardsFragment.NewInstance static method
-        //in the meantime, here is fake data
-//        ArrayList<Post> posts = new ArrayList<>();
-//
-//        //THE FOLLOWING ARE FAKE TEST POSTS
-//        Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio");
-//        posts.add(testPost1);
-//
-//        Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio");
-//        posts.add(testPost2);
-//
-//        Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio");
-//        posts.add(testPost3);
-        return v;
     }
 
     public PostOverlayFragment getmPostsOverlayFragment() {
@@ -212,6 +205,14 @@ public class TodayFragment extends Fragment implements Serializable,
     }
 
     @Override
+    public void refreshPosts() {
+        Log.wtf(TAG, "TODAYFRAG refreshed!");
+
+        //refreshing will load the latest 10 posts
+        loadPosts(0,10);
+    }
+
+    @Override
     public void modifyOrg(Organization org) {
         getChildFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -260,7 +261,7 @@ public class TodayFragment extends Fragment implements Serializable,
         Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio", "");
         posts.add(testPost3);
 
-        PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true);
+        PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true, this);
         getChildFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.today_framelayout, announcementsStateList)

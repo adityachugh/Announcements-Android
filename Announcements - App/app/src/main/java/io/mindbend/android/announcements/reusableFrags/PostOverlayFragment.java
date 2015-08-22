@@ -73,7 +73,7 @@ public class PostOverlayFragment extends Fragment implements Serializable, Posts
            // Inflate the layout for this fragment
            mView = inflater.inflate(R.layout.fragment_post_overlay, container, false);
 
-           mPostsFragment = PostsCardsFragment.newInstance(mPosts, this, false);
+           mPostsFragment = PostsCardsFragment.newInstance(mPosts, this, false, mListener);
            //set the listener for the posts feed adapter in order to open the comments feed for a post
            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
            if (transaction.isEmpty())
@@ -181,5 +181,7 @@ public class PostOverlayFragment extends Fragment implements Serializable, Posts
         void visitCommentersProfile(User commenterToBeVisited);
         void fullPostProfile (Post clickedPost);
         void profileComments (Post post);
+        void refreshPosts();
     }
+
 }
