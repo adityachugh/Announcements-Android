@@ -7,6 +7,7 @@
     tools:context="io.mindbend.android.announcements.reusableFrags.PostCardFullFragment">
 
     <android.support.v7.widget.CardView
+        android:layout_margin="@dimen/card_outer_margin"
         android:id="@+id/post_card_full"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
