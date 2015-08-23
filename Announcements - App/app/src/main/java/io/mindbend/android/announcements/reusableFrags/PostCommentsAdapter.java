@@ -52,7 +52,7 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         mCurrentComment = mComments.get(i);
-        viewHolder.mCommenterName.setText(mCurrentComment.getmUserId());
+        //viewHolder.mCommenterName.setText(mCurrentComment.getmUserId());
         viewHolder.mCommentText.setText(mCurrentComment.getmText());
         viewHolder.mTimeSince.setText(mCurrentComment.getmTimeSince());
 

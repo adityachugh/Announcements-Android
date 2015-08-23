@@ -21,9 +21,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.parse.FunctionCallback;
+import com.parse.ParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -33,6 +37,7 @@ import io.mindbend.android.announcements.Comment;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
+import io.mindbend.android.announcements.cloudCode.CommentsDataSource;
 
 public class PostCommentsFragment extends Fragment implements Serializable, PostCommentsAdapter.CommenterInteractionListener, SwipeRefreshLayout.OnRefreshListener {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -48,6 +53,7 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
     private CommentsInteractionListener mListener;
     private transient View mView;
     private transient SwipeRefreshLayout mRefreshComments;
+    private RecyclerView mRecyclerView;
 
     /**
      * Use this factory method to create a new instance of
@@ -88,29 +94,16 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
 
             //TODO: setup recycler view adapter for comments, along with the recycler view feed item layout (comment).
             //TODO: ensure that the feed item is NOT a card -> the enture comment list will be enclosed in one card (already set up)
-            RecyclerView recyclerView = (RecyclerView) mView.findViewById(R.id.comments_recycler_view);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            mComments = new ArrayList<>();
+            mRecyclerView = (RecyclerView) mView.findViewById(R.id.comments_recycler_view);
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-            //the following is fake data
-            Comment testComment1 = new Comment("ID- NeedNameHere", "Wow what a great announcement!", "1 minute ago");
-            mComments.add(testComment1);
-
-            Comment testComment2 = new Comment("ID- NeedNameHere", "This is a test comment with a long string of text to see how comments look when stretched. This is super cool wow much happiness.", "Now");
-            mComments.add(testComment2);
-
-            Comment testComment3 = new Comment("ID- NeedNameHere", "Wow what a great announcement!This is a test comment with a long string of text to see how comments look when stretched. This is super cool wow much happiness.", "Now");
-            mComments.add(testComment3);
-
-            //instantiate and set the adapter
-            mCommentsAdapter = new PostCommentsAdapter(getActivity(), mComments, this);
-            recyclerView.setAdapter(mCommentsAdapter);
+            loadComments(0,10);
 
             //the animation for the recycler view to slide in from the bottom of the view
             TranslateAnimation trans = new TranslateAnimation(0, 0, 1000, 0);
             trans.setDuration(500);
             trans.setInterpolator(new DecelerateInterpolator(1.0f));
-            recyclerView.startAnimation(trans);
+            mRecyclerView.startAnimation(trans);
 
             mFab = (ImageButton) mView.findViewById(R.id.comments_fab);
             mFab.setOnClickListener(new View.OnClickListener() {
@@ -167,20 +160,6 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
             //sharing the post
             Button shareButton = (Button) mView.findViewById(R.id.post_share_button);
             final String sharingPostText = getActivity().getResources().getString(R.string.sharing_post);
-//            shareButton.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    String toShareString = String.format(sharingPostText, mPost.getmPostClubUsername(), mPost.getmPostDetail());
-//                    Intent sendIntent = new Intent(Intent.ACTION_SEND);
-//                    sendIntent.putExtra(Intent.EXTRA_TEXT, toShareString);
-//                    sendIntent.setType("text/plain");
-//                    try {
-//                        getActivity().startActivity(Intent.createChooser(sendIntent, getActivity().getResources().getText(R.string.send_to)));
-//                    } catch (Exception e){
-//                        Log.d(SHARE_TAG, "An error occured");
-//                    }
-//                }
-//            });
 
             mRefreshComments = (SwipeRefreshLayout)mView.findViewById(R.id.comments_refresher);
             mRefreshComments.setColorSchemeResources(R.color.accent, R.color.primary);
@@ -188,6 +167,24 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
         }
 
         return mView;
+    }
+
+    private void loadComments (int startIndex, int numberOfComments){
+        CommentsDataSource.getRangeOfCommentsForPost(getActivity(), startIndex, numberOfComments, mPost.getmObjectId(), new FunctionCallback<ArrayList<Comment>>() {
+            @Override
+            public void done(ArrayList<Comment> comments, ParseException e) {
+                if (e == null){
+                    Log.wtf("PostCommentsFragment", "comments loaded");
+                    //instantiate and set the adapter
+                    mCommentsAdapter = new PostCommentsAdapter(getActivity(), comments, PostCommentsFragment.this);
+                    mRecyclerView.setAdapter(mCommentsAdapter);
+                }
+                else{
+                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override

@@ -3,7 +3,11 @@ package io.mindbend.android.announcements;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.parse.ParseObject;
+
 import java.io.Serializable;
+
+import io.mindbend.android.announcements.cloudCode.UserDataSource;
 
 /**
  * Created by Avik Hasija on 8/3/2015.
@@ -11,6 +15,8 @@ import java.io.Serializable;
 public class User implements Serializable, Parcelable{
     //Class contains details about a user, to be used in various places
     //Current content reflects what is needed for profile page found in "you" tab
+
+    private String mUsername;
 
     //Will be concatenated upon return
     private String mFirstName;
@@ -33,6 +39,13 @@ public class User implements Serializable, Parcelable{
         mUserCategory = userCategory;
 
         mNumberOfOrganizationsFollowed = numberOfOrganizationsFollowed;
+    }
+
+    public User (ParseObject object){
+        mUsername = object.getString(UserDataSource.USER_NAME);
+        mFirstName = object.getString(UserDataSource.FIRST_NAME);
+        mLastName = object.getString(UserDataSource.LAST_NAME);
+
     }
 
     public  User (Parcel in){
