@@ -121,7 +121,7 @@ public class TodayFragment extends Fragment implements Serializable,
                     //pass in "this" in order to set the listener for the posts overlay frag in order to open the comments feed for a post
                     mPostsOverlayFragment = PostOverlayFragment.newInstance(posts, TodayFragment.this, false);
                     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.today_framelayout, mPostsOverlayFragment).addToBackStack(TODAY_POSTS_FRAG).commit();
+                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.today_framelayout, mPostsOverlayFragment).addToBackStack(TODAY_POSTS_FRAG).commit();
                 }
                 else {
                     Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
