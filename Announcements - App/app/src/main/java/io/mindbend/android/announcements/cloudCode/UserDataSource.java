@@ -6,9 +6,12 @@ import android.widget.Toast;
 
 import com.parse.FunctionCallback;
 import com.parse.GetCallback;
+import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
+
+import java.util.HashMap;
 
 import io.mindbend.android.announcements.User;
 
@@ -38,6 +41,21 @@ public class UserDataSource {
             }
         });
 
+    }
+
+    public static void updateUserProfilePhoto (final ProgressBar loading, byte[] image, final FunctionCallback<Boolean> callback) {
+        loading.setVisibility(View.VISIBLE);
+
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("user", ParseUser.getCurrentUser().getObjectId());
+        params.put("photo", image);
+        ParseCloud.callFunctionInBackground("updateUserProfilePhoto", params, new FunctionCallback<Boolean>() {
+            @Override
+            public void done(Boolean aBoolean, ParseException e) {
+                loading.setVisibility(View.GONE);
+                callback.done(aBoolean, e);
+            }
+        });
     }
 
 }

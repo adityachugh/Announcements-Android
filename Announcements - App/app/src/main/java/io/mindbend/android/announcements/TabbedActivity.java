@@ -27,6 +27,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.parse.FunctionCallback;
+import com.parse.ParseException;
 import com.parse.ParseUser;
 
 import java.io.ByteArrayOutputStream;
@@ -37,6 +39,7 @@ import java.io.Serializable;
 import io.mindbend.android.announcements.adminClasses.AdminMainFragment;
 import io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment;
 import io.mindbend.android.announcements.adminClasses.NewAnnouncementFragment;
+import io.mindbend.android.announcements.cloudCode.UserDataSource;
 import io.mindbend.android.announcements.cloudCode.VerificationDataSource;
 import io.mindbend.android.announcements.reusableFrags.PostCommentsFragment;
 import io.mindbend.android.announcements.reusableFrags.PostOverlayFragment;
@@ -302,15 +305,26 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
                 Log.wtf("Image", "intent result was okay");
                 Uri selectedImageUri = data.getData();
                 try {
-                    Bitmap image = getBitmapFromUri(selectedImageUri);
+                    final Bitmap image = getBitmapFromUri(selectedImageUri);
                     Log.wtf("Image", "Bitmap is: " + image.toString());
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     image.compress(Bitmap.CompressFormat.JPEG, 70, stream);
                     byte[] imageBytes = stream.toByteArray();
                     Log.wtf("Image", "Converted bytes are: " + imageBytes);
-                    //TODO: update photo in parse
-                    ((ProfileFragment)mYouFragment.getmProfileFragment()).updateImage(image);
-                    Toast.makeText(this, "Image succesfully updated", Toast.LENGTH_LONG).show();
+
+                    UserDataSource.updateUserProfilePhoto(mYouFragment.mLoading, imageBytes, new FunctionCallback<Boolean>() {
+                        @Override
+                        public void done(Boolean aBoolean, ParseException e) {
+                            if (e == null && aBoolean) {
+                                ((ProfileFragment) mYouFragment.getmProfileFragment()).updateImage(image);
+                                Toast.makeText(TabbedActivity.this, "Image successfully updated", Toast.LENGTH_LONG).show();
+                            }
+                            else {
+                                Toast.makeText(TabbedActivity.this, "Failure", Toast.LENGTH_SHORT).show();
+                                e.printStackTrace();
+                            }
+                        }
+                    });
                 } catch (IOException f){
                     Log.wtf("crash", "sad face");
                     Toast.makeText(this, "Failed to add image", Toast.LENGTH_LONG).show();

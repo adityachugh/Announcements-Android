@@ -46,7 +46,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
     private boolean onDiscover = false;
     private boolean onYou = true;
     private boolean onAdmin = false;
-    private transient ProgressBar mLoading;
+    public transient ProgressBar mLoading;
 
     //NOTE: Opens child ProfileFragment, which has a grandchild for user followed organizations/ organization announcements
     //Makes Profile fragment generic (useable by both users and organizations)
