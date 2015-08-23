@@ -59,8 +59,11 @@ public class VerificationDataSource {
                                         user.signUpInBackground(new SignUpCallback() {
                                             @Override
                                             public void done(ParseException e) {
-                                                Intent i = new Intent(context, TabbedActivity.class);
-                                                context.startActivity(i);
+                                                if (e == null){
+                                                    Intent i = new Intent(context, TabbedActivity.class);
+                                                    context.startActivity(i);
+                                                }
+                                                else Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
                                             }
                                         });
                                     }

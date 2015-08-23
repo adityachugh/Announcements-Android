@@ -19,6 +19,7 @@
                         android:id="@+id/comments_recycler_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
+
                     </android.support.v4.widget.SwipeRefreshLayout>
             </android.support.v7.widget.CardView>
             <ImageButton
@@ -33,4 +34,14 @@
                 android:layout_marginRight="@dimen/fab_side_margin"
                 android:layout_marginBottom="@dimen/fab_side_margin"/>
         </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:id="@+id/comments_progressbar_layout">
+        <ProgressBar
+            android:layout_width="@dimen/progress_bar_LARGE"
+            android:layout_height="@dimen/progress_bar_LARGE"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
 </FrameLayout>

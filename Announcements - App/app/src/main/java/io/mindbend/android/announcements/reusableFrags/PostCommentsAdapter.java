@@ -18,16 +18,12 @@ import io.mindbend.android.announcements.User;
  * Created by Akshay Pall on 02/08/2015.
  */
 public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapter.ViewHolder> implements View.OnClickListener, Serializable {
-    private CommenterInteractionListener mListener;
-    private io.mindbend.android.announcements.Comment mCurrentComment;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView mCommenterName;
         private final TextView mTimeSince;
         private final TextView mCommentText;
         private final CircleImageView mPosterImage;
-
-        //TODO: create private fields for the elements within a single feed item
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -39,9 +35,11 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
         }
     }
 
-    //TODO: create private fields for the list
     private List<io.mindbend.android.announcements.Comment> mComments;
     private Context mContext;
+    private CommenterInteractionListener mListener;
+    private io.mindbend.android.announcements.Comment mCurrentComment;
+    private User mPoster;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, final int i) {
@@ -52,9 +50,12 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         mCurrentComment = mComments.get(i);
+        mPoster = mCurrentComment.getmUser();
+
         //viewHolder.mCommenterName.setText(mCurrentComment.getmUserId());
         viewHolder.mCommentText.setText(mCurrentComment.getmText());
         viewHolder.mTimeSince.setText(mCurrentComment.getmTimeSince());
+        viewHolder.mCommenterName.setText(mPoster.getName());
 
         //setting up the onClick name or image of commenter in order to open a profile frag
         viewHolder.mCommenterName.setOnClickListener(this);
@@ -66,7 +67,7 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
         //FAKE USER FOR TESTING
         User testUser = new User("Aditya", "Chugh", "getting paper", "node.js", "#Grade12", 9);
 
-        //TODO: get user from the object id of the user saved in the comment
+        //TODO: send in the current user to the post frag. Then, you only have to load the orgs followed by the user
 
         mListener.commenterProfilePressed(testUser);
     }
@@ -93,7 +94,7 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
         super.onViewDetachedFromWindow(holder);
     }
 
-    public interface CommenterInteractionListener {
+    public interface CommenterInteractionListener extends Serializable {
         void commenterProfilePressed (User commenterPressed);
     }
 }

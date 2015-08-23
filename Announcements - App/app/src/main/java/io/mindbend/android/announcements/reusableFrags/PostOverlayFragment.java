@@ -36,7 +36,7 @@ public class PostOverlayFragment extends Fragment implements Serializable, Posts
     private PostCommentsFragment mCurrentComments;
     private PostCardFullFragment mFullPost;
     private PostsOverlayListener mListener;
-    private ArrayList<Post> mPosts;
+    private transient ArrayList<Post> mPosts;
     private transient View mView;
     private boolean mOnProfile;
     private transient PostsCardsFragment mPostsFragment;

@@ -4,10 +4,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 
 import java.io.Serializable;
 
 import io.mindbend.android.announcements.cloudCode.UserDataSource;
+import io.mindbend.android.announcements.cloudCode.VerificationDataSource;
 
 /**
  * Created by Avik Hasija on 8/3/2015.
@@ -41,10 +43,10 @@ public class User implements Serializable, Parcelable{
         mNumberOfOrganizationsFollowed = numberOfOrganizationsFollowed;
     }
 
-    public User (ParseObject object){
-        mUsername = object.getString(UserDataSource.USER_NAME);
-        mFirstName = object.getString(UserDataSource.FIRST_NAME);
-        mLastName = object.getString(UserDataSource.LAST_NAME);
+    public User (ParseUser parseUser){
+        mUsername = parseUser.getUsername();
+        mFirstName = parseUser.getString(VerificationDataSource.USER_FIRST_NAME);
+        mLastName = parseUser.getString(VerificationDataSource.USER_LAST_NAME);
 
     }
 

@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,7 +54,8 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
     private CommentsInteractionListener mListener;
     private transient View mView;
     private transient SwipeRefreshLayout mRefreshComments;
-    private RecyclerView mRecyclerView;
+    private transient RecyclerView mRecyclerView;
+    private transient RelativeLayout mLoading;
 
     /**
      * Use this factory method to create a new instance of
@@ -97,13 +99,11 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
             mRecyclerView = (RecyclerView) mView.findViewById(R.id.comments_recycler_view);
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-            loadComments(0,10);
-
-            //the animation for the recycler view to slide in from the bottom of the view
-            TranslateAnimation trans = new TranslateAnimation(0, 0, 1000, 0);
-            trans.setDuration(500);
-            trans.setInterpolator(new DecelerateInterpolator(1.0f));
-            mRecyclerView.startAnimation(trans);
+            mLoading = (RelativeLayout)mView.findViewById(R.id.comments_progressbar_layout);
+            loadComments(mLoading, 0, 10);
+            mComments = new ArrayList<>();
+            mCommentsAdapter = new PostCommentsAdapter(getActivity(), mComments, PostCommentsFragment.this);
+            mRecyclerView.setAdapter(mCommentsAdapter);
 
             mFab = (ImageButton) mView.findViewById(R.id.comments_fab);
             mFab.setOnClickListener(new View.OnClickListener() {
@@ -169,15 +169,20 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
         return mView;
     }
 
-    private void loadComments (int startIndex, int numberOfComments){
-        CommentsDataSource.getRangeOfCommentsForPost(getActivity(), startIndex, numberOfComments, mPost.getmObjectId(), new FunctionCallback<ArrayList<Comment>>() {
+    private void loadComments (RelativeLayout loading, int startIndex, int numberOfComments){
+        CommentsDataSource.getRangeOfCommentsForPost(loading, getActivity(), startIndex, numberOfComments, mPost.getmObjectId(), new FunctionCallback<ArrayList<Comment>>() {
             @Override
             public void done(ArrayList<Comment> comments, ParseException e) {
                 if (e == null){
                     Log.wtf("PostCommentsFragment", "comments loaded");
                     //instantiate and set the adapter
-                    mCommentsAdapter = new PostCommentsAdapter(getActivity(), comments, PostCommentsFragment.this);
-                    mRecyclerView.setAdapter(mCommentsAdapter);
+                    mComments.addAll(comments);
+                    mCommentsAdapter.notifyDataSetChanged();
+                    //the animation for the recycler view to slide in from the bottom of the view
+                    TranslateAnimation trans = new TranslateAnimation(0, 0, 1000, 0);
+                    trans.setDuration(500);
+                    trans.setInterpolator(new DecelerateInterpolator(1.0f));
+                    mRecyclerView.startAnimation(trans);
                 }
                 else{
                     Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
