@@ -56,6 +56,7 @@ public class Post implements Serializable, Parcelable {
         mPostTimeSince = post.readString();
         mPostDetail = post.readString();
         mPostClubUsername = post.readString();
+        mPostImageURL = post.readString();
     }
 
     @Override
@@ -70,7 +71,7 @@ public class Post implements Serializable, Parcelable {
         dest.writeString(mPostTimeSince);
         dest.writeString(mPostDetail);
         dest.writeString(mPostClubUsername);
-//        dest.writeString(mUrlToPicture);
+        dest.writeString(mPostImageURL);
     }
 
     public static final Parcelable.Creator<Post> CREATOR
@@ -83,6 +84,10 @@ public class Post implements Serializable, Parcelable {
             return new Post[size];
         }
     };
+
+    public Organization getmPosterOrg() {
+        return mPosterOrg;
+    }
 
     public String getmObjectId() {
         return mObjectId;

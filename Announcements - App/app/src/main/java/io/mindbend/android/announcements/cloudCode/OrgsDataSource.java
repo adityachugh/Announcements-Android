@@ -15,6 +15,8 @@ public class OrgsDataSource {
     public final static String ORG_TYPE = "organizationType";
     public final static String ORG_REQUEST_CODE = "requestCode";
     public final static String ORG_TAG = "handle";
+    public final static String ORG_IMAGE = "image";
+
 
     public final static String ORG_TYPES_PRIVATE = "Private";
     public final static String ORG_TYPES_PUBLIC = "Public";

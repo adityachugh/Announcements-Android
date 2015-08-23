@@ -91,6 +91,9 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
             //TODO: click image to open in full screen
         }
 
+        if (!post.getmPosterOrg().getmProfileImageURL().equals(""))
+            Picasso.with(mContext).load(post.getmPosterOrg().getmProfileImageURL()).into(viewHolder.mPosterImage);
+
         viewHolder.mPostCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

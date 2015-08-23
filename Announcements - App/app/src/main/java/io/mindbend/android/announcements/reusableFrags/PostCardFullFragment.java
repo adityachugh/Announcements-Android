@@ -95,6 +95,9 @@ public class PostCardFullFragment extends Fragment implements Serializable {
                 postImage.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, imageHeightinPx));
             }
 
+            if (!mPost.getmPosterOrg().getmProfileImageURL().equals(""))
+                Picasso.with(getActivity()).load(mPost.getmPosterOrg().getmProfileImageURL()).into(postClubPic);
+
             //sharing the post
             Button shareButton = (Button) mView.findViewById(R.id.post_share_button_full);
             final String sharingPostText = getActivity().getResources().getString(R.string.sharing_post);

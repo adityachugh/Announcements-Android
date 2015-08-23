@@ -22,6 +22,7 @@ public class Organization implements Serializable, Parcelable {
     private String mTag;
     private boolean mPrivateOrg;
     private boolean mNewOrg;
+    private String mProfileImageURL;
 
     private int mRequestCode;
 
@@ -44,6 +45,10 @@ public class Organization implements Serializable, Parcelable {
         if(mPrivateOrg)
             mRequestCode = object.getInt(OrgsDataSource.ORG_REQUEST_CODE);
         mNewOrg = OrgsDataSource.isNew(object);
+        if (object.getParseFile(OrgsDataSource.ORG_IMAGE) != null)
+            mProfileImageURL = object.getParseFile(OrgsDataSource.ORG_IMAGE).getUrl();
+        else
+            mProfileImageURL = "";
     }
 
     public Organization(Parcel in){
@@ -58,10 +63,16 @@ public class Organization implements Serializable, Parcelable {
 
         if (in.readInt() == 0) mNewOrg = false;
         else mNewOrg = true;
+
+        mProfileImageURL = in.readString();
     }
 
     public String getmObjectId() {
         return mObjectId;
+    }
+
+    public String getmProfileImageURL() {
+        return mProfileImageURL;
     }
 
     public String getTitle() {
@@ -108,6 +119,8 @@ public class Organization implements Serializable, Parcelable {
 
         if (mNewOrg) dest.writeInt(1);
         else dest.writeInt(0);
+
+        dest.writeString(mProfileImageURL);
     }
 
     public static final Parcelable.Creator<Organization> CREATOR
