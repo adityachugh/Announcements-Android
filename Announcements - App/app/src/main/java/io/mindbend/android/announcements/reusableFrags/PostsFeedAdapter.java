@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Random;
@@ -80,7 +82,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
 
         //add image if present
         if (!post.getmPostImageURL().equals("")){
-            viewHolder.mPostImage.setImageResource(R.drawable.landscape);
+            Picasso.with(mContext).load(post.getmPostImageURL()).into(viewHolder.mPostImage);
 
             //image height is 200dp
             int imageHeightinPx = (int) (200 * mScale + 0.5f);

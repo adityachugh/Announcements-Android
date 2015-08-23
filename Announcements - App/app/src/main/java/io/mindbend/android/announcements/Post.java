@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.parse.ParseObject;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import io.mindbend.android.announcements.cloudCode.PostsDataSource;
 
@@ -20,7 +22,7 @@ public class Post implements Serializable, Parcelable {
     private String mPostClubUsername;
 
     private Organization mPosterOrg;
-    private String  mPostImageURL;
+    private String  mPostImageURL = "";
     //TODO: setup passing in club image for the post
     //private String mUrlToPicture;
 
@@ -39,8 +41,12 @@ public class Post implements Serializable, Parcelable {
         mPostDetail = object.getString(PostsDataSource.POST_BODY);
         mPosterOrg = new Organization(object.getParseObject(PostsDataSource.POST_ORGANIZATION));
         mPostClubUsername = mPosterOrg.getTitle();
-        mPostTimeSince = object.getCreatedAt().toString();
-        mPostImageURL = ""; //TODO: grab from Parse later
+        SimpleDateFormat format1 = new SimpleDateFormat("MMM dd KK:mm a", Locale.getDefault());
+        mPostTimeSince = format1.format(object.getCreatedAt());
+        if (object.getParseFile(PostsDataSource.POST_IMAGE) != null)
+            mPostImageURL = object.getParseFile(PostsDataSource.POST_IMAGE).getUrl();
+        else
+            mPostImageURL = "";
     }
 
     public Post (Parcel post) {

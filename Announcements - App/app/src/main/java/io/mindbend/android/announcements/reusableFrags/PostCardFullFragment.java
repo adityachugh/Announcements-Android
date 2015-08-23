@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.io.Serializable;
 
 import io.mindbend.android.announcements.Post;
@@ -85,7 +87,7 @@ public class PostCardFullFragment extends Fragment implements Serializable {
 
             if (!mPost.getmPostImageURL().equals("")){
                 //load image
-                postImage.setImageResource(R.drawable.landscape);
+                Picasso.with(getActivity()).load(mPost.getmPostImageURL()).into(postImage);
 
                 //image height is 200dp - set layout params from dp to px
                 float scale = getActivity().getResources().getDisplayMetrics().density;
