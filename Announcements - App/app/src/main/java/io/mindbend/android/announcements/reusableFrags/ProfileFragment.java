@@ -339,7 +339,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                     mProfileContentFrameLayoutEmbedded.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, viewHeightinPx));
 
                 if (transaction.isEmpty())
-                    transaction.add(R.id.profile_content_framelayout, userOrgsFollowedFragment, BOTTOM_FRAG_TAG).commit();
+                    transaction.add(R.id.profile_content_framelayout, userOrgsFollowedFragment, BOTTOM_FRAG_TAG).commitAllowingStateLoss();
             }
 
             if (mOrg != null) {
@@ -394,7 +394,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                         mProfileContentFrameLayoutEmbedded.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, viewHeightinPx));
 
                     if (transaction.isEmpty())
-                        transaction.add(R.id.profile_content_framelayout, orgPostsFragment, BOTTOM_FRAG_TAG).commit();
+                        transaction.add(R.id.profile_content_framelayout, orgPostsFragment, BOTTOM_FRAG_TAG).commitAllowingStateLoss();
                 }
             }
         }
@@ -462,7 +462,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         //Open full post frag in parent frame layout
         mFullPost = PostCardFullFragment.newInstance(clickedPost, mFullPostInteractionListener);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(getAppropriateFramelayout(), mFullPost).addToBackStack(FULL_POST_FRAG).commit();
+        transaction.replace(getAppropriateFramelayout(), mFullPost).addToBackStack(FULL_POST_FRAG).commitAllowingStateLoss();
     }
 
     @Override
@@ -470,7 +470,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         //Open comment frag in parent frame layout
         mCurrentComments = PostCommentsFragment.newInstance(post, mCommentsInteractionListener);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(getAppropriateFramelayout(), mCurrentComments).addToBackStack(COMMENTS_FRAG).commit();
+        transaction.replace(getAppropriateFramelayout(), mCurrentComments).addToBackStack(COMMENTS_FRAG).commitAllowingStateLoss();
     }
 
     @Override

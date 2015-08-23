@@ -69,7 +69,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
                 final ListFragment searchListFrag = ListFragment.newInstance(false, null, true, null, null, null, null, users, SearchableFrag.this, null, mOrgOfUsers);
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 if(ft.isEmpty())
-                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag, searchListFrag).commit();
+                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag, searchListFrag).commitAllowingStateLoss();
                 break;
             case ORGS_TYPE:
                 ArrayList<Organization> orgs = new ArrayList<>();
@@ -88,7 +88,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
                 OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(orgs, this, this);
                 FragmentTransaction ft2 = getFragmentManager().beginTransaction();
                 if(ft2.isEmpty())
-                    ft2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag, orgsGridFragment).commit();
+                    ft2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag, orgsGridFragment).commitAllowingStateLoss();
                 break;
         }
 
@@ -135,7 +135,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
                 users.add(new User(query, query, "lol", "lola", "wat", 5));
                 ListFragment searchListFrag = ListFragment.newInstance(false, null, true, null, null, null, null, users, SearchableFrag.this, null, mOrgOfUsers);
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.searchable_frag, searchListFrag).commit();
+                ft.replace(R.id.searchable_frag, searchListFrag).commitAllowingStateLoss();
                 break;
             case ORGS_TYPE:
                 //TODO: query results from database
@@ -143,7 +143,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
                 orgs.add(new Organization("test", query, query, 54, query, false, true));
                 OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(orgs, this, this);
                 FragmentTransaction ft2 = getFragmentManager().beginTransaction();
-                ft2.replace(R.id.searchable_frag, orgsGridFragment).commit();
+                ft2.replace(R.id.searchable_frag, orgsGridFragment).commitAllowingStateLoss();
                 break;
         }
         return true;

@@ -64,7 +64,7 @@ public class AdminFragment extends Fragment implements Serializable,
         mAdminMain = AdminMainFragment.newInstance(this);
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         if (ft.isEmpty()) {
-            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.admin_framelayout, mAdminMain, MAIN_ADMIN_TAG).addToBackStack(MAIN_ADMIN_TAG).commit();
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.admin_framelayout, mAdminMain, MAIN_ADMIN_TAG).addToBackStack(MAIN_ADMIN_TAG).commitAllowingStateLoss();
         }
         return v;
     }
@@ -94,7 +94,7 @@ public class AdminFragment extends Fragment implements Serializable,
 
         OrgsGridFragment childrenOrgs = OrgsGridFragment.newInstance(orgs, this, this);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, childrenOrgs).addToBackStack(null).commit();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, childrenOrgs).addToBackStack(null).commitAllowingStateLoss();
     }
 
     @Override
@@ -103,7 +103,7 @@ public class AdminFragment extends Fragment implements Serializable,
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.admin_framelayout, mAdminMain.getmNewAnnouncementFragment())
                 .addToBackStack(null)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     @Override
@@ -112,7 +112,7 @@ public class AdminFragment extends Fragment implements Serializable,
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.admin_framelayout, ModifyOrganizationFragment.newInstance(parentOrg, null))
                 .addToBackStack(null)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     @Override
@@ -136,7 +136,7 @@ public class AdminFragment extends Fragment implements Serializable,
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.admin_framelayout, adminList)
                 .addToBackStack(null)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     @Override
@@ -160,7 +160,7 @@ public class AdminFragment extends Fragment implements Serializable,
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.admin_framelayout, announcementsStateList)
                 .addToBackStack(null)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     /**
@@ -178,7 +178,7 @@ public class AdminFragment extends Fragment implements Serializable,
 
         //load up orgs
         ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, this, isModifiable, onToday, onDiscover, onYou, onAdmin);
-        getChildFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, orgProfile).addToBackStack(null).commit();
+        getChildFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
     }
 
     @Override
@@ -199,7 +199,7 @@ public class AdminFragment extends Fragment implements Serializable,
     @Override
     public void pressedUserFromCommentOfOrgPost(User userPressed) {
         ProfileFragment userProfile = ProfileFragment.newInstance(userPressed, null, this, false, onToday, onDiscover, onYou, onAdmin);
-        getChildFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, userProfile).addToBackStack(null).commit();
+        getChildFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, userProfile).addToBackStack(null).commitAllowingStateLoss();
     }
 
     @Override
@@ -208,7 +208,7 @@ public class AdminFragment extends Fragment implements Serializable,
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.admin_framelayout, ModifyOrganizationFragment.newInstance(null, org))
                 .addToBackStack(null)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     @Override
@@ -225,7 +225,7 @@ public class AdminFragment extends Fragment implements Serializable,
     public void searchForAdmins(Organization organization) {
         //TODO: open searchfrag here
         SearchableFrag searchableFrag = SearchableFrag.newInstance(SearchableFrag.USERS_TYPE, organization, AdminFragment.this);
-        getChildFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, searchableFrag).addToBackStack(null).commit();
+        getChildFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, searchableFrag).addToBackStack(null).commitAllowingStateLoss();
     }
 
     @Override

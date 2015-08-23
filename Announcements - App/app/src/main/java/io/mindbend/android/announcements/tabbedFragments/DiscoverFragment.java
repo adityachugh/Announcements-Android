@@ -61,7 +61,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
 
         mOrgsGridFrag = SearchableFrag.newInstance(SearchableFrag.ORGS_TYPE, null, this);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.discover_framelayout, mOrgsGridFrag).commit();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.discover_framelayout, mOrgsGridFrag).commitAllowingStateLoss();
         return v;
     }
 
@@ -97,7 +97,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
         //replace the current profile frag with new org profile frag, while adding it to a backstack
         ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgPressed, this, isModifiable, onToday, onDiscover, onYou, onAdmin);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, orgProfile).addToBackStack(null).commit();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
         Log.d(TAG, "org has been pressed on discover page " + orgPressed.toString());
     }
 
@@ -105,7 +105,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
     public void pressedUserFromCommentOfOrgPost(User userPressed) {
         ProfileFragment userToVisit = ProfileFragment.newInstance(userPressed, null, this, false, onToday, onDiscover, onYou, onAdmin);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, userToVisit).addToBackStack(null).commit();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, userToVisit).addToBackStack(null).commitAllowingStateLoss();
     }
 
     @Override
@@ -114,7 +114,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.discover_framelayout, ModifyOrganizationFragment.newInstance(null, org))
                 .addToBackStack(null)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     @Override
@@ -138,7 +138,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.discover_framelayout, adminList)
                 .addToBackStack(null)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     @Override
@@ -162,7 +162,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.discover_framelayout, announcementsStateList)
                 .addToBackStack(null)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     @Override
@@ -184,7 +184,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
     public void searchForAdmins(Organization organization) {
         //TODO: open searchfrag here
         SearchableFrag searchableFrag = SearchableFrag.newInstance(SearchableFrag.USERS_TYPE, organization, DiscoverFragment.this);
-        getChildFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, searchableFrag).addToBackStack(null).commit();
+        getChildFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, searchableFrag).addToBackStack(null).commitAllowingStateLoss();
     }
 
     @Override

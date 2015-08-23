@@ -77,7 +77,7 @@ public class PostOverlayFragment extends Fragment implements Serializable, Posts
            //set the listener for the posts feed adapter in order to open the comments feed for a post
            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
            if (transaction.isEmpty())
-               transaction.add(R.id.posts_overlay_container, mPostsFragment).addToBackStack(POSTS_FRAG).commit();
+               transaction.add(R.id.posts_overlay_container, mPostsFragment).addToBackStack(POSTS_FRAG).commitAllowingStateLoss();
        }
         return mView;
     }
@@ -105,7 +105,7 @@ public class PostOverlayFragment extends Fragment implements Serializable, Posts
             //replace the current posts frag with the comments frag, while adding it to a backstack (in case user clicks a commenters profile in which case returning to the comments frag would be required)
             mCurrentComments = PostCommentsFragment.newInstance(postPressed, this);
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-            transaction.replace(R.id.posts_overlay_container, mCurrentComments).addToBackStack(COMMENTS_FRAG).commit();
+            transaction.replace(R.id.posts_overlay_container, mCurrentComments).addToBackStack(COMMENTS_FRAG).commitAllowingStateLoss();
         }
     }
 
@@ -123,7 +123,7 @@ public class PostOverlayFragment extends Fragment implements Serializable, Posts
         else if (!mOnProfile){
             mFullPost = PostCardFullFragment.newInstance(post, this);
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-            transaction.replace(R.id.posts_overlay_container, mFullPost).addToBackStack(FULL_POST_FRAG).commit();
+            transaction.replace(R.id.posts_overlay_container, mFullPost).addToBackStack(FULL_POST_FRAG).commitAllowingStateLoss();
         }
     }
 
@@ -143,7 +143,7 @@ public class PostOverlayFragment extends Fragment implements Serializable, Posts
         getChildFragmentManager()
                 .beginTransaction()
                 .remove(mCurrentComments)
-                .commit();
+                .commitAllowingStateLoss();
         mCurrentComments = null;
         getChildFragmentManager().popBackStack();
 

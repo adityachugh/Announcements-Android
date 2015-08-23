@@ -124,7 +124,7 @@ public class SignInFragment extends Fragment
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .replace(R.id.fragment_container, mForgotPasswordFragment)
                         .addToBackStack(SIGN_IN_FRAG)
-                        .commit();
+                        .commitAllowingStateLoss();
             }
         });
 

@@ -36,7 +36,7 @@ public class SignInUpActivity extends ActionBarActivity implements Serializable{
                 //inflate frag
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 if (ft.isEmpty())
-                    ft.add(R.id.fragment_container, mSignInFragment).commit();
+                    ft.add(R.id.fragment_container, mSignInFragment).commitAllowingStateLoss();
             }
         }
 
@@ -49,7 +49,7 @@ public class SignInUpActivity extends ActionBarActivity implements Serializable{
                 //inflate frag
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 if (ft.isEmpty())
-                    ft.add(R.id.fragment_container, mSignUpFragment).commit();
+                    ft.add(R.id.fragment_container, mSignUpFragment).commitAllowingStateLoss();
             }
         }
     }
