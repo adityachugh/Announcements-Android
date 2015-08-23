@@ -56,17 +56,19 @@
                 <RelativeLayout
                     android:id="@+id/post_image_attached_full_container"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/post_image_margin_top">
 
                     <ImageView
                         android:id="@+id/post_image_attached_full"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:scaleType="centerCrop"
-                        android:layout_marginTop="8dp"/>
+                        android:layout_marginTop="@dimen/post_image_margin_top"/>
                 </RelativeLayout>
 
                 <TextView
+                    android:minHeight="@dimen/post_text_min_height"
                     android:id="@+id/post_detail_full"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -77,6 +79,12 @@
                     android:text="Located two hours south of Sydney in the Southern Highlands of New South Wales, ..."
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textColor="@color/text_primary"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@color/divider_color"/>
 
 
                 <LinearLayout

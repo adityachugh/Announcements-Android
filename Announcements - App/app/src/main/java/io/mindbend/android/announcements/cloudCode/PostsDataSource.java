@@ -31,7 +31,7 @@ public class PostsDataSource {
     public static final String POST_PRIORITY = "priority";
     public static final String POST_ORGANIZATION = "Organization";
 
-    public static void getRangeOfPostsForDay (final ProgressBar loader, Context context, int startIndex, int numberOfPosts, Date date, final FunctionCallback<ArrayList<Post>> callback){
+    public static void getRangeOfPostsForDay (final ProgressBar loader, final Context context, int startIndex, int numberOfPosts, Date date, final FunctionCallback<ArrayList<Post>> callback){
         loader.setVisibility(View.VISIBLE);
         HashMap<String, Object> params = new HashMap<>();
         params.put("startIndex", startIndex);
@@ -45,7 +45,7 @@ public class PostsDataSource {
                 ArrayList<Post> posts = new ArrayList<Post>();
                 if (e == null){
                     for (ParseObject object : parseObjects){
-                        posts.add(new Post(object));
+                        posts.add(new Post(context, object));
                     }
                 }
                 //to allow each frag to do it specifically

@@ -1,7 +1,9 @@
 package io.mindbend.android.announcements;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.format.DateUtils;
 
 import com.parse.ParseObject;
 
@@ -35,14 +37,13 @@ public class Post implements Serializable, Parcelable {
         mPostImageURL = imageURL;
     }
 
-    public Post(ParseObject object){
+    public Post(Context context, ParseObject object){
         mObjectId = object.getObjectId();
         mPostTitle = object.getString(PostsDataSource.POST_TITLE);
         mPostDetail = object.getString(PostsDataSource.POST_BODY);
         mPosterOrg = new Organization(object.getParseObject(PostsDataSource.POST_ORGANIZATION));
         mPostClubUsername = mPosterOrg.getTitle();
-        SimpleDateFormat format1 = new SimpleDateFormat("MMM dd KK:mm a", Locale.getDefault());
-        mPostTimeSince = format1.format(object.getCreatedAt());
+        mPostTimeSince = DateUtils.getRelativeDateTimeString(context, object.getCreatedAt().getTime(), DateUtils.MINUTE_IN_MILLIS, DateUtils.WEEK_IN_MILLIS,0).toString();
         if (object.getParseFile(PostsDataSource.POST_IMAGE) != null)
             mPostImageURL = object.getParseFile(PostsDataSource.POST_IMAGE).getUrl();
         else
