@@ -79,7 +79,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
         viewHolder.mClubUsername.setText(post.getmPostClubUsername());
 
         //add image if present
-        if (!post.getmPostImageURL().equals("")){
+        if (post.getmPostImageBitmap() != null){
             viewHolder.mPostImage.setImageResource(R.drawable.landscape);
 
             //image height is 200dp
