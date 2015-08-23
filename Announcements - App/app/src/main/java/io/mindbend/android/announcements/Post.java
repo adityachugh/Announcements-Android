@@ -1,6 +1,5 @@
 package io.mindbend.android.announcements;
 
-import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -21,17 +20,17 @@ public class Post implements Serializable, Parcelable {
     private String mPostClubUsername;
 
     private Organization mPosterOrg;
-    private byte[] mPostImageBytes;
-    private Bitmap mPostImageBitmap;
+    private String  mPostImageURL;
     //TODO: setup passing in club image for the post
+    //private String mUrlToPicture;
 
-    public Post(String objectId, String title, String timeSinceString, String details, String clubUsername, Bitmap imageBitmap){
+    public Post(String objectId, String title, String timeSinceString, String details, String clubUsername, String imageURL){
         mObjectId = objectId;
         mPostTitle = title;
         mPostTimeSince = timeSinceString;
         mPostDetail = details;
         mPostClubUsername = clubUsername;
-        mPostImageBitmap = imageBitmap;
+        mPostImageURL = imageURL;
     }
 
     public Post(ParseObject object){
@@ -41,7 +40,7 @@ public class Post implements Serializable, Parcelable {
         mPosterOrg = new Organization(object.getParseObject(PostsDataSource.POST_ORGANIZATION));
         mPostClubUsername = mPosterOrg.getTitle();
         mPostTimeSince = object.getCreatedAt().toString();
-        mPostImageBytes = null; //TODO: grab from Parse later
+        mPostImageURL = ""; //TODO: grab from Parse later
     }
 
     public Post (Parcel post) {
@@ -64,7 +63,7 @@ public class Post implements Serializable, Parcelable {
         dest.writeString(mPostTimeSince);
         dest.writeString(mPostDetail);
         dest.writeString(mPostClubUsername);
-        dest.writeByteArray(mPostImageBytes);
+//        dest.writeString(mUrlToPicture);
     }
 
     public static final Parcelable.Creator<Post> CREATOR
@@ -98,11 +97,7 @@ public class Post implements Serializable, Parcelable {
         return mPostClubUsername;
     }
 
-    public byte[] getmPostImageBytes() {
-        return mPostImageBytes;
-    }
-
-    public Bitmap getmPostImageBitmap() {
-        return mPostImageBitmap;
+    public String getmPostImageURL() {
+        return mPostImageURL;
     }
 }
