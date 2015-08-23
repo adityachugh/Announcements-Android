@@ -5,9 +5,19 @@
              android:layout_height="match_parent"
     android:id="@+id/you_frag"
              tools:context="io.mindbend.android.announcements.tabbedFragments.YouFragment">
-    <FrameLayout
-        android:id="@+id/you_framelayout"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </FrameLayout>
+        <FrameLayout
+            android:id="@+id/you_framelayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </FrameLayout>
+        <ProgressBar
+            android:layout_width="@dimen/progress_bar_LARGE"
+            android:layout_height="@dimen/progress_bar_LARGE"
+            android:id="@+id/you_frag_progressbar"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
+    </RelativeLayout>
 </FrameLayout>

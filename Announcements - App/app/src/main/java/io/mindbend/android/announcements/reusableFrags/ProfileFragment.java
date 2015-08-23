@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nirhart.parallaxscroll.views.ParallaxScrollView;
+import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -305,6 +306,8 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 followCount.setText(mUser.getNumberOfOrganizationsFollowed());
                 mProfileDetail.setText(mUser.getInterests());
                 mProfileTag.setText(mUser.getUserCategory());
+                if (!mUser.getmProfilePictureURL().equals(""))
+                    Picasso.with(getActivity()).load(mUser.getmProfilePictureURL()).into(mUserImage);
 
                 //Fill bottom fragment with discover grid if user(temporary)
                 //TODO: Fetch followed orgs OR organization's announcements (generic fragment)
