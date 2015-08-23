@@ -47,7 +47,7 @@ public class UserDataSource {
         loading.setVisibility(View.VISIBLE);
 
         HashMap<String, Object> params = new HashMap<>();
-        params.put("user", ParseUser.getCurrentUser().getObjectId());
+        params.put("userObjectId", ParseUser.getCurrentUser().getObjectId());
         params.put("photo", image);
         ParseCloud.callFunctionInBackground("updateUserProfilePhoto", params, new FunctionCallback<Boolean>() {
             @Override
