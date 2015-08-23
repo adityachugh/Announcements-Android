@@ -34,6 +34,7 @@ public class Organization implements Serializable, Parcelable {
         mTag = tag;
         mPrivateOrg = privateOrg;
         mNewOrg = newOrg;
+        mProfileImageURL = "";
     }
 
     public Organization (ParseObject object){

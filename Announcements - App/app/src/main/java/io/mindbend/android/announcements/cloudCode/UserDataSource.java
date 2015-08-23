@@ -4,7 +4,10 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.parse.FunctionCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import io.mindbend.android.announcements.User;
@@ -23,17 +26,18 @@ public class UserDataSource {
 
     //TODO: profile photo, cover photo
 
-    public static User getCurrentUserWithInfo(ProgressBar loading) {
+    public static void getCurrentUserWithInfo(final ProgressBar loading, final FunctionCallback<User> callback) {
         loading.setVisibility(View.VISIBLE);
-        try {
-            ParseUser.getCurrentUser().fetch();
-            loading.setVisibility(View.GONE);
-            return new User(ParseUser.getCurrentUser());
-        } catch (ParseException e) {
-            e.printStackTrace();
-            loading.setVisibility(View.GONE);
-            return null;
-        }
+
+        ParseUser.getCurrentUser().fetchInBackground(new GetCallback<ParseUser>() {
+            @Override
+            public void done(ParseUser object, ParseException e) {
+                loading.setVisibility(View.GONE);
+                User user = new User(ParseUser.getCurrentUser());
+                callback.done(user, e);
+            }
+        });
+
     }
 
 }

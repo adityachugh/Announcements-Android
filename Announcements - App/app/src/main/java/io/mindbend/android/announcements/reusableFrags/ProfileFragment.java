@@ -265,38 +265,6 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                         }
                     });
 
-                    mProfileTag.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View v) {
-                            AlertDialog.Builder alert = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
-
-                            final EditText edittext = new EditText(getActivity());
-                            edittext.setText(mUser.getUserCategory().substring(1));
-                            alert.setTitle("Update your Tag");
-                            alert.setView(edittext);
-                            alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    //What ever you want to do with the value
-                                    if (!edittext.getText().toString().equals("")) {
-                                        //TODO: save to parse
-                                        mUser.setUserCategory("#" + edittext.getText().toString());
-                                        mProfileTag.setText(mUser.getUserCategory());
-                                    } else
-                                        Toast.makeText(getActivity(), "Cannot leave fields blank!", Toast.LENGTH_LONG).show();
-                                }
-                            });
-
-                            alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    // what ever you want to do with No option.
-                                }
-                            });
-
-                            alert.show();
-                            return true;
-                        }
-                    });
-
                 }
             }
 
@@ -304,8 +272,8 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
             if (mUser != null) {
                 name.setText(mUser.getName());
                 followCount.setText(mUser.getNumberOfOrganizationsFollowed());
-                mProfileDetail.setText(mUser.getInterests());
-                mProfileTag.setText(mUser.getUserCategory());
+                mProfileDetail.setText(mUser.getmDescription());
+                mProfileTag.setText("@"+mUser.getUserCategory());
                 if (!mUser.getmProfilePictureURL().equals(""))
                     Picasso.with(getActivity()).load(mUser.getmProfilePictureURL()).into(mUserImage);
 

@@ -102,6 +102,10 @@ public class User implements Serializable, Parcelable{
         return mProfilePictureURL;
     }
 
+    public String getmDescription() {
+        return mDescription;
+    }
+
     @Override
     public int describeContents() {
         return 0;
