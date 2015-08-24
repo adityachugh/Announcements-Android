@@ -84,4 +84,5 @@
         <item>View Announcements</item>
     </string-array>
     <string name="title_activity_signup_select_parent_org">SignupSelectParentOrgActivity</string>
+    <string name="user_default_description">Interested in work and play.</string>
 </resources>

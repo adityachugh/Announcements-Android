@@ -45,7 +45,7 @@ public class UserDataSource {
 
     }
 
-    public static void updateUserProfilePhoto (final ProgressBar loading, byte[] image, final FunctionCallback<User> callback) {
+    public static void updateUserProfilePhoto (final ProgressBar loading, byte[] image, final FunctionCallback<Boolean> callback) {
         loading.setVisibility(View.VISIBLE);
 
         HashMap<String, Object> params = new HashMap<>();
@@ -55,34 +55,23 @@ public class UserDataSource {
             @Override
             public void done(ParseUser parseUser, ParseException e) {
                 loading.setVisibility(View.GONE);
-                callback.done(new User(parseUser), e);
+                callback.done(e==null ,e);
             }
         });
     }
 
-    public static byte[] compressByteArray(byte[] bytes){
+    public static void updateUserDescription (final ProgressBar loading, String description, final FunctionCallback<Boolean> callback) {
+        loading.setVisibility(View.VISIBLE);
 
-        ByteArrayOutputStream baos = null;
-        Deflater dfl = new Deflater();
-        dfl.setLevel(Deflater.BEST_COMPRESSION);
-        dfl.setInput(bytes);
-        dfl.finish();
-        baos = new ByteArrayOutputStream();
-        byte[] tmp = new byte[4*1024];
-        try{
-            while(!dfl.finished()){
-                int size = dfl.deflate(tmp);
-                baos.write(tmp, 0, size);
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("userObjectId", ParseUser.getCurrentUser().getObjectId());
+        params.put("description", description);
+        ParseCloud.callFunctionInBackground("updateUserDescription", params, new FunctionCallback<ParseUser>() {
+            @Override
+            public void done(ParseUser parseUser, ParseException e) {
+                loading.setVisibility(View.GONE);
+                callback.done(e==null, e);
             }
-        } catch (Exception ex){
-
-        } finally {
-            try{
-                if(baos != null) baos.close();
-            } catch(Exception ex){}
-        }
-
-        return baos.toByteArray();
+        });
     }
-
 }

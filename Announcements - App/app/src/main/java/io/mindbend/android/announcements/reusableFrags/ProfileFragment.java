@@ -23,6 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nirhart.parallaxscroll.views.ParallaxScrollView;
+import com.parse.FunctionCallback;
+import com.parse.ParseException;
 import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
@@ -32,7 +34,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.TabbedActivity;
 import io.mindbend.android.announcements.User;
+import io.mindbend.android.announcements.cloudCode.UserDataSource;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -230,11 +234,17 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                             layout.setOrientation(LinearLayout.VERTICAL);
 
                             final EditText interestOneET = new EditText(getActivity());
-                            interestOneET.setHint("#1: " + mUser.getInterestOne());
+                            String in1text = "#1: ";
+                            if (mUser.getInterestOne() != null)
+                                in1text = in1text+mUser.getInterestOne();
+                            interestOneET.setHint(in1text);
                             layout.addView(interestOneET);
 
                             final EditText interestTwoET = new EditText(getActivity());
-                            interestTwoET.setHint("#2: " + mUser.getInterestTwo());
+                            String in2text = "#2: ";
+                            if (mUser.getInterestTwo() != null)
+                                in2text = in2text+mUser.getInterestTwo();
+                            interestTwoET.setHint(in2text);
                             layout.addView(interestTwoET);
 
                             alert.setView(layout);
@@ -244,10 +254,23 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                                     //What ever you want to do with the value
                                     if (!interestOneET.getText().toString().equals("") && !interestTwoET.getText().toString().equals("")) {
                                         //TODO: save to parse
-                                        mUser.setInterestOne(interestOneET.getText().toString());
-                                        mUser.setInterestTwo(interestTwoET.getText().toString());
-
-                                        mProfileDetail.setText(mUser.getInterests());
+                                        final String i1 = interestOneET.getText().toString();
+                                        final String i2 = interestTwoET.getText().toString();
+                                        UserDataSource.updateUserDescription(((TabbedActivity) getActivity()).mYouFragment.mLoading, "Interested in " + i1 + " and " + i2, new FunctionCallback<Boolean>() {
+                                            @Override
+                                            public void done(Boolean success, ParseException e) {
+                                                if (success){
+                                                    Toast.makeText(getActivity(), "Interests updated", Toast.LENGTH_SHORT).show();
+                                                    mUser.setInterestOne(i1);
+                                                    mUser.setInterestTwo(i2);
+                                                    mProfileDetail.setText(mUser.getInterests());
+                                                }
+                                                else{
+                                                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        });
                                     } else
                                         Toast.makeText(getActivity(), "Cannot leave fields blank!", Toast.LENGTH_LONG).show();
 

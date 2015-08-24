@@ -68,7 +68,7 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
     private TodayFragment mTodayFragment;
     private AdminFragment mAdminFragment;
     private DiscoverFragment mDiscoverFragment;
-    private YouFragment mYouFragment;
+    public YouFragment mYouFragment;
 
     private Bundle mSavedInstanceState;
 
@@ -311,12 +311,10 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
                     image.compress(Bitmap.CompressFormat.JPEG, 70, stream);
                     byte[] imageBytes = stream.toByteArray();
                     Log.wtf("Image", "Converted bytes are: " + imageBytes.toString());
-                    byte[] parseUploadData = UserDataSource.compressByteArray(imageBytes);
-                    Log.wtf("Image", "Compressed bytes are: " + parseUploadData.toString());
-                    UserDataSource.updateUserProfilePhoto(mYouFragment.mLoading, parseUploadData, new FunctionCallback<User>() {
+                    UserDataSource.updateUserProfilePhoto(mYouFragment.mLoading, imageBytes, new FunctionCallback<Boolean>() {
                         @Override
-                        public void done(User user, ParseException e) {
-                            if (e == null) {
+                        public void done(Boolean success, ParseException e) {
+                            if (success) {
                                 ((ProfileFragment) mYouFragment.getmProfileFragment()).updateImage(image);
                                 Toast.makeText(TabbedActivity.this, "Image successfully updated", Toast.LENGTH_LONG).show();
                             }
