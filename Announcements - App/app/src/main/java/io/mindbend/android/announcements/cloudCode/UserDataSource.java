@@ -11,7 +11,9 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
+import java.util.zip.Deflater;
 
 import io.mindbend.android.announcements.User;
 
@@ -43,19 +45,44 @@ public class UserDataSource {
 
     }
 
-    public static void updateUserProfilePhoto (final ProgressBar loading, byte[] image, final FunctionCallback<Boolean> callback) {
+    public static void updateUserProfilePhoto (final ProgressBar loading, byte[] image, final FunctionCallback<User> callback) {
         loading.setVisibility(View.VISIBLE);
 
         HashMap<String, Object> params = new HashMap<>();
         params.put("userObjectId", ParseUser.getCurrentUser().getObjectId());
         params.put("photo", image);
-        ParseCloud.callFunctionInBackground("updateUserProfilePhoto", params, new FunctionCallback<Boolean>() {
+        ParseCloud.callFunctionInBackground("updateUserProfilePhoto", params, new FunctionCallback<ParseUser>() {
             @Override
-            public void done(Boolean aBoolean, ParseException e) {
+            public void done(ParseUser parseUser, ParseException e) {
                 loading.setVisibility(View.GONE);
-                callback.done(aBoolean, e);
+                callback.done(new User(parseUser), e);
             }
         });
+    }
+
+    public static byte[] compressByteArray(byte[] bytes){
+
+        ByteArrayOutputStream baos = null;
+        Deflater dfl = new Deflater();
+        dfl.setLevel(Deflater.BEST_COMPRESSION);
+        dfl.setInput(bytes);
+        dfl.finish();
+        baos = new ByteArrayOutputStream();
+        byte[] tmp = new byte[4*1024];
+        try{
+            while(!dfl.finished()){
+                int size = dfl.deflate(tmp);
+                baos.write(tmp, 0, size);
+            }
+        } catch (Exception ex){
+
+        } finally {
+            try{
+                if(baos != null) baos.close();
+            } catch(Exception ex){}
+        }
+
+        return baos.toByteArray();
     }
 
 }
