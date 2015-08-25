@@ -8,6 +8,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.parse.FunctionCallback;
+import com.parse.ParseException;
+import com.parse.ParseUser;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -19,6 +24,7 @@ import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment;
+import io.mindbend.android.announcements.cloudCode.AdminDataSource;
 import io.mindbend.android.announcements.reusableFrags.ListFragment;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridAdapter;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridFragment;
@@ -90,6 +96,21 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
     public void pressedOrgFromProfile(Organization orgPressed) {
         //TODO: check if the user is an admin of this org
         //currently choosing randomly
+
+        Log.wtf(TAG, "PARSE USER " + ParseUser.getCurrentUser().getObjectId().toString());
+        AdminDataSource.checkIfUserIsAdminOfOrganization(getActivity(), orgPressed, ParseUser.getCurrentUser(), new FunctionCallback<String>() {
+            @Override
+            public void done(String isAdmin, ParseException e) {
+                if (e == null){
+                    Log.wtf(TAG, "IS USER ADMIN? " + isAdmin);
+                }
+                else {
+                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        });
+
 
         Random r = new Random();
         boolean isModifiable = r.nextBoolean();
