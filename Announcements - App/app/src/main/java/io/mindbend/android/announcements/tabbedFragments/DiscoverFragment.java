@@ -97,20 +97,19 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
         //TODO: check if the user is an admin of this org
         //currently choosing randomly
 
-        Log.wtf(TAG, "PARSE USER " + ParseUser.getCurrentUser().getObjectId().toString());
-        AdminDataSource.checkIfUserIsAdminOfOrganization(getActivity(), orgPressed, ParseUser.getCurrentUser(), new FunctionCallback<String>() {
-            @Override
-            public void done(String isAdmin, ParseException e) {
-                if (e == null){
-                    Log.wtf(TAG, "IS USER ADMIN? " + isAdmin);
-                }
-                else {
-                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                }
-            }
-        });
-
+//        Log.wtf(TAG, "PARSE USER " + ParseUser.getCurrentUser().getObjectId().toString());
+//        AdminDataSource.checkIfUserIsAdminOfOrganization(getActivity(), orgPressed, ParseUser.getCurrentUser(), new FunctionCallback<String>() {
+//            @Override
+//            public void done(String isAdmin, ParseException e) {
+//                if (e == null){
+//                    Log.wtf(TAG, "IS USER ADMIN? " + isAdmin);
+//                }
+//                else {
+//                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
 
         Random r = new Random();
         boolean isModifiable = r.nextBoolean();
