@@ -172,16 +172,16 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
 
             //if the view is of an org that the user is an admin of, or if the user is viewing his/her own profile
             if (mToEdit) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
+                builder.setTitle("Options");
+                modifyButton.setVisibility(View.VISIBLE);
+                Log.wtf("ProfileFrag", "modify profile");
                 if (mOrg != null) {
-                    modifyButton.setVisibility(View.VISIBLE);
                     modifyButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             //This is what's called when the imagebutton is pressed to modify an org/user
-                            Log.wtf("ProfileFrag", "modify profile");
                             //modify org
-                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
-                            builder.setTitle("Options");
                             builder.setItems(getResources().getStringArray(R.array.profile_edit_org_dialog_options), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -211,80 +211,37 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 } else {
                     //mUser isn't null
                     //this case is only true in the youfrag tab
-                    //TODO: setup tap&hold to update photo and interests
-                    mUserImage.setOnLongClickListener(new View.OnLongClickListener() {
+
+                    modifyButton.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public boolean onLongClick(View v) {
-                            Log.wtf("Image", "image selection begun");
-                            Intent intent = new Intent();
-                            intent.setType("image/*");
-                            intent.setAction(Intent.ACTION_GET_CONTENT);
-                            getActivity().startActivityForResult(Intent.createChooser(intent,
-                                    "Select Picture"), UPDATE_PROFILE_IMAGE);
-                            return true;
-                        }
-                    });
+                        public void onClick(View v) {
+                            //This is what's called when the imagebutton is pressed to modify an org/user
+                            //modify org
+                            builder.setItems(getResources().getStringArray(R.array.profile_edit_user_dialog_options), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    /**
+                                     * 0 = Modify, 1 = View Members, 2 = View Announcements
+                                     */
+                                    final int UPDATE_PROFILE_PHOTO = 0;
+                                    final int UPDATE_INTERESTS_DESCRIPTION = 1;
 
-                    mProfileDetail.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View v) {
-                            AlertDialog.Builder alert = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
-
-                            LinearLayout layout = new LinearLayout(getActivity());
-                            layout.setOrientation(LinearLayout.VERTICAL);
-
-                            final EditText interestOneET = new EditText(getActivity());
-                            String in1text = "#1: ";
-                            if (mUser.getInterestOne() != null)
-                                in1text = in1text+mUser.getInterestOne();
-                            interestOneET.setHint(in1text);
-                            layout.addView(interestOneET);
-
-                            final EditText interestTwoET = new EditText(getActivity());
-                            String in2text = "#2: ";
-                            if (mUser.getInterestTwo() != null)
-                                in2text = in2text+mUser.getInterestTwo();
-                            interestTwoET.setHint(in2text);
-                            layout.addView(interestTwoET);
-
-                            alert.setView(layout);
-                            alert.setTitle("Enter your Interests");
-                            alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    //What ever you want to do with the value
-                                    if (!interestOneET.getText().toString().equals("") && !interestTwoET.getText().toString().equals("")) {
-                                        //TODO: save to parse
-                                        final String i1 = interestOneET.getText().toString();
-                                        final String i2 = interestTwoET.getText().toString();
-                                        UserDataSource.updateUserDescription(((TabbedActivity) getActivity()).mYouFragment.mLoading, "Interested in " + i1 + " and " + i2, new FunctionCallback<Boolean>() {
-                                            @Override
-                                            public void done(Boolean success, ParseException e) {
-                                                if (success){
-                                                    Toast.makeText(getActivity(), "Interests updated", Toast.LENGTH_SHORT).show();
-                                                    mUser.setInterestOne(i1);
-                                                    mUser.setInterestTwo(i2);
-                                                    mProfileDetail.setText(mUser.getInterests());
-                                                }
-                                                else{
-                                                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                        });
-                                    } else
-                                        Toast.makeText(getActivity(), "Cannot leave fields blank!", Toast.LENGTH_LONG).show();
-
+                                    switch (which) {
+                                        case UPDATE_PROFILE_PHOTO:
+                                            Log.wtf("Image", "image selection begun");
+                                            Intent intent = new Intent();
+                                            intent.setType("image/*");
+                                            intent.setAction(Intent.ACTION_GET_CONTENT);
+                                            getActivity().startActivityForResult(Intent.createChooser(intent,
+                                                    "Select Picture"), UPDATE_PROFILE_IMAGE);
+                                            break;
+                                        case UPDATE_INTERESTS_DESCRIPTION:
+                                            editInterestsDialog();
+                                            break;
+                                    }
                                 }
                             });
-
-                            alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    // what ever you want to do with No option.
-                                }
-                            });
-
-                            alert.show();
-                            return true;
+                            builder.show();
                         }
                     });
 
@@ -394,6 +351,64 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         }
 
         return mView;
+    }
+
+    private void editInterestsDialog() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
+
+        LinearLayout layout = new LinearLayout(getActivity());
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        final EditText interestOneET = new EditText(getActivity());
+        String in1text = "#1: ";
+        if (mUser.getInterestOne() != null)
+            in1text = in1text + mUser.getInterestOne();
+        interestOneET.setHint(in1text);
+        layout.addView(interestOneET);
+
+        final EditText interestTwoET = new EditText(getActivity());
+        String in2text = "#2: ";
+        if (mUser.getInterestTwo() != null)
+            in2text = in2text + mUser.getInterestTwo();
+        interestTwoET.setHint(in2text);
+        layout.addView(interestTwoET);
+
+        alert.setView(layout);
+        alert.setTitle("Enter your Interests");
+        alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //What ever you want to do with the value
+                if (!interestOneET.getText().toString().equals("") && !interestTwoET.getText().toString().equals("")) {
+                    //TODO: save to parse
+                    final String i1 = interestOneET.getText().toString();
+                    final String i2 = interestTwoET.getText().toString();
+                    UserDataSource.updateUserDescription(getActivity() , ((TabbedActivity) getActivity()).mYouFragment.mLoading, "Interested in " + i1 + " and " + i2, new FunctionCallback<Boolean>() {
+                        @Override
+                        public void done(Boolean success, ParseException e) {
+                            if (success) {
+                                Toast.makeText(getActivity(), "Interests updated", Toast.LENGTH_SHORT).show();
+                                mUser.setInterestOne(i1);
+                                mUser.setInterestTwo(i2);
+                                mProfileDetail.setText(mUser.getInterests());
+                            } else {
+                                Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                } else
+                    Toast.makeText(getActivity(), "Cannot leave fields blank!", Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // what ever you want to do with No option.
+            }
+        });
+
+        alert.show();
     }
 
     @Override

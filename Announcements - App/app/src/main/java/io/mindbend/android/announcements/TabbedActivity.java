@@ -311,7 +311,7 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
                     image.compress(Bitmap.CompressFormat.JPEG, 70, stream);
                     byte[] imageBytes = stream.toByteArray();
                     Log.wtf("Image", "Converted bytes are: " + imageBytes.toString());
-                    UserDataSource.updateUserProfilePhoto(mYouFragment.mLoading, imageBytes, new FunctionCallback<Boolean>() {
+                    UserDataSource.updateUserProfilePhoto(this, mYouFragment.mLoading, imageBytes, new FunctionCallback<Boolean>() {
                         @Override
                         public void done(Boolean success, ParseException e) {
                             if (success) {
