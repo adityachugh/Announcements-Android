@@ -305,7 +305,7 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
                 Log.wtf("Image", "intent result was okay");
                 Uri selectedImageUri = data.getData();
                 try {
-                    final Bitmap image = Bitmap.createScaledBitmap(getBitmapFromUri(selectedImageUri), 100, 100, true);
+                    final Bitmap image = Bitmap.createScaledBitmap(getBitmapFromUri(selectedImageUri), 500, 500, true);
                     Log.wtf("Image", "Bitmap is: " + image.toString());
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     image.compress(Bitmap.CompressFormat.JPEG, 70, stream);
