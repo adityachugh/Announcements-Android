@@ -17,12 +17,16 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nirhart.parallaxscroll.views.ParallaxScrollView;
+import com.parse.FunctionCallback;
+import com.parse.ParseException;
+import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,7 +35,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.TabbedActivity;
 import io.mindbend.android.announcements.User;
+import io.mindbend.android.announcements.cloudCode.UserDataSource;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,6 +48,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
 
     private static final String TAG = "ProfileFragment";
     public static final int UPDATE_PROFILE_IMAGE = 5;
+    public static final int UPDATE_COVER_IMAGE = 6;
 
     //To add frags to backstack
     public static final String ORG_PROFILE_FRAG = "org_profile_frag";
@@ -87,6 +94,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
 
 
     private transient de.hdodenhof.circleimageview.CircleImageView mUserImage;
+    private transient ImageView mCoverImage;
     private transient TextView mProfileDetail;
     private transient TextView mProfileTag;
 
@@ -148,6 +156,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
             mProfileContentFrameLayoutEmbedded = (RelativeLayout) mView.findViewById(R.id.profile_content_framelayout_embedded);
 
             mUserImage = (CircleImageView) mView.findViewById(R.id.profile_photo);
+            mCoverImage = (ImageView)mView.findViewById(R.id.profile_cover_photo);
 
             //UI elements to be filled
             TextView name = (TextView) mView.findViewById(R.id.profile_name);
@@ -167,37 +176,21 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
 
             //if the view is of an org that the user is an admin of, or if the user is viewing his/her own profile
             if (mToEdit) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
+                builder.setTitle("Options");
+                modifyButton.setVisibility(View.VISIBLE);
+                Log.wtf("ProfileFrag", "modify profile");
                 if (mOrg != null) {
-                    modifyButton.setVisibility(View.VISIBLE);
                     modifyButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             //This is what's called when the imagebutton is pressed to modify an org/user
-                            Log.wtf("ProfileFrag", "modify profile");
                             //modify org
-                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
-                            builder.setTitle("Options");
                             builder.setItems(getResources().getStringArray(R.array.profile_edit_org_dialog_options), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    /**
-                                     * 0 = Modify, 1 = View Members, 2 = View Announcements
-                                     */
-                                    final int MODIFY = 0;
-                                    final int VIEW_MEMBERS = 1;
-                                    final int VIEW_ANNOUNCEMENTS = 2;
+                                    modifyOrgDialogItemSetup(which);
 
-                                    switch (which) {
-                                        case MODIFY:
-                                            mListener.modifyOrg(mOrg);
-                                            break;
-                                        case VIEW_MEMBERS:
-                                            mListener.viewMembers(mOrg);
-                                            break;
-                                        case VIEW_ANNOUNCEMENTS:
-                                            mListener.viewAnnouncementsState(mOrg);
-                                            break;
-                                    }
                                 }
                             });
                             builder.show();
@@ -206,93 +199,20 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 } else {
                     //mUser isn't null
                     //this case is only true in the youfrag tab
-                    //TODO: setup tap&hold to update photo and interests
-                    mUserImage.setOnLongClickListener(new View.OnLongClickListener() {
+
+                    modifyButton.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public boolean onLongClick(View v) {
-                            Log.wtf("Image", "image selection begun");
-                            Intent intent = new Intent();
-                            intent.setType("image/*");
-                            intent.setAction(Intent.ACTION_GET_CONTENT);
-                            getActivity().startActivityForResult(Intent.createChooser(intent,
-                                    "Select Picture"), UPDATE_PROFILE_IMAGE);
-                            return true;
-                        }
-                    });
-
-                    mProfileDetail.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View v) {
-                            AlertDialog.Builder alert = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
-
-                            LinearLayout layout = new LinearLayout(getActivity());
-                            layout.setOrientation(LinearLayout.VERTICAL);
-
-                            final EditText interestOneET = new EditText(getActivity());
-                            interestOneET.setHint("#1: " + mUser.getInterestOne());
-                            layout.addView(interestOneET);
-
-                            final EditText interestTwoET = new EditText(getActivity());
-                            interestTwoET.setHint("#2: " + mUser.getInterestTwo());
-                            layout.addView(interestTwoET);
-
-                            alert.setView(layout);
-                            alert.setTitle("Enter your Interests");
-                            alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    //What ever you want to do with the value
-                                    if (!interestOneET.getText().toString().equals("") && !interestTwoET.getText().toString().equals("")) {
-                                        //TODO: save to parse
-                                        mUser.setInterestOne(interestOneET.getText().toString());
-                                        mUser.setInterestTwo(interestTwoET.getText().toString());
-
-                                        mProfileDetail.setText(mUser.getInterests());
-                                    } else
-                                        Toast.makeText(getActivity(), "Cannot leave fields blank!", Toast.LENGTH_LONG).show();
+                        public void onClick(View v) {
+                            //This is what's called when the imagebutton is pressed to modify an org/user
+                            //modify org
+                            builder.setItems(getResources().getStringArray(R.array.profile_edit_user_dialog_options), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    modifyUserDialogItemSetup(which);
 
                                 }
                             });
-
-                            alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    // what ever you want to do with No option.
-                                }
-                            });
-
-                            alert.show();
-                            return true;
-                        }
-                    });
-
-                    mProfileTag.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View v) {
-                            AlertDialog.Builder alert = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
-
-                            final EditText edittext = new EditText(getActivity());
-                            edittext.setText(mUser.getUserCategory().substring(1));
-                            alert.setTitle("Update your Tag");
-                            alert.setView(edittext);
-                            alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    //What ever you want to do with the value
-                                    if (!edittext.getText().toString().equals("")) {
-                                        //TODO: save to parse
-                                        mUser.setUserCategory("#" + edittext.getText().toString());
-                                        mProfileTag.setText(mUser.getUserCategory());
-                                    } else
-                                        Toast.makeText(getActivity(), "Cannot leave fields blank!", Toast.LENGTH_LONG).show();
-                                }
-                            });
-
-                            alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    // what ever you want to do with No option.
-                                }
-                            });
-
-                            alert.show();
-                            return true;
+                            builder.show();
                         }
                     });
 
@@ -303,8 +223,12 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
             if (mUser != null) {
                 name.setText(mUser.getName());
                 followCount.setText(mUser.getNumberOfOrganizationsFollowed());
-                mProfileDetail.setText(mUser.getInterests());
-                mProfileTag.setText(mUser.getUserCategory());
+                mProfileDetail.setText(mUser.getmDescription());
+                mProfileTag.setText("@"+mUser.getUserCategory());
+                if (!mUser.getmProfilePictureURL().equals(""))
+                    Picasso.with(getActivity()).load(mUser.getmProfilePictureURL()).into(mUserImage);
+                if (!mUser.getmCoverPictureURL().equals(""))
+                    Picasso.with(getActivity()).load(mUser.getmCoverPictureURL()).into(mCoverImage);
 
                 //Fill bottom fragment with discover grid if user(temporary)
                 //TODO: Fetch followed orgs OR organization's announcements (generic fragment)
@@ -402,6 +326,116 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         return mView;
     }
 
+    private void modifyUserDialogItemSetup(int which) {
+        /**
+         * 0 = Profile Pic, 1 = Cover Pic, 2 = Description
+         */
+        final int UPDATE_PROFILE_PHOTO = 0;
+        final int UPDATE_COVER_PHOTO = 1;
+        final int UPDATE_INTERESTS_DESCRIPTION = 2;
+
+        switch (which) {
+            case UPDATE_PROFILE_PHOTO:
+                Log.wtf("Image", "image selection begun");
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                getActivity().startActivityForResult(Intent.createChooser(intent,
+                        "Select Picture"), UPDATE_PROFILE_IMAGE);
+                break;
+            case UPDATE_COVER_PHOTO:
+                Log.wtf("Image", "image selection begun");
+                Intent intent2 = new Intent();
+                intent2.setType("image/*");
+                intent2.setAction(Intent.ACTION_GET_CONTENT);
+                getActivity().startActivityForResult(Intent.createChooser(intent2,
+                        "Select Picture"), UPDATE_COVER_IMAGE);
+                break;
+            case UPDATE_INTERESTS_DESCRIPTION:
+                editInterestsDialog();
+                break;
+        }
+    }
+
+    private void modifyOrgDialogItemSetup(int which) {
+        /**
+         * 0 = Modify, 1 = View Members, 2 = View Announcements
+         */
+        final int MODIFY = 0;
+        final int VIEW_MEMBERS = 1;
+        final int VIEW_ANNOUNCEMENTS = 2;
+
+        switch (which) {
+            case MODIFY:
+                mListener.modifyOrg(mOrg);
+                break;
+            case VIEW_MEMBERS:
+                mListener.viewMembers(mOrg);
+                break;
+            case VIEW_ANNOUNCEMENTS:
+                mListener.viewAnnouncementsState(mOrg);
+                break;
+        }
+    }
+
+    private void editInterestsDialog() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
+
+        LinearLayout layout = new LinearLayout(getActivity());
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        final EditText interestOneET = new EditText(getActivity());
+        String in1text = "#1: ";
+        if (mUser.getInterestOne() != null)
+            in1text = in1text + mUser.getInterestOne();
+        interestOneET.setHint(in1text);
+        layout.addView(interestOneET);
+
+        final EditText interestTwoET = new EditText(getActivity());
+        String in2text = "#2: ";
+        if (mUser.getInterestTwo() != null)
+            in2text = in2text + mUser.getInterestTwo();
+        interestTwoET.setHint(in2text);
+        layout.addView(interestTwoET);
+
+        alert.setView(layout);
+        alert.setTitle("Enter your Interests");
+        alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //What ever you want to do with the value
+                if (!interestOneET.getText().toString().equals("") && !interestTwoET.getText().toString().equals("")) {
+                    //TODO: save to parse
+                    final String i1 = interestOneET.getText().toString();
+                    final String i2 = interestTwoET.getText().toString();
+                    UserDataSource.updateUserDescription(getActivity() , ((TabbedActivity) getActivity()).mYouFragment.mLoading, "Interested in " + i1 + " and " + i2, new FunctionCallback<Boolean>() {
+                        @Override
+                        public void done(Boolean success, ParseException e) {
+                            if (success) {
+                                Toast.makeText(getActivity(), "Interests updated", Toast.LENGTH_SHORT).show();
+                                mUser.setInterestOne(i1);
+                                mUser.setInterestTwo(i2);
+                                mProfileDetail.setText(mUser.getInterests());
+                            } else {
+                                Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                } else
+                    Toast.makeText(getActivity(), "Cannot leave fields blank!", Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // what ever you want to do with No option.
+            }
+        });
+
+        alert.show();
+    }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -493,8 +527,12 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         mPostsOverlayListener.visitCommentersProfile(commenterPressed);
     }
 
-    public void updateImage(Bitmap bitmap) {
+    public void updateProfileImage(Bitmap bitmap) {
         mUserImage.setImageBitmap(bitmap);
+    }
+
+    public void updateCoverImage(Bitmap bitmap){
+        mCoverImage.setImageBitmap(bitmap);
     }
 
     private int getAppropriateFramelayout() {

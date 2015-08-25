@@ -8,6 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+
+import com.parse.FunctionCallback;
+import com.parse.ParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -19,6 +23,7 @@ import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment;
+import io.mindbend.android.announcements.cloudCode.UserDataSource;
 import io.mindbend.android.announcements.reusableFrags.ListFragment;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridAdapter;
 import io.mindbend.android.announcements.reusableFrags.PostOverlayFragment;
@@ -41,6 +46,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
     private boolean onDiscover = false;
     private boolean onYou = true;
     private boolean onAdmin = false;
+    public transient ProgressBar mLoading;
 
     //NOTE: Opens child ProfileFragment, which has a grandchild for user followed organizations/ organization announcements
     //Makes Profile fragment generic (useable by both users and organizations)
@@ -57,15 +63,17 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
         // Inflate the layout for this fragment
         setRetainInstance(true);
         View v = inflater.inflate(R.layout.fragment_you, container, false);
+        mLoading = (ProgressBar)v.findViewById(R.id.you_frag_progressbar);
 
-        //FAKE USER FOR TESTING
-        User testUser = new User("Aditya", "Chugh", "getting paper", "node.js", "#Grade12", 9);
-
-        mProfileFragment = ProfileFragment.newInstance(testUser, null, this, true, onToday, onDiscover, onYou, onAdmin);
-
-        //inflate profileFrag in framelayout
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.you_framelayout, mProfileFragment).addToBackStack(DEFAULT).commitAllowingStateLoss();
+        UserDataSource.getCurrentUserWithInfo(mLoading, new FunctionCallback<User>() {
+            @Override
+            public void done(User user, ParseException e) {
+                mProfileFragment = ProfileFragment.newInstance(user, null, YouFragment.this, true, onToday, onDiscover, onYou, onAdmin);
+                //inflate profileFrag in framelayout
+                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.you_framelayout, mProfileFragment).addToBackStack(DEFAULT).commitAllowingStateLoss();
+            }
+        });
 
         return v;
     }

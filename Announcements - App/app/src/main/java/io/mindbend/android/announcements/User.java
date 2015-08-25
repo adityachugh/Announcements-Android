@@ -3,7 +3,11 @@ package io.mindbend.android.announcements;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.parse.ParseUser;
+
 import java.io.Serializable;
+
+import io.mindbend.android.announcements.cloudCode.UserDataSource;
 
 /**
  * Created by Avik Hasija on 8/3/2015.
@@ -17,11 +21,12 @@ public class User implements Serializable, Parcelable{
     private String mLastName;
     private String mInterestOne;
     private String mInterestTwo;
-
+    private String mDescription;
     //Displayed as a hashtag (such as #Grade10, #Teacher, #Administration, etc.)
     private String mUserCategory;
-
     private int mNumberOfOrganizationsFollowed;
+    private String mProfilePictureURL;
+    private String mCoverPictureURL;
 
     //TODO: add fields for profile photo, cover photo
 
@@ -31,8 +36,27 @@ public class User implements Serializable, Parcelable{
         mInterestOne = interestOne;
         mInterestTwo = interestTwo;
         mUserCategory = userCategory;
-
+        mDescription = "Interested in "+interestOne+" and "+interestTwo;
+        mProfilePictureURL = "";
         mNumberOfOrganizationsFollowed = numberOfOrganizationsFollowed;
+        mCoverPictureURL = "";
+    }
+
+    public User (ParseUser user){
+        mFirstName = user.getString(UserDataSource.FIRST_NAME);
+        mLastName = user.getString(UserDataSource.LAST_NAME);
+        mDescription = user.getString(UserDataSource.DESCRIPTION);
+        mUserCategory = user.getUsername();
+        mNumberOfOrganizationsFollowed = user.getInt(UserDataSource.ORG_FOLLOWED_COUNT);
+        if (user.getParseFile(UserDataSource.PROFILE_PHOTO) != null)
+            mProfilePictureURL = user.getParseFile(UserDataSource.PROFILE_PHOTO).getUrl();
+        else
+            mProfilePictureURL = "";
+
+        if (user.getParseFile(UserDataSource.COVER_PHOTO) != null)
+            mCoverPictureURL = user.getParseFile(UserDataSource.COVER_PHOTO).getUrl();
+        else
+            mCoverPictureURL = "";
     }
 
     public  User (Parcel in){
@@ -40,8 +64,11 @@ public class User implements Serializable, Parcelable{
         mLastName = in.readString();
         mInterestOne = in.readString();
         mInterestTwo = in.readString();
+        mDescription = in.readString();
         mUserCategory = in.readString();
         mNumberOfOrganizationsFollowed = in.readInt();
+        mProfilePictureURL = in.readString();
+        mCoverPictureURL = in.readString();
     }
 
     public String getName() {
@@ -79,6 +106,18 @@ public class User implements Serializable, Parcelable{
         return (mNumberOfOrganizationsFollowed + " Groups");
     }
 
+    public String getmProfilePictureURL() {
+        return mProfilePictureURL;
+    }
+
+    public String getmCoverPictureURL() {
+        return mCoverPictureURL;
+    }
+
+    public String getmDescription() {
+        return mDescription;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -90,8 +129,11 @@ public class User implements Serializable, Parcelable{
         dest.writeString(mLastName);
         dest.writeString(mInterestOne);
         dest.writeString(mInterestTwo);
+        dest.writeString(mDescription);
         dest.writeString(mUserCategory);
         dest.writeInt(mNumberOfOrganizationsFollowed);
+        dest.writeString(mProfilePictureURL);
+        dest.writeString(mCoverPictureURL);
     }
 
     public String getUserCategory() {

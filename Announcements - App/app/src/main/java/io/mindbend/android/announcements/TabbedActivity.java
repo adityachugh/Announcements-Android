@@ -27,6 +27,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.parse.FunctionCallback;
+import com.parse.ParseException;
 import com.parse.ParseUser;
 
 import java.io.ByteArrayOutputStream;
@@ -37,6 +39,7 @@ import java.io.Serializable;
 import io.mindbend.android.announcements.adminClasses.AdminMainFragment;
 import io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment;
 import io.mindbend.android.announcements.adminClasses.NewAnnouncementFragment;
+import io.mindbend.android.announcements.cloudCode.UserDataSource;
 import io.mindbend.android.announcements.cloudCode.VerificationDataSource;
 import io.mindbend.android.announcements.reusableFrags.PostCommentsFragment;
 import io.mindbend.android.announcements.reusableFrags.PostOverlayFragment;
@@ -65,7 +68,7 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
     private TodayFragment mTodayFragment;
     private AdminFragment mAdminFragment;
     private DiscoverFragment mDiscoverFragment;
-    private YouFragment mYouFragment;
+    public YouFragment mYouFragment;
 
     private Bundle mSavedInstanceState;
 
@@ -247,7 +250,7 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
         }
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(final int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == NewAnnouncementFragment.ADD_PHOTO) {
                 Log.wtf("Image", "intent result was okay");
@@ -298,19 +301,34 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
                 }
             }
 
-            if (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE){
+            if (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE || requestCode == ProfileFragment.UPDATE_COVER_IMAGE){
                 Log.wtf("Image", "intent result was okay");
                 Uri selectedImageUri = data.getData();
                 try {
-                    Bitmap image = getBitmapFromUri(selectedImageUri);
+                    int resW = (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE) ? 500 : 2000;
+                    int resH = (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE) ? 500 : 1200;
+                    final Bitmap image = Bitmap.createScaledBitmap(getBitmapFromUri(selectedImageUri), resW, resH, true);
                     Log.wtf("Image", "Bitmap is: " + image.toString());
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     image.compress(Bitmap.CompressFormat.JPEG, 70, stream);
                     byte[] imageBytes = stream.toByteArray();
-                    Log.wtf("Image", "Converted bytes are: " + imageBytes);
-                    //TODO: update photo in parse
-                    ((ProfileFragment)mYouFragment.getmProfileFragment()).updateImage(image);
-                    Toast.makeText(this, "Image succesfully updated", Toast.LENGTH_LONG).show();
+                    Log.wtf("Image", "Converted bytes are: " + imageBytes.toString());
+                    boolean isUpdatingProfilePhoto = (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE);
+                    UserDataSource.updateUserProfileImages(this, mYouFragment.mLoading, imageBytes, new FunctionCallback<Boolean>() {
+                        @Override
+                        public void done(Boolean success, ParseException e) {
+                            if (success) {
+                                if (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE)
+                                    ((ProfileFragment) mYouFragment.getmProfileFragment()).updateProfileImage(image);
+                                else
+                                    ((ProfileFragment) mYouFragment.getmProfileFragment()).updateCoverImage(image);
+                                Toast.makeText(TabbedActivity.this, "Image successfully updated", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(TabbedActivity.this, "Failure", Toast.LENGTH_SHORT).show();
+                                e.printStackTrace();
+                            }
+                        }
+                    }, isUpdatingProfilePhoto);
                 } catch (IOException f){
                     Log.wtf("crash", "sad face");
                     Toast.makeText(this, "Failed to add image", Toast.LENGTH_LONG).show();

@@ -55,6 +55,7 @@ public class VerificationDataSource {
                                         user.setEmail(email);
                                         user.put(USER_FIRST_NAME, firsttName);
                                         user.put(USER_LAST_NAME, lastName);
+                                        user.put(UserDataSource.DESCRIPTION, context.getString(R.string.user_default_description));
 
                                         user.signUpInBackground(new SignUpCallback() {
                                             @Override

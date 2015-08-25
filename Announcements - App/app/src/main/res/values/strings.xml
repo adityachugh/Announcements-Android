@@ -83,5 +83,16 @@
         <item>View All Members</item>
         <item>View Announcements</item>
     </string-array>
+
+    <string-array
+        name="profile_edit_user_dialog_options">
+        <item>Change Profile Photo</item>
+        <item>Change Cover Photo</item>
+        <item>Update Interests</item>
+    </string-array>
+
     <string name="title_activity_signup_select_parent_org">SignupSelectParentOrgActivity</string>
+    <string name="user_default_description">Interested in work and play.</string>
+    <string name="login_user_dialog_title">Login to continue</string>
+    <string name="login_dialog_button_text">Login</string>
 </resources>
