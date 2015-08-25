@@ -87,6 +87,7 @@
     <string-array
         name="profile_edit_user_dialog_options">
         <item>Change Profile Photo</item>
+        <item>Change Cover Photo</item>
         <item>Update Interests</item>
     </string-array>
 

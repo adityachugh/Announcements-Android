@@ -250,7 +250,7 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
         }
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(final int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == NewAnnouncementFragment.ADD_PHOTO) {
                 Log.wtf("Image", "intent result was okay");
@@ -301,29 +301,34 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
                 }
             }
 
-            if (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE){
+            if (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE || requestCode == ProfileFragment.UPDATE_COVER_IMAGE){
                 Log.wtf("Image", "intent result was okay");
                 Uri selectedImageUri = data.getData();
                 try {
-                    final Bitmap image = Bitmap.createScaledBitmap(getBitmapFromUri(selectedImageUri), 500, 500, true);
+                    int resW = (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE) ? 500 : 2000;
+                    int resH = (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE) ? 500 : 1200;
+                    final Bitmap image = Bitmap.createScaledBitmap(getBitmapFromUri(selectedImageUri), resW, resH, true);
                     Log.wtf("Image", "Bitmap is: " + image.toString());
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     image.compress(Bitmap.CompressFormat.JPEG, 70, stream);
                     byte[] imageBytes = stream.toByteArray();
                     Log.wtf("Image", "Converted bytes are: " + imageBytes.toString());
+                    boolean isUpdatingProfilePhoto = (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE);
                     UserDataSource.updateUserProfileImages(this, mYouFragment.mLoading, imageBytes, new FunctionCallback<Boolean>() {
                         @Override
                         public void done(Boolean success, ParseException e) {
                             if (success) {
-                                ((ProfileFragment) mYouFragment.getmProfileFragment()).updateImage(image);
+                                if (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE)
+                                    ((ProfileFragment) mYouFragment.getmProfileFragment()).updateProfileImage(image);
+                                else
+                                    ((ProfileFragment) mYouFragment.getmProfileFragment()).updateCoverImage(image);
                                 Toast.makeText(TabbedActivity.this, "Image successfully updated", Toast.LENGTH_LONG).show();
-                            }
-                            else {
+                            } else {
                                 Toast.makeText(TabbedActivity.this, "Failure", Toast.LENGTH_SHORT).show();
                                 e.printStackTrace();
                             }
                         }
-                    }, true);
+                    }, isUpdatingProfilePhoto);
                 } catch (IOException f){
                     Log.wtf("crash", "sad face");
                     Toast.makeText(this, "Failed to add image", Toast.LENGTH_LONG).show();

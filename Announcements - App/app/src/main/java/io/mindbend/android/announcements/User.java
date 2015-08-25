@@ -26,6 +26,7 @@ public class User implements Serializable, Parcelable{
     private String mUserCategory;
     private int mNumberOfOrganizationsFollowed;
     private String mProfilePictureURL;
+    private String mCoverPictureURL;
 
     //TODO: add fields for profile photo, cover photo
 
@@ -38,6 +39,7 @@ public class User implements Serializable, Parcelable{
         mDescription = "Interested in "+interestOne+" and "+interestTwo;
         mProfilePictureURL = "";
         mNumberOfOrganizationsFollowed = numberOfOrganizationsFollowed;
+        mCoverPictureURL = "";
     }
 
     public User (ParseUser user){
@@ -50,6 +52,11 @@ public class User implements Serializable, Parcelable{
             mProfilePictureURL = user.getParseFile(UserDataSource.PROFILE_PHOTO).getUrl();
         else
             mProfilePictureURL = "";
+
+        if (user.getParseFile(UserDataSource.COVER_PHOTO) != null)
+            mCoverPictureURL = user.getParseFile(UserDataSource.COVER_PHOTO).getUrl();
+        else
+            mCoverPictureURL = "";
     }
 
     public  User (Parcel in){
@@ -61,6 +68,7 @@ public class User implements Serializable, Parcelable{
         mUserCategory = in.readString();
         mNumberOfOrganizationsFollowed = in.readInt();
         mProfilePictureURL = in.readString();
+        mCoverPictureURL = in.readString();
     }
 
     public String getName() {
@@ -102,6 +110,10 @@ public class User implements Serializable, Parcelable{
         return mProfilePictureURL;
     }
 
+    public String getmCoverPictureURL() {
+        return mCoverPictureURL;
+    }
+
     public String getmDescription() {
         return mDescription;
     }
@@ -121,6 +133,7 @@ public class User implements Serializable, Parcelable{
         dest.writeString(mUserCategory);
         dest.writeInt(mNumberOfOrganizationsFollowed);
         dest.writeString(mProfilePictureURL);
+        dest.writeString(mCoverPictureURL);
     }
 
     public String getUserCategory() {

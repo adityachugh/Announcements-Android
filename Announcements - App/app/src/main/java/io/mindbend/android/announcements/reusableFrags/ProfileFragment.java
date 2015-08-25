@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -47,6 +48,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
 
     private static final String TAG = "ProfileFragment";
     public static final int UPDATE_PROFILE_IMAGE = 5;
+    public static final int UPDATE_COVER_IMAGE = 6;
 
     //To add frags to backstack
     public static final String ORG_PROFILE_FRAG = "org_profile_frag";
@@ -92,6 +94,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
 
 
     private transient de.hdodenhof.circleimageview.CircleImageView mUserImage;
+    private transient ImageView mCoverImage;
     private transient TextView mProfileDetail;
     private transient TextView mProfileTag;
 
@@ -153,6 +156,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
             mProfileContentFrameLayoutEmbedded = (RelativeLayout) mView.findViewById(R.id.profile_content_framelayout_embedded);
 
             mUserImage = (CircleImageView) mView.findViewById(R.id.profile_photo);
+            mCoverImage = (ImageView)mView.findViewById(R.id.profile_cover_photo);
 
             //UI elements to be filled
             TextView name = (TextView) mView.findViewById(R.id.profile_name);
@@ -185,24 +189,8 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                             builder.setItems(getResources().getStringArray(R.array.profile_edit_org_dialog_options), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    /**
-                                     * 0 = Modify, 1 = View Members, 2 = View Announcements
-                                     */
-                                    final int MODIFY = 0;
-                                    final int VIEW_MEMBERS = 1;
-                                    final int VIEW_ANNOUNCEMENTS = 2;
+                                    modifyOrgDialogItemSetup(which);
 
-                                    switch (which) {
-                                        case MODIFY:
-                                            mListener.modifyOrg(mOrg);
-                                            break;
-                                        case VIEW_MEMBERS:
-                                            mListener.viewMembers(mOrg);
-                                            break;
-                                        case VIEW_ANNOUNCEMENTS:
-                                            mListener.viewAnnouncementsState(mOrg);
-                                            break;
-                                    }
                                 }
                             });
                             builder.show();
@@ -220,25 +208,8 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                             builder.setItems(getResources().getStringArray(R.array.profile_edit_user_dialog_options), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    /**
-                                     * 0 = Modify, 1 = View Members, 2 = View Announcements
-                                     */
-                                    final int UPDATE_PROFILE_PHOTO = 0;
-                                    final int UPDATE_INTERESTS_DESCRIPTION = 1;
+                                    modifyUserDialogItemSetup(which);
 
-                                    switch (which) {
-                                        case UPDATE_PROFILE_PHOTO:
-                                            Log.wtf("Image", "image selection begun");
-                                            Intent intent = new Intent();
-                                            intent.setType("image/*");
-                                            intent.setAction(Intent.ACTION_GET_CONTENT);
-                                            getActivity().startActivityForResult(Intent.createChooser(intent,
-                                                    "Select Picture"), UPDATE_PROFILE_IMAGE);
-                                            break;
-                                        case UPDATE_INTERESTS_DESCRIPTION:
-                                            editInterestsDialog();
-                                            break;
-                                    }
                                 }
                             });
                             builder.show();
@@ -256,6 +227,8 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 mProfileTag.setText("@"+mUser.getUserCategory());
                 if (!mUser.getmProfilePictureURL().equals(""))
                     Picasso.with(getActivity()).load(mUser.getmProfilePictureURL()).into(mUserImage);
+                if (!mUser.getmCoverPictureURL().equals(""))
+                    Picasso.with(getActivity()).load(mUser.getmCoverPictureURL()).into(mCoverImage);
 
                 //Fill bottom fragment with discover grid if user(temporary)
                 //TODO: Fetch followed orgs OR organization's announcements (generic fragment)
@@ -351,6 +324,58 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         }
 
         return mView;
+    }
+
+    private void modifyUserDialogItemSetup(int which) {
+        /**
+         * 0 = Profile Pic, 1 = Cover Pic, 2 = Description
+         */
+        final int UPDATE_PROFILE_PHOTO = 0;
+        final int UPDATE_COVER_PHOTO = 1;
+        final int UPDATE_INTERESTS_DESCRIPTION = 2;
+
+        switch (which) {
+            case UPDATE_PROFILE_PHOTO:
+                Log.wtf("Image", "image selection begun");
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                getActivity().startActivityForResult(Intent.createChooser(intent,
+                        "Select Picture"), UPDATE_PROFILE_IMAGE);
+                break;
+            case UPDATE_COVER_PHOTO:
+                Log.wtf("Image", "image selection begun");
+                Intent intent2 = new Intent();
+                intent2.setType("image/*");
+                intent2.setAction(Intent.ACTION_GET_CONTENT);
+                getActivity().startActivityForResult(Intent.createChooser(intent2,
+                        "Select Picture"), UPDATE_COVER_IMAGE);
+                break;
+            case UPDATE_INTERESTS_DESCRIPTION:
+                editInterestsDialog();
+                break;
+        }
+    }
+
+    private void modifyOrgDialogItemSetup(int which) {
+        /**
+         * 0 = Modify, 1 = View Members, 2 = View Announcements
+         */
+        final int MODIFY = 0;
+        final int VIEW_MEMBERS = 1;
+        final int VIEW_ANNOUNCEMENTS = 2;
+
+        switch (which) {
+            case MODIFY:
+                mListener.modifyOrg(mOrg);
+                break;
+            case VIEW_MEMBERS:
+                mListener.viewMembers(mOrg);
+                break;
+            case VIEW_ANNOUNCEMENTS:
+                mListener.viewAnnouncementsState(mOrg);
+                break;
+        }
     }
 
     private void editInterestsDialog() {
@@ -502,8 +527,12 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         mPostsOverlayListener.visitCommentersProfile(commenterPressed);
     }
 
-    public void updateImage(Bitmap bitmap) {
+    public void updateProfileImage(Bitmap bitmap) {
         mUserImage.setImageBitmap(bitmap);
+    }
+
+    public void updateCoverImage(Bitmap bitmap){
+        mCoverImage.setImageBitmap(bitmap);
     }
 
     private int getAppropriateFramelayout() {
