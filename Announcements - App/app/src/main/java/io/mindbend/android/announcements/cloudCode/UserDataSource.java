@@ -35,7 +35,8 @@ public class UserDataSource {
     public final static String LAST_NAME = VerificationDataSource.USER_LAST_NAME;
     public final static String DESCRIPTION = "description";
     public final static String ORG_FOLLOWED_COUNT = "organizationsFollowedCount";
-    public final static String PHOTO = "profilePhoto";
+    public final static String PROFILE_PHOTO = "profilePhoto";
+    public final static String COVER_PHOTO = "coverPhoto";
 
     //TODO: profile photo, cover photo
 
@@ -53,7 +54,7 @@ public class UserDataSource {
 
     }
 
-    public static void updateUserProfilePhoto (final Context context, final ProgressBar loading, final byte[] image, final FunctionCallback<Boolean> callback) {
+    public static void updateUserProfileImages (final Context context, final ProgressBar loading, final byte[] image, final FunctionCallback<Boolean> callback, final Boolean profilePhoto) {
         loading.setVisibility(View.VISIBLE);
 
         loginDialog(context, new LogInCallback() {
@@ -65,7 +66,10 @@ public class UserDataSource {
                     params.put("userObjectId", ParseUser.getCurrentUser().getObjectId());
                     params.put("photo", image);
                     loading.setVisibility(View.VISIBLE);
-                    ParseCloud.callFunctionInBackground("updateUserProfilePhoto", params, new FunctionCallback<ParseUser>() {
+
+                    String funcName = profilePhoto ? "updateUserProfilePhoto" : "updateUserCoverPhoto";
+
+                    ParseCloud.callFunctionInBackground(funcName, params, new FunctionCallback<ParseUser>() {
                         @Override
                         public void done(ParseUser parseUser, ParseException e) {
                             loading.setVisibility(View.GONE);
@@ -79,6 +83,8 @@ public class UserDataSource {
             }
         });
     }
+
+
 
     public static void updateUserDescription (final Context context, final ProgressBar loading, final String description, final FunctionCallback<Boolean> callback) {
         loading.setVisibility(View.VISIBLE);

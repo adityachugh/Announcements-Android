@@ -311,7 +311,7 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
                     image.compress(Bitmap.CompressFormat.JPEG, 70, stream);
                     byte[] imageBytes = stream.toByteArray();
                     Log.wtf("Image", "Converted bytes are: " + imageBytes.toString());
-                    UserDataSource.updateUserProfilePhoto(this, mYouFragment.mLoading, imageBytes, new FunctionCallback<Boolean>() {
+                    UserDataSource.updateUserProfileImages(this, mYouFragment.mLoading, imageBytes, new FunctionCallback<Boolean>() {
                         @Override
                         public void done(Boolean success, ParseException e) {
                             if (success) {
@@ -323,7 +323,7 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
                                 e.printStackTrace();
                             }
                         }
-                    });
+                    }, true);
                 } catch (IOException f){
                     Log.wtf("crash", "sad face");
                     Toast.makeText(this, "Failed to add image", Toast.LENGTH_LONG).show();

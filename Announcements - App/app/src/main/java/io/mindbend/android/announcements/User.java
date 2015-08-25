@@ -46,8 +46,8 @@ public class User implements Serializable, Parcelable{
         mDescription = user.getString(UserDataSource.DESCRIPTION);
         mUserCategory = user.getUsername();
         mNumberOfOrganizationsFollowed = user.getInt(UserDataSource.ORG_FOLLOWED_COUNT);
-        if (user.getParseFile(UserDataSource.PHOTO) != null)
-            mProfilePictureURL = user.getParseFile(UserDataSource.PHOTO).getUrl();
+        if (user.getParseFile(UserDataSource.PROFILE_PHOTO) != null)
+            mProfilePictureURL = user.getParseFile(UserDataSource.PROFILE_PHOTO).getUrl();
         else
             mProfilePictureURL = "";
     }
