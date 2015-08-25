@@ -114,7 +114,7 @@ public class TodayFragment extends Fragment implements Serializable,
     }
 
     private void loadPosts(int startIndex, int numberOfPosts){
-        PostsDataSource.getRangeOfPostsForDay(mLoading, getActivity(), startIndex, numberOfPosts, new Date() , new FunctionCallback<ArrayList<Post>>() {
+        PostsDataSource.getRangeOfPostsForDay(mLoading, getActivity(), startIndex, numberOfPosts, new Date(), new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null){

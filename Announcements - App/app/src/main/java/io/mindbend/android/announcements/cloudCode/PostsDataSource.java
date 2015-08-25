@@ -41,6 +41,7 @@ public class PostsDataSource {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
                 loader.setVisibility(View.GONE);
+
                 //convert all parseobjects to posts
                 ArrayList<Post> posts = new ArrayList<Post>();
                 if (e == null){
@@ -53,4 +54,6 @@ public class PostsDataSource {
             }
         });
     }
+
+    //public static void getPostsOfOrganizationInRange ()
 }

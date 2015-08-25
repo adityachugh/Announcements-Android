@@ -1,9 +1,20 @@
 package io.mindbend.android.announcements.cloudCode;
 
+import android.content.Context;
+
+import com.parse.FunctionCallback;
+import com.parse.ParseCloud;
+import com.parse.ParseException;
 import com.parse.ParseObject;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import io.mindbend.android.announcements.Organization;
 
 /**
  * Created by Akshay Pall on 21/08/2015.
@@ -26,5 +37,24 @@ public class OrgsDataSource {
         DateTime today = new DateTime();
         int daysBetween = Days.daysBetween(date, today).getDays();
         return (daysBetween <= 5);
+    }
+
+    public static void getAllChildOrganizations (String parentOrganizationObjectId, final FunctionCallback<ArrayList<Organization>> callback){
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("parentOrganizationObjectId", parentOrganizationObjectId);
+
+        ParseCloud.callFunctionInBackground("getAllChildOrganizations", params, new FunctionCallback<List<ParseObject>>() {
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e) {
+
+                ArrayList<Organization> orgs = new ArrayList<Organization>();
+                if (e == null){
+                    for (ParseObject object : parseObjects){
+                        orgs.add(new Organization(object));
+                    }
+                }
+                callback.done(orgs, e);
+            }
+        });
     }
 }

@@ -6,11 +6,16 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
+
+import com.parse.FunctionCallback;
+import com.parse.ParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,6 +23,7 @@ import java.util.ArrayList;
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
+import io.mindbend.android.announcements.cloudCode.OrgsDataSource;
 
 public class SearchableFrag extends Fragment implements Serializable, UserListAdapter.UserListInteractionListener, OrgsGridAdapter.OrgInteractionListener, OrgsGridFragment.OrgsGridInteractionListener, SearchView.OnQueryTextListener {
     public final static int USERS_TYPE = 0;
@@ -31,6 +37,11 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
     private SearchInterface mListener;
     private int mTypeOfList;
     private transient SearchView mSearchView;
+
+    private OrgsGridAdapter.OrgInteractionListener mOrgInteractionListener = this;
+    private OrgsGridFragment.OrgsGridInteractionListener mOrgsGridInteractionListener = this;
+
+    private ArrayList<Organization> mOrgs = new ArrayList<Organization>();
 
     public static SearchableFrag newInstance(int typeOfList, Organization parentOrganization, SearchInterface listener) {
         SearchableFrag fragment = new SearchableFrag();
@@ -72,20 +83,11 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag, searchListFrag).commitAllowingStateLoss();
                 break;
             case ORGS_TYPE:
-                ArrayList<Organization> orgs = new ArrayList<>();
 
-                //ORG CONSTRUCTOR: String objectId, String title, String description, int followers, String tag, boolean privateOrg, boolean newOrg
-                //FAKE ORGANIZATIONS TO TEST
-                Organization testOrg1 = new Organization("test Id", "Software Dev Club", "Learn to make apps! Android! Fun!", 803, "#SoftwareDevClub", false, true); //TODO: change "NEW" to be a dynamically chosen banner
-                orgs.add(testOrg1);
+                loadOrgs();
 
-                Organization testOrg2 = new Organization("test Id", "Math Club", "We had that one meeting that one time", 11, "#MathClub", false, false); //TODO: change "NEW" to be a dynamically chosen banner
-                orgs.add(testOrg2);
 
-                Organization testOrg3 = new Organization("test Id", "Mindbend Studio", "The best dev firm hello@mindbend.io", 80, "#BendBoundaries", true, true); //TODO: change "NEW" to be a dynamically chosen banner
-                orgs.add(testOrg3);
-
-                OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(orgs, this, this);
+                OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(mOrgs, this, this);
                 FragmentTransaction ft2 = getFragmentManager().beginTransaction();
                 if(ft2.isEmpty())
                     ft2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag, orgsGridFragment).commitAllowingStateLoss();
@@ -98,6 +100,24 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
         mSearchView.clearFocus();
 
         return v;
+    }
+
+    private void loadOrgs(){
+        OrgsDataSource.getAllChildOrganizations("oc3Wmbqhsl", new FunctionCallback<ArrayList<Organization>>() {
+            @Override
+            public void done(ArrayList<Organization> organizations, ParseException e) {
+                if (e == null){
+                    OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(organizations, mOrgInteractionListener, mOrgsGridInteractionListener);
+                    FragmentTransaction ft2 = getFragmentManager().beginTransaction();
+                    if(ft2.isEmpty())
+                        ft2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag, orgsGridFragment).commitAllowingStateLoss();
+                }
+                else {
+                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
