@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.nirhart.parallaxscroll.views.ParallaxScrollView;
 import com.parse.FunctionCallback;
 import com.parse.ParseException;
+import com.parse.ParseUser;
 import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
@@ -37,6 +38,7 @@ import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.TabbedActivity;
 import io.mindbend.android.announcements.User;
+import io.mindbend.android.announcements.cloudCode.OrgsDataSource;
 import io.mindbend.android.announcements.cloudCode.UserDataSource;
 
 /**
@@ -234,6 +236,9 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 //TODO: Fetch followed orgs OR organization's announcements (generic fragment)
                 ArrayList<Organization> orgs = new ArrayList<>();
 
+                loadOrgsFollowed(mUser.getmObjectId());
+                Log.wtf(TAG, "user id is: " + mUser.getmObjectId());
+
                 //ORG CONSTRUCTOR: String objectId, String title, String description, int followers, String tag, boolean privateOrg, boolean newOrg
                 //FAKE ORGANIZATIONS TO TEST
                 Organization testOrg1 = new Organization("test Id", "Software Dev Club", "Learn to make apps! Android! Fun!", 803, "#SoftwareDevClub", false, true); //TODO: change "NEW" to be a dynamically chosen banner
@@ -324,6 +329,21 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         }
 
         return mView;
+    }
+
+    private void loadOrgsFollowed(String userObjectId){
+        OrgsDataSource.getOrganizationsFollowedByUser("ogRh1goN0Y", new FunctionCallback<ArrayList<Organization>>() {
+            @Override
+            public void done(ArrayList<Organization> organizations, ParseException e) {
+                if (e == null)
+                    Log.wtf(TAG, "user is fine! id is: " + mUser.getmObjectId());
+                else {
+                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                    Log.wtf(TAG, "user is NOT fine!");
+                }
+            }
+        });
     }
 
     private void modifyUserDialogItemSetup(int which) {

@@ -16,6 +16,8 @@ public class User implements Serializable, Parcelable{
     //Class contains details about a user, to be used in various places
     //Current content reflects what is needed for profile page found in "you" tab
 
+    private String mObjectId;
+
     //Will be concatenated upon return
     private String mFirstName;
     private String mLastName;
@@ -43,6 +45,7 @@ public class User implements Serializable, Parcelable{
     }
 
     public User (ParseUser user){
+        mObjectId = user.getObjectId();
         mFirstName = user.getString(UserDataSource.FIRST_NAME);
         mLastName = user.getString(UserDataSource.LAST_NAME);
         mDescription = user.getString(UserDataSource.DESCRIPTION);
@@ -60,6 +63,7 @@ public class User implements Serializable, Parcelable{
     }
 
     public  User (Parcel in){
+        mObjectId = in.readString();
         mFirstName = in.readString();
         mLastName = in.readString();
         mInterestOne = in.readString();
@@ -74,6 +78,10 @@ public class User implements Serializable, Parcelable{
     public String getName() {
         //Returns full name
         return (mFirstName + " " + mLastName);
+    }
+
+    public String getmObjectId(){
+        return mObjectId;
     }
 
     public String getInterestOne() {
@@ -125,6 +133,7 @@ public class User implements Serializable, Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mObjectId);
         dest.writeString(mFirstName);
         dest.writeString(mLastName);
         dest.writeString(mInterestOne);
