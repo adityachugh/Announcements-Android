@@ -27,16 +27,15 @@ public class CommentsDataSource {
     public static void getRangeOfCommentsForPost(final RelativeLayout loadingLayout, final Context context, int startIndex, int numberOfComments, String postObjectId, final FunctionCallback<ArrayList<Comment>> callback){
         loadingLayout.setVisibility(View.VISIBLE);
         HashMap<String, Object> params = new HashMap<>();
+        params.put("postObjectId", postObjectId);
         params.put("startIndex", startIndex);
         params.put("numberOfComments", numberOfComments);
-        params.put("postObjectId", postObjectId);
 
         ParseCloud.callFunctionInBackground("getRangeOfCommentsForPost", params, new FunctionCallback<List<ParseObject>>() {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
-
                 //parseobject to comments
-                ArrayList<Comment> comments = new ArrayList<Comment>();
+                ArrayList<Comment> comments = new ArrayList<>();
                 if (e == null){
                     for (ParseObject object : parseObjects){
                         comments.add(new Comment(context, object));

@@ -94,16 +94,14 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
             // Inflate the layout for this fragment
             mView = inflater.inflate(R.layout.fragment_post_comments, container, false);
 
-            //TODO: setup recycler view adapter for comments, along with the recycler view feed item layout (comment).
-            //TODO: ensure that the feed item is NOT a card -> the enture comment list will be enclosed in one card (already set up)
             mRecyclerView = (RecyclerView) mView.findViewById(R.id.comments_recycler_view);
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
             mLoading = (RelativeLayout)mView.findViewById(R.id.comments_progressbar_layout);
-            loadComments(mLoading, 0, 10);
             mComments = new ArrayList<>();
             mCommentsAdapter = new PostCommentsAdapter(getActivity(), mComments, PostCommentsFragment.this);
             mRecyclerView.setAdapter(mCommentsAdapter);
+            loadComments(mLoading, 0, 10);
 
             mFab = (ImageButton) mView.findViewById(R.id.comments_fab);
             mFab.setOnClickListener(new View.OnClickListener() {

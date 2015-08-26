@@ -2,6 +2,7 @@ package io.mindbend.android.announcements;
 
 import android.content.Context;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.parse.ParseException;
@@ -33,22 +34,13 @@ public class Comment implements Serializable {
     //Constructor for parse object
     public Comment (Context context, ParseObject object){
         mText = object.getString(CommentsDataSource.COMMENT_TEXT);
-        try {
-            ParseUser user = object.getParseUser(CommentsDataSource.COMMENT_USER).fetch();
-            mUser = new User(user);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            Toast.makeText(context, "Error loading commenter", Toast.LENGTH_SHORT).show();
-        }
+        Log.wtf("CreateUser as String:", object.getString(CommentsDataSource.COMMENT_USER)); //ERROR: returns null :/ idk why
+        mUser = new User(object.getParseUser(CommentsDataSource.COMMENT_USER));
         mTimeSince = DateUtils.getRelativeDateTimeString(context, object.getCreatedAt().getTime(), DateUtils.MINUTE_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, 0).toString();
     }
 
     public User getmUser() {
         return mUser;
-    }
-
-    public String getmUserId() {
-        return mUserId;
     }
 
     public String getmText() {

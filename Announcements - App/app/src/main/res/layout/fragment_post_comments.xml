@@ -35,6 +35,7 @@
                 android:layout_marginBottom="@dimen/fab_side_margin"/>
         </RelativeLayout>
     <RelativeLayout
+        android:clickable="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"

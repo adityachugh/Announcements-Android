@@ -3,6 +3,7 @@ package io.mindbend.android.announcements;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
@@ -14,7 +15,7 @@ import io.mindbend.android.announcements.cloudCode.VerificationDataSource;
 /**
  * Created by Avik Hasija on 8/3/2015.
  */
-public class User implements Serializable, Parcelable{
+public class User implements Serializable, Parcelable {
     //Class contains details about a user, to be used in various places
     //Current content reflects what is needed for profile page found in "you" tab
 
@@ -33,7 +34,7 @@ public class User implements Serializable, Parcelable{
 
     //TODO: add fields for profile photo, cover photo
 
-    public User(String firstName, String lastName, String interestOne, String interestTwo, String userCategory, int numberOfOrganizationsFollowed){
+    public User(String firstName, String lastName, String interestOne, String interestTwo, String userCategory, int numberOfOrganizationsFollowed) {
         mFirstName = firstName;
         mLastName = lastName;
         mInterestOne = interestOne;
@@ -43,14 +44,19 @@ public class User implements Serializable, Parcelable{
         mNumberOfOrganizationsFollowed = numberOfOrganizationsFollowed;
     }
 
-    public User (ParseUser parseUser){
-        mUsername = parseUser.getUsername();
-        mFirstName = parseUser.getString(VerificationDataSource.USER_FIRST_NAME);
-        mLastName = parseUser.getString(VerificationDataSource.USER_LAST_NAME);
-
+    public User(ParseUser parseUser) {
+        if (parseUser != null) {
+            mUsername = parseUser.getUsername();
+            mFirstName = parseUser.getString(VerificationDataSource.USER_FIRST_NAME);
+            mLastName = parseUser.getString(VerificationDataSource.USER_LAST_NAME);
+        } else {
+            mUsername = "Error loading Username";
+            mFirstName = "";
+            mLastName = "";
+        }
     }
 
-    public  User (Parcel in){
+    public User(Parcel in) {
         mFirstName = in.readString();
         mLastName = in.readString();
         mInterestOne = in.readString();
