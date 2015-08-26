@@ -11,6 +11,7 @@ import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +25,7 @@ import io.mindbend.android.announcements.Comment;
 public class CommentsDataSource {
 
     public static final String COMMENT_TEXT = "comment";
-    public static final String COMMENT_USER = "CreateUser";
+    public static final String COMMENT_USER = "createUser";
 
     public static void getRangeOfCommentsForPost(final RelativeLayout loadingLayout, final Context context, int startIndex, int numberOfComments, String postObjectId, final FunctionCallback<ArrayList<Comment>> callback){
         loadingLayout.setVisibility(View.VISIBLE);
@@ -40,7 +41,8 @@ public class CommentsDataSource {
                 ArrayList<Comment> comments = new ArrayList<>();
                 if (e == null){
                     for (ParseObject object : parseObjects){
-                        Log.wtf("COMMENTS", object.getParseUser("CreateUser")+"");
+                        Log.wtf("COMMENTS", object.getParseUser("CreateUser") + "");
+                        ParseUser user = (ParseUser)object.get(CommentsDataSource.COMMENT_USER);
                         comments.add(new Comment(context, object));
                     }
                 }
