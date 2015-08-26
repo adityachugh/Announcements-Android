@@ -29,7 +29,7 @@ public class PostsDataSource {
     public static final String POST_START_DATE = "postStartDate";
     public static final String POST_END_DATE = "postEndDate";
     public static final String POST_PRIORITY = "priority";
-    public static final String POST_ORGANIZATION = "Organization";
+    public static final String POST_ORGANIZATION = "organization";
 
     public static void getRangeOfPostsForDay (final ProgressBar loader, final Context context, int startIndex, int numberOfPosts, Date date, final FunctionCallback<ArrayList<Post>> callback){
         loader.setVisibility(View.VISIBLE);
