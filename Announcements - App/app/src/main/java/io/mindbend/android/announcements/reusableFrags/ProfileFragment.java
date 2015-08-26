@@ -39,6 +39,7 @@ import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.TabbedActivity;
 import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.cloudCode.OrgsDataSource;
+import io.mindbend.android.announcements.cloudCode.PostsDataSource;
 import io.mindbend.android.announcements.cloudCode.UserDataSource;
 
 /**
@@ -284,6 +285,8 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
 
                 if (!mOrg.isPrivateOrg()) {
 
+                    loadOrgPosts(0, 10);
+
                     //TODO: query org's posts from parse, populate arraylist of posts
                     ArrayList<Post> orgPosts = new ArrayList<>();
                     //THE FOLLOWING ARE FAKE TEST POSTS
@@ -332,7 +335,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     }
 
     private void loadOrgsFollowed(String userObjectId){
-        OrgsDataSource.getOrganizationsFollowedByUser("ogRh1goN0Y", new FunctionCallback<ArrayList<Organization>>() {
+        OrgsDataSource.getOrganizationsFollowedByUser(userObjectId, new FunctionCallback<ArrayList<Organization>>() {
             @Override
             public void done(ArrayList<Organization> organizations, ParseException e) {
                 if (e == null)
@@ -341,6 +344,22 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                     Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                     Log.wtf(TAG, "user is NOT fine!");
+                }
+            }
+        });
+    }
+
+    private void loadOrgPosts (int startIndex, int numberOfPosts){
+        PostsDataSource.getPostsOfOrganizationInRange(getActivity(), mOrg.getmObjectId(), startIndex, numberOfPosts, new FunctionCallback<ArrayList<Post>>() {
+            @Override
+            public void done(ArrayList<Post> posts, ParseException e) {
+                if (e == null){
+                    Log.wtf(TAG, "shit works! id is: " + mOrg.getmObjectId());
+                }
+                else {
+                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                    Log.wtf(TAG, "org posts NOT fine!");
                 }
             }
         });

@@ -79,7 +79,7 @@ public class OrgsDataSource {
                 else
                     Log.wtf("OrgsDataSource", "FUNCTION broken");
 
-                
+
                 callback.done(orgsFollowed, e);
             }
         });
