@@ -24,7 +24,7 @@ import io.mindbend.android.announcements.User;
  */
 public class OrgsDataSource {
     public final static String ORG_TITLE = "name";
-    public final static String ORG_DESCRIPTION = "description";
+    public final static String ORG_DESCRIPTION = "organizationDescription";
     public final static String ORG_FOLLOWER_COUNT = "followerCount";
     public final static String ORG_TYPE = "organizationType";
     public final static String ORG_REQUEST_CODE = "requestCode";

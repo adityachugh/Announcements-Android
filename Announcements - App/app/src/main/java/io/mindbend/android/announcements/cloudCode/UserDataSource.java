@@ -33,7 +33,7 @@ public class UserDataSource {
     public final static String USER_NAME = VerificationDataSource.USER_USERNAME;
     public final static String FIRST_NAME = VerificationDataSource.USER_FIRST_NAME;
     public final static String LAST_NAME = VerificationDataSource.USER_LAST_NAME;
-    public final static String DESCRIPTION = "description";
+    public final static String DESCRIPTION = "userDescription";
     public final static String ORG_FOLLOWED_COUNT = "organizationsFollowedCount";
     public final static String PROFILE_PHOTO = "profilePhoto";
     public final static String COVER_PHOTO = "coverPhoto";
