@@ -34,8 +34,8 @@ public class Comment implements Serializable {
     //Constructor for parse object
     public Comment (Context context, ParseObject object){
         mText = object.getString(CommentsDataSource.COMMENT_TEXT);
-        Log.wtf("CreateUser as String:", object.getString(CommentsDataSource.COMMENT_USER)); //ERROR: returns null :/ idk why
-        mUser = new User(object.getParseUser(CommentsDataSource.COMMENT_USER));
+        ParseUser user = (ParseUser)object.get(CommentsDataSource.COMMENT_USER); //ERROR: returns null :/ idk why
+        mUser = new User(user);
         mTimeSince = DateUtils.getRelativeDateTimeString(context, object.getCreatedAt().getTime(), DateUtils.MINUTE_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, 0).toString();
     }
 

@@ -1,6 +1,8 @@
 package io.mindbend.android.announcements.cloudCode;
 
 import android.content.Context;
+import android.nfc.Tag;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -38,6 +40,7 @@ public class CommentsDataSource {
                 ArrayList<Comment> comments = new ArrayList<>();
                 if (e == null){
                     for (ParseObject object : parseObjects){
+                        Log.wtf("COMMENTS", object.getParseUser("CreateUser")+"");
                         comments.add(new Comment(context, object));
                     }
                 }
