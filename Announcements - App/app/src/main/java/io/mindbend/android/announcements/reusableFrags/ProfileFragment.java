@@ -82,6 +82,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     private PostOverlayFragment.PostsOverlayListener mPostsOverlayListener = this;
     private PostCardFullFragment.FullPostInteractionListener mFullPostInteractionListener = this;
     private PostCommentsFragment.CommentsInteractionListener mCommentsInteractionListener = this;
+    private OrgsGridFragment.OrgsGridInteractionListener mOrgsGridInteractionListener = this;
     private ProfileInteractionListener mListener;
     private transient View mView;
 
@@ -233,43 +234,9 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 if (!mUser.getmCoverPictureURL().equals(""))
                     Picasso.with(getActivity()).load(mUser.getmCoverPictureURL()).into(mCoverImage);
 
-                //Fill bottom fragment with discover grid if user(temporary)
-                //TODO: Fetch followed orgs OR organization's announcements (generic fragment)
-                ArrayList<Organization> orgs = new ArrayList<>();
-
+                //Fill bottom fragment with discover grid if user
                 loadOrgsFollowed(mUser.getmObjectId());
-                Log.wtf(TAG, "user id is: " + mUser.getmObjectId());
-
-                //ORG CONSTRUCTOR: String objectId, String title, String description, int followers, String tag, boolean privateOrg, boolean newOrg
-                //FAKE ORGANIZATIONS TO TEST
-                Organization testOrg1 = new Organization("test Id", "Software Dev Club", "Learn to make apps! Android! Fun!", 803, "#SoftwareDevClub", false, true); //TODO: change "NEW" to be a dynamically chosen banner
-                orgs.add(testOrg1);
-
-                Organization testOrg2 = new Organization("test Id", "Math Club", "We had that one meeting that one time", 11, "#MathClub", false, false); //TODO: change "NEW" to be a dynamically chosen banner
-                orgs.add(testOrg2);
-
-                Organization testOrg3 = new Organization("test Id", "Mindbend Studio", "The best dev firm hello@mindbend.io", 80, "#BendBoundaries", true, true); //TODO: change "NEW" to be a dynamically chosen banner
-                orgs.add(testOrg3);
-                orgs.add(testOrg3);
-                orgs.add(testOrg3);
-
-                //add grid frag to bottom of user profile
-                Fragment userOrgsFollowedFragment = OrgsGridFragment.newInstance(orgs, mOrgListener, this);
-                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-
-                //**DYNAMIC SIZING FOR USER FOLLOWED ORGS GRID**
-                final int orgCardHeight = 260; //this is defined in the layout xml; card height + padding
-                int orgCardColumns = (orgs.size() / 2) + (orgs.size() % 2); //adds additional row for odd numbered org
-
-                //layout params are in px; must convert dps to px on device
-                int viewHeightInDps = (orgCardHeight * orgCardColumns);
-                int viewHeightinPx = (int) (viewHeightInDps * mScale + 0.5f);
-
-                if (viewHeightinPx > (mDeviceHeight / 2))
-                    mProfileContentFrameLayoutEmbedded.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, viewHeightinPx));
-
-                if (transaction.isEmpty())
-                    transaction.add(R.id.profile_content_framelayout, userOrgsFollowedFragment, BOTTOM_FRAG_TAG).commitAllowingStateLoss();
+                //loadOrgs();
             }
 
             if (mOrg != null) {
@@ -285,6 +252,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
 
                 if (!mOrg.isPrivateOrg()) {
 
+                    Log.wtf(TAG, "org id is: " + mOrg.getmObjectId());
                     loadOrgPosts(0, 10);
 
                     //TODO: query org's posts from parse, populate arraylist of posts
@@ -334,23 +302,72 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         return mView;
     }
 
-    private void loadOrgsFollowed(String userObjectId){
+    private void loadOrgsFollowed(final String userObjectId){
         OrgsDataSource.getOrganizationsFollowedByUser(userObjectId, new FunctionCallback<ArrayList<Organization>>() {
             @Override
-            public void done(ArrayList<Organization> organizations, ParseException e) {
-                if (e == null)
-                    Log.wtf(TAG, "user is fine! id is: " + mUser.getmObjectId());
+            public void done(ArrayList<Organization> orgs, ParseException e) {
+                if (e == null){
+                    //add grid frag to bottom of user profile
+                    Fragment userOrgsFollowedFragment = OrgsGridFragment.newInstance(orgs, mOrgListener, mOrgsGridInteractionListener);
+                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+
+                    Organization org = orgs.get(1);
+                    Log.wtf(TAG, "PROFILE ERRORS: " + org.getmObjectId() + " " + org.getTitle() + " " + org.getDescription());
+
+                    //**DYNAMIC SIZING FOR USER FOLLOWED ORGS GRID**
+                    final int orgCardHeight = 260; //this is defined in the layout xml; card height + padding
+                    int orgCardColumns = (orgs.size() / 2) + (orgs.size() % 2); //adds additional row for odd numbered org
+
+                    //layout params are in px; must convert dps to px on device
+                    int viewHeightInDps = (orgCardHeight * orgCardColumns);
+                    int viewHeightinPx = (int) (viewHeightInDps * mScale + 0.5f);
+
+                    if (viewHeightinPx > (mDeviceHeight / 2))
+                        mProfileContentFrameLayoutEmbedded.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, viewHeightinPx));
+
+                    if (transaction.isEmpty())
+                        transaction.add(R.id.profile_content_framelayout, userOrgsFollowedFragment, BOTTOM_FRAG_TAG).commitAllowingStateLoss();
+                }
                 else {
                     Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
-                    Log.wtf(TAG, "user is NOT fine!");
+                }
+            }
+        });
+    }
+
+    private void loadOrgs(){ //TODO: REMOVE
+        OrgsDataSource.getAllChildOrganizations("oc3Wmbqhsl", new FunctionCallback<ArrayList<Organization>>() {
+            @Override
+            public void done(ArrayList<Organization> orgs, ParseException e) {
+                if (e == null) {
+                    //add grid frag to bottom of user profile
+                    Fragment userOrgsFollowedFragment = OrgsGridFragment.newInstance(orgs, mOrgListener, mOrgsGridInteractionListener);
+                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+
+                    //**DYNAMIC SIZING FOR USER FOLLOWED ORGS GRID**
+                    final int orgCardHeight = 260; //this is defined in the layout xml; card height + padding
+                    int orgCardColumns = (orgs.size() / 2) + (orgs.size() % 2); //adds additional row for odd numbered org
+
+                    //layout params are in px; must convert dps to px on device
+                    int viewHeightInDps = (orgCardHeight * orgCardColumns);
+                    int viewHeightinPx = (int) (viewHeightInDps * mScale + 0.5f);
+
+                    if (viewHeightinPx > (mDeviceHeight / 2))
+                        mProfileContentFrameLayoutEmbedded.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, viewHeightinPx));
+
+                    if (transaction.isEmpty())
+                        transaction.add(R.id.profile_content_framelayout, userOrgsFollowedFragment, BOTTOM_FRAG_TAG).commitAllowingStateLoss();
+                } else {
+                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
                 }
             }
         });
     }
 
     private void loadOrgPosts (int startIndex, int numberOfPosts){
-        PostsDataSource.getPostsOfOrganizationInRange(getActivity(), mOrg.getmObjectId(), startIndex, numberOfPosts, new FunctionCallback<ArrayList<Post>>() {
+        PostsDataSource.getPostsOfOrganizationInRange(getActivity(), "baennZh2T9", startIndex, numberOfPosts, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null){
@@ -372,6 +389,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         final int UPDATE_PROFILE_PHOTO = 0;
         final int UPDATE_COVER_PHOTO = 1;
         final int UPDATE_INTERESTS_DESCRIPTION = 2;
+
 
         switch (which) {
             case UPDATE_PROFILE_PHOTO:

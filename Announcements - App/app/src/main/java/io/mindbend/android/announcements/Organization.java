@@ -42,7 +42,7 @@ public class Organization implements Serializable, Parcelable {
         mTitle = object.getString(OrgsDataSource.ORG_TITLE);
         mDescription = object.getString(OrgsDataSource.ORG_DESCRIPTION);
         mFollowers = object.getInt(OrgsDataSource.ORG_FOLLOWER_COUNT);
-        mPrivateOrg = object.getString(OrgsDataSource.ORG_TYPE).equals(OrgsDataSource.ORG_TYPES_PRIVATE);
+        //mPrivateOrg = object.getString(OrgsDataSource.ORG_TYPE).equals(OrgsDataSource.ORG_TYPES_PRIVATE); //TODO: look into this
         if(mPrivateOrg)
             mRequestCode = object.getInt(OrgsDataSource.ORG_REQUEST_CODE);
         mNewOrg = OrgsDataSource.isNew(object);

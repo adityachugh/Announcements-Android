@@ -63,7 +63,7 @@ public class OrgsDataSource {
 
     public static void getOrganizationsFollowedByUser (String userObjectId , final FunctionCallback<ArrayList<Organization>> callback){
         HashMap<String, Object> params = new HashMap<>();
-        params.put("userObjectId ", userObjectId);
+        params.put("userObjectId", userObjectId);
 
         ParseCloud.callFunctionInBackground("getOrganizationsFollowedByUser", params, new FunctionCallback<List<ParseObject>>() {
             @Override
@@ -71,10 +71,15 @@ public class OrgsDataSource {
 
                 ArrayList<Organization> orgsFollowed = new ArrayList<Organization>();
                 if (e == null){
-                    Log.wtf("OrgsDataSource", "FUNCTION WORKS");
                     for (ParseObject object : parseObjects){
-                        orgsFollowed.add(new Organization(object));
+                        try {
+                            object.fetch();
+                            orgsFollowed.add(new Organization(object.fetch()));
+                        } catch (ParseException e1) {
+                            e1.printStackTrace();
+                        }
                     }
+                    Log.wtf("OrgsDataSource", "FUNCTION WORKS");
                 }
                 else
                     Log.wtf("OrgsDataSource", "FUNCTION broken");
