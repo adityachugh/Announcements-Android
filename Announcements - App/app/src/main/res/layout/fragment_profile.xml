@@ -29,6 +29,12 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/landscape"
                     android:id="@+id/profile_cover_photo"/>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:alpha="0.25"
+                    android:src="@android:color/black"
+                    android:id="@+id/profile_cover_overlay"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
