@@ -141,7 +141,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
             mUser = (User) getArguments().getSerializable(ARG_USER);
             mOrg = (Organization) getArguments().getSerializable(ARG_ORG);
             mListener = (ProfileInteractionListener) getArguments().getSerializable(ARG_PROFILE_LISTENER);
-            mToEdit = getArguments().getBoolean(ARG_TO_EDIT);
+            mToEdit = getArguments().getBoolean(ARG_TO_EDIT); //TODO: CALL checkIfUserIsAdminOfOrganization IN CASE OF ORG!
             mOnToday = getArguments().getBoolean(ON_TODAY);
             mOnDiscover = getArguments().getBoolean(ON_DISCOVER);
             mOnYou = getArguments().getBoolean(ON_YOU);
