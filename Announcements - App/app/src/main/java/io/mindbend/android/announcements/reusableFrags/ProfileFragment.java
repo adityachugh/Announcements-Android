@@ -269,10 +269,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                     //add grid frag to bottom of user profile
                     Fragment userOrgsFollowedFragment = OrgsGridFragment.newInstance(orgs, mOrgListener, mOrgsGridInteractionListener);
                     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-
-                    Organization org = orgs.get(1);
-                    Log.wtf(TAG, "PROFILE ERRORS: " + org.getmObjectId() + " " + org.getTitle() + " " + org.getDescription());
-
+                    
                     //**DYNAMIC SIZING FOR USER FOLLOWED ORGS GRID**
                     final int orgCardHeight = 260; //this is defined in the layout xml; card height + padding
                     int orgCardColumns = (orgs.size() / 2) + (orgs.size() % 2); //adds additional row for odd numbered org
