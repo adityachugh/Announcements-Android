@@ -79,7 +79,7 @@ public class OrgsDataSource {
                             e1.printStackTrace();
                         }
                     }
-                    Log.wtf("OrgsDataSource", "FUNCTION WORKS");
+                    Log.wtf("OrgsDataSource", "FUNCTION NO ERROR");
                 }
                 else
                     Log.wtf("OrgsDataSource", "FUNCTION broken");

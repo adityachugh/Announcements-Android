@@ -1,6 +1,7 @@
 package io.mindbend.android.announcements.cloudCode;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -58,21 +59,25 @@ public class PostsDataSource {
     public static void getPostsOfOrganizationInRange (final Context context, String OrganizationObjectId, int startIndex, int numberOfPosts, final FunctionCallback<ArrayList<Post>> callback){
         //loader.setVisibility(View.VISIBLE);
         HashMap<String, Object> params = new HashMap<>();
-        params.put("OrganizationObjectId", OrganizationObjectId);
+        params.put("organizationObjectId", OrganizationObjectId);
         params.put("startIndex", startIndex);
         params.put("numberOfPosts", numberOfPosts);
 
         ParseCloud.callFunctionInBackground("getPostsOfOrganizationInRange", params, new FunctionCallback<List<ParseObject>>() {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
+                Log.wtf("PostsDataSource", "FUNCTIION CALLED");
                 //loader.setVisibility(View.GONE);
                 ArrayList<Post> orgPosts = new ArrayList<Post>();
 
                 if (e == null){
                     for (ParseObject object : parseObjects){
                         orgPosts.add(new Post(context, object));
+                        //Log.wtf("PostsDataSource", "post added to array");
                     }
                 }
+                else
+                    //Log.wtf("PostsDataSource", "post NOT added to array");
                 callback.done(orgPosts, e);
             }
         });
