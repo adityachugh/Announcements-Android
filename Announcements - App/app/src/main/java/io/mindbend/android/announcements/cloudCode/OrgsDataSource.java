@@ -35,14 +35,14 @@ public class OrgsDataSource {
     public final static String ORG_TYPES_PRIVATE = "Private";
     public final static String ORG_TYPES_PUBLIC = "Public";
 
-    public static boolean isNew (ParseObject org) {
+    public static boolean isNew(ParseObject org) {
         DateTime date = new DateTime(org.getCreatedAt());
         DateTime today = new DateTime();
         int daysBetween = Days.daysBetween(date, today).getDays();
         return (daysBetween <= 5);
     }
 
-    public static void getAllChildOrganizations (String parentOrganizationObjectId, final FunctionCallback<ArrayList<Organization>> callback){
+    public static void getAllChildOrganizations(String parentOrganizationObjectId, final FunctionCallback<ArrayList<Organization>> callback) {
         HashMap<String, Object> params = new HashMap<>();
         params.put("parentOrganizationObjectId", parentOrganizationObjectId);
 
@@ -51,8 +51,8 @@ public class OrgsDataSource {
             public void done(List<ParseObject> parseObjects, ParseException e) {
 
                 ArrayList<Organization> orgs = new ArrayList<Organization>();
-                if (e == null){
-                    for (ParseObject object : parseObjects){
+                if (e == null) {
+                    for (ParseObject object : parseObjects) {
                         orgs.add(new Organization(object));
                     }
                 }
@@ -61,32 +61,23 @@ public class OrgsDataSource {
         });
     }
 
-    public static void getOrganizationsFollowedByUser (String userObjectId , final FunctionCallback<ArrayList<Organization>> callback){
+    public static void getOrganizationsFollowedByUser(String userObjectId, final FunctionCallback<ArrayList<Organization>> callback) {
         HashMap<String, Object> params = new HashMap<>();
         params.put("userObjectId", userObjectId);
 
         ParseCloud.callFunctionInBackground("getOrganizationsFollowedByUser", params, new FunctionCallback<List<ParseObject>>() {
-            @Override
-            public void done(List<ParseObject> parseObjects, ParseException e) {
+                    @Override
+                    public void done(List<ParseObject> parseObjects, ParseException e) {
 
-                ArrayList<Organization> orgsFollowed = new ArrayList<Organization>();
-                if (e == null){
-                    for (ParseObject object : parseObjects){
-                        try {
-                            object.fetch();
-                            orgsFollowed.add(new Organization(object.fetch()));
-                        } catch (ParseException e1) {
-                            e1.printStackTrace();
+                        ArrayList<Organization> orgsFollowed = new ArrayList<Organization>();
+                        if (e == null) {
+                            for (ParseObject object : parseObjects)
+                                orgsFollowed.add(new Organization(object.getParseObject("organization")));
                         }
+                        callback.done(orgsFollowed, e);
                     }
-                    Log.wtf("OrgsDataSource", "FUNCTION NO ERROR");
                 }
-                else
-                    Log.wtf("OrgsDataSource", "FUNCTION broken");
 
-
-                callback.done(orgsFollowed, e);
-            }
-        });
+        );
     }
 }
