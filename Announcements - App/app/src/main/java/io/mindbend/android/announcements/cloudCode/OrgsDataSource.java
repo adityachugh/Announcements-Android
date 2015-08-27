@@ -42,6 +42,26 @@ public class OrgsDataSource {
         return (daysBetween <= 5);
     }
 
+    public static void getChildOrganizationsInRange (String parentOrganizationObjectId, int startIndex, int numberOfOrganizations, final FunctionCallback<ArrayList<Organization>> callback){
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("parentOrganizationObjectId", parentOrganizationObjectId);
+        params.put("startIndex", startIndex);
+        params.put("numberOfOrganizations", numberOfOrganizations);
+
+        ParseCloud.callFunctionInBackground("getChildOrganizationsInRange", params, new FunctionCallback<List<ParseObject>>() {
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e) {
+                ArrayList<Organization> orgs = new ArrayList<Organization>();
+                if (e == null) {
+                    for (ParseObject object : parseObjects) {
+                        orgs.add(new Organization(object));
+                    }
+                }
+                callback.done(orgs, e);
+            }
+        });
+    }
+
     public static void getAllChildOrganizations(String parentOrganizationObjectId, final FunctionCallback<ArrayList<Organization>> callback) {
         HashMap<String, Object> params = new HashMap<>();
         params.put("parentOrganizationObjectId", parentOrganizationObjectId);

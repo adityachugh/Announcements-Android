@@ -251,8 +251,6 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 mProfileTag.setText(mOrg.getTag());
 
                 if (!mOrg.isPrivateOrg()) {
-
-                    Log.wtf(TAG, "org id is: " + mOrg.getmObjectId());
                     loadOrgPosts(mOrg.getmObjectId() , 0, 10);
                 }
             }

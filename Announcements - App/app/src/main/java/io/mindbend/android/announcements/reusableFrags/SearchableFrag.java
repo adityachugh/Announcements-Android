@@ -84,7 +84,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
                 break;
             case ORGS_TYPE:
 
-                loadOrgs();
+                loadDiscoverOrgs("oc3Wmbqhsl", 0, 10); //TODO: update so reflects current school (TFSS rn)
 
 
                 OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(mOrgs, this, this);
@@ -102,17 +102,16 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
         return v;
     }
 
-    private void loadOrgs(){
-        OrgsDataSource.getAllChildOrganizations("oc3Wmbqhsl", new FunctionCallback<ArrayList<Organization>>() {
+    private void loadDiscoverOrgs(String parentOrganizationObjectId, int startIndex, int numberOfOrganizations) {
+        OrgsDataSource.getChildOrganizationsInRange(parentOrganizationObjectId, startIndex, numberOfOrganizations, new FunctionCallback<ArrayList<Organization>>() {
             @Override
             public void done(ArrayList<Organization> organizations, ParseException e) {
-                if (e == null){
+                if (e == null) {
                     OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(organizations, mOrgInteractionListener, mOrgsGridInteractionListener);
                     FragmentTransaction ft2 = getFragmentManager().beginTransaction();
-                    if(ft2.isEmpty())
+                    if (ft2.isEmpty())
                         ft2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag, orgsGridFragment).commitAllowingStateLoss();
-                }
-                else {
+                } else {
                     Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
