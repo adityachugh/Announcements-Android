@@ -57,7 +57,6 @@ public class PostsDataSource {
     }
 
     public static void getPostsOfOrganizationInRange (final Context context, String OrganizationObjectId, int startIndex, int numberOfPosts, final FunctionCallback<ArrayList<Post>> callback){
-        //loader.setVisibility(View.VISIBLE);
         HashMap<String, Object> params = new HashMap<>();
         params.put("organizationObjectId", OrganizationObjectId);
         params.put("startIndex", startIndex);
@@ -66,7 +65,6 @@ public class PostsDataSource {
         ParseCloud.callFunctionInBackground("getPostsOfOrganizationInRange", params, new FunctionCallback<List<ParseObject>>() {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
-                //loader.setVisibility(View.GONE);
                 ArrayList<Post> orgPosts = new ArrayList<Post>();
 
                 if (e == null){
