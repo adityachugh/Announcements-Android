@@ -86,7 +86,6 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
 
                 loadDiscoverOrgs("oc3Wmbqhsl", 0, 10); //TODO: update so reflects current school (TFSS rn)
 
-
                 OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(mOrgs, this, this);
                 FragmentTransaction ft2 = getFragmentManager().beginTransaction();
                 if(ft2.isEmpty())

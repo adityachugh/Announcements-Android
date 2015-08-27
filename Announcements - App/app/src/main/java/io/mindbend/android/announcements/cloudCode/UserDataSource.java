@@ -113,6 +113,16 @@ public class UserDataSource {
         });
     }
 
+    public static void updateFollowStateForUser (Boolean isFollowing, String userObjectId, String organizationObjectId){
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("isFollowing", isFollowing);
+        params.put("userObjectId", userObjectId);
+        params.put("organizationObjectId", organizationObjectId);
+
+        ParseCloud.callFunctionInBackground("updateFollowStateForUser", params);
+        //no callback needed
+    }
+
     private static void loginDialog(final Context context, final LogInCallback logInCallback) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.DialogTheme);
         View view = ((TabbedActivity)context).getLayoutInflater().inflate(R.layout.login_user_dialog, null);
