@@ -38,46 +38,25 @@ public class MainActivity extends AppCompatActivity {
         Parse.initialize(this, "S1dL5D6QCSqsC1FyYTiyS5V4Yv2zcK47TeybVtEf", "llxS4kjhRdSv46DvGi9HyPapsRaFDoU9155Nh88V");
         Log.i("test", "Parse initialized");
 
-        if (ParseUser.getCurrentUser() == null){
-            try {
-                ParseUser.logIn("chughrajiv", "password");
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-
-        getRangeOfCommentsForPost(0, 10, "FxGS0ECxMZ", new FunctionCallback<List<ParseObject>>() {
-            @Override
-            public void done(List<ParseObject> parseObjects, ParseException e) {
-                //here
-            }
-        });
-
-    }
-
-    public static void getRangeOfCommentsForPost(int startIndex, int numberOfComments, String postObjectId, final FunctionCallback<List<ParseObject>> callback){
-        Map<String, Object> params = new HashMap<>();
-        params.put("postObjectId", postObjectId);
-        params.put("startIndex", startIndex);
-        params.put("numberOfComments", numberOfComments);
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("postObjectId", "FxGS0ECxMZ");
+        params.put("startIndex", 0);
+        params.put("numberOfComments", 10);
 
         ParseCloud.callFunctionInBackground("getRangeOfCommentsForPost", params, new FunctionCallback<List<ParseObject>>() {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
                 //parseobject to comments
-                if (e == null) {
-                    for (ParseObject object : parseObjects) {
-                        Log.d("Parseobject", object.toString()+"");
+                Log.wtf("test", "working");
+                int i = 0;
+//                    Log.d("Parseobject", object.toString() + "");
 //                        ParseUser user = (ParseUser) object.get(COMMENT_USER);
 //                        Log.d("COMMENTS", user + ": "+object.getString("comment"));
-                    }
-                } else {
-                    e.printStackTrace();
-                }
-                callback.done(parseObjects, e);
+
 
             }
         });
+
     }
 
     @Override
