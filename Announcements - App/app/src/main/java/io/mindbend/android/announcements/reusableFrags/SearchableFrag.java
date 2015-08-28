@@ -28,6 +28,7 @@ import io.mindbend.android.announcements.cloudCode.OrgsDataSource;
 public class SearchableFrag extends Fragment implements Serializable, UserListAdapter.UserListInteractionListener, OrgsGridAdapter.OrgInteractionListener, OrgsGridFragment.OrgsGridInteractionListener, SearchView.OnQueryTextListener {
     public final static int USERS_TYPE = 0;
     public final static int ORGS_TYPE = 1;
+    public final static int SIGNUP_ORGS_TYPE = 2;
 
     private final static String ARG_PARENT_ORG = "parent_org";
     private final static String ARG_INTERFACE = "interface";

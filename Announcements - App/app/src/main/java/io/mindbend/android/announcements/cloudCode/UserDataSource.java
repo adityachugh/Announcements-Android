@@ -113,10 +113,9 @@ public class UserDataSource {
         });
     }
 
-    public static void updateFollowStateForUser (Boolean isFollowing, String userObjectId, String organizationObjectId){
+    public static void updateFollowStateForUser (Boolean isFollowing, String organizationObjectId){
         HashMap<String, Object> params = new HashMap<>();
         params.put("isFollowing", isFollowing);
-        params.put("userObjectId", userObjectId);
         params.put("organizationObjectId", organizationObjectId);
 
         ParseCloud.callFunctionInBackground("updateFollowStateForUser", params);

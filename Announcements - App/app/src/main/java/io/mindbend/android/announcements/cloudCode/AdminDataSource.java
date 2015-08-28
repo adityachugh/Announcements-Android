@@ -18,11 +18,11 @@ import io.mindbend.android.announcements.Organization;
  */
 public class AdminDataSource {
 
-    public static void checkIfUserIsAdminOfOrganization (final Context context, Organization organization, String userObjectId, final FunctionCallback<Boolean> callback){
+    public static void checkIfUserIsAdminOfOrganization (final Context context, String organizationObjectId, String userObjectId, final FunctionCallback<Boolean> callback){
         //TODO: unfinished! Aditya needs to update function to accept userId instead of user object!
         HashMap<String, Object> params = new HashMap<>();
-        params.put("Organization", organization);
-        //params.put("userObjectId", userObjectId);
+        params.put("organizationObjectId", organizationObjectId);
+        params.put("userObjectId", userObjectId);
 
         ParseCloud.callFunctionInBackground("checkIfUserIsAdminOfOrganization", params, new FunctionCallback<ParseObject>() {
             @Override
