@@ -52,10 +52,9 @@ public class MainActivity extends AppCompatActivity {
                 //here
             }
         });
-
     }
 
-    public static void getRangeOfCommentsForPost(int startIndex, int numberOfComments, String postObjectId, final FunctionCallback<List<ParseObject>> callback){
+    public static void getRangeOfCommentsForPost(int startIndex, int numberOfComments, String postObjectId, final FunctionCallback<List<ParseObject>> callback) {
         Map<String, Object> params = new HashMap<>();
         params.put("postObjectId", postObjectId);
         params.put("startIndex", startIndex);
@@ -65,17 +64,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
                 //parseobject to comments
-                if (e == null) {
-                    for (ParseObject object : parseObjects) {
-                        Log.d("Parseobject", object.toString()+"");
-//                        ParseUser user = (ParseUser) object.get(COMMENT_USER);
-//                        Log.d("COMMENTS", user + ": "+object.getString("comment"));
-                    }
-                } else {
-                    e.printStackTrace();
-                }
+                int i = 0;
                 callback.done(parseObjects, e);
-
             }
         });
     }

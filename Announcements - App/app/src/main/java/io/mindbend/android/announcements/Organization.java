@@ -22,6 +22,7 @@ public class Organization implements Serializable, Parcelable {
     private String mTag;
     private boolean mPrivateOrg;
     private boolean mNewOrg;
+    private Organization mParent;
 
     private int mRequestCode;
 
