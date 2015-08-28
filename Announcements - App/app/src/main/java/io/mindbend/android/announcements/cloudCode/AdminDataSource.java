@@ -2,6 +2,8 @@ package io.mindbend.android.announcements.cloudCode;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
@@ -18,19 +20,20 @@ import io.mindbend.android.announcements.Organization;
  */
 public class AdminDataSource {
 
-    public static void checkIfUserIsAdminOfOrganization (final Context context, Organization organization, String userObjectId, final FunctionCallback<Boolean> callback){
-        //TODO: unfinished! Aditya needs to update function to accept userId instead of user object!
+    public static void checkIfUserIsAdminOfOrganization (final ProgressBar loading, final Context context, String organizationObjectId, String userObjectId, final FunctionCallback<Boolean> callback){
+        loading.setVisibility(View.VISIBLE);
         HashMap<String, Object> params = new HashMap<>();
-        params.put("Organization", organization);
-        //params.put("userObjectId", userObjectId);
+        params.put("organizationObjectId", organizationObjectId);
+        params.put("userObjectId", userObjectId);
 
-        ParseCloud.callFunctionInBackground("checkIfUserIsAdminOfOrganization", params, new FunctionCallback<ParseObject>() {
+        ParseCloud.callFunctionInBackground("checkIfUserIsAdminOfOrganization", params, new FunctionCallback<Boolean>() {
             @Override
-            public void done(ParseObject parseObject, ParseException e) {
+            public void done(Boolean bool, ParseException e) {
                 Boolean isAdmin = false;
                 if (e == null){
-                    //UPDATE ISADMIN
+                    isAdmin = bool;
                 }
+                loading.setVisibility(View.GONE);
                 callback.done(isAdmin, e);
             }
         });

@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.parse.FunctionCallback;
@@ -45,6 +46,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
     private static final String TAG = "TAG";
     private static final String ORG_PROFILE_FRAG = "ORG_PROFILE_FRAGMENT";
     private transient SearchableFrag mOrgsGridFrag;
+    private transient ProgressBar mLoading;
 
     //pass into profilefrag new instance in this order!
     private boolean onToday = false;
@@ -63,6 +65,9 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
         // Inflate the layout for this fragment
         View v =inflater.inflate(R.layout.fragment_discover, container, false);
         setRetainInstance(true);
+
+        mLoading = (ProgressBar)v.findViewById(R.id.discover_frag_progressbar);
+
         //TODO: query discover_clubs data from Parse, then pass that data into an OrgsGridFragment that will be created using the OrgsGridFragment.NewInstance static method
 
         mOrgsGridFrag = SearchableFrag.newInstance(SearchableFrag.ORGS_TYPE, null, this);
@@ -93,32 +98,24 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
     }
 
     @Override
-    public void pressedOrgFromProfile(Organization orgPressed) {
-        //TODO: check if the user is an admin of this org
-        //currently choosing randomly
-
-//        Log.wtf(TAG, "PARSE USER " + ParseUser.getCurrentUser().getObjectId().toString());
-//        AdminDataSource.checkIfUserIsAdminOfOrganization(getActivity(), orgPressed, ParseUser.getCurrentUser(), new FunctionCallback<String>() {
-//            @Override
-//            public void done(String isAdmin, ParseException e) {
-//                if (e == null){
-//                    Log.wtf(TAG, "IS USER ADMIN? " + isAdmin);
-//                }
-//                else {
-//                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-
-        Random r = new Random();
-        boolean isModifiable = r.nextBoolean();
-
-        //replace the current profile frag with new org profile frag, while adding it to a backstack
-        ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgPressed, this, isModifiable, onToday, onDiscover, onYou, onAdmin);
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
-        Log.d(TAG, "org has been pressed on discover page " + orgPressed.toString());
+    public void pressedOrgFromProfile(final Organization orgPressed) {
+        Log.wtf(TAG, "PARSE USER " + ParseUser.getCurrentUser().getObjectId());
+        AdminDataSource.checkIfUserIsAdminOfOrganization(mLoading, getActivity(), orgPressed.getmObjectId(), ParseUser.getCurrentUser().getObjectId(), new FunctionCallback<Boolean>() {
+            @Override
+            public void done(Boolean isAdmin, ParseException e) {
+                if (e == null) {
+                    Log.wtf(TAG, "IS USER ADMIN? " + isAdmin);
+                    //replace the current profile frag with new org profile frag, while adding it to a backstack
+                    ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgPressed, DiscoverFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
+                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
+                    Log.d(TAG, "org has been pressed on discover page " + orgPressed.toString());
+                } else {
+                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
