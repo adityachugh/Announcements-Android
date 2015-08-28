@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.parse.FunctionCallback;
@@ -37,6 +38,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
     private SearchInterface mListener;
     private int mTypeOfList;
     private transient SearchView mSearchView;
+    private transient ProgressBar mLoading;
 
     private OrgsGridAdapter.OrgInteractionListener mOrgInteractionListener = this;
     private OrgsGridFragment.OrgsGridInteractionListener mOrgsGridInteractionListener = this;
@@ -73,6 +75,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_searchable, container, false);
         mSearchView = (SearchView)v.findViewById(R.id.searchable_searchview);
+        mLoading = (ProgressBar)v.findViewById(R.id.searchable_frag_progressbar);
 
         switch (mTypeOfList){
             case USERS_TYPE:
@@ -102,7 +105,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
     }
 
     private void loadDiscoverOrgs(String parentOrganizationObjectId, int startIndex, int numberOfOrganizations) {
-        OrgsDataSource.getChildOrganizationsInRange(parentOrganizationObjectId, startIndex, numberOfOrganizations, new FunctionCallback<ArrayList<Organization>>() {
+        OrgsDataSource.getChildOrganizationsInRange(mLoading, parentOrganizationObjectId, startIndex, numberOfOrganizations, new FunctionCallback<ArrayList<Organization>>() {
             @Override
             public void done(ArrayList<Organization> organizations, ParseException e) {
                 if (e == null) {

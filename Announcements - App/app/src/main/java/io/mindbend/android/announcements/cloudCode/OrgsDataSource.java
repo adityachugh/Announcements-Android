@@ -2,6 +2,8 @@ package io.mindbend.android.announcements.cloudCode;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
@@ -42,7 +44,8 @@ public class OrgsDataSource {
         return (daysBetween <= 5);
     }
 
-    public static void getChildOrganizationsInRange (String parentOrganizationObjectId, int startIndex, int numberOfOrganizations, final FunctionCallback<ArrayList<Organization>> callback){
+    public static void getChildOrganizationsInRange (final ProgressBar loading, String parentOrganizationObjectId, int startIndex, int numberOfOrganizations, final FunctionCallback<ArrayList<Organization>> callback){
+        loading.setVisibility(View.VISIBLE);
         HashMap<String, Object> params = new HashMap<>();
         params.put("parentOrganizationObjectId", parentOrganizationObjectId);
         params.put("startIndex", startIndex);
@@ -57,12 +60,15 @@ public class OrgsDataSource {
                         orgs.add(new Organization(object));
                     }
                 }
+                loading.setVisibility(View.GONE);
                 callback.done(orgs, e);
             }
         });
     }
 
-    public static void getAllChildOrganizations(String parentOrganizationObjectId, final FunctionCallback<ArrayList<Organization>> callback) {
+    public static void getAllChildOrganizations(final ProgressBar loading, String parentOrganizationObjectId, final FunctionCallback<ArrayList<Organization>> callback) {
+        loading.setVisibility(View.VISIBLE);
+
         HashMap<String, Object> params = new HashMap<>();
         params.put("parentOrganizationObjectId", parentOrganizationObjectId);
 
@@ -76,12 +82,14 @@ public class OrgsDataSource {
                         orgs.add(new Organization(object));
                     }
                 }
+                loading.setVisibility(View.GONE);
                 callback.done(orgs, e);
             }
         });
     }
 
-    public static void getOrganizationsFollowedByUser(String userObjectId, final FunctionCallback<ArrayList<Organization>> callback) {
+    public static void getOrganizationsFollowedByUser(final ProgressBar loading, String userObjectId, final FunctionCallback<ArrayList<Organization>> callback) {
+        loading.setVisibility(View.VISIBLE);
         HashMap<String, Object> params = new HashMap<>();
         params.put("userObjectId", userObjectId);
 
@@ -94,6 +102,7 @@ public class OrgsDataSource {
                             for (ParseObject object : parseObjects)
                                 orgsFollowed.add(new Organization(object.getParseObject("organization")));
                         }
+                        loading.setVisibility(View.GONE);
                         callback.done(orgsFollowed, e);
                     }
                 }
