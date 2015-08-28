@@ -21,11 +21,12 @@
             android:textSize="@dimen/dialog_material_title_size"
             android:textColor="@color/text_primary" />
 
+        <!-- TODO: add a spinner later on for commenting as org
         <Spinner
             android:id="@+id/user_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-        </Spinner>
+        </Spinner> -->
     </LinearLayout>
 
     <TextView
