@@ -40,6 +40,7 @@ public class CommentsDataSource {
                 //parseobject to comments
                 ArrayList<Comment> comments = new ArrayList<>();
                 if (e == null){
+                    int i = 0;
                     for (ParseObject object : parseObjects){
                         Log.wtf("COMMENTS", object.getParseUser("CreateUser") + "");
                         ParseUser user = (ParseUser)object.get(CommentsDataSource.COMMENT_USER);
