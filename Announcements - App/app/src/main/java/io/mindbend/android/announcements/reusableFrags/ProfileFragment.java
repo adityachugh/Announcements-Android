@@ -19,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -101,6 +102,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     private transient ImageView mCoverImage;
     private transient TextView mProfileDetail;
     private transient TextView mProfileTag;
+    private transient ProgressBar mLoading;
 
     /**
      * Use this factory method to create a new instance of
@@ -155,6 +157,8 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         if (mView == null) {
             // Inflate the layout for this fragment
             mView = inflater.inflate(R.layout.fragment_profile, container, false);
+
+            mLoading = (ProgressBar)mView.findViewById(R.id.profile_frag_progressbar);
 
             //fetch embedded relativelayout
             mProfileContentFrameLayoutEmbedded = (RelativeLayout) mView.findViewById(R.id.profile_content_framelayout_embedded);
@@ -243,16 +247,14 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 if (mOrg.isPrivateOrg()) {
                     name.setText(mOrg.getTitle() + " [PRIVATE]");
                     //TODO: add imageview of lock to indicate private
+                    //TODO: check if user is part of this private org, and if he/she is then load posts
                 } else {
                     name.setText(mOrg.getTitle());
+                    loadOrgPosts(mOrg.getmObjectId(), 0, 10);
                 }
                 followCount.setText(mOrg.getFollowers() + " Followers");
                 mProfileDetail.setText(mOrg.getDescription());
                 mProfileTag.setText(mOrg.getTag());
-
-                if (!mOrg.isPrivateOrg()) {
-                    loadOrgPosts(mOrg.getmObjectId() , 0, 10);
-                }
             }
         }
 
@@ -260,7 +262,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     }
 
     private void loadOrgsFollowed(final String userObjectId){
-        OrgsDataSource.getOrganizationsFollowedByUser(userObjectId, new FunctionCallback<ArrayList<Organization>>() {
+        OrgsDataSource.getOrganizationsFollowedByUser(mLoading, userObjectId, new FunctionCallback<ArrayList<Organization>>() {
             @Override
             public void done(ArrayList<Organization> orgs, ParseException e) {
                 if (e == null) {
@@ -292,7 +294,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
 
 
     private void loadOrgPosts (String orgObjectId, int startIndex, int numberOfPosts){
-        PostsDataSource.getPostsOfOrganizationInRange(getActivity(), orgObjectId, startIndex, numberOfPosts, new FunctionCallback<ArrayList<Post>>() {
+        PostsDataSource.getPostsOfOrganizationInRange(mLoading, getActivity(), orgObjectId, startIndex, numberOfPosts, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> orgPosts, ParseException e) {
                 if (e == null){

@@ -56,7 +56,9 @@ public class PostsDataSource {
         });
     }
 
-    public static void getPostsOfOrganizationInRange (final Context context, String OrganizationObjectId, int startIndex, int numberOfPosts, final FunctionCallback<ArrayList<Post>> callback){
+    public static void getPostsOfOrganizationInRange (final ProgressBar loading, final Context context, String OrganizationObjectId, int startIndex, int numberOfPosts, final FunctionCallback<ArrayList<Post>> callback){
+        loading.setVisibility(View.VISIBLE);
+
         HashMap<String, Object> params = new HashMap<>();
         params.put("organizationObjectId", OrganizationObjectId);
         params.put("startIndex", startIndex);
@@ -73,6 +75,7 @@ public class PostsDataSource {
                     }
                 }
 
+                loading.setVisibility(View.GONE);
                 callback.done(orgPosts, e);
             }
         });

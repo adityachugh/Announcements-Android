@@ -5,10 +5,20 @@
     android:id="@+id/admin_frag"
              tools:context="io.mindbend.android.announcements.tabbedFragments.AdminFragment">
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/admin_framelayout">
-    </FrameLayout>
+        android:layout_height="match_parent">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/admin_framelayout">
+        </FrameLayout>
+        <ProgressBar
+            android:layout_width="@dimen/progress_bar_LARGE"
+            android:layout_height="@dimen/progress_bar_LARGE"
+            android:id="@+id/admin_frag_progressbar"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
+    </RelativeLayout>
 
 </FrameLayout>

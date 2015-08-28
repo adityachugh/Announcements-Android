@@ -4,11 +4,20 @@
              android:layout_height="match_parent"
     android:id="@+id/discove_frag"
              tools:context="io.mindbend.android.announcements.tabbedFragments.DiscoverFragment">
-
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/discover_framelayout">
-    </FrameLayout>
+        android:layout_height="match_parent">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/discover_framelayout">
+        </FrameLayout>
+        <ProgressBar
+            android:layout_width="@dimen/progress_bar_LARGE"
+            android:layout_height="@dimen/progress_bar_LARGE"
+            android:id="@+id/discover_frag_progressbar"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
+    </RelativeLayout>
 
 </FrameLayout>

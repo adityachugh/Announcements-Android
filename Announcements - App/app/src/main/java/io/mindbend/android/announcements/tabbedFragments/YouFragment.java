@@ -9,9 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.parse.FunctionCallback;
 import com.parse.ParseException;
+import com.parse.ParseUser;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,6 +25,7 @@ import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment;
+import io.mindbend.android.announcements.cloudCode.AdminDataSource;
 import io.mindbend.android.announcements.cloudCode.UserDataSource;
 import io.mindbend.android.announcements.reusableFrags.ListFragment;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridAdapter;
@@ -82,19 +85,24 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
     }
 
     @Override
-    public void userProfileToOrgProfile(Organization orgSelected) {
-        //TODO: check if the user is an admin of this org
-        //currently choosing randomly
-
-        Random r = new Random();
-        boolean isModifiable = r.nextBoolean();
-
-//        replace the current profile frag with new org profile frag, while adding it to a backstack
-        ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, this, isModifiable, onToday, onDiscover, onYou, onAdmin);
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.you_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
-
-        Log.d(TAG, "org has been pressed on profile page " + orgSelected.toString());
+    public void userProfileToOrgProfile(final Organization orgSelected) {
+        Log.wtf(TAG, "PARSE USER " + ParseUser.getCurrentUser().getObjectId());
+        AdminDataSource.checkIfUserIsAdminOfOrganization(mLoading, getActivity(), orgSelected.getmObjectId(), ParseUser.getCurrentUser().getObjectId(), new FunctionCallback<Boolean>() {
+            @Override
+            public void done(Boolean isAdmin, ParseException e) {
+                if (e == null) {
+                    Log.wtf(TAG, "IS USER ADMIN? " + isAdmin);
+                    //replace the current profile frag with new org profile frag, while adding it to a backstack
+                    ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, YouFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
+                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.you_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
+                    Log.d(TAG, "org has been pressed on profile page " + orgSelected.toString());
+                } else {
+                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override

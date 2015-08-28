@@ -88,7 +88,7 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         if (mView == null){
             // Inflate the layout for this fragment
@@ -118,7 +118,7 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
                     alertDialogBuilder.setView(addCommentView);
 
                     //work with all the elements in the dialog
-                    EditText userInput = (EditText) addCommentView.findViewById(R.id.add_comment_edittext);
+                    final EditText userInput = (EditText) addCommentView.findViewById(R.id.add_comment_edittext);
 
                     //set the subtext to notify the user on WHOSE post they are commenting on
                     TextView subText = (TextView) addCommentView.findViewById(R.id.add_comment_subtext);
@@ -136,7 +136,22 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
                             .setPositiveButton("Post",
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
-                                            //TODO: add a comment to the comments post
+                                            if (userInput.getText().toString().equals(""))
+                                                Toast.makeText(getActivity(), R.string.empty_comment_message, Toast.LENGTH_SHORT).show();
+                                            else{
+                                                CommentsDataSource.postCommentAsUserOnPost(mLoading, getActivity(), mPost.getmObjectId(), userInput.getText().toString(), new FunctionCallback<Comment>() {
+                                                    @Override
+                                                    public void done(Comment comment, ParseException e) {
+                                                        if (e == null){
+                                                            mComments.add(0, comment);
+                                                            mCommentsAdapter.notifyDataSetChanged();
+                                                        } else {
+                                                            e.printStackTrace();
+                                                            Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT);
+                                                        }
+                                                    }
+                                                });
+                                            }
                                         }
                                     })
                             .setNegativeButton("Cancel",
@@ -173,6 +188,7 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
                 if (e == null){
                     Log.wtf("PostCommentsFragment", "comments loaded");
                     //instantiate and set the adapter
+                    mComments.clear();
                     mComments.addAll(comments);
                     mCommentsAdapter.notifyDataSetChanged();
                     //the animation for the recycler view to slide in from the bottom of the view
@@ -201,17 +217,7 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
 
     @Override
     public void onRefresh() {
-        //TODO: reload comments based on the post clicked
-        Toast startedRefresh = Toast.makeText(getActivity(), "refreshed layout", Toast.LENGTH_LONG);
-        startedRefresh.show();
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //Do something after 1000ms
-                mRefreshComments.setRefreshing(false);
-            }
-        }, 1000);
+        loadComments(mLoading, 0, 10);
     }
 
     public interface CommentsInteractionListener  extends Serializable{

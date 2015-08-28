@@ -14,11 +14,21 @@
             android:layout_height="wrap_content"
             android:id="@+id/searchable_searchview"
             />
-        <FrameLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:id="@+id/searchable_frag"/>
+            android:layout_weight="1">
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/searchable_frag"/>
+            <ProgressBar
+                android:layout_width="@dimen/progress_bar_LARGE"
+                android:layout_height="@dimen/progress_bar_LARGE"
+                android:id="@+id/searchable_frag_progressbar"
+                android:layout_centerInParent="true"
+                android:visibility="gone"/>
+        </RelativeLayout>
     </LinearLayout>
 
 </FrameLayout>
