@@ -54,4 +54,25 @@ public class CommentsDataSource {
             }
         });
     }
+
+    public static void postCommentAsUserOnPost(final RelativeLayout loadingLayout, final Context context, String postObjectId, String commentText, final FunctionCallback<Comment> callback){
+        final HashMap<String, String> params = new HashMap<>();
+        params.put("commentText", commentText);
+        params.put("postObjectId", postObjectId);
+
+        ParseCloud.callFunctionInBackground("postCommentAsUserOnPost", params, new FunctionCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+                Comment comment = null;
+                if (e == null)
+                    comment = new Comment(context, parseObject);
+                callback.done(comment, e);
+            }
+        });
+    }
 }
+
+//Parse.Cloud.define("postCommentAsUserOnPost", function(request, response){
+////TESTED
+//
+////Pre: commentText, user, postObjectId
