@@ -109,4 +109,21 @@ public class OrgsDataSource {
 
         );
     }
+
+    public static void getAllTopLevelOrganizations (final ProgressBar loading, final FunctionCallback<ArrayList<Organization>> callback){
+        loading.setVisibility(View.VISIBLE);
+
+        ParseCloud.callFunctionInBackground("getAllTopLevelOrganizations", null, new FunctionCallback<List<ParseObject>>() {
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e) {
+                ArrayList<Organization> topOrgs = new ArrayList<Organization>();
+                if (e == null) {
+                    for (ParseObject object : parseObjects)
+                        topOrgs.add(new Organization(object));
+                }
+                loading.setVisibility(View.GONE);
+                callback.done(topOrgs, e);
+            }
+        });
+    }
 }
