@@ -24,6 +24,8 @@ public class Organization implements Serializable, Parcelable {
     private boolean mNewOrg;
     private Organization mParent;
 
+
+    
     private int mRequestCode;
 
     public Organization(String objectId, String title, String description, int followers, String tag, boolean privateOrg, boolean newOrg){
