@@ -8,6 +8,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import com.parse.FunctionCallback;
+import com.parse.ParseException;
+import com.parse.ParseUser;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -21,6 +27,7 @@ import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.adminClasses.AdminMainFragment;
 import io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment;
 import io.mindbend.android.announcements.adminClasses.NewAnnouncementFragment;
+import io.mindbend.android.announcements.cloudCode.AdminDataSource;
 import io.mindbend.android.announcements.reusableFrags.ListFragment;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridAdapter;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridFragment;
@@ -42,7 +49,9 @@ public class AdminFragment extends Fragment implements Serializable,
         PostOverlayFragment.PostsOverlayListener,
         UserListAdapter.UserListInteractionListener, ListFragment.ListFabListener, SearchableFrag.SearchInterface {
     private static final String MAIN_ADMIN_TAG = "main_admin_frag";
+    private static final String TAG = "AdminFragment";
     private transient AdminMainFragment mAdminMain;
+    private transient ProgressBar mLoading;
 
     private boolean onToday = false;
     private boolean onDiscover = false;
@@ -60,6 +69,8 @@ public class AdminFragment extends Fragment implements Serializable,
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_admin, container, false);
         setRetainInstance(true);
+
+        mLoading = (ProgressBar)v.findViewById(R.id.admin_frag_progressbar);
 
         mAdminMain = AdminMainFragment.newInstance(this);
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
@@ -169,16 +180,24 @@ public class AdminFragment extends Fragment implements Serializable,
      */
 
     @Override
-    public void pressedOrg(Organization orgSelected) {
-        //TODO: check if the user is an admin of this org
-        //currently choosing randomly
-
-        Random r = new Random();
-        boolean isModifiable = r.nextBoolean();
-
-        //load up orgs
-        ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, this, isModifiable, onToday, onDiscover, onYou, onAdmin);
-        getChildFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
+    public void pressedOrg(final Organization orgSelected) {
+        Log.wtf(TAG, "PARSE USER " + ParseUser.getCurrentUser().getObjectId());
+        AdminDataSource.checkIfUserIsAdminOfOrganization(mLoading, getActivity(), orgSelected.getmObjectId(), ParseUser.getCurrentUser().getObjectId(), new FunctionCallback<Boolean>() {
+            @Override
+            public void done(Boolean isAdmin, ParseException e) {
+                if (e == null) {
+                    Log.wtf(TAG, "IS USER ADMIN? " + isAdmin);
+                    //replace the current profile frag with new org profile frag, while adding it to a backstack
+                    ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, AdminFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
+                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
+                    Log.d(TAG, "org has been pressed on admin page " + orgSelected.toString());
+                } else {
+                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
