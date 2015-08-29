@@ -103,6 +103,9 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
                             android:text="Interested in getting paid gettin laid gatorade"
+                            android:paddingLeft="@dimen/profile_text_padding"
+                            android:paddingRight="@dimen/profile_text_padding"
+                            android:gravity="center"
                             android:textColor="@android:color/white"/>
 
                         <View

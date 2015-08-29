@@ -94,20 +94,19 @@ public class OrgsDataSource {
         params.put("userObjectId", userObjectId);
 
         ParseCloud.callFunctionInBackground("getOrganizationsFollowedByUser", params, new FunctionCallback<List<ParseObject>>() {
-                    @Override
-                    public void done(List<ParseObject> parseObjects, ParseException e) {
-
-                        ArrayList<Organization> orgsFollowed = new ArrayList<Organization>();
-                        if (e == null) {
-                            for (ParseObject object : parseObjects)
-                                orgsFollowed.add(new Organization(object.getParseObject("organization")));
-                        }
-                        loading.setVisibility(View.GONE);
-                        callback.done(orgsFollowed, e);
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e) {
+                ArrayList<Organization> orgsFollowed = new ArrayList<Organization>();
+                if (e == null) {
+                    for (ParseObject object : parseObjects) {
+                        orgsFollowed.add(new Organization(object.getParseObject("organization")));
                     }
+                    loading.setVisibility(View.GONE);
+                    callback.done(orgsFollowed, e);
                 }
 
-        );
+            }
+        });
     }
 
     public static void getAllTopLevelOrganizations (final ProgressBar loading, final FunctionCallback<ArrayList<Organization>> callback){

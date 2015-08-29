@@ -34,4 +34,5 @@
     <dimen name="profile_edit_button_size">46dp</dimen>
     <dimen name="post_image_margin_top">8dp</dimen>
     <dimen name="post_text_min_height">51dp</dimen>
+    <dimen name="profile_text_padding">16dp</dimen>
 </resources>

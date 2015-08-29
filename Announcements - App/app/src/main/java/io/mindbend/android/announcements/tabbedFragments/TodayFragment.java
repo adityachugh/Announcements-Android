@@ -180,7 +180,7 @@ public class TodayFragment extends Fragment implements Serializable,
 
     @Override
     public void fullPostProfile(Post clickedPost) {
-
+        mFab.setVisibility(View.GONE);
     }
 
     @Override

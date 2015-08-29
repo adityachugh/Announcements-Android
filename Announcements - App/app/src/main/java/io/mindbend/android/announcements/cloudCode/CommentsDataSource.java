@@ -42,7 +42,6 @@ public class CommentsDataSource {
                 if (e == null){
                     if (parseObjects != null && parseObjects.size() > 0){
                         for (ParseObject object : parseObjects){
-                            Log.wtf("COMMENTS", object.getParseUser("CreateUser") + "");
                             ParseUser user = (ParseUser)object.get(CommentsDataSource.COMMENT_USER);
                             comments.add(new Comment(context, object));
                         }

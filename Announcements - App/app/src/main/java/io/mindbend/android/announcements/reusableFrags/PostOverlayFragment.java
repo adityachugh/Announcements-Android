@@ -139,16 +139,10 @@ public class PostOverlayFragment extends Fragment implements Serializable, Posts
 
     public void returnFromComments(){
         isOnComments = false;
-
-        getChildFragmentManager()
-                .beginTransaction()
-                .remove(mCurrentComments)
-                .commitAllowingStateLoss();
-        mCurrentComments = null;
-        getChildFragmentManager().popBackStack();
-
         //to let the parent frags know that we returned to frags (ex. for today tab to update fab)
         mListener.onReturnToPosts();
+        getChildFragmentManager().popBackStack();
+
     }
 
     @Override

@@ -23,6 +23,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -172,7 +173,7 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
                 if (!mTodayFragment.getmPostsOverlayFragment().isVisible())
                     mTodayFragment.getChildFragmentManager().popBackStack();
                 else if (!mTodayFragment.getmPostsOverlayFragment().getmPostsFragment().isVisible()){
-                    mTodayFragment.getmPostsOverlayFragment().getChildFragmentManager().popBackStack();
+                    mTodayFragment.getmPostsOverlayFragment().pressedBackToPosts();
                 }
                 break;
             case 1:
