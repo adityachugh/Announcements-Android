@@ -57,6 +57,11 @@ public class OrgsDataSource {
                 ArrayList<Organization> orgs = new ArrayList<Organization>();
                 if (e == null) {
                     for (ParseObject object : parseObjects) {
+                        try {
+                            object.fetchIfNeeded();
+                        } catch (ParseException e1) {
+                            e1.printStackTrace();
+                        }
                         orgs.add(new Organization(object));
                     }
                 }
@@ -79,6 +84,11 @@ public class OrgsDataSource {
                 ArrayList<Organization> orgs = new ArrayList<Organization>();
                 if (e == null) {
                     for (ParseObject object : parseObjects) {
+                        try {
+                            object.fetchIfNeeded();
+                        } catch (ParseException e1) {
+                            e1.printStackTrace();
+                        }
                         orgs.add(new Organization(object));
                     }
                 }
@@ -99,7 +109,13 @@ public class OrgsDataSource {
                 ArrayList<Organization> orgsFollowed = new ArrayList<Organization>();
                 if (e == null) {
                     for (ParseObject object : parseObjects) {
-                        orgsFollowed.add(new Organization(object.getParseObject("organization")));
+                        ParseObject org = object.getParseObject("organization");
+                        try {
+                            org.fetchIfNeeded();
+                        } catch (ParseException e1) {
+                            e1.printStackTrace();
+                        }
+                        orgsFollowed.add(new Organization(org));
                     }
                     loading.setVisibility(View.GONE);
                     callback.done(orgsFollowed, e);
@@ -117,8 +133,14 @@ public class OrgsDataSource {
             public void done(List<ParseObject> parseObjects, ParseException e) {
                 ArrayList<Organization> topOrgs = new ArrayList<Organization>();
                 if (e == null) {
-                    for (ParseObject object : parseObjects)
+                    for (ParseObject object : parseObjects){
+                        try {
+                            object.fetchIfNeeded();
+                        } catch (ParseException e1) {
+                            e1.printStackTrace();
+                        }
                         topOrgs.add(new Organization(object));
+                    }
                 }
                 loading.setVisibility(View.GONE);
                 callback.done(topOrgs, e);
