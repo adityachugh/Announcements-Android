@@ -104,6 +104,9 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     private transient TextView mProfileTag;
     private transient ProgressBar mLoading;
 
+    private transient ImageButton mFollowFab;
+    int i = 0; //TODO: delete this int afterwards
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -255,10 +258,35 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 followCount.setText(mOrg.getFollowers() + " Followers");
                 mProfileDetail.setText(mOrg.getDescription());
                 mProfileTag.setText(mOrg.getTag());
+
+
+                mFollowFab = (ImageButton)mView.findViewById(R.id.profile_follow_state_fab);
+                mFollowFab.setVisibility(View.VISIBLE);
+                mFollowFab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        updateFollowState();
+                    }
+                });
             }
         }
 
         return mView;
+    }
+
+    private void updateFollowState() {
+        //TODO: actually change state in db
+        i++;
+        if (i%2 == 0)
+            mFollowFab.setImageResource(R.drawable.ic_not_following);
+        else
+            mFollowFab.setImageResource(R.drawable.ic_following);
+//        UserDataSource.updateFollowStateForUser(getActivity(), IDK, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
+//            @Override
+//            public void done(Boolean aBoolean, ParseException e) {
+//                //TODO: update fab icon here
+//            }
+//        });
     }
 
     private void loadOrgsFollowed(final String userObjectId){

@@ -113,12 +113,25 @@ public class UserDataSource {
         });
     }
 
-    public static void updateFollowStateForUser (Boolean isFollowing, String organizationObjectId){
+    public static void updateFollowStateForUser (final Context context, final Boolean isFollowing, String organizationObjectId, final FunctionCallback<Boolean> callback){
         HashMap<String, Object> params = new HashMap<>();
         params.put("isFollowing", isFollowing);
         params.put("organizationObjectId", organizationObjectId);
+        final String toastText = isFollowing ? "" : "un";
 
-        ParseCloud.callFunctionInBackground("updateFollowStateForUser", params);
+        ParseCloud.callFunctionInBackground("updateFollowStateForUser", params, new FunctionCallback<Boolean>() {
+            @Override
+            public void done(Boolean isSuccessful, ParseException e) {
+                String message = "Failure";
+                if (e == null && isSuccessful)
+                    message = "Successfully "+toastText+"followed organization";
+                if (e != null)
+                    e.printStackTrace();
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+
+                callback.done(isFollowing, e);
+            }
+        });
         //no callback needed
     }
 

@@ -138,6 +138,20 @@
             </RelativeLayout>
         </com.nirhart.parallaxscroll.views.ParallaxScrollView>
 
+        <ImageButton
+            android:visibility="gone"
+            android:id="@+id/profile_follow_state_fab"
+            android:layout_width="@dimen/fab_size"
+            android:layout_height="@dimen/fab_size"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="@dimen/fab_side_margin"
+            android:layout_marginBottom="@dimen/fab_side_margin"
+            android:background="@drawable/fab"
+            android:elevation="@dimen/fab_elevation"
+            android:src="@drawable/ic_not_following"
+            />
+
         <ProgressBar
             android:layout_width="@dimen/progress_bar_LARGE"
             android:layout_height="@dimen/progress_bar_LARGE"
