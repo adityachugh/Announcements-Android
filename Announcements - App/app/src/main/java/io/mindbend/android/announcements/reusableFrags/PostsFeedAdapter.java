@@ -1,6 +1,8 @@
 package io.mindbend.android.announcements.reusableFrags;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -82,11 +85,12 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
 
         //add image if present
         if (!post.getmPostImageURL().equals("")){
-            Picasso.with(mContext).load(post.getmPostImageURL()).into(viewHolder.mPostImage);
 
             //image height is 200dp
             int imageHeightinPx = (int) (200 * mScale + 0.5f);
             viewHolder.mPostImage.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, imageHeightinPx));
+
+            Picasso.with(mContext).load(post.getmPostImageURL()).into(viewHolder.mPostImage);
 
             //TODO: click image to open in full screen
         }

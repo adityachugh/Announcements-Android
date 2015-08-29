@@ -1,6 +1,7 @@
 package io.mindbend.android.announcements.reusableFrags;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
@@ -87,12 +89,36 @@ public class PostCardFullFragment extends Fragment implements Serializable {
 
             if (!mPost.getmPostImageURL().equals("")){
                 //load image
-                Picasso.with(getActivity()).load(mPost.getmPostImageURL()).into(postImage);
 
                 //image height is 200dp - set layout params from dp to px
                 float scale = getActivity().getResources().getDisplayMetrics().density;
                 int imageHeightinPx = (int) (200 * scale + 0.5f);
                 postImage.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, imageHeightinPx));
+
+                Picasso.with(getActivity()).load(mPost.getmPostImageURL()).into(postImage);
+
+                postImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final Dialog nagDialog = new Dialog(getActivity(), android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
+                        nagDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        nagDialog.setCancelable(false);
+                        nagDialog.setContentView(R.layout.preview_image);
+                        Button btnClose = (Button) nagDialog.findViewById(R.id.btnIvClose);
+                        ImageView ivPreview = (ImageView) nagDialog.findViewById(R.id.iv_preview_image);
+
+                        Picasso.with(getActivity()).load(mPost.getmPostImageURL()).into(ivPreview);
+                        ivPreview.setBackgroundDrawable(null);
+
+                        btnClose.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                nagDialog.dismiss();
+                            }
+                        });
+                        nagDialog.show();
+                    }
+                });
             }
 
             if (!mPost.getmPosterOrg().getmProfileImageURL().equals(""))
