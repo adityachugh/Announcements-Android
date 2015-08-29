@@ -19,6 +19,16 @@
             android:background="@color/primary"
             android:minHeight="?attr/actionBarSize"
             android:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Today"
+                android:textSize="@dimen/toolbar_landscape_page_text"
+                android:layout_gravity="center"
+                android:id="@+id/landscape_toolbar_title"
+                android:visibility="gone"
+                style="@style/Base.TextAppearance.AppCompat.Body2"
+                android:textColor="@android:color/white"/>
         </android.support.v7.widget.Toolbar>
 
         <it.neokree.materialtabs.MaterialTabHost

@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
@@ -18,24 +20,30 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FunctionCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
+import org.w3c.dom.Text;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 
 import io.mindbend.android.announcements.adminClasses.AdminMainFragment;
 import io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment;
@@ -72,6 +80,9 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
     public YouFragment mYouFragment;
 
     private Bundle mSavedInstanceState;
+    private Toolbar mToolbar;
+
+    private TextView mTitleTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +106,7 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
         }
 
         //gets backwards compatible toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
         //gets tabBar, adds tabs
         mTabBar = (MaterialTabHost) findViewById(R.id.tab_bar);
@@ -105,8 +116,57 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
         //TODO: only add admin tag if user is admin
         mTabBar.addTab(mTabBar.newTab().setText("Admin").setTabListener(this));
 
-        toolbar.setTitle(getString(R.string.format_tabbed_activity_toolbar_text, ParseUser.getCurrentUser().getString(VerificationDataSource.USER_FIRST_NAME))); //TODO: pull in user's name
-        setSupportActionBar(toolbar);
+        mToolbar.setTitle(getString(R.string.format_tabbed_activity_toolbar_text, ParseUser.getCurrentUser().getString(VerificationDataSource.USER_FIRST_NAME))); //TODO: pull in user's name
+        setSupportActionBar(mToolbar);
+
+        mTitleTextView = (TextView)findViewById(R.id.landscape_toolbar_title);
+
+        if (getScreenOrientation() == Configuration.ORIENTATION_LANDSCAPE) {
+            mTabBar.setVisibility(View.GONE);
+            mTitleTextView.setVisibility(View.VISIBLE);
+            updateLandscapePageText();
+        }
+
+    }
+
+    private void updateLandscapePageText() {
+        String tabText = "";
+        switch (mViewPager.getCurrentItem()){
+            case 0:
+                tabText = "Today";
+                break;
+            case 1:
+                tabText = "Discover";
+                break;
+            case 2:
+                tabText = "You";
+                break;
+            case 3:
+                tabText = "Admin";
+                break;
+
+        }
+        mTitleTextView.setText(tabText);
+    }
+
+    public int getScreenOrientation()
+    {
+        /**
+         * This method is being used instead of getResources.getConfiguration.orientation
+         * as that sometimes returns the WRONG orientation on old devices.
+         */
+        Display getOrient = getWindowManager().getDefaultDisplay();
+        int orientation = Configuration.ORIENTATION_UNDEFINED;
+        if(getOrient.getWidth()==getOrient.getHeight()){
+            orientation = Configuration.ORIENTATION_SQUARE;
+        } else{
+            if(getOrient.getWidth() < getOrient.getHeight()){
+                orientation = Configuration.ORIENTATION_PORTRAIT;
+            }else {
+                orientation = Configuration.ORIENTATION_LANDSCAPE;
+            }
+        }
+        return orientation;
     }
 
     @Override
@@ -121,6 +181,9 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
 
     @Override
     public void onPageSelected(int position) {
+        if (getScreenOrientation() == Configuration.ORIENTATION_LANDSCAPE) {
+            updateLandscapePageText();
+        }
         mTabBar.setSelectedNavigationItem(position);
     }
 
