@@ -285,6 +285,11 @@ public class AdminFragment extends Fragment implements Serializable,
     }
 
     @Override
+    public void openOrgProfileFromPosts(Organization organization) {
+        pressedOrg(organization);
+    }
+
+    @Override
     public void visitCommentersProfile(User commenterToBeVisited) {
 
     }

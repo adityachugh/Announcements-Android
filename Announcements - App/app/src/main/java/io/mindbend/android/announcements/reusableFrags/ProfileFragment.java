@@ -559,8 +559,20 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     }
 
     @Override
+    public void openOrgProfileFromPosts(Organization organization) {
+        if (organization != mOrg)
+            pressedOrg(organization);
+    }
+
+    @Override
     public void CommentButtonClicked(Post postComments) {
         profileComments(postComments);
+    }
+
+    @Override
+    public void openPosterOrgProfile(Organization organization) {
+        if (organization != mOrg)
+            pressedOrg(organization);
     }
 
     @Override

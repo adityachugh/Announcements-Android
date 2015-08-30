@@ -23,10 +23,11 @@ import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
 
+import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 
-public class PostCardFullFragment extends Fragment implements Serializable {
+public class PostCardFullFragment extends Fragment implements Serializable, View.OnClickListener {
     private static final String TAG = "PostCardFullFragment";
 
     private static final String ARG_POST = "post";
@@ -119,6 +120,10 @@ public class PostCardFullFragment extends Fragment implements Serializable {
                         nagDialog.show();
                     }
                 });
+
+                postClubName.setOnClickListener(this);
+                postClubPic.setOnClickListener(this);
+                postTitle.setOnClickListener(this);
             }
 
             if (!mPost.getmPosterOrg().getmProfileImageURL().equals(""))
@@ -173,8 +178,14 @@ public class PostCardFullFragment extends Fragment implements Serializable {
         mListener = null;
     }
 
+    @Override
+    public void onClick(View v) {
+        mListener.openPosterOrgProfile(mPost.getmPosterOrg());
+    }
+
     public interface FullPostInteractionListener extends Serializable {
         void CommentButtonClicked(Post postComments);
+        void openPosterOrgProfile(Organization organization);
     }
 
 }

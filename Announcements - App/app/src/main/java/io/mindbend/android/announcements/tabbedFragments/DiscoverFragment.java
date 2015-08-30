@@ -137,6 +137,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
 
     @Override
     public void viewMembers(Organization org) {
+        //TODO: grab admin list from db
         ArrayList<User> users = new ArrayList<User>();
         users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
         users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
@@ -228,6 +229,11 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
     @Override
     public void refreshPosts() {
 
+    }
+
+    @Override
+    public void openOrgProfileFromPosts(Organization organization) {
+        pressedOrgFromProfile(organization);
     }
 
     @Override

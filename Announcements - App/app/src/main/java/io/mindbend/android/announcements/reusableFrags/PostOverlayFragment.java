@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
@@ -150,6 +151,11 @@ public class PostOverlayFragment extends Fragment implements Serializable, Posts
         pressedPostComments(postComments);
     }
 
+    @Override
+    public void openPosterOrgProfile(Organization organization) {
+        mListener.openOrgProfileFromPosts(organization);
+    }
+
     public Post getmLastPost() {
         return mLastPost;
     }
@@ -176,6 +182,7 @@ public class PostOverlayFragment extends Fragment implements Serializable, Posts
         void fullPostProfile (Post clickedPost);
         void profileComments (Post post);
         void refreshPosts();
+        void openOrgProfileFromPosts(Organization organization);
     }
 
 }

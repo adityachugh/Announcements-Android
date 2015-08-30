@@ -95,6 +95,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
                     boolean isFollowing = false;
                     if (mProfileFragment.isVisible())
                         isFollowing = true;
+                    //TODO: else, grab from db
                     //replace the current profile frag with new org profile frag, while adding it to a backstack
                     ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, isFollowing,YouFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
                     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
@@ -221,6 +222,11 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
     @Override
     public void refreshPosts() {
 
+    }
+
+    @Override
+    public void openOrgProfileFromPosts(Organization organization) {
+        userProfileToOrgProfile(organization);
     }
 
     @Override

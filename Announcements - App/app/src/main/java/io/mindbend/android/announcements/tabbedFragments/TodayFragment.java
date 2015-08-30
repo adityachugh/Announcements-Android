@@ -229,6 +229,30 @@ public class TodayFragment extends Fragment implements Serializable,
     }
 
     @Override
+    public void openOrgProfileFromPosts(final Organization organization) {
+        boolean isFollowing = false;
+        if (!mPostsOverlayFragment.getIsOnComments() && !mPostsOverlayFragment.getmPostsFragment().isVisible())
+            isFollowing = true;
+        else {
+            //TODO: call isFollowing
+        }
+        final boolean finalIsFollowing = isFollowing;
+        AdminDataSource.checkIfUserIsAdminOfOrganization(mLoading, getActivity(), organization.getmObjectId(), ParseUser.getCurrentUser().getObjectId(), new FunctionCallback<Boolean>() {
+            @Override
+            public void done(Boolean isAdmin, ParseException e) {
+                if (e == null){
+                    ProfileFragment orgProfile = ProfileFragment.newInstance(null, organization, finalIsFollowing, TodayFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
+                    getChildFragmentManager().beginTransaction()
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .replace(R.id.today_framelayout, orgProfile)
+                            .addToBackStack(null)
+                            .commitAllowingStateLoss();
+                }
+            }
+        });
+    }
+
+    @Override
     public void modifyOrg(Organization org) {
         getChildFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)

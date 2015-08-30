@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
@@ -170,5 +171,10 @@ public class PostsCardsFragment extends Fragment implements Serializable, SwipeR
     @Override
     public void refreshPosts() {
         mPostsOverlayListener.refreshPosts();
+    }
+
+    @Override
+    public void openOrgProfileFromPosts(Organization organization) {
+        mPostsOverlayListener.openOrgProfileFromPosts(organization);
     }
 }

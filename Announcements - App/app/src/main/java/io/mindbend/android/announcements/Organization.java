@@ -3,6 +3,7 @@ package io.mindbend.android.announcements;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.parse.ParseException;
 import com.parse.ParseObject;
 
 import java.io.Serializable;
@@ -38,6 +39,11 @@ public class Organization implements Serializable, Parcelable {
     }
 
     public Organization (ParseObject object){
+        try {
+            object.fetchIfNeeded();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         mObjectId = object.getObjectId();
         mTitle = object.getString(OrgsDataSource.ORG_TITLE);
         mDescription = object.getString(OrgsDataSource.ORG_DESCRIPTION);
