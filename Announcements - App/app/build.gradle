@@ -31,5 +31,6 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.0'
     compile 'com.github.nirhart:parallaxscroll:1.0'
     compile 'com.facebook.rebound:rebound:0.3.8'
+    compile 'com.github.orangegangsters:swipy:1.2.0@aar'
     compile project(':materialannouncements')
 }

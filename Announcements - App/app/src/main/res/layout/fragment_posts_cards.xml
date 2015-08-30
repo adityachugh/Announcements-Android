@@ -1,16 +1,19 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="io.mindbend.android.announcements.reusableFrags.PostsCardsFragment">
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/post_refresher">
+        android:id="@+id/post_refresher"
+        app:direction="both">
         <android.support.v7.widget.RecyclerView
             android:id="@+id/posts_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout>
 
 </FrameLayout>

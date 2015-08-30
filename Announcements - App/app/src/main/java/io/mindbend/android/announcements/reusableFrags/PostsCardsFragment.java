@@ -15,6 +15,12 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.AbsListView;
+import android.widget.Toast;
+
+import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
+import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
+import com.parse.FunctionCallback;
+import com.parse.ParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,9 +30,10 @@ import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
+import io.mindbend.android.announcements.cloudCode.PostsDataSource;
 import io.mindbend.android.announcements.tabbedFragments.TodayFragment;
 
-public class PostsCardsFragment extends Fragment implements Serializable, SwipeRefreshLayout.OnRefreshListener, PostOverlayFragment.PostsOverlayListener {
+public class PostsCardsFragment extends Fragment implements Serializable, PostOverlayFragment.PostsOverlayListener, SwipyRefreshLayout.OnRefreshListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_POSTS = "posts";
@@ -42,7 +49,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, SwipeR
     private transient View mView;
     //To pass into feed adapter (dynamic sizing)
     private float mScale;
-    private transient SwipeRefreshLayout mRefreshTodayPosts;
+    private transient SwipyRefreshLayout mRefreshTodayPosts;
     private boolean mIsViewingState;
 
     /**
@@ -105,7 +112,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, SwipeR
             trans.setInterpolator(new DecelerateInterpolator(1.0f));
             recyclerView.startAnimation(trans);
 
-            mRefreshTodayPosts = (SwipeRefreshLayout)mView.findViewById(R.id.post_refresher);
+            mRefreshTodayPosts = (SwipyRefreshLayout)mView.findViewById(R.id.post_refresher);
             mRefreshTodayPosts.setColorSchemeResources(R.color.accent, R.color.primary);
 
             if (getParentFragment().getParentFragment() instanceof TodayFragment) //so the refresher is ONLY there if the user is viewing the today posts
@@ -127,21 +134,6 @@ public class PostsCardsFragment extends Fragment implements Serializable, SwipeR
         super.onDetach();
     }
 
-    @Override
-    public void onRefresh() {
-        //TODO: reload today's posts into this fragment
-
-        refreshPosts();
-
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //Do something after 1000ms
-                mRefreshTodayPosts.setRefreshing(false);
-            }
-        }, 1000);
-    }
 
     @Override
     public void fullPostProfile(Post clickedPost) {
@@ -176,5 +168,35 @@ public class PostsCardsFragment extends Fragment implements Serializable, SwipeR
     @Override
     public void openOrgProfileFromPosts(Organization organization) {
         mPostsOverlayListener.openOrgProfileFromPosts(organization);
+    }
+
+    @Override
+    public void onRefresh(SwipyRefreshLayoutDirection direction) {
+        if(direction == SwipyRefreshLayoutDirection.TOP)
+            refreshPosts();
+        else
+            loadMorePosts();
+
+    }
+
+    private void loadMorePosts() {
+        int startIndex = mPosts.size();
+        int numberOfPostsToLoad = 10;
+        TodayFragment todayFragment = ((TodayFragment)getParentFragment().getParentFragment());
+
+        PostsDataSource.getRangeOfPostsForDay(todayFragment.mLoading, getActivity(), startIndex, numberOfPostsToLoad, todayFragment.mCurrentDateSelected, new FunctionCallback<ArrayList<Post>>() {
+            @Override
+            public void done(ArrayList<Post> posts, ParseException e) {
+                mRefreshTodayPosts.setRefreshing(false);
+                if (e == null){
+                    if (posts.size() > 0){
+                        mPosts.addAll(posts);
+                        mPostFeedAdapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(getActivity(), R.string.no_more_posts_message, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
     }
 }

@@ -71,7 +71,7 @@ public class TodayFragment extends Fragment implements Serializable,
     private static final String TAG = "TodayFragment";
 
     private transient ImageButton mFab;
-    private transient ProgressBar mLoading;
+    public transient ProgressBar mLoading;
     //in order to add frags to the backstack
     public static final String TODAY_POSTS_FRAG = "today_posts_frag";
     private transient PostOverlayFragment mPostsOverlayFragment;
@@ -82,7 +82,7 @@ public class TodayFragment extends Fragment implements Serializable,
     private boolean onYou = false;
     private boolean onAdmin = false;
 
-    private Date mCurrentDateSelected;
+    public Date mCurrentDateSelected;
 
     public TodayFragment() {
         // Required empty public constructor

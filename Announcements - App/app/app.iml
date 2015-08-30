@@ -77,6 +77,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.github.markushi/android-ui/1.2/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.github.nirhart/parallaxscroll/1.0/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.github.orangegangsters/swipy/1.2.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/de.hdodenhof/circleimageview/1.2.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/it.neokree/MaterialTabs/0.11/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
@@ -100,6 +101,7 @@
     <orderEntry type="library" exported="" name="Parse-1.10.1" level="project" />
     <orderEntry type="library" exported="" name="bolts-android-1.2.0" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-22.2.1" level="project" />
+    <orderEntry type="library" exported="" name="swipy-1.2.0" level="project" />
     <orderEntry type="library" exported="" name="cardview-v7-22.2.1" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-22.2.1" level="project" />
     <orderEntry type="library" exported="" name="parallaxscroll-1.0" level="project" />

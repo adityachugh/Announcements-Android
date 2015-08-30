@@ -96,4 +96,5 @@
     <string name="login_user_dialog_title">Login to continue</string>
     <string name="login_dialog_button_text">Login</string>
     <string name="empty_comment_message">Cannot post empty comment.</string>
+    <string name="no_more_posts_message">No more posts to load</string>
 </resources>
