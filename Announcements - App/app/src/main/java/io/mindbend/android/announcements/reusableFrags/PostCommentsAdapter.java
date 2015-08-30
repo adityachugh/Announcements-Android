@@ -64,12 +64,7 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
 
     @Override
     public void onClick(View v) {
-        //FAKE USER FOR TESTING
-        User testUser = new User("Aditya", "Chugh", "getting paper", "node.js", "#Grade12", 9);
-
-        //TODO: send in the current user to the post frag. Then, you only have to load the orgs followed by the user
-
-        mListener.commenterProfilePressed(testUser);
+        mListener.commenterProfilePressed(mPoster);
     }
 
     @Override

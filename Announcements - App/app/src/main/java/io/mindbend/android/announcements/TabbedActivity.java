@@ -82,7 +82,7 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
     private Bundle mSavedInstanceState;
     private Toolbar mToolbar;
 
-    private TextView mTitleTextView;
+    private transient TextView mTitleTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
