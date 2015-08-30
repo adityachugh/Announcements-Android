@@ -24,10 +24,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.nirhart.parallaxscroll.views.ParallaxScrollView;
 import com.parse.FunctionCallback;
 import com.parse.ParseException;
-import com.parse.ParseUser;
 import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
@@ -66,6 +64,8 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     private static final String ARG_PROFILE_LISTENER = "profile_listener_interface";
     private static final String ARG_ORG = "org";
     private static final String ARG_TO_EDIT = "to_edit";
+    private static final String ARG_IS_FOLLOWING_ORG = "is_following_org";
+
 
     public static final String FULL_POST_FRAG = "full_post_frag";
     public static final String COMMENTS_FRAG = "comments_frag";
@@ -78,6 +78,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     private User mUser;
     private Organization mOrg;
     private boolean mToEdit;
+    private boolean mIsFollowingOrg;
 
     private OrgsGridAdapter.OrgInteractionListener mOrgListener = this;
     private PostOverlayFragment.PostsOverlayListener mPostsOverlayListener = this;
@@ -105,7 +106,6 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     private transient ProgressBar mLoading;
 
     private transient ImageButton mFollowFab;
-    int i = 0; //TODO: delete this int afterwards
 
     /**
      * Use this factory method to create a new instance of
@@ -116,7 +116,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
      * @return A new instance of fragment ProfileFragment.
      */
 
-    public static ProfileFragment newInstance(User user, Organization org, ProfileInteractionListener profileListener, boolean toEdit, boolean onTodayTab, boolean onDiscoverTab, boolean onYouTab, boolean onAdminTab) {
+    public static ProfileFragment newInstance(User user, Organization org, boolean isFollowingOrg, ProfileInteractionListener profileListener, boolean toEdit, boolean onTodayTab, boolean onDiscoverTab, boolean onYouTab, boolean onAdminTab) {
 
         //***NOTE*** : one of user or org must be null
         //***NOTE*** : only one of onToday, onDiscover or onYou must be true!
@@ -131,6 +131,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         args.putBoolean(ON_DISCOVER, onDiscoverTab);
         args.putBoolean(ON_YOU, onYouTab);
         args.putBoolean(ON_ADMIN, onAdminTab);
+        args.putBoolean(ARG_IS_FOLLOWING_ORG, isFollowingOrg);
         fragment.setArguments(args);
         return fragment;
     }
@@ -151,6 +152,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
             mOnDiscover = getArguments().getBoolean(ON_DISCOVER);
             mOnYou = getArguments().getBoolean(ON_YOU);
             mOnAdmin = getArguments().getBoolean(ON_ADMIN);
+            mIsFollowingOrg = getArguments().getBoolean(ARG_IS_FOLLOWING_ORG);
         }
     }
 
@@ -261,6 +263,8 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
 
 
                 mFollowFab = (ImageButton)mView.findViewById(R.id.profile_follow_state_fab);
+                if (mIsFollowingOrg)
+                    mFollowFab.setImageResource(R.drawable.ic_following);
                 mFollowFab.setVisibility(View.VISIBLE);
                 mFollowFab.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -275,18 +279,23 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     }
 
     private void updateFollowState() {
-        //TODO: actually change state in db
-        i++;
-        if (i%2 == 0)
-            mFollowFab.setImageResource(R.drawable.ic_not_following);
-        else
-            mFollowFab.setImageResource(R.drawable.ic_following);
-//        UserDataSource.updateFollowStateForUser(getActivity(), IDK, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
-//            @Override
-//            public void done(Boolean aBoolean, ParseException e) {
-//                //TODO: update fab icon here
-//            }
-//        });
+        UserDataSource.updateFollowStateForUser(getActivity(), !mIsFollowingOrg, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
+            @Override
+            public void done(Boolean success, ParseException e) {
+                if (e == null && success){
+                    mIsFollowingOrg = !mIsFollowingOrg;
+
+                    if (!mIsFollowingOrg) {
+                        mFollowFab.setImageResource(R.drawable.ic_not_following);
+                        mToEdit = false;
+                        mOnAdmin = false;
+                    }
+                    else {
+                        mFollowFab.setImageResource(R.drawable.ic_following);
+                    }
+                }
+            }
+        });
     }
 
     private void loadOrgsFollowed(final String userObjectId){

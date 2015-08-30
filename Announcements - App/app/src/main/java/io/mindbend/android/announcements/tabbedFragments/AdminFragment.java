@@ -187,8 +187,10 @@ public class AdminFragment extends Fragment implements Serializable,
             public void done(Boolean isAdmin, ParseException e) {
                 if (e == null) {
                     Log.wtf(TAG, "IS USER ADMIN? " + isAdmin);
+                    //TODO: call isFollowing function
+                    boolean isFollowing = false;
                     //replace the current profile frag with new org profile frag, while adding it to a backstack
-                    ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, AdminFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
+                    ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, isFollowing, AdminFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
                     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                     transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
                     Log.d(TAG, "org has been pressed on admin page " + orgSelected.toString());
@@ -217,7 +219,7 @@ public class AdminFragment extends Fragment implements Serializable,
 
     @Override
     public void pressedUserFromCommentOfOrgPost(User userPressed) {
-        ProfileFragment userProfile = ProfileFragment.newInstance(userPressed, null, this, false, onToday, onDiscover, onYou, onAdmin);
+        ProfileFragment userProfile = ProfileFragment.newInstance(userPressed, null, false,  this, false, onToday, onDiscover, onYou, onAdmin);
         getChildFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, userProfile).addToBackStack(null).commitAllowingStateLoss();
     }
 

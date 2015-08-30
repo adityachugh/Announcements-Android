@@ -106,7 +106,8 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
                 if (e == null) {
                     Log.wtf(TAG, "IS USER ADMIN? " + isAdmin);
                     //replace the current profile frag with new org profile frag, while adding it to a backstack
-                    ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgPressed, DiscoverFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
+                    //TODO: grab if following from database
+                    ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgPressed, false, DiscoverFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
                     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                     transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
                     Log.d(TAG, "org has been pressed on discover page " + orgPressed.toString());
@@ -120,7 +121,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
 
     @Override
     public void pressedUserFromCommentOfOrgPost(User userPressed) {
-        ProfileFragment userToVisit = ProfileFragment.newInstance(userPressed, null, this, false, onToday, onDiscover, onYou, onAdmin);
+        ProfileFragment userToVisit = ProfileFragment.newInstance(userPressed, null, false, this, false, onToday, onDiscover, onYou, onAdmin);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, userToVisit).addToBackStack(null).commitAllowingStateLoss();
     }

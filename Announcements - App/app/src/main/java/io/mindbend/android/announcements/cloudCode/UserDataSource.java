@@ -125,8 +125,10 @@ public class UserDataSource {
                 String message = "Failure";
                 if (e == null && isSuccessful)
                     message = "Successfully "+toastText+"followed organization";
-                if (e != null)
+                if (e != null){
                     e.printStackTrace();
+                    message = "Error";
+                }
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 
                 callback.done(isFollowing, e);

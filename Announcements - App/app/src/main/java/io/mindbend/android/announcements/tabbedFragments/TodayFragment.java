@@ -173,7 +173,7 @@ public class TodayFragment extends Fragment implements Serializable,
 
     @Override
     public void visitCommentersProfile(User commenterToBeVisited) {
-        ProfileFragment commenterVisited = ProfileFragment.newInstance(commenterToBeVisited, null, this, false, onToday, onDiscover, onYou, onAdmin);
+        ProfileFragment commenterVisited = ProfileFragment.newInstance(commenterToBeVisited, null, false, this, false, onToday, onDiscover, onYou, onAdmin);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.today_framelayout, commenterVisited).addToBackStack(null).commitAllowingStateLoss();
     }
@@ -192,7 +192,8 @@ public class TodayFragment extends Fragment implements Serializable,
                 if (e == null) {
                     Log.wtf(TAG, "IS USER ADMIN? " + isAdmin);
                     //replace the current profile frag with new org profile frag, while adding it to a backstack
-                    ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, TodayFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
+                    //TODO: grab if following from database
+                    ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, false, TodayFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
                     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                     transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.today_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
                     Log.d(TAG, "org has been pressed on profile page " + orgSelected.toString());

@@ -71,7 +71,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
         UserDataSource.getCurrentUserWithInfo(mLoading, new FunctionCallback<User>() {
             @Override
             public void done(User user, ParseException e) {
-                mProfileFragment = ProfileFragment.newInstance(user, null, YouFragment.this, true, onToday, onDiscover, onYou, onAdmin);
+                mProfileFragment = ProfileFragment.newInstance(user, null, false, YouFragment.this, true, onToday, onDiscover, onYou, onAdmin);
                 //inflate profileFrag in framelayout
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                 transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.you_framelayout, mProfileFragment).addToBackStack(DEFAULT).commitAllowingStateLoss();
@@ -92,8 +92,11 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
             public void done(Boolean isAdmin, ParseException e) {
                 if (e == null) {
                     Log.wtf(TAG, "IS USER ADMIN? " + isAdmin);
+                    boolean isFollowing = false;
+                    if (mProfileFragment.isVisible())
+                        isFollowing = true;
                     //replace the current profile frag with new org profile frag, while adding it to a backstack
-                    ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, YouFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
+                    ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, isFollowing,YouFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
                     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                     transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.you_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
                     Log.d(TAG, "org has been pressed on profile page " + orgSelected.toString());
@@ -112,7 +115,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
 
     @Override
     public void pressedUserFromCommentOfOrgPost(User userPressed) {
-        ProfileFragment userToVisit = ProfileFragment.newInstance(userPressed, null, this, false, onToday, onDiscover, onYou, onAdmin);
+        ProfileFragment userToVisit = ProfileFragment.newInstance(userPressed, null, false, this, false, onToday, onDiscover, onYou, onAdmin);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.you_framelayout, userToVisit).addToBackStack(null).commitAllowingStateLoss();
     }
