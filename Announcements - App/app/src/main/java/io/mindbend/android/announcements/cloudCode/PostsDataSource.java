@@ -32,6 +32,12 @@ public class PostsDataSource {
     public static final String POST_PRIORITY = "priority";
     public static final String POST_ORGANIZATION = "organization";
 
+    //levels of priority
+    public static final int LOW_PRIORITY = 1;
+    public static final int MEDIUM_PRIORITY = 2;
+    public static final int HIGH_PRIORITY = 3;
+
+
     public static void getRangeOfPostsForDay (final ProgressBar loader, final Context context, int startIndex, int numberOfPosts, Date date, final FunctionCallback<ArrayList<Post>> callback){
         loader.setVisibility(View.VISIBLE);
         HashMap<String, Object> params = new HashMap<>();

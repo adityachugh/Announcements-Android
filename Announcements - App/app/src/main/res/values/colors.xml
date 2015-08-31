@@ -19,4 +19,8 @@
     <color name="announcement_accepted">#00CC00</color>
     <color name="announcement_declined">#CC0000</color>
     <color name="announcement_pending">#CCCC00</color>
+
+    <color name="post_priority_low">#ddce00</color>
+    <color name="post_priority_medium">#dd8600</color>
+    <color name="post_priority_high">#dd0a00</color>
 </resources>

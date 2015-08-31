@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,6 +24,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Random;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 
@@ -43,6 +46,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
         private final CardView mPostCard;
         private final de.hdodenhof.circleimageview.CircleImageView mPosterImage;
         private final TextView mAnnouncementState;
+        private final de.hdodenhof.circleimageview.CircleImageView mPriorityIndicator;
 
         //TODO: create private fields for the elements within a single feed item
 
@@ -59,6 +63,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
             mPostCard = (CardView) itemView.findViewById(R.id.post_card);
             mPosterImage = (de.hdodenhof.circleimageview.CircleImageView)itemView.findViewById(R.id.post_club_image);
             mAnnouncementState = (TextView)itemView.findViewById(R.id.announcements_state_TV);
+            mPriorityIndicator = (CircleImageView)itemView.findViewById(R.id.post_priority_indicator);
         }
     }
 
@@ -82,6 +87,9 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
         viewHolder.mDetail.setText(post.getmPostDetail());
         viewHolder.mTimeSince.setText(post.getmPostTimeSince());
         viewHolder.mClubUsername.setText(post.getmPostClubUsername());
+        if(post.getPriorityDrawable(mContext) != null){
+            viewHolder.mPriorityIndicator.setBackgroundDrawable(post.getPriorityDrawable(mContext));
+        }
 
         //add image if present
         if (!post.getmPostImageURL().equals("")){

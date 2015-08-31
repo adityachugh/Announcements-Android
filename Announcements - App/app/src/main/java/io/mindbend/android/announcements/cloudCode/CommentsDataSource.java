@@ -70,8 +70,3 @@ public class CommentsDataSource {
         });
     }
 }
-
-//Parse.Cloud.define("postCommentAsUserOnPost", function(request, response){
-////TESTED
-//
-////Pre: commentText, user, postObjectId

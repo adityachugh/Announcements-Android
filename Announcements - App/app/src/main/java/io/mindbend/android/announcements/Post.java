@@ -1,6 +1,7 @@
 package io.mindbend.android.announcements;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.format.DateUtils;
@@ -22,9 +23,9 @@ public class Post implements Serializable, Parcelable {
     private String mPostTimeSince;
     private String mPostDetail;
     private String mPostClubUsername;
-
     private Organization mPosterOrg;
     private String  mPostImageURL = "";
+    private int mPriority;
     //TODO: setup passing in club image for the post
     //private String mUrlToPicture;
 
@@ -48,6 +49,8 @@ public class Post implements Serializable, Parcelable {
             mPostImageURL = object.getParseFile(PostsDataSource.POST_IMAGE).getUrl();
         else
             mPostImageURL = "";
+        mPriority = object.getInt(PostsDataSource.POST_PRIORITY);
+
     }
 
     public Post (Parcel post) {
@@ -57,6 +60,7 @@ public class Post implements Serializable, Parcelable {
         mPostDetail = post.readString();
         mPostClubUsername = post.readString();
         mPostImageURL = post.readString();
+        mPriority = post.readInt();
     }
 
     @Override
@@ -72,6 +76,7 @@ public class Post implements Serializable, Parcelable {
         dest.writeString(mPostDetail);
         dest.writeString(mPostClubUsername);
         dest.writeString(mPostImageURL);
+        dest.writeInt(mPriority);
     }
 
     public static final Parcelable.Creator<Post> CREATOR
@@ -111,5 +116,21 @@ public class Post implements Serializable, Parcelable {
 
     public String getmPostImageURL() {
         return mPostImageURL;
+    }
+
+    public Drawable getPriorityDrawable(Context context) {
+        Drawable priorityDrawable = context.getResources().getDrawable(R.drawable.fab);
+        switch (mPriority){
+            case PostsDataSource.LOW_PRIORITY:
+                priorityDrawable = context.getResources().getDrawable(R.drawable.low_priority_indicator);
+                break;
+            case PostsDataSource.MEDIUM_PRIORITY:
+                priorityDrawable = context.getResources().getDrawable(R.drawable.med_priority_indicator);
+                break;
+            case PostsDataSource.HIGH_PRIORITY:
+                priorityDrawable = context.getResources().getDrawable(R.drawable.high_priority_indicator);
+                break;
+        }
+        return priorityDrawable;
     }
 }

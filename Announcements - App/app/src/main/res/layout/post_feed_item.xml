@@ -21,6 +21,14 @@
             android:layout_marginTop="@dimen/card_inner_margin">
 
             <de.hdodenhof.circleimageview.CircleImageView
+                android:background="@drawable/fab"
+                android:id="@+id/post_priority_indicator"
+                android:layout_width="@dimen/post_priority_indicator_size"
+                android:layout_height="@dimen/post_priority_indicator_size"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/post_club_image"
                 android:layout_width="@dimen/circle_avatar_size"
                 android:layout_height="@dimen/circle_avatar_size"

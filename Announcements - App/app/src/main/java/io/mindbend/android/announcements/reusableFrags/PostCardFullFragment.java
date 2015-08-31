@@ -23,6 +23,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
@@ -82,11 +83,16 @@ public class PostCardFullFragment extends Fragment implements Serializable, View
             TextView postClubName = (TextView) mView.findViewById(R.id.post_club_username_full);
             ImageView postClubPic = (ImageView) mView.findViewById(R.id.post_club_image_full);
             ImageView postImage = (ImageView) mView.findViewById(R.id.post_image_attached_full);
+            CircleImageView priorityIndicator = (CircleImageView)mView.findViewById(R.id.full_post_priority_indicator);
 
             postTitle.setText(mPost.getmPostTitle());
             postDetail.setText(mPost.getmPostDetail());
             postTime.setText(mPost.getmPostTimeSince());
             postClubName.setText(mPost.getmPostClubUsername());
+
+            if(mPost.getPriorityDrawable(getActivity()) != null){
+                priorityIndicator.setBackgroundDrawable(mPost.getPriorityDrawable(getActivity()));
+            }
 
             if (!mPost.getmPostImageURL().equals("")){
                 //load image
