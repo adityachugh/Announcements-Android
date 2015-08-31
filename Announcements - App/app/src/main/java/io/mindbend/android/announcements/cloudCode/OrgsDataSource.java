@@ -37,6 +37,12 @@ public class OrgsDataSource {
     public final static String ORG_TYPES_PRIVATE = "PRI";
     public final static String ORG_TYPES_PUBLIC = "PUB";
 
+    public final static String FOLLOW_STATE_ACCEPTED = "A";
+    public final static String FOLLOW_STATE_NO_REQUEST_SENT = null;
+    public final static String FOLLOW_STATE_PENDING = "P";
+    public final static String FOLLOW_STATE_REJECTED = "R";
+
+
     public static boolean isNew(ParseObject org) {
         DateTime date = new DateTime(org.getCreatedAt());
         DateTime today = new DateTime();

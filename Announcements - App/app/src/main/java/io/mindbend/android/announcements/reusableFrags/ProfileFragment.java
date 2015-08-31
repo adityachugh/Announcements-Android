@@ -30,8 +30,6 @@ import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.mindbend.android.announcements.Organization;
@@ -66,7 +64,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     private static final String ARG_PROFILE_LISTENER = "profile_listener_interface";
     private static final String ARG_ORG = "org";
     private static final String ARG_TO_EDIT = "to_edit";
-    private static final String ARG_IS_FOLLOWING_ORG = "is_following_org";
+    private static final String ARG_ORG_FOLLOW_STATE = "org_follow_state";
 
 
     public static final String FULL_POST_FRAG = "full_post_frag";
@@ -80,7 +78,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     private User mUser;
     private Organization mOrg;
     private boolean mToEdit;
-    private boolean mIsFollowingOrg;
+    private String mOrgFollowState;
 
     private OrgsGridAdapter.OrgInteractionListener mOrgListener = this;
     private PostOverlayFragment.PostsOverlayListener mPostsOverlayListener = this;
@@ -117,7 +115,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
      * @return A new instance of fragment ProfileFragment.
      */
 
-    public static ProfileFragment newInstance(User user, Organization org, boolean isFollowingOrg,
+    public static ProfileFragment newInstance(User user, Organization org, String orgFollowState,
                                               ProfileInteractionListener profileListener,
                                               boolean toEdit, boolean onTodayTab,
                                               boolean onDiscoverTab, boolean onYouTab,
@@ -136,7 +134,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         args.putBoolean(ON_DISCOVER, onDiscoverTab);
         args.putBoolean(ON_YOU, onYouTab);
         args.putBoolean(ON_ADMIN, onAdminTab);
-        args.putBoolean(ARG_IS_FOLLOWING_ORG, isFollowingOrg);
+        args.putString(ARG_ORG_FOLLOW_STATE, orgFollowState);
         fragment.setArguments(args);
         return fragment;
     }
@@ -152,12 +150,12 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
             mUser = (User) getArguments().getSerializable(ARG_USER);
             mOrg = (Organization) getArguments().getSerializable(ARG_ORG);
             mListener = (ProfileInteractionListener) getArguments().getSerializable(ARG_PROFILE_LISTENER);
-            mToEdit = getArguments().getBoolean(ARG_TO_EDIT); //TODO: CALL checkIfUserIsAdminOfOrganization IN CASE OF ORG!
+            mToEdit = getArguments().getBoolean(ARG_TO_EDIT);
             mOnToday = getArguments().getBoolean(ON_TODAY);
             mOnDiscover = getArguments().getBoolean(ON_DISCOVER);
             mOnYou = getArguments().getBoolean(ON_YOU);
             mOnAdmin = getArguments().getBoolean(ON_ADMIN);
-            mIsFollowingOrg = getArguments().getBoolean(ARG_IS_FOLLOWING_ORG);
+            mOrgFollowState = getArguments().getString(ARG_ORG_FOLLOW_STATE);
         }
     }
 
@@ -268,9 +266,11 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
 
 
                 mFollowFab = (ImageButton)mView.findViewById(R.id.profile_follow_state_fab);
-                if (mIsFollowingOrg)
-                    mFollowFab.setImageResource(R.drawable.ic_following);
                 mFollowFab.setVisibility(View.VISIBLE);
+
+                if (mOrgFollowState != null && mOrgFollowState.equals(OrgsDataSource.FOLLOW_STATE_ACCEPTED)) {
+                    mFollowFab.setImageResource(R.drawable.ic_following);
+                }
                 mFollowFab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -294,13 +294,14 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     }
 
     private void updateFollowState() {
-        UserDataSource.updateFollowStateForUser(getActivity(), !mIsFollowingOrg, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
+        final boolean isFollowing = mOrgFollowState != null && mOrgFollowState.equals(OrgsDataSource.FOLLOW_STATE_ACCEPTED);
+        UserDataSource.updateFollowStateForUser(getActivity(), isFollowing, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
             @Override
             public void done(Boolean success, ParseException e) {
                 if (e == null && success){
-                    mIsFollowingOrg = !mIsFollowingOrg;
+                    boolean toChangeStateTo = !isFollowing;
 
-                    if (!mIsFollowingOrg) {
+                    if (!toChangeStateTo) {
                         mFollowFab.setImageResource(R.drawable.ic_not_following);
                         mToEdit = false;
                         mOnAdmin = false;

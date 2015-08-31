@@ -26,6 +26,7 @@ import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment;
 import io.mindbend.android.announcements.cloudCode.AdminDataSource;
+import io.mindbend.android.announcements.cloudCode.OrgsDataSource;
 import io.mindbend.android.announcements.reusableFrags.ListFragment;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridAdapter;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridFragment;
@@ -107,7 +108,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
                     Log.wtf(TAG, "IS USER ADMIN? " + isAdmin);
                     //replace the current profile frag with new org profile frag, while adding it to a backstack
                     //TODO: grab if following from database
-                    ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgPressed, false, DiscoverFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
+                    ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgPressed, OrgsDataSource.FOLLOW_STATE_NO_REQUEST_SENT, DiscoverFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
                     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                     transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
                     Log.d(TAG, "org has been pressed on discover page " + orgPressed.toString());
@@ -121,7 +122,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
 
     @Override
     public void pressedUserFromCommentOfOrgPost(User userPressed) {
-        ProfileFragment userToVisit = ProfileFragment.newInstance(userPressed, null, false, this, false, onToday, onDiscover, onYou, onAdmin);
+        ProfileFragment userToVisit = ProfileFragment.newInstance(userPressed, null, null, this, false, onToday, onDiscover, onYou, onAdmin);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, userToVisit).addToBackStack(null).commitAllowingStateLoss();
     }

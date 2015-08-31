@@ -48,6 +48,7 @@ import io.mindbend.android.announcements.TabbedActivity;
 import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment;
 import io.mindbend.android.announcements.cloudCode.AdminDataSource;
+import io.mindbend.android.announcements.cloudCode.OrgsDataSource;
 import io.mindbend.android.announcements.cloudCode.PostsDataSource;
 import io.mindbend.android.announcements.reusableFrags.ListFragment;
 import io.mindbend.android.announcements.reusableFrags.PostCommentsFragment;
@@ -173,7 +174,7 @@ public class TodayFragment extends Fragment implements Serializable,
 
     @Override
     public void visitCommentersProfile(User commenterToBeVisited) {
-        ProfileFragment commenterVisited = ProfileFragment.newInstance(commenterToBeVisited, null, false, this, false, onToday, onDiscover, onYou, onAdmin);
+        ProfileFragment commenterVisited = ProfileFragment.newInstance(commenterToBeVisited, null, null, this, false, onToday, onDiscover, onYou, onAdmin);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.today_framelayout, commenterVisited).addToBackStack(null).commitAllowingStateLoss();
     }
@@ -193,7 +194,7 @@ public class TodayFragment extends Fragment implements Serializable,
                     Log.wtf(TAG, "IS USER ADMIN? " + isAdmin);
                     //replace the current profile frag with new org profile frag, while adding it to a backstack
                     //TODO: grab if following from database
-                    ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, false, TodayFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
+                    ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, OrgsDataSource.FOLLOW_STATE_NO_REQUEST_SENT, TodayFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
                     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                     transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.today_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
                     Log.d(TAG, "org has been pressed on profile page " + orgSelected.toString());
@@ -230,18 +231,18 @@ public class TodayFragment extends Fragment implements Serializable,
 
     @Override
     public void openOrgProfileFromPosts(final Organization organization) {
-        boolean isFollowing = false;
+        String state = OrgsDataSource.FOLLOW_STATE_NO_REQUEST_SENT;
         if (!mPostsOverlayFragment.getIsOnComments() && !mPostsOverlayFragment.getmPostsFragment().isVisible())
-            isFollowing = true;
+            state = OrgsDataSource.FOLLOW_STATE_ACCEPTED;
         else {
             //TODO: call isFollowing
         }
-        final boolean finalIsFollowing = isFollowing;
+        final String finalState = state;
         AdminDataSource.checkIfUserIsAdminOfOrganization(mLoading, getActivity(), organization.getmObjectId(), ParseUser.getCurrentUser().getObjectId(), new FunctionCallback<Boolean>() {
             @Override
             public void done(Boolean isAdmin, ParseException e) {
                 if (e == null){
-                    ProfileFragment orgProfile = ProfileFragment.newInstance(null, organization, finalIsFollowing, TodayFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
+                    ProfileFragment orgProfile = ProfileFragment.newInstance(null, organization, finalState, TodayFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
                     getChildFragmentManager().beginTransaction()
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                             .replace(R.id.today_framelayout, orgProfile)
