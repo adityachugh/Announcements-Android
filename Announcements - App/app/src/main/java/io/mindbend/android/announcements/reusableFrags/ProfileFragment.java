@@ -166,13 +166,13 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
             // Inflate the layout for this fragment
             mView = inflater.inflate(R.layout.fragment_profile, container, false);
 
-            mLoading = (ProgressBar)mView.findViewById(R.id.profile_frag_progressbar);
+            mLoading = (ProgressBar) mView.findViewById(R.id.profile_frag_progressbar);
 
             //fetch embedded relativelayout
             mProfileContentFrameLayoutEmbedded = (RelativeLayout) mView.findViewById(R.id.profile_content_framelayout_embedded);
 
             mUserImage = (CircleImageView) mView.findViewById(R.id.profile_photo);
-            mCoverImage = (ImageView)mView.findViewById(R.id.profile_cover_photo);
+            mCoverImage = (ImageView) mView.findViewById(R.id.profile_cover_photo);
 
             //UI elements to be filled
             TextView name = (TextView) mView.findViewById(R.id.profile_name);
@@ -240,7 +240,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 name.setText(mUser.getName());
                 followCount.setText(mUser.getNumberOfOrganizationsFollowed());
                 mProfileDetail.setText(mUser.getmDescription());
-                mProfileTag.setText("@"+mUser.getUserCategory());
+                mProfileTag.setText("@" + mUser.getUserCategory());
                 if (!mUser.getmProfilePictureURL().equals(""))
                     Picasso.with(getActivity()).load(mUser.getmProfilePictureURL()).into(mUserImage);
                 if (!mUser.getmCoverPictureURL().equals(""))
@@ -253,9 +253,9 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
 
             if (mOrg != null) {
                 if (mOrg.isPrivateOrg()) {
-                    ImageView isPrivate = (ImageView)mView.findViewById(R.id.profile_private_org_lock_icon);
+                    ImageView isPrivate = (ImageView) mView.findViewById(R.id.profile_private_org_lock_icon);
                     isPrivate.setVisibility(View.VISIBLE);
-                    if(mOrgFollowState!= null && mOrgFollowState.equals(OrgsDataSource.FOLLOW_STATE_ACCEPTED))
+                    if (mOrgFollowState != null && mOrgFollowState.equals(OrgsDataSource.FOLLOW_STATE_ACCEPTED))
                         loadOrgPosts(mOrg.getmObjectId(), 0, 10);
                 } else {
                     name.setText(mOrg.getTitle());
@@ -266,29 +266,63 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 mProfileTag.setText(mOrg.getTag());
 
 
-                mFollowFab = (ImageButton)mView.findViewById(R.id.profile_follow_state_fab);
+                mFollowFab = (ImageButton) mView.findViewById(R.id.profile_follow_state_fab);
                 mFollowFab.setVisibility(View.VISIBLE);
 
-                if(mOrgFollowState != OrgsDataSource.FOLLOW_STATE_NO_REQUEST_SENT){
+                if (mOrgFollowState != OrgsDataSource.FOLLOW_STATE_NO_REQUEST_SENT) {
                     if (mOrgFollowState.equals(OrgsDataSource.FOLLOW_STATE_ACCEPTED)) {
                         mFollowFab.setImageResource(R.drawable.ic_following);
-                    } else if (mOrgFollowState.equals(OrgsDataSource.FOLLOW_STATE_PENDING)){
+                    } else if (mOrgFollowState.equals(OrgsDataSource.FOLLOW_STATE_PENDING)) {
                         mFollowFab.setImageResource(R.drawable.ic_pending);
-                        //TODO: don't allow change of follow state (disable fab click), just show a popup saying request already sent
                     } else {
-                        //TODO: add rejected icon
-                        //TODO: show popup of "do you want to resend request" before sending follow request on fab click
+                        mFollowFab.setImageResource(R.drawable.ic_rejected);
                     }
                 }
 
                 mFollowFab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        updateFollowState();
+                        if (!mOrg.isPrivateOrg())
+                            updateFollowState();
+                        else {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
+                            if (mOrgFollowState == OrgsDataSource.FOLLOW_STATE_NO_REQUEST_SENT || mOrgFollowState.equals(OrgsDataSource.FOLLOW_STATE_UNFOLLOWED)) {
+                                sendFollowRequestToPrivateOrg();
+                            } else if (mOrgFollowState.equals(OrgsDataSource.FOLLOW_STATE_PENDING)) {
+                                builder.setTitle(R.string.follow_request_already_sent)
+                                        .setMessage(R.string.follow_request_already_sent_dialog_detailed_message)
+                                        .setPositiveButton("OK", null)
+                                        .show();
+                            } else if (mOrgFollowState.equals(OrgsDataSource.FOLLOW_STATE_REJECTED)) {
+                                builder.setTitle(R.string.rejected_resend_follow_request_dialog_title)
+                                        .setMessage(R.string.rejected_resend_follow_request_dialog_message)
+                                        .setNegativeButton("Cancel", null)
+                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                                sendFollowRequestToPrivateOrg();
+                                            }
+                                        })
+                                        .show();
+                            } else {
+                                builder.setTitle(R.string.unfollow_org_title)
+                                        .setMessage(getString(R.string.format_unfollow_org_message, mOrg.getTitle()))
+                                        .setNegativeButton("No", null)
+                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                                //TODO: unfollow private org
+                                            }
+                                        })
+                                        .show();
+                            }
+                        }
                     }
                 });
 
-                ImageButton viewMembersButton = (ImageButton)mView.findViewById(R.id.profile_view_members_button);
+                ImageButton viewMembersButton = (ImageButton) mView.findViewById(R.id.profile_view_members_button);
                 viewMembersButton.setVisibility(View.VISIBLE);
                 viewMembersButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -303,29 +337,70 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         return mView;
     }
 
-    private void updateFollowState() {
-        //TODO: the below function is for public orgs. Add the follow func for private orgs
-        final boolean isFollowing = mOrgFollowState != null && mOrgFollowState.equals(OrgsDataSource.FOLLOW_STATE_ACCEPTED);
-        UserDataSource.updateFollowStateForUser(getActivity(), isFollowing, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
-            @Override
-            public void done(Boolean success, ParseException e) {
-                if (e == null && success){
-                    boolean toChangeStateTo = !isFollowing;
+    private void sendFollowRequestToPrivateOrg() {
+        //TODO: show dialog where they enter request code. If matched, request sent
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
 
-                    if (!toChangeStateTo) {
-                        mFollowFab.setImageResource(R.drawable.ic_not_following);
-                        mToEdit = false;
-                        mOnAdmin = false;
-                    }
-                    else {
-                        mFollowFab.setImageResource(R.drawable.ic_following);
-                    }
-                }
+        LinearLayout layout = new LinearLayout(getActivity());
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(16, 0, 16, 0);
+
+        final EditText requestCode = new EditText(getActivity());
+        requestCode.setHint(R.string.enter_access_code_for_private_org_message);
+        layout.addView(requestCode);
+
+        alert.setView(layout);
+        alert.setTitle("Send follow request to " + mOrg.getTitle());
+        alert.setPositiveButton("Send", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //TODO: implement cc function
             }
-        });
+        })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
-    private void loadOrgsFollowed(final String userObjectId){
+    private void updateFollowState() {
+        final boolean isFollowing = mOrgFollowState != null && mOrgFollowState.equals(OrgsDataSource.FOLLOW_STATE_ACCEPTED);
+        final boolean toChangeStateTo = !isFollowing;
+
+        if (isFollowing) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
+            builder.setTitle(R.string.unfollow_org_title)
+                    .setMessage(getString(R.string.format_unfollow_org_message, mOrg.getTitle()))
+                    .setNegativeButton("No", null)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            UserDataSource.updateFollowStateForUser(getActivity(), toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
+                                @Override
+                                public void done(Boolean success, ParseException e) {
+                                    if (e == null && success) {
+                                        //unfollows
+                                        mFollowFab.setImageResource(R.drawable.ic_not_following);
+                                        mToEdit = false;
+                                        mOrgFollowState = OrgsDataSource.FOLLOW_STATE_UNFOLLOWED;
+                                    }
+                                }
+                            });
+                        }
+                    })
+                    .show();
+        } else {
+            UserDataSource.updateFollowStateForUser(getActivity(), toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
+                @Override
+                public void done(Boolean success, ParseException e) {
+                    if (e == null && success) {
+                        mFollowFab.setImageResource(R.drawable.ic_following);
+                        mOrgFollowState = OrgsDataSource.FOLLOW_STATE_ACCEPTED;
+                    }
+                }
+            });
+        }
+    }
+
+    private void loadOrgsFollowed(final String userObjectId) {
         OrgsDataSource.getOrganizationsFollowedByUser(mLoading, userObjectId, new FunctionCallback<ArrayList<Organization>>() {
             @Override
             public void done(ArrayList<Organization> orgs, ParseException e) {
@@ -356,12 +431,11 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     }
 
 
-
-    private void loadOrgPosts (String orgObjectId, int startIndex, int numberOfPosts){
+    private void loadOrgPosts(String orgObjectId, int startIndex, int numberOfPosts) {
         PostsDataSource.getPostsOfOrganizationInRange(mLoading, getActivity(), orgObjectId, startIndex, numberOfPosts, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> orgPosts, ParseException e) {
-                if (e == null){
+                if (e == null) {
                     //add posts frag to bottom of org profile
                     Fragment orgPostsFragment = PostOverlayFragment.newInstance(orgPosts, mPostsOverlayListener, true);
                     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
@@ -389,8 +463,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
 
                     if (transaction.isEmpty())
                         transaction.add(R.id.profile_content_framelayout, orgPostsFragment, BOTTOM_FRAG_TAG).commitAllowingStateLoss();
-                }
-                else {
+                } else {
                     Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
@@ -477,10 +550,9 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
             public void onClick(DialogInterface dialog, int whichButton) {
                 //What ever you want to do with the value
                 if (!interestOneET.getText().toString().equals("") && !interestTwoET.getText().toString().equals("")) {
-                    //TODO: save to parse
                     final String i1 = interestOneET.getText().toString();
                     final String i2 = interestTwoET.getText().toString();
-                    UserDataSource.updateUserDescription(getActivity() , ((TabbedActivity) getActivity()).mYouFragment.mLoading, "Interested in " + i1 + " and " + i2, new FunctionCallback<Boolean>() {
+                    UserDataSource.updateUserDescription(getActivity(), ((TabbedActivity) getActivity()).mYouFragment.mLoading, "Interested in " + i1 + " and " + i2, new FunctionCallback<Boolean>() {
                         @Override
                         public void done(Boolean success, ParseException e) {
                             if (success) {
@@ -616,7 +688,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         mUserImage.setImageBitmap(bitmap);
     }
 
-    public void updateCoverImage(Bitmap bitmap){
+    public void updateCoverImage(Bitmap bitmap) {
         mCoverImage.setImageBitmap(bitmap);
     }
 

@@ -98,4 +98,11 @@
     <string name="empty_comment_message">Cannot post empty comment.</string>
     <string name="no_more_posts_message">No more posts to load</string>
     <string name="no_more_comments_message">No more comments</string>
+    <string name="follow_request_already_sent">Follow request already sent.</string>
+    <string name="follow_request_already_sent_dialog_detailed_message">You must wait for administrators of this organization to accept your request before you can become a follower.</string>
+    <string name="rejected_resend_follow_request_dialog_title">Resend follow request?</string>
+    <string name="rejected_resend_follow_request_dialog_message">You were previously rejected from following this organization. Do you want to resend a follow request?</string>
+    <string name="enter_access_code_for_private_org_message">Enter access code here.</string>
+    <string name="unfollow_org_title">Unfollow organization?</string>
+    <string name="format_unfollow_org_message">You are currently following %1$s. Do you want to unfollow this organization?</string>
 </resources>
