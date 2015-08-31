@@ -255,7 +255,8 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 if (mOrg.isPrivateOrg()) {
                     ImageView isPrivate = (ImageView)mView.findViewById(R.id.profile_private_org_lock_icon);
                     isPrivate.setVisibility(View.VISIBLE);
-                    //TODO: check if user is part of this private org, and if he/she is then load posts
+                    if(mOrgFollowState!= null && mOrgFollowState.equals(OrgsDataSource.FOLLOW_STATE_ACCEPTED))
+                        loadOrgPosts(mOrg.getmObjectId(), 0, 10);
                 } else {
                     name.setText(mOrg.getTitle());
                     loadOrgPosts(mOrg.getmObjectId(), 0, 10);
@@ -268,9 +269,18 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 mFollowFab = (ImageButton)mView.findViewById(R.id.profile_follow_state_fab);
                 mFollowFab.setVisibility(View.VISIBLE);
 
-                if (mOrgFollowState != null && mOrgFollowState.equals(OrgsDataSource.FOLLOW_STATE_ACCEPTED)) {
-                    mFollowFab.setImageResource(R.drawable.ic_following);
+                if(mOrgFollowState != OrgsDataSource.FOLLOW_STATE_NO_REQUEST_SENT){
+                    if (mOrgFollowState.equals(OrgsDataSource.FOLLOW_STATE_ACCEPTED)) {
+                        mFollowFab.setImageResource(R.drawable.ic_following);
+                    } else if (mOrgFollowState.equals(OrgsDataSource.FOLLOW_STATE_PENDING)){
+                        mFollowFab.setImageResource(R.drawable.ic_pending);
+                        //TODO: don't allow change of follow state (disable fab click), just show a popup saying request already sent
+                    } else {
+                        //TODO: add rejected icon
+                        //TODO: show popup of "do you want to resend request" before sending follow request on fab click
+                    }
                 }
+
                 mFollowFab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -294,6 +304,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     }
 
     private void updateFollowState() {
+        //TODO: the below function is for public orgs. Add the follow func for private orgs
         final boolean isFollowing = mOrgFollowState != null && mOrgFollowState.equals(OrgsDataSource.FOLLOW_STATE_ACCEPTED);
         UserDataSource.updateFollowStateForUser(getActivity(), isFollowing, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
             @Override

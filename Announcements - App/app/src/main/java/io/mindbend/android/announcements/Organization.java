@@ -25,8 +25,6 @@ public class Organization implements Serializable, Parcelable {
     private boolean mNewOrg;
     private String mProfileImageURL;
 
-    private int mRequestCode;
-
     public Organization(String objectId, String title, String description, int followers, String tag, boolean privateOrg, boolean newOrg){
         mObjectId = objectId;
         mTitle = title;
@@ -49,8 +47,6 @@ public class Organization implements Serializable, Parcelable {
         mDescription = object.getString(OrgsDataSource.ORG_DESCRIPTION);
         mFollowers = object.getInt(OrgsDataSource.ORG_FOLLOWER_COUNT);
         mPrivateOrg = object.getString(OrgsDataSource.ORG_TYPE).equals(OrgsDataSource.ORG_TYPES_PRIVATE);
-        if(mPrivateOrg)
-            mRequestCode = object.getInt(OrgsDataSource.ORG_REQUEST_CODE);
         mNewOrg = OrgsDataSource.isNew(object);
         if (object.getParseFile(OrgsDataSource.ORG_IMAGE) != null)
             mProfileImageURL = object.getParseFile(OrgsDataSource.ORG_IMAGE).getUrl();
