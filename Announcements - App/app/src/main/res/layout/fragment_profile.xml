@@ -70,15 +70,32 @@
                             android:layout_width="0dp"
                             android:layout_height="5dp"/>
 
-                        <TextView
-                            android:id="@+id/profile_name"
-                            style="@style/TextAppearance.AppCompat.Title"
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
-                            android:text="Aditya Chugh"
-                            android:textColor="@android:color/white"
-                            android:textSize="26sp"/>
+                            android:orientation="horizontal"
+                            android:paddingLeft="16dp"
+                            android:paddingRight="16dp">
+                            <TextView
+                                android:id="@+id/profile_name"
+                                style="@style/TextAppearance.AppCompat.Title"
+                                android:layout_width="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="Aditya Chugh"
+                                android:gravity="center"
+                                android:textColor="@android:color/white"
+                                android:layout_gravity="center_vertical"
+                                android:textSize="26sp"/>
+                            <ImageButton
+                                android:layout_width="@dimen/profile_org_view_members_button_size"
+                                android:layout_height="32dp"
+                                android:background="@drawable/ic_org_members"
+                                android:visibility="gone"
+                                android:layout_gravity="center_vertical"
+                                android:id="@+id/profile_view_members_button" />
+                        </LinearLayout>
 
                         <View
                             android:layout_width="0dp"
@@ -90,6 +107,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
+                            android:text="5 Groups/Followers"
                             android:textColor="@android:color/white"/>
 
                         <View

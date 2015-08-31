@@ -80,8 +80,7 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
     public YouFragment mYouFragment;
 
     private Bundle mSavedInstanceState;
-    private Toolbar mToolbar;
-
+    private transient Toolbar mToolbar;
     private transient TextView mTitleTextView;
 
     @Override

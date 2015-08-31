@@ -30,6 +30,8 @@ import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.mindbend.android.announcements.Organization;
@@ -104,7 +106,6 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     private transient TextView mProfileDetail;
     private transient TextView mProfileTag;
     private transient ProgressBar mLoading;
-
     private transient ImageButton mFollowFab;
 
     /**
@@ -116,7 +117,11 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
      * @return A new instance of fragment ProfileFragment.
      */
 
-    public static ProfileFragment newInstance(User user, Organization org, boolean isFollowingOrg, ProfileInteractionListener profileListener, boolean toEdit, boolean onTodayTab, boolean onDiscoverTab, boolean onYouTab, boolean onAdminTab) {
+    public static ProfileFragment newInstance(User user, Organization org, boolean isFollowingOrg,
+                                              ProfileInteractionListener profileListener,
+                                              boolean toEdit, boolean onTodayTab,
+                                              boolean onDiscoverTab, boolean onYouTab,
+                                              boolean onAdminTab) {
 
         //***NOTE*** : one of user or org must be null
         //***NOTE*** : only one of onToday, onDiscover or onYou must be true!
@@ -270,6 +275,16 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                     @Override
                     public void onClick(View v) {
                         updateFollowState();
+                    }
+                });
+
+                ImageButton viewMembersButton = (ImageButton)mView.findViewById(R.id.profile_view_members_button);
+                viewMembersButton.setVisibility(View.VISIBLE);
+                viewMembersButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //TODO: get followers of org
+                        mListener.viewMembers(mOrg);
                     }
                 });
             }
