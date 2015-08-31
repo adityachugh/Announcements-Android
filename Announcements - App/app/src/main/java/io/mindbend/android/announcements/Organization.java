@@ -48,7 +48,7 @@ public class Organization implements Serializable, Parcelable {
         mTitle = object.getString(OrgsDataSource.ORG_TITLE);
         mDescription = object.getString(OrgsDataSource.ORG_DESCRIPTION);
         mFollowers = object.getInt(OrgsDataSource.ORG_FOLLOWER_COUNT);
-        //mPrivateOrg = object.getString(OrgsDataSource.ORG_TYPE).equals(OrgsDataSource.ORG_TYPES_PRIVATE); //TODO: look into this
+        mPrivateOrg = object.getString(OrgsDataSource.ORG_TYPE).equals(OrgsDataSource.ORG_TYPES_PRIVATE);
         if(mPrivateOrg)
             mRequestCode = object.getInt(OrgsDataSource.ORG_REQUEST_CODE);
         mNewOrg = OrgsDataSource.isNew(object);
@@ -56,6 +56,7 @@ public class Organization implements Serializable, Parcelable {
             mProfileImageURL = object.getParseFile(OrgsDataSource.ORG_IMAGE).getUrl();
         else
             mProfileImageURL = "";
+        mTag = object.getString(OrgsDataSource.ORG_TAG);
     }
 
     public Organization(Parcel in){

@@ -255,8 +255,8 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
 
             if (mOrg != null) {
                 if (mOrg.isPrivateOrg()) {
-                    name.setText(mOrg.getTitle() + " [PRIVATE]");
-                    //TODO: add imageview of lock to indicate private
+                    ImageView isPrivate = (ImageView)mView.findViewById(R.id.profile_private_org_lock_icon);
+                    isPrivate.setVisibility(View.VISIBLE);
                     //TODO: check if user is part of this private org, and if he/she is then load posts
                 } else {
                     name.setText(mOrg.getTitle());

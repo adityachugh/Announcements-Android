@@ -34,8 +34,8 @@ public class OrgsDataSource {
     public final static String ORG_IMAGE = "image";
 
 
-    public final static String ORG_TYPES_PRIVATE = "Private";
-    public final static String ORG_TYPES_PUBLIC = "Public";
+    public final static String ORG_TYPES_PRIVATE = "PRI";
+    public final static String ORG_TYPES_PUBLIC = "PUB";
 
     public static boolean isNew(ParseObject org) {
         DateTime date = new DateTime(org.getCreatedAt());

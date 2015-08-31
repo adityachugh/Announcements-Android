@@ -64,6 +64,15 @@
                                 android:layout_height="@dimen/profile_edit_button_size"
                                 android:src="@drawable/ic_more_gearbox"
                                 android:background="@drawable/fab"/>
+
+                            <ImageView
+                                android:id="@+id/profile_private_org_lock_icon"
+                                android:layout_width="@dimen/profile_org_view_members_button_size"
+                                android:layout_height="@dimen/profile_org_view_members_button_size"
+                                android:layout_toRightOf="@id/profile_photo"
+                                android:layout_centerVertical="true"
+                                android:background="@drawable/ic_locked"
+                                android:visibility="gone"/>
                         </RelativeLayout>
 
                         <View
@@ -90,10 +99,9 @@
                                 android:textSize="26sp"/>
                             <ImageButton
                                 android:layout_width="@dimen/profile_org_view_members_button_size"
-                                android:layout_height="32dp"
+                                android:layout_height="@dimen/profile_org_view_members_button_size"
                                 android:background="@drawable/ic_org_members"
                                 android:visibility="gone"
-                                android:layout_gravity="center_vertical"
                                 android:id="@+id/profile_view_members_button" />
                         </LinearLayout>
 
