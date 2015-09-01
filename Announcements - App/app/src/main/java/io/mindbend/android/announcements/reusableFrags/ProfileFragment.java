@@ -59,7 +59,6 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     private Fragment mFullPost;
     private Fragment mCurrentComments;
 
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_USER = "user";
     private static final String ARG_PROFILE_LISTENER = "profile_listener_interface";
@@ -271,12 +270,16 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 mFollowFab.setVisibility(View.VISIBLE);
 
                 if (mOrgFollowState != OrgsDataSource.FOLLOW_STATE_NO_REQUEST_SENT) {
-                    if (mOrgFollowState.equals(OrgsDataSource.FOLLOW_STATE_ACCEPTED)) {
-                        mFollowFab.setImageResource(R.drawable.ic_following);
-                    } else if (mOrgFollowState.equals(OrgsDataSource.FOLLOW_STATE_PENDING)) {
-                        mFollowFab.setImageResource(R.drawable.ic_pending);
-                    } else {
-                        mFollowFab.setImageResource(R.drawable.ic_rejected);
+                    switch (mOrgFollowState) {
+                        case OrgsDataSource.FOLLOW_STATE_ACCEPTED:
+                            mFollowFab.setImageResource(R.drawable.ic_following);
+                            break;
+                        case OrgsDataSource.FOLLOW_STATE_PENDING:
+                            mFollowFab.setImageResource(R.drawable.ic_pending);
+                            break;
+                        default:
+                            mFollowFab.setImageResource(R.drawable.ic_rejected);
+                            break;
                     }
                 }
 
@@ -287,37 +290,44 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                             updateFollowState();
                         else {
                             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
-                            if (mOrgFollowState == OrgsDataSource.FOLLOW_STATE_NO_REQUEST_SENT || mOrgFollowState.equals(OrgsDataSource.FOLLOW_STATE_UNFOLLOWED)) {
+                            if (mOrgFollowState == OrgsDataSource.FOLLOW_STATE_NO_REQUEST_SENT) {
                                 sendFollowRequestToPrivateOrg();
-                            } else if (mOrgFollowState.equals(OrgsDataSource.FOLLOW_STATE_PENDING)) {
-                                builder.setTitle(R.string.follow_request_already_sent)
-                                        .setMessage(R.string.follow_request_already_sent_dialog_detailed_message)
-                                        .setPositiveButton("OK", null)
-                                        .show();
-                            } else if (mOrgFollowState.equals(OrgsDataSource.FOLLOW_STATE_REJECTED)) {
-                                builder.setTitle(R.string.rejected_resend_follow_request_dialog_title)
-                                        .setMessage(R.string.rejected_resend_follow_request_dialog_message)
-                                        .setNegativeButton("Cancel", null)
-                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                                sendFollowRequestToPrivateOrg();
-                                            }
-                                        })
-                                        .show();
                             } else {
-                                builder.setTitle(R.string.unfollow_org_title)
-                                        .setMessage(getString(R.string.format_unfollow_org_message, mOrg.getTitle()))
-                                        .setNegativeButton("No", null)
-                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                                //TODO: unfollow private org
-                                            }
-                                        })
-                                        .show();
+                                switch (mOrgFollowState) {
+                                    case OrgsDataSource.FOLLOW_STATE_PENDING:
+                                        builder.setTitle(R.string.follow_request_already_sent)
+                                                .setMessage(R.string.follow_request_already_sent_dialog_detailed_message)
+                                                .setPositiveButton("OK", null)
+                                                .show();
+                                        break;
+                                    case OrgsDataSource.FOLLOW_STATE_REJECTED:
+                                        builder.setTitle(R.string.rejected_resend_follow_request_dialog_title)
+                                                .setMessage(R.string.rejected_resend_follow_request_dialog_message)
+                                                .setNegativeButton("Cancel", null)
+                                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        dialog.dismiss();
+                                                        sendFollowRequestToPrivateOrg();
+                                                    }
+                                                })
+                                                .show();
+                                        break;
+                                    default:
+                                        //already follower, state = accepted
+                                        builder.setTitle(R.string.unfollow_org_title)
+                                                .setMessage(getString(R.string.format_unfollow_org_message, mOrg.getTitle()))
+                                                .setNegativeButton("No", null)
+                                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        dialog.dismiss();
+                                                        updateFollowState();
+                                                    }
+                                                })
+                                                .show();
+                                        break;
+                                }
                             }
                         }
                     }
@@ -392,11 +402,11 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                             UserDataSource.updateFollowStateForUser(getActivity(), toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
                                 @Override
                                 public void done(Boolean success, ParseException e) {
-                                    if (e == null && success) {
+                                    if (success) {
                                         //unfollows
                                         mFollowFab.setImageResource(R.drawable.ic_not_following);
                                         mToEdit = false;
-                                        mOrgFollowState = OrgsDataSource.FOLLOW_STATE_UNFOLLOWED;
+                                        mOrgFollowState = OrgsDataSource.FOLLOW_STATE_NO_REQUEST_SENT;
                                     }
                                 }
                             });
@@ -407,9 +417,9 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
             UserDataSource.updateFollowStateForUser(getActivity(), toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
                 @Override
                 public void done(Boolean success, ParseException e) {
-                    if (e == null && success) {
+                    if (success) {
                         mFollowFab.setImageResource(R.drawable.ic_following);
-                        mOrgFollowState = OrgsDataSource.FOLLOW_STATE_ACCEPTED;
+                        mOrgFollowState = OrgsDataSource.FOLLOW_STATE_NO_REQUEST_SENT;
                     }
                 }
             });

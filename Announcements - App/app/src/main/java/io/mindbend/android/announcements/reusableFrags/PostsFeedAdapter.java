@@ -27,6 +27,7 @@ import java.util.Random;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.cloudCode.PostsDataSource;
 
 /**
  * Created by Akshay Pall on 01/08/2015.
@@ -87,8 +88,8 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
         viewHolder.mDetail.setText(post.getmPostDetail());
         viewHolder.mTimeSince.setText(post.getmPostTimeSince());
         viewHolder.mClubUsername.setText(post.getmPostClubUsername());
-        if(post.getPriorityDrawable(mContext) != null){
-            viewHolder.mPriorityIndicator.setBackgroundDrawable(post.getPriorityDrawable(mContext));
+        if(post.getmPriority() == PostsDataSource.HIGH_PRIORITY){
+            viewHolder.mPriorityIndicator.setVisibility(View.VISIBLE);
         }
 
         //add image if present
@@ -99,8 +100,6 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
             viewHolder.mPostImage.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, imageHeightinPx));
 
             Picasso.with(mContext).load(post.getmPostImageURL()).into(viewHolder.mPostImage);
-
-            //TODO: click image to open in full screen
         }
 
         //TODO: uncomment and fix crashing issue of crash when viewing an org's profile

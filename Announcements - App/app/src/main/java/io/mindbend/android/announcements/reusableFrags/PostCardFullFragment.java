@@ -27,6 +27,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.cloudCode.PostsDataSource;
 
 public class PostCardFullFragment extends Fragment implements Serializable, View.OnClickListener {
     private static final String TAG = "PostCardFullFragment";
@@ -90,8 +91,8 @@ public class PostCardFullFragment extends Fragment implements Serializable, View
             postTime.setText(mPost.getmPostTimeSince());
             postClubName.setText(mPost.getmPostClubUsername());
 
-            if(mPost.getPriorityDrawable(getActivity()) != null){
-                priorityIndicator.setBackgroundDrawable(mPost.getPriorityDrawable(getActivity()));
+            if(mPost.getmPriority() == PostsDataSource.HIGH_PRIORITY){
+                priorityIndicator.setVisibility(View.VISIBLE);
             }
 
             if (!mPost.getmPostImageURL().equals("")){

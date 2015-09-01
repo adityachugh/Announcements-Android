@@ -118,19 +118,23 @@ public class Post implements Serializable, Parcelable {
         return mPostImageURL;
     }
 
-    public Drawable getPriorityDrawable(Context context) {
-        Drawable priorityDrawable = context.getResources().getDrawable(R.drawable.fab);
-        switch (mPriority){
-            case PostsDataSource.LOW_PRIORITY:
-                priorityDrawable = context.getResources().getDrawable(R.drawable.low_priority_indicator);
-                break;
-            case PostsDataSource.MEDIUM_PRIORITY:
-                priorityDrawable = context.getResources().getDrawable(R.drawable.med_priority_indicator);
-                break;
-            case PostsDataSource.HIGH_PRIORITY:
-                priorityDrawable = context.getResources().getDrawable(R.drawable.high_priority_indicator);
-                break;
-        }
-        return priorityDrawable;
+    public int getmPriority() {
+        return mPriority;
     }
+
+    //    public Drawable getPriorityDrawable(Context context) {
+//        Drawable priorityDrawable = context.getResources().getDrawable(R.drawable.fab);
+//        switch (mPriority){
+//            case PostsDataSource.LOW_PRIORITY:
+//                priorityDrawable = context.getResources().getDrawable(R.drawable.low_priority_indicator);
+//                break;
+//            case PostsDataSource.MEDIUM_PRIORITY:
+//                priorityDrawable = context.getResources().getDrawable(R.drawable.med_priority_indicator);
+//                break;
+//            case PostsDataSource.HIGH_PRIORITY:
+//                priorityDrawable = context.getResources().getDrawable(R.drawable.high_priority_indicator);
+//                break;
+//        }
+//        return priorityDrawable;
+//    }
 }

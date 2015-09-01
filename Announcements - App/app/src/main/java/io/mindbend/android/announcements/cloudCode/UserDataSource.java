@@ -123,18 +123,17 @@ public class UserDataSource {
             @Override
             public void done(Boolean isSuccessful, ParseException e) {
                 String message = "Failure";
-                if (e == null && isSuccessful)
+                if (e == null && isSuccessful){
                     message = "Successfully "+toastText+"followed organization";
+                    callback.done(isFollowing, e);
+                }
                 if (e != null){
                     e.printStackTrace();
                     message = "Error";
                 }
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-
-                callback.done(isFollowing, e);
             }
         });
-        //no callback needed
     }
 
     private static void loginDialog(final Context context, final LogInCallback logInCallback) {
