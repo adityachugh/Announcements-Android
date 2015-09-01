@@ -47,7 +47,7 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
     }
 
     private List<io.mindbend.android.announcements.Comment> mComments;
-    private RelativeLayout mLoadingLayout;
+    private transient RelativeLayout mLoadingLayout;
     private Context mContext;
     private CommenterInteractionListener mListener;
     private io.mindbend.android.announcements.Comment mCurrentComment;
