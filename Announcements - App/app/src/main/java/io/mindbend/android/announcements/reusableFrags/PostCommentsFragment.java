@@ -101,7 +101,7 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
 
             mLoading = (RelativeLayout) mView.findViewById(R.id.comments_progressbar_layout);
             mComments = new ArrayList<>();
-            mCommentsAdapter = new PostCommentsAdapter(getActivity(), mComments, PostCommentsFragment.this);
+            mCommentsAdapter = new PostCommentsAdapter(getActivity(), mComments, PostCommentsFragment.this, mLoading);
             mRecyclerView.setAdapter(mCommentsAdapter);
             loadComments(false, mLoading, 0, 10);
 
@@ -242,5 +242,11 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
     @Override
     public void commenterProfilePressed(User commenterPressed) {
         mListener.pressedCommenterProfile(commenterPressed);
+    }
+
+    @Override
+    public void deletedComment(Comment comment) {
+        mComments.remove(comment);
+        mCommentsAdapter.notifyDataSetChanged();
     }
 }

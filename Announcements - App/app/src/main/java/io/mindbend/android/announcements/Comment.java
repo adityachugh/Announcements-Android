@@ -17,6 +17,7 @@ public class Comment implements Serializable {
     private String mUserId;
     private String mText;
     private String mTimeSince;
+    private String mObjectId;
 
     private User mUser;
     //TODO: setup passing in image for the comment
@@ -32,6 +33,7 @@ public class Comment implements Serializable {
         ParseUser user = (ParseUser)object.get(CommentsDataSource.COMMENT_USER); //ERROR: returns null :/ idk why
         mUser = new User(user);
         mTimeSince = DateUtils.getRelativeDateTimeString(context, object.getCreatedAt().getTime(), DateUtils.MINUTE_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, 0).toString();
+        mObjectId = object.getObjectId();
     }
 
     public User getmUser() {
@@ -44,5 +46,9 @@ public class Comment implements Serializable {
 
     public String getmTimeSince() {
         return mTimeSince;
+    }
+
+    public String getmObjectId() {
+        return mObjectId;
     }
 }

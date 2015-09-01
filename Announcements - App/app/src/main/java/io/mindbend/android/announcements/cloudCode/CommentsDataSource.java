@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
@@ -66,6 +67,26 @@ public class CommentsDataSource {
                 if (e == null)
                     comment = new Comment(context, parseObject);
                 callback.done(comment, e);
+            }
+        });
+    }
+
+    public static void deleteComment (final RelativeLayout loadingLayout, final Context context, String commentObjectId, final FunctionCallback<Boolean> callback){
+        loadingLayout.setVisibility(View.VISIBLE);
+        HashMap<String, String> params = new HashMap<>();
+        params.put("commentObjectId", commentObjectId);
+
+        ParseCloud.callFunctionInBackground("deleteComment", params, new FunctionCallback<Boolean>() {
+            @Override
+            public void done(Boolean success, ParseException e) {
+                loadingLayout.setVisibility(View.GONE);
+                if (e == null){
+                    Toast.makeText(context, "Deleted comment", Toast.LENGTH_SHORT).show();
+                    callback.done(success, e);
+                } else {
+                    e.printStackTrace();
+                    Toast.makeText(context, "Error deleting comment.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
