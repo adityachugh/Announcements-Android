@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
@@ -17,6 +18,7 @@ import org.joda.time.Days;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.User;
@@ -151,6 +153,28 @@ public class OrgsDataSource {
                 }
                 loading.setVisibility(View.GONE);
                 callback.done(topOrgs, e);
+            }
+        });
+    }
+
+    public static void isFollowingOrganization (final Context context, final ProgressBar loading, String userObjectId, String organizationObjectId, final FunctionCallback<String> callback){
+        loading.setVisibility(View.VISIBLE);
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("userObjectId", userObjectId);
+        params.put("organizationObjectId", organizationObjectId);
+
+        ParseCloud.callFunctionInBackground("isFollowingOrganization", params, new FunctionCallback<String>() {
+            @Override
+            public void done(String followStatus, ParseException e) {
+                loading.setVisibility(View.GONE);
+                if (e != null){
+                    Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+                else {
+                    callback.done(followStatus, e);
+                }
             }
         });
     }

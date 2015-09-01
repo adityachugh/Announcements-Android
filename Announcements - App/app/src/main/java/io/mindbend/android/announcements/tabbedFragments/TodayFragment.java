@@ -111,7 +111,7 @@ public class TodayFragment extends Fragment implements Serializable,
         mFab = (ImageButton) v.findViewById(R.id.today_fab);
         mFab.setOnClickListener(this);
 
-        mLoading = (ProgressBar)v.findViewById(R.id.today_progressbar);
+        mLoading = (ProgressBar) v.findViewById(R.id.today_progressbar);
 
         mCurrentDateSelected = new Date();
 
@@ -120,17 +120,16 @@ public class TodayFragment extends Fragment implements Serializable,
         return v;
     }
 
-    private void loadPosts(int startIndex, int numberOfPosts){
+    private void loadPosts(int startIndex, int numberOfPosts) {
         PostsDataSource.getRangeOfPostsForDay(mLoading, getActivity(), startIndex, numberOfPosts, mCurrentDateSelected, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
-                if (e == null){
+                if (e == null) {
                     //pass in "this" in order to set the listener for the posts overlay frag in order to open the comments feed for a post
                     mPostsOverlayFragment = PostOverlayFragment.newInstance(posts, TodayFragment.this, false);
                     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                     transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.today_framelayout, mPostsOverlayFragment).addToBackStack(TODAY_POSTS_FRAG).commitAllowingStateLoss();
-                }
-                else {
+                } else {
                     Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
@@ -155,7 +154,7 @@ public class TodayFragment extends Fragment implements Serializable,
 
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-        mCurrentDateSelected = new Date(year-1900, monthOfYear, dayOfMonth);
+        mCurrentDateSelected = new Date(year - 1900, monthOfYear, dayOfMonth);
         loadPosts(0, 10);
     }
 
@@ -186,24 +185,7 @@ public class TodayFragment extends Fragment implements Serializable,
 
     @Override
     public void userProfileToOrgProfile(final Organization orgSelected) {
-        Log.wtf(TAG, "PARSE USER " + ParseUser.getCurrentUser().getObjectId());
-        AdminDataSource.checkIfUserIsAdminOfOrganization(mLoading, getActivity(), orgSelected.getmObjectId(), ParseUser.getCurrentUser().getObjectId(), new FunctionCallback<Boolean>() {
-            @Override
-            public void done(Boolean isAdmin, ParseException e) {
-                if (e == null) {
-                    Log.wtf(TAG, "IS USER ADMIN? " + isAdmin);
-                    //replace the current profile frag with new org profile frag, while adding it to a backstack
-                    //TODO: grab if following from database
-                    ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, OrgsDataSource.FOLLOW_STATE_NO_REQUEST_SENT, TodayFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
-                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.today_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
-                    Log.d(TAG, "org has been pressed on profile page " + orgSelected.toString());
-                } else {
-                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                }
-            }
-        });
+        openOrgProfileFromPosts(orgSelected);
     }
 
     @Override
@@ -226,28 +208,30 @@ public class TodayFragment extends Fragment implements Serializable,
         Log.wtf(TAG, "TODAYFRAG refreshed!");
 
         //refreshing will load the latest 10 posts
-        loadPosts(0,10);
+        loadPosts(0, 10);
     }
 
     @Override
     public void openOrgProfileFromPosts(final Organization organization) {
-        String state = OrgsDataSource.FOLLOW_STATE_NO_REQUEST_SENT;
-        if (!mPostsOverlayFragment.getIsOnComments() && !mPostsOverlayFragment.getmPostsFragment().isVisible())
-            state = OrgsDataSource.FOLLOW_STATE_ACCEPTED;
-        else {
-            //TODO: call isFollowing
-        }
-        final String finalState = state;
         AdminDataSource.checkIfUserIsAdminOfOrganization(mLoading, getActivity(), organization.getmObjectId(), ParseUser.getCurrentUser().getObjectId(), new FunctionCallback<Boolean>() {
             @Override
-            public void done(Boolean isAdmin, ParseException e) {
-                if (e == null){
-                    ProfileFragment orgProfile = ProfileFragment.newInstance(null, organization, finalState, TodayFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
-                    getChildFragmentManager().beginTransaction()
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                            .replace(R.id.today_framelayout, orgProfile)
-                            .addToBackStack(null)
-                            .commitAllowingStateLoss();
+            public void done(final Boolean isAdmin, ParseException e) {
+                if (e == null) {
+                    OrgsDataSource.isFollowingOrganization(getActivity(), mLoading, ParseUser.getCurrentUser().getObjectId(), organization.getmObjectId(), new FunctionCallback<String>() {
+                        @Override
+                        public void done(String followState, ParseException e) {
+                            if (e == null) {
+                                ProfileFragment orgProfile = ProfileFragment.newInstance(null, organization, followState, TodayFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
+                                getChildFragmentManager().beginTransaction()
+                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                        .replace(R.id.today_framelayout, orgProfile)
+                                        .addToBackStack(null)
+                                        .commitAllowingStateLoss();
+                            }
+                        }
+                    });
+
+
                 }
             }
         });
@@ -273,7 +257,7 @@ public class TodayFragment extends Fragment implements Serializable,
 
         //for test purposes, randomly selects what type of users list to display (admin, pending, or normal)
         HashMap<User, Integer> typeOfUsers = new HashMap<>();
-        for (User user : users){
+        for (User user : users) {
             Random r = new Random();
             typeOfUsers.put(user, r.nextInt(3));
         }

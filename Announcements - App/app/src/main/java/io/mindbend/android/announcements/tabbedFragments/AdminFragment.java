@@ -185,14 +185,18 @@ public class AdminFragment extends Fragment implements Serializable,
         Log.wtf(TAG, "PARSE USER " + ParseUser.getCurrentUser().getObjectId());
         AdminDataSource.checkIfUserIsAdminOfOrganization(mLoading, getActivity(), orgSelected.getmObjectId(), ParseUser.getCurrentUser().getObjectId(), new FunctionCallback<Boolean>() {
             @Override
-            public void done(Boolean isAdmin, ParseException e) {
+            public void done(final Boolean isAdmin, ParseException e) {
                 if (e == null) {
                     Log.wtf(TAG, "IS USER ADMIN? " + isAdmin);
-                    //TODO: call isFollowing function
                     //replace the current profile frag with new org profile frag, while adding it to a backstack
-                    ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, OrgsDataSource.FOLLOW_STATE_NO_REQUEST_SENT, AdminFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
-                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
+                    OrgsDataSource.isFollowingOrganization(getActivity(), mLoading, ParseUser.getCurrentUser().getObjectId(), orgSelected.getmObjectId(), new FunctionCallback<String>() {
+                        @Override
+                        public void done(String followState, ParseException e) {
+                            ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, followState, AdminFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
+                            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
+                        }
+                    });
                     Log.d(TAG, "org has been pressed on admin page " + orgSelected.toString());
                 } else {
                     Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();

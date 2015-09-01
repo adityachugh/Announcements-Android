@@ -90,15 +90,20 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
         Log.wtf(TAG, "PARSE USER " + ParseUser.getCurrentUser().getObjectId());
         AdminDataSource.checkIfUserIsAdminOfOrganization(mLoading, getActivity(), orgSelected.getmObjectId(), ParseUser.getCurrentUser().getObjectId(), new FunctionCallback<Boolean>() {
             @Override
-            public void done(Boolean isAdmin, ParseException e) {
+            public void done(final Boolean isAdmin, ParseException e) {
                 if (e == null) {
                     Log.wtf(TAG, "IS USER ADMIN? " + isAdmin);
-                    String followState = mProfileFragment.isVisible() ? OrgsDataSource.FOLLOW_STATE_ACCEPTED : OrgsDataSource.FOLLOW_STATE_NO_REQUEST_SENT;
-                    //TODO: else, grab from db
                     //replace the current profile frag with new org profile frag, while adding it to a backstack
-                    ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, followState,YouFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
-                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.you_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
+                    OrgsDataSource.isFollowingOrganization(getActivity(), mLoading, ParseUser.getCurrentUser().getObjectId(), orgSelected.getmObjectId(), new FunctionCallback<String>() {
+                        @Override
+                        public void done(String retrievedFollowState, ParseException e) {
+                            if (e == null) {
+                                ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, retrievedFollowState, YouFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
+                                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.you_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
+                            }
+                        }
+                    });
                     Log.d(TAG, "org has been pressed on profile page " + orgSelected.toString());
                 } else {
                     Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();

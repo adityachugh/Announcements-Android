@@ -69,8 +69,6 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
 
         mLoading = (ProgressBar)v.findViewById(R.id.discover_frag_progressbar);
 
-        //TODO: query discover_clubs data from Parse, then pass that data into an OrgsGridFragment that will be created using the OrgsGridFragment.NewInstance static method
-
         mOrgsGridFrag = SearchableFrag.newInstance(SearchableFrag.ORGS_TYPE, null, this);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.discover_framelayout, mOrgsGridFrag).commitAllowingStateLoss();
@@ -103,14 +101,20 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
         Log.wtf(TAG, "PARSE USER " + ParseUser.getCurrentUser().getObjectId());
         AdminDataSource.checkIfUserIsAdminOfOrganization(mLoading, getActivity(), orgPressed.getmObjectId(), ParseUser.getCurrentUser().getObjectId(), new FunctionCallback<Boolean>() {
             @Override
-            public void done(Boolean isAdmin, ParseException e) {
+            public void done(final Boolean isAdmin, ParseException e) {
                 if (e == null) {
                     Log.wtf(TAG, "IS USER ADMIN? " + isAdmin);
                     //replace the current profile frag with new org profile frag, while adding it to a backstack
-                    //TODO: grab if following from database
-                    ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgPressed, OrgsDataSource.FOLLOW_STATE_NO_REQUEST_SENT, DiscoverFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
-                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
+                    OrgsDataSource.isFollowingOrganization(getActivity(), mLoading, ParseUser.getCurrentUser().getObjectId(), orgPressed.getmObjectId(), new FunctionCallback<String>() {
+                        @Override
+                        public void done(String followState, ParseException e) {
+                            if (e == null) {
+                                ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgPressed, followState, DiscoverFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
+                                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
+                            }
+                        }
+                    });
                     Log.d(TAG, "org has been pressed on discover page " + orgPressed.toString());
                 } else {
                     Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
