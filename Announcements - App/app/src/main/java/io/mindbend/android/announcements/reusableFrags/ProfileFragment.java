@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -252,13 +253,13 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
             }
 
             if (mOrg != null) {
+                name.setText(mOrg.getTitle());
                 if (mOrg.isPrivateOrg()) {
                     ImageView isPrivate = (ImageView) mView.findViewById(R.id.profile_private_org_lock_icon);
                     isPrivate.setVisibility(View.VISIBLE);
                     if (mOrgFollowState != null && mOrgFollowState.equals(OrgsDataSource.FOLLOW_STATE_ACCEPTED))
                         loadOrgPosts(mOrg.getmObjectId(), 0, 10);
                 } else {
-                    name.setText(mOrg.getTitle());
                     loadOrgPosts(mOrg.getmObjectId(), 0, 10);
                 }
                 followCount.setText(mOrg.getFollowers() + " Followers");
@@ -338,7 +339,6 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     }
 
     private void sendFollowRequestToPrivateOrg() {
-        //TODO: show dialog where they enter request code. If matched, request sent
         AlertDialog.Builder alert = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
 
         LinearLayout layout = new LinearLayout(getActivity());
@@ -346,6 +346,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         layout.setPadding(16, 0, 16, 0);
 
         final EditText requestCode = new EditText(getActivity());
+        requestCode.setInputType(InputType.TYPE_CLASS_NUMBER);
         requestCode.setHint(R.string.enter_access_code_for_private_org_message);
         layout.addView(requestCode);
 
@@ -353,7 +354,22 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         alert.setTitle("Send follow request to " + mOrg.getTitle());
         alert.setPositiveButton("Send", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                //TODO: implement cc function
+                OrgsDataSource.privateOrganizationAccessCodeEntered(getActivity(), mLoading, mOrg.getmObjectId(), requestCode.getText().toString(), new FunctionCallback<Boolean>() {
+                    @Override
+                    public void done(Boolean followRequestSent, ParseException e) {
+                        if (e == null){
+                            if (followRequestSent){
+                                mOrgFollowState = OrgsDataSource.FOLLOW_STATE_PENDING;
+                                mFollowFab.setImageResource(R.drawable.ic_pending);
+                            } else {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
+                                builder.setTitle("Incorrect access code entered.")
+                                        .setPositiveButton("OK", null)
+                                        .show();
+                            }
+                        }
+                    }
+                });
             }
         })
                 .setNegativeButton("Cancel", null)

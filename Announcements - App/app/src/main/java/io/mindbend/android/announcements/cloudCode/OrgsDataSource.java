@@ -178,4 +178,29 @@ public class OrgsDataSource {
             }
         });
     }
+
+    public static void privateOrganizationAccessCodeEntered (final Context context, final ProgressBar loading, String organizationObjectId, String enteredAccessCode, final FunctionCallback<Boolean> callback){
+        loading.setVisibility(View.VISIBLE);
+
+        HashMap<String, Object> params = new HashMap<>();
+
+        int accessCode = 0;
+        if (!enteredAccessCode.equals(""))
+            accessCode = Integer.parseInt(enteredAccessCode);
+
+        params.put("enteredAccessCode", accessCode);
+        params.put("organizationObjectId", organizationObjectId);
+
+        ParseCloud.callFunctionInBackground("privateOrganizationAccessCodeEntered", params, new FunctionCallback<Boolean>() {
+            @Override
+            public void done(Boolean correctCodeEntered, ParseException e) {
+                loading.setVisibility(View.GONE);
+                if (e == null){
+                    callback.done(correctCodeEntered, e);
+                } else {
+                    Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
 }
