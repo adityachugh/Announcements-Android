@@ -315,17 +315,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                                         break;
                                     default:
                                         //already follower, state = accepted
-                                        builder.setTitle(R.string.unfollow_org_title)
-                                                .setMessage(getString(R.string.format_unfollow_org_message, mOrg.getTitle()))
-                                                .setNegativeButton("No", null)
-                                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        dialog.dismiss();
-                                                        updateFollowState();
-                                                    }
-                                                })
-                                                .show();
+                                        updateFollowState();
                                         break;
                                 }
                             }

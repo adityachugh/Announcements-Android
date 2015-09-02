@@ -119,18 +119,15 @@ public class OrgsDataSource {
         params.put("startIndex", 0);
         params.put("numberOfOrganizations", 30);
 
-        ParseCloud.callFunctionInBackground("getOrganizationsFollowedByUser", params, new FunctionCallback<List<ParseObject>>() {
+        ParseCloud.callFunctionInBackground("getOrganizationsFollowedByUserInRange", params, new FunctionCallback<List<ParseObject>>() {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
+                loading.setVisibility(View.GONE);
+//                int i = 0;
                 ArrayList<Organization> orgsFollowed = new ArrayList<Organization>();
                 if (e == null) {
                     for (ParseObject object : parseObjects) {
                         ParseObject org = object.getParseObject("organization");
-                        try {
-                            org.fetchIfNeeded();
-                        } catch (ParseException e1) {
-                            e1.printStackTrace();
-                        }
                         orgsFollowed.add(new Organization(org));
                     }
                     loading.setVisibility(View.GONE);

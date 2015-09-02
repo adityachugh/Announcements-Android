@@ -129,7 +129,7 @@ public class UserDataSource {
                 String message = "Failure";
                 if (e == null && isSuccessful) {
                     message = "Successfully " + toastText + "followed organization";
-                    callback.done(isFollowing, e);
+                    callback.done(isSuccessful, e);
                 }
                 if (e != null) {
                     e.printStackTrace();
