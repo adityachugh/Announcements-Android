@@ -28,7 +28,6 @@ import io.mindbend.android.announcements.adminClasses.AdminMainFragment;
 import io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment;
 import io.mindbend.android.announcements.cloudCode.AdminDataSource;
 import io.mindbend.android.announcements.cloudCode.OrgsDataSource;
-import io.mindbend.android.announcements.cloudCode.UserDataSource;
 import io.mindbend.android.announcements.reusableFrags.ListFragment;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridAdapter;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridFragment;
@@ -52,8 +51,9 @@ public class AdminFragment extends Fragment implements Serializable,
     private static final String ADMIN_ORGS_TAG = "main_admin_frag";
     private static final String TAG = "AdminFragment";
     private static final String ARG_ADMIN_ORGS = "admin_orgs";
-    private transient OrgsGridFragment mAdminOrgs;
+    private transient OrgsGridFragment mAdminOrgsFrag;
     private transient AdminMainFragment mAdminMain;
+    private ArrayList<Organization> mOrgsList;
     private transient ProgressBar mLoading;
 
     private boolean onToday = false;
@@ -77,8 +77,8 @@ public class AdminFragment extends Fragment implements Serializable,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            ArrayList<Organization> orgs = getArguments().getParcelableArrayList(ARG_ADMIN_ORGS);
-            mAdminOrgs = OrgsGridFragment.newInstance(orgs, AdminFragment.this, AdminFragment.this);
+            mOrgsList = getArguments().getParcelableArrayList(ARG_ADMIN_ORGS);
+            mAdminOrgsFrag = OrgsGridFragment.newInstance(mOrgsList, AdminFragment.this, AdminFragment.this);
         }
     }
 
@@ -94,7 +94,7 @@ public class AdminFragment extends Fragment implements Serializable,
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         if (ft.isEmpty()){
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .add(R.id.admin_framelayout, mAdminOrgs)
+                    .add(R.id.admin_framelayout, mAdminOrgsFrag)
                     .addToBackStack(ADMIN_ORGS_TAG)
                     .commitAllowingStateLoss();
         }
@@ -107,7 +107,7 @@ public class AdminFragment extends Fragment implements Serializable,
     }
 
     public OrgsGridFragment getmAdminOrgsFrag() {
-        return mAdminOrgs;
+        return mAdminOrgsFrag;
     }
 
     @Override
@@ -201,7 +201,7 @@ public class AdminFragment extends Fragment implements Serializable,
     }
 
     private boolean isLookingAtAdminOrgs () {
-        return mAdminOrgs.isVisible();
+        return mAdminOrgsFrag.isVisible();
     }
 
     /**

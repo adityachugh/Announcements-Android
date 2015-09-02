@@ -67,7 +67,6 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
     public YouFragment mYouFragment;
 
     private Bundle mSavedInstanceState;
-    private transient Toolbar mToolbar;
     private transient TextView mTitleTextView;
 
     private boolean userIsAdmin = false;
@@ -94,13 +93,15 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
         }
 
         //gets backwards compatible toolbar
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
         //gets tabBar, adds tabs
         mTabBar = (MaterialTabHost) findViewById(R.id.tab_bar);
         mTabBar.addTab(mTabBar.newTab().setText("Today").setTabListener(this));
         mTabBar.addTab(mTabBar.newTab().setText("Discover").setTabListener(this));
         mTabBar.addTab(mTabBar.newTab().setText("You").setTabListener(this));
+        if(userIsAdmin)
+            mTabBar.addTab(mTabBar.newTab().setText("Admin").setTabListener(this));
 
         mToolbar.setTitle(getString(R.string.format_tabbed_activity_toolbar_text, ParseUser.getCurrentUser().getString(VerificationDataSource.USER_FIRST_NAME))); //TODO: pull in user's name
         setSupportActionBar(mToolbar);
@@ -118,16 +119,20 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
             public void done(ArrayList<Organization> organizations, ParseException e) {
                 if (e == null){
                     if (organizations != null && organizations.size() > 0){
-                        userIsAdmin = true;
-                        mAdminFragment = AdminFragment.newInstance(organizations);
-                        mTabBar.addTab(mTabBar.newTab().setText("Admin").setTabListener(TabbedActivity.this));
-                        mAdapter.notifyDataSetChanged();
-                        mTabBar.notifyDataSetChanged();
+                        nonAdminUserIsNowAdmin(organizations);
                     }
                 }
             }
         });
 
+    }
+
+    public void nonAdminUserIsNowAdmin(ArrayList<Organization> organizations) {
+        userIsAdmin = true;
+        mAdminFragment = AdminFragment.newInstance(organizations);
+        mTabBar.addTab(mTabBar.newTab().setText("Admin").setTabListener(TabbedActivity.this));
+        mAdapter.notifyDataSetChanged();
+        mTabBar.notifyDataSetChanged();
     }
 
     private void updateLandscapePageText() {
