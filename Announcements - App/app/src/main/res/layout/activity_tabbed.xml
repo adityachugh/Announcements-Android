@@ -1,49 +1,60 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical"
               tools:context="io.mindbend.android.announcements.TabbedActivity">
 
     <LinearLayout
-        android:id="@+id/tab_and_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <LinearLayout
+            android:id="@+id/tab_and_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/primary"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Today"
-                android:textSize="@dimen/toolbar_landscape_page_text"
-                android:layout_gravity="center"
-                android:id="@+id/landscape_toolbar_title"
-                android:visibility="gone"
-                style="@style/Base.TextAppearance.AppCompat.Body2"
-                android:textColor="@android:color/white"/>
-        </android.support.v7.widget.Toolbar>
+            android:orientation="vertical">
 
-        <it.neokree.materialtabs.MaterialTabHost
-            android:id="@+id/tab_bar"
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/primary"
+                android:minHeight="?attr/actionBarSize"
+                android:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Today"
+                    android:textSize="@dimen/toolbar_landscape_page_text"
+                    android:layout_gravity="center"
+                    android:id="@+id/landscape_toolbar_title"
+                    android:visibility="gone"
+                    style="@style/Base.TextAppearance.AppCompat.Body2"
+                    android:textColor="@android:color/white"/>
+            </android.support.v7.widget.Toolbar>
+
+            <it.neokree.materialtabs.MaterialTabHost
+                android:id="@+id/tab_bar"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                app:accentColor="@color/accent"
+                app:hasIcons="false"
+                app:primaryColor="@color/primary"
+                app:textColor="#FFFFFF"/>
+        </LinearLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            app:accentColor="@color/accent"
-            app:hasIcons="false"
-            app:primaryColor="@color/primary"
-            app:textColor="#FFFFFF"/>
+            android:layout_height="match_parent"/>
     </LinearLayout>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+    <ProgressBar
+        android:layout_width="@dimen/progress_bar_LARGE"
+        android:layout_height="@dimen/progress_bar_LARGE"
+        android:id="@+id/activity_overall_progressbar"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
 
-</LinearLayout>
+</RelativeLayout>

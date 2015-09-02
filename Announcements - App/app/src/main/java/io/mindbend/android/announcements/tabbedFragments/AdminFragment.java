@@ -51,6 +51,7 @@ public class AdminFragment extends Fragment implements Serializable,
         UserListAdapter.UserListInteractionListener, ListFragment.ListFabListener, SearchableFrag.SearchInterface {
     private static final String ADMIN_ORGS_TAG = "main_admin_frag";
     private static final String TAG = "AdminFragment";
+    private static final String ARG_ADMIN_ORGS = "admin_orgs";
     private transient OrgsGridFragment mAdminOrgs;
     private transient AdminMainFragment mAdminMain;
     private transient ProgressBar mLoading;
@@ -64,6 +65,22 @@ public class AdminFragment extends Fragment implements Serializable,
         // Required empty public constructor
     }
 
+    public static AdminFragment newInstance(ArrayList<Organization> adminOrgList) {
+        AdminFragment fragment = new AdminFragment();
+        Bundle args = new Bundle();
+        args.putParcelableArrayList(ARG_ADMIN_ORGS, adminOrgList);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            ArrayList<Organization> orgs = getArguments().getParcelableArrayList(ARG_ADMIN_ORGS);
+            mAdminOrgs = OrgsGridFragment.newInstance(orgs, AdminFragment.this, AdminFragment.this);
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -74,21 +91,13 @@ public class AdminFragment extends Fragment implements Serializable,
 
         mLoading = (ProgressBar)v.findViewById(R.id.admin_frag_progressbar);
 
-        UserDataSource.getOrganizationsThatUserIsAdminOf(getActivity(), mLoading, ParseUser.getCurrentUser().getObjectId(), new FunctionCallback<ArrayList<Organization>>() {
-            @Override
-            public void done(ArrayList<Organization> organizations, ParseException e) {
-                if (e == null){
-                    FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-                    if (ft.isEmpty()){
-                        mAdminOrgs = OrgsGridFragment.newInstance(organizations, AdminFragment.this, AdminFragment.this);
-                        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                .add(R.id.admin_framelayout, mAdminOrgs)
-                                .addToBackStack(ADMIN_ORGS_TAG)
-                                .commitAllowingStateLoss();
-                    }
-                }
-            }
-        });
+        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+        if (ft.isEmpty()){
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .add(R.id.admin_framelayout, mAdminOrgs)
+                    .addToBackStack(ADMIN_ORGS_TAG)
+                    .commitAllowingStateLoss();
+        }
 
         return v;
     }

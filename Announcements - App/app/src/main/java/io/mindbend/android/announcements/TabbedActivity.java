@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +34,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import io.mindbend.android.announcements.adminClasses.AdminMainFragment;
 import io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment;
@@ -68,6 +70,8 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
     private transient Toolbar mToolbar;
     private transient TextView mTitleTextView;
 
+    private boolean userIsAdmin = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,8 +101,6 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
         mTabBar.addTab(mTabBar.newTab().setText("Today").setTabListener(this));
         mTabBar.addTab(mTabBar.newTab().setText("Discover").setTabListener(this));
         mTabBar.addTab(mTabBar.newTab().setText("You").setTabListener(this));
-        //TODO: only add admin tag if user is admin
-        mTabBar.addTab(mTabBar.newTab().setText("Admin").setTabListener(this));
 
         mToolbar.setTitle(getString(R.string.format_tabbed_activity_toolbar_text, ParseUser.getCurrentUser().getString(VerificationDataSource.USER_FIRST_NAME))); //TODO: pull in user's name
         setSupportActionBar(mToolbar);
@@ -110,6 +112,21 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
             mTitleTextView.setVisibility(View.VISIBLE);
             updateLandscapePageText();
         }
+
+        UserDataSource.getOrganizationsThatUserIsAdminOf(this, (ProgressBar)findViewById(R.id.activity_overall_progressbar), ParseUser.getCurrentUser().getObjectId(), new FunctionCallback<ArrayList<Organization>>() {
+            @Override
+            public void done(ArrayList<Organization> organizations, ParseException e) {
+                if (e == null){
+                    if (organizations != null && organizations.size() > 0){
+                        userIsAdmin = true;
+                        mAdminFragment = AdminFragment.newInstance(organizations);
+                        mTabBar.addTab(mTabBar.newTab().setText("Admin").setTabListener(TabbedActivity.this));
+                        mAdapter.notifyDataSetChanged();
+                        mTabBar.notifyDataSetChanged();
+                    }
+                }
+            }
+        });
 
     }
 
@@ -246,7 +263,11 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
         @Override
         public int getCount() {
             //TODO: only return 4 IF *****ADMIN*****, otherwise return 3.
-            return 4;
+            if (userIsAdmin)
+                return 4;
+            else {
+                return 3;
+            }
         }
 
         @Override
