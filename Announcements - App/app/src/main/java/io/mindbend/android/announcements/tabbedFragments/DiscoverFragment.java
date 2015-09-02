@@ -54,6 +54,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
     private boolean onDiscover = true;
     private boolean onYou = false;
     private boolean onAdmin = false;
+    private transient View mView;
 
     public DiscoverFragment() {
         // Required empty public constructor
@@ -64,15 +65,15 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v =inflater.inflate(R.layout.fragment_discover, container, false);
+        mView = inflater.inflate(R.layout.fragment_discover, container, false);
         setRetainInstance(true);
 
-        mLoading = (ProgressBar)v.findViewById(R.id.discover_frag_progressbar);
+        mLoading = (ProgressBar) mView.findViewById(R.id.discover_frag_progressbar);
 
         mOrgsGridFrag = SearchableFrag.newInstance(SearchableFrag.ORGS_TYPE, null, this);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.discover_framelayout, mOrgsGridFrag).commitAllowingStateLoss();
-        return v;
+        return mView;
     }
 
     public SearchableFrag getmOrgsGridFrag() {
@@ -105,7 +106,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
                 if (e == null) {
                     Log.wtf(TAG, "IS USER ADMIN? " + isAdmin);
                     //replace the current profile frag with new org profile frag, while adding it to a backstack
-                    OrgsDataSource.isFollowingOrganization(getActivity(), mLoading, ParseUser.getCurrentUser().getObjectId(), orgPressed.getmObjectId(), new FunctionCallback<String>() {
+                    OrgsDataSource.isFollowingOrganization(mView, mLoading, ParseUser.getCurrentUser().getObjectId(), orgPressed.getmObjectId(), new FunctionCallback<String>() {
                         @Override
                         public void done(String followState, ParseException e) {
                             if (e == null) {

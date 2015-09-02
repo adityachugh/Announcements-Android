@@ -51,6 +51,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
     private boolean onYou = true;
     private boolean onAdmin = false;
     public transient ProgressBar mLoading;
+    private transient View mView;
 
     //NOTE: Opens child ProfileFragment, which has a grandchild for user followed organizations/ organization announcements
     //Makes Profile fragment generic (useable by both users and organizations)
@@ -66,8 +67,8 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         setRetainInstance(true);
-        View v = inflater.inflate(R.layout.fragment_you, container, false);
-        mLoading = (ProgressBar)v.findViewById(R.id.you_frag_progressbar);
+        mView = inflater.inflate(R.layout.fragment_you, container, false);
+        mLoading = (ProgressBar) mView.findViewById(R.id.you_frag_progressbar);
 
         UserDataSource.getCurrentUserWithInfo(mLoading, new FunctionCallback<User>() {
             @Override
@@ -79,7 +80,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
             }
         });
 
-        return v;
+        return mView;
     }
     public Fragment getmProfileFragment() {
         return mProfileFragment;
@@ -94,7 +95,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
                 if (e == null) {
                     Log.wtf(TAG, "IS USER ADMIN? " + isAdmin);
                     //replace the current profile frag with new org profile frag, while adding it to a backstack
-                    OrgsDataSource.isFollowingOrganization(getActivity(), mLoading, ParseUser.getCurrentUser().getObjectId(), orgSelected.getmObjectId(), new FunctionCallback<String>() {
+                    OrgsDataSource.isFollowingOrganization(mView, mLoading, ParseUser.getCurrentUser().getObjectId(), orgSelected.getmObjectId(), new FunctionCallback<String>() {
                         @Override
                         public void done(String retrievedFollowState, ParseException e) {
                             if (e == null) {

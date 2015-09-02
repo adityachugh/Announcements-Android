@@ -60,6 +60,7 @@ public class AdminFragment extends Fragment implements Serializable,
     private boolean onDiscover = false;
     private boolean onYou = false;
     private boolean onAdmin = true;
+    private transient View mView;
 
     public AdminFragment() {
         // Required empty public constructor
@@ -86,10 +87,10 @@ public class AdminFragment extends Fragment implements Serializable,
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_admin, container, false);
+        mView = inflater.inflate(R.layout.fragment_admin, container, false);
         setRetainInstance(true);
 
-        mLoading = (ProgressBar)v.findViewById(R.id.admin_frag_progressbar);
+        mLoading = (ProgressBar) mView.findViewById(R.id.admin_frag_progressbar);
 
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         if (ft.isEmpty()){
@@ -99,7 +100,7 @@ public class AdminFragment extends Fragment implements Serializable,
                     .commitAllowingStateLoss();
         }
 
-        return v;
+        return mView;
     }
 
     public AdminMainFragment getmAdminMainFrag() {
@@ -226,7 +227,7 @@ public class AdminFragment extends Fragment implements Serializable,
                     if (e == null) {
                         Log.wtf(TAG, "IS USER ADMIN? " + isAdmin);
                         //replace the current profile frag with new org profile frag, while adding it to a backstack
-                        OrgsDataSource.isFollowingOrganization(getActivity(), mLoading, ParseUser.getCurrentUser().getObjectId(), orgSelected.getmObjectId(), new FunctionCallback<String>() {
+                        OrgsDataSource.isFollowingOrganization(mView, mLoading, ParseUser.getCurrentUser().getObjectId(), orgSelected.getmObjectId(), new FunctionCallback<String>() {
                             @Override
                             public void done(String followState, ParseException e) {
                                 ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, followState, AdminFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);

@@ -84,6 +84,7 @@ public class TodayFragment extends Fragment implements Serializable,
     private boolean onAdmin = false;
 
     public Date mCurrentDateSelected;
+    private transient View mView;
 
     public TodayFragment() {
         // Required empty public constructor
@@ -104,20 +105,20 @@ public class TodayFragment extends Fragment implements Serializable,
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_today, container, false);
+        mView = inflater.inflate(R.layout.fragment_today, container, false);
         setRetainInstance(true);
 
         //instantiate the fab so that you can change its onClick method and src logo when switching between posts and comments fragments
-        mFab = (ImageButton) v.findViewById(R.id.today_fab);
+        mFab = (ImageButton) mView.findViewById(R.id.today_fab);
         mFab.setOnClickListener(this);
 
-        mLoading = (ProgressBar) v.findViewById(R.id.today_progressbar);
+        mLoading = (ProgressBar) mView.findViewById(R.id.today_progressbar);
 
         mCurrentDateSelected = new Date();
 
         loadPosts(0, 10);
 
-        return v;
+        return mView;
     }
 
     private void loadPosts(int startIndex, int numberOfPosts) {
@@ -217,7 +218,7 @@ public class TodayFragment extends Fragment implements Serializable,
             @Override
             public void done(final Boolean isAdmin, ParseException e) {
                 if (e == null) {
-                    OrgsDataSource.isFollowingOrganization(getActivity(), mLoading, ParseUser.getCurrentUser().getObjectId(), organization.getmObjectId(), new FunctionCallback<String>() {
+                    OrgsDataSource.isFollowingOrganization(mView, mLoading, ParseUser.getCurrentUser().getObjectId(), organization.getmObjectId(), new FunctionCallback<String>() {
                         @Override
                         public void done(String followState, ParseException e) {
                             if (e == null) {
