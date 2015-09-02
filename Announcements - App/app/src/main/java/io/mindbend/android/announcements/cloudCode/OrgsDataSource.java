@@ -15,10 +15,12 @@ import com.parse.ParseUser;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.User;
@@ -34,6 +36,7 @@ public class OrgsDataSource {
     public final static String ORG_REQUEST_CODE = "requestCode";
     public final static String ORG_TAG = "handle";
     public final static String ORG_IMAGE = "image";
+    public final static String ORG_CHILD_CONFIG = "childLevelConfig";
 
 
     public final static String ORG_TYPES_PRIVATE = "PRI";

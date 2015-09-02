@@ -22,15 +22,15 @@ import io.mindbend.android.announcements.reusableFrags.ListFragment;
 import io.mindbend.android.announcements.reusableFrags.UserListAdapter;
 
 public class AdminMainFragment extends Fragment implements Serializable {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_ADMIN_LISTENER = "param1";
+    private static final String ARG_ADMIN_ORG = "current_admin_org";
     private static final String ADMIN_MAIN_TAG = "admin_main_frag";
     public static final int CHANGE_PARENT_PHOTO = 4;
 
-    // TODO: Rename and change types of parameters
     private AdminInteractionListener mListener;
     private View mView;
+    private Organization mOrg;
     private NewAnnouncementFragment mNewAnnouncementFragment;
     private ModifyOrganizationFragment mModifyOrganizationFragment;
 
@@ -42,11 +42,11 @@ public class AdminMainFragment extends Fragment implements Serializable {
      * @param adminInteractionListener Parameter 1
      * @return A new instance of fragment AdminMainFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static AdminMainFragment newInstance(AdminInteractionListener adminInteractionListener) {
+    public static AdminMainFragment newInstance(Organization currentAdminOrg, AdminInteractionListener adminInteractionListener) {
         AdminMainFragment fragment = new AdminMainFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_ADMIN_LISTENER, adminInteractionListener);
+        args.putSerializable(ARG_ADMIN_ORG, currentAdminOrg);
         fragment.setArguments(args);
         return fragment;
     }
@@ -60,6 +60,7 @@ public class AdminMainFragment extends Fragment implements Serializable {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mListener = (AdminInteractionListener) getArguments().getSerializable(ARG_ADMIN_LISTENER);
+            mOrg = (Organization) getArguments().getSerializable(ARG_ADMIN_ORG);
         }
     }
 
@@ -78,21 +79,28 @@ public class AdminMainFragment extends Fragment implements Serializable {
     }
 
     private void setupTextOfOrg() {
-        //TODO: get what TYPE of org it is (currently statically set to board)
+        //TODO: get org name (ex. "board") based on config
         String typeOfOrg = "Board";
         String typeOfChild = "School";
+
+        if (!mOrg.isChildless()){
+            LinearLayout hasChildrenFunctions = (LinearLayout)mView.findViewById(R.id.admin_main_has_children_fields);
+            hasChildrenFunctions.setVisibility(View.VISIBLE);
+
+            TextView viewChildrenOrgs= (TextView) mView.findViewById(R.id.text_view_children);
+            viewChildrenOrgs.setText(getString(R.string.format_view_children, typeOfChild+"s"));
+            viewChildrenOrgs.setVisibility(View.VISIBLE);
+
+            TextView addChildOrg= (TextView) mView.findViewById(R.id.text_add_child_org);
+            addChildOrg.setText(getString(R.string.format_add_child_org, typeOfChild));
+            addChildOrg.setVisibility(View.VISIBLE);
+        }
 
         TextView addOrgAnnouncement = (TextView) mView.findViewById(R.id.text_add_org_announcement);
         addOrgAnnouncement.setText(getString(R.string.format_new_org_announcment, typeOfOrg));
 
         TextView allOrgAnnouncements= (TextView) mView.findViewById(R.id.text_all_org_announcements);
         allOrgAnnouncements.setText(getString(R.string.format_all_org_announcements, typeOfOrg));
-
-        TextView viewChildrenOrgs= (TextView) mView.findViewById(R.id.text_view_children);
-        viewChildrenOrgs.setText(getString(R.string.format_view_children, typeOfChild+"s"));
-
-        TextView addChildOrg= (TextView) mView.findViewById(R.id.text_add_child_org);
-        addChildOrg.setText(getString(R.string.format_add_child_org, typeOfChild));
 
         TextView viewOrgAdmins= (TextView) mView.findViewById(R.id.text_view_org_admins);
         viewOrgAdmins.setText(getString(R.string.format_view_org_admin, typeOfOrg));
@@ -106,18 +114,36 @@ public class AdminMainFragment extends Fragment implements Serializable {
          * the following Linearlayouts are the various possible "buttons" to click to complete various actions
          */
 
-        //TODO: get the actual main org of the current user
-        final Organization organization = new Organization("fake_data", "PDSB", "The best school board in Ontario", 60000, "#PDSB", false, false);
+        if (!mOrg.isChildless()){
+            LinearLayout viewChildrenOrgs= (LinearLayout) mView.findViewById(R.id.admin_view_children);
+            viewChildrenOrgs.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(ADMIN_MAIN_TAG, "view children");
 
-        //TODO: only add certain layouts if the user is a certain level of admin
+                    mListener.viewChildren(mOrg);
+                }
+            });
+
+
+            LinearLayout addChildOrg= (LinearLayout) mView.findViewById(R.id.admin_add_child_org);
+            addChildOrg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(ADMIN_MAIN_TAG, "add admin");
+                    mModifyOrganizationFragment = ModifyOrganizationFragment.newInstance(mOrg, null);
+                    mListener.addChildOrganization(mOrg);
+                }
+            });
+        }
 
         LinearLayout addOrgAnnouncement = (LinearLayout) mView.findViewById(R.id.admin_add_org_announcement);
         addOrgAnnouncement.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(ADMIN_MAIN_TAG, "add announcement");
-                mNewAnnouncementFragment = NewAnnouncementFragment.newInstance(organization);
-                mListener.addAnnouncement(organization);
+                mNewAnnouncementFragment = NewAnnouncementFragment.newInstance(mOrg);
+                mListener.addAnnouncement(mOrg);
             }
         });
 
@@ -127,39 +153,16 @@ public class AdminMainFragment extends Fragment implements Serializable {
             @Override
             public void onClick(View v) {
                 Log.d(ADMIN_MAIN_TAG, "view announcements");
-                mListener.viewAnnouncementsState(organization);
+                mListener.viewAnnouncementsState(mOrg);
             }
         });
-
-
-        LinearLayout viewChildrenOrgs= (LinearLayout) mView.findViewById(R.id.admin_view_children);
-        viewChildrenOrgs.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(ADMIN_MAIN_TAG, "view children");
-
-                mListener.viewChildren(organization);
-            }
-        });
-
-
-        LinearLayout addChildOrg= (LinearLayout) mView.findViewById(R.id.admin_add_child_org);
-        addChildOrg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(ADMIN_MAIN_TAG, "add admin");
-//                mModifyOrganizationFragment = ModifyOrganizationFragment.newInstance(organization, null);
-                mListener.addChildOrganization(organization);
-            }
-        });
-
 
         LinearLayout viewOrgAdmins= (LinearLayout) mView.findViewById(R.id.admin_view_org_admins);
         viewOrgAdmins.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(ADMIN_MAIN_TAG, "view admins");
-                mListener.userListOpened(organization);
+                mListener.userListOpened(mOrg);
             }
         });
 

@@ -24,6 +24,7 @@ public class Organization implements Serializable, Parcelable {
     private boolean mPrivateOrg;
     private boolean mNewOrg;
     private String mProfileImageURL;
+    private boolean mIsChildless;
 
     public Organization(String objectId, String title, String description, int followers, String tag, boolean privateOrg, boolean newOrg){
         mObjectId = objectId;
@@ -34,6 +35,7 @@ public class Organization implements Serializable, Parcelable {
         mPrivateOrg = privateOrg;
         mNewOrg = newOrg;
         mProfileImageURL = "";
+        mIsChildless = false;
     }
 
     public Organization (ParseObject object){
@@ -53,6 +55,7 @@ public class Organization implements Serializable, Parcelable {
         else
             mProfileImageURL = "";
         mTag = object.getString(OrgsDataSource.ORG_TAG);
+        mIsChildless = object.get(OrgsDataSource.ORG_CHILD_CONFIG) == null;
     }
 
     public Organization(Parcel in){
@@ -62,13 +65,13 @@ public class Organization implements Serializable, Parcelable {
         mFollowers = in.readInt();
         mTag = in.readString();
 
-        if (in.readInt() == 0) mPrivateOrg = false;
-        else mPrivateOrg = true;
+        mPrivateOrg = in.readInt() != 0;
 
-        if (in.readInt() == 0) mNewOrg = false;
-        else mNewOrg = true;
+        mNewOrg = in.readInt() != 0;
 
         mProfileImageURL = in.readString();
+
+        mIsChildless = in.readInt() != 0;
     }
 
     public String getmObjectId() {
@@ -103,6 +106,10 @@ public class Organization implements Serializable, Parcelable {
         return mNewOrg;
     }
 
+    public boolean isChildless() {
+        return mIsChildless;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -125,6 +132,9 @@ public class Organization implements Serializable, Parcelable {
         else dest.writeInt(0);
 
         dest.writeString(mProfileImageURL);
+
+        if (mIsChildless) dest.writeInt(1);
+        else dest.writeInt(0);
     }
 
     public static final Parcelable.Creator<Organization> CREATOR

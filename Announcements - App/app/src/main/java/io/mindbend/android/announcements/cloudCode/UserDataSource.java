@@ -18,9 +18,12 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.zip.Deflater;
 
+import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.TabbedActivity;
 import io.mindbend.android.announcements.User;
@@ -123,11 +126,11 @@ public class UserDataSource {
             @Override
             public void done(Boolean isSuccessful, ParseException e) {
                 String message = "Failure";
-                if (e == null && isSuccessful){
-                    message = "Successfully "+toastText+"followed organization";
+                if (e == null && isSuccessful) {
+                    message = "Successfully " + toastText + "followed organization";
                     callback.done(isFollowing, e);
                 }
-                if (e != null){
+                if (e != null) {
                     e.printStackTrace();
                     message = "Error";
                 }
@@ -155,7 +158,7 @@ public class UserDataSource {
 
                 dialog.dismiss();
 
-                if (usernameT.equals("") || passwordT.equals("")){
+                if (usernameT.equals("") || passwordT.equals("")) {
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
                     builder.setTitle(context.getString(R.string.incorrect_login_credentials))
                             .setPositiveButton("OK", null)
@@ -167,6 +170,32 @@ public class UserDataSource {
                             logInCallback.done(parseUser, e);
                         }
                     });
+                }
+            }
+        });
+    }
+
+    public static void getOrganizationsThatUserIsAdminOf (final Context context, final ProgressBar loading, String userObjectId, final FunctionCallback<ArrayList<Organization>> callback){
+        loading.setVisibility(View.VISIBLE);
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("userObjectId", userObjectId);
+
+        ParseCloud.callFunctionInBackground("getOrganizationsThatUserIsAdminOf", params, new FunctionCallback<List<ParseObject>>() {
+            @Override
+            public void done(List<ParseObject> followFields, ParseException e) {
+                loading.setVisibility(View.GONE);
+//                int i = 0; for debugging
+                if (e == null) {
+                    ArrayList<Organization> orgs = new ArrayList<Organization>();
+                    for (ParseObject followField : followFields) {
+                        orgs.add(new Organization(followField.getParseObject("organization")));
+                    }
+
+                    callback.done(orgs, e);
+                } else {
+                    e.printStackTrace();
+                    Toast.makeText(context, "Error loading org admins", Toast.LENGTH_SHORT).show();
                 }
             }
         });

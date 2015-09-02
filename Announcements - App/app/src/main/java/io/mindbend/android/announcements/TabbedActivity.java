@@ -1,27 +1,19 @@
 package io.mindbend.android.announcements;
 
 import android.app.Activity;
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutCompat;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
@@ -37,23 +29,16 @@ import com.parse.FunctionCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
-import org.w3c.dom.Text;
-
 import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.Serializable;
-import java.lang.reflect.Field;
 
 import io.mindbend.android.announcements.adminClasses.AdminMainFragment;
 import io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment;
 import io.mindbend.android.announcements.adminClasses.NewAnnouncementFragment;
 import io.mindbend.android.announcements.cloudCode.UserDataSource;
 import io.mindbend.android.announcements.cloudCode.VerificationDataSource;
-import io.mindbend.android.announcements.reusableFrags.PostCommentsFragment;
-import io.mindbend.android.announcements.reusableFrags.PostOverlayFragment;
-import io.mindbend.android.announcements.reusableFrags.PostsCardsFragment;
-import io.mindbend.android.announcements.reusableFrags.PostsFeedAdapter;
 import io.mindbend.android.announcements.reusableFrags.ProfileFragment;
 import io.mindbend.android.announcements.tabbedFragments.AdminFragment;
 import io.mindbend.android.announcements.tabbedFragments.DiscoverFragment;
@@ -247,7 +232,7 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
                     mYouFragment.getChildFragmentManager().popBackStack();
                 break;
             case 3:
-                if(!mAdminFragment.getmAdminMain().isVisible())
+                if(!mAdminFragment.getmAdminOrgsFrag().isVisible())
                 mAdminFragment.getChildFragmentManager().popBackStack();
                 break;
         }
@@ -325,7 +310,7 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
                     image.compress(Bitmap.CompressFormat.JPEG, 70, stream);
                     byte[] imageBytes = stream.toByteArray();
                     Log.wtf("Image", "Converted bytes are: " + imageBytes);
-                    mAdminFragment.getmAdminMain().getmNewAnnouncementFragment().setmImageBytes(imageBytes);
+                    mAdminFragment.getmAdminMainFrag().getmNewAnnouncementFragment().setmImageBytes(imageBytes);
                 } catch (IOException f){
                     Log.wtf("crash", "sad face");
                     Toast.makeText(this, "Failed to add image", Toast.LENGTH_LONG).show();
@@ -341,7 +326,7 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
                     image.compress(Bitmap.CompressFormat.JPEG, 70, stream);
                     byte[] imageBytes = stream.toByteArray();
                     Log.wtf("Image", "Converted bytes are: " + imageBytes);
-                    mAdminFragment.getmAdminMain().getmModifyOrganizationFragment().setImageBytes(imageBytes);
+                    mAdminFragment.getmAdminMainFrag().getmModifyOrganizationFragment().setImageBytes(imageBytes);
                 } catch (IOException f){
                     Log.wtf("crash", "sad face");
                     Toast.makeText(this, "Failed to add image", Toast.LENGTH_LONG).show();
