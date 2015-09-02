@@ -10,6 +10,7 @@
     <color name="text_tertiary">#B6B6B6</color>
     <color name="divider_color">#DDDDDD</color>
     <color name="fab_shadow">#4000</color>
+    <color name="unselected_tab">#EEEEEE</color>
 
     <color name="accept_pending_user">#00CC00</color>
     <color name="accept_pending_user_dark">#00AA00</color>

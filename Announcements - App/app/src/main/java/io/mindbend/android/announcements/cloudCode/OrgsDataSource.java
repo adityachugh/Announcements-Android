@@ -110,10 +110,13 @@ public class OrgsDataSource {
         });
     }
 
-    public static void getOrganizationsFollowedByUser(final ProgressBar loading, String userObjectId, final FunctionCallback<ArrayList<Organization>> callback) {
+    public static void getOrganizationsFollowedByUserInRange (final ProgressBar loading, String userObjectId, final FunctionCallback<ArrayList<Organization>> callback) {
+        //only for user in profile frag tab
         loading.setVisibility(View.VISIBLE);
         HashMap<String, Object> params = new HashMap<>();
         params.put("userObjectId", userObjectId);
+        params.put("startIndex", 0);
+        params.put("numberOfOrganizations", 30);
 
         ParseCloud.callFunctionInBackground("getOrganizationsFollowedByUser", params, new FunctionCallback<List<ParseObject>>() {
             @Override

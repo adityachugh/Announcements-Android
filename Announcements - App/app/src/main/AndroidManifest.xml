@@ -23,6 +23,7 @@
         </activity>
         <activity
             android:name=".TabbedActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_tabbed" >
         </activity>
         <activity

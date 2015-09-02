@@ -427,7 +427,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     }
 
     private void loadOrgsFollowed(final String userObjectId) {
-        OrgsDataSource.getOrganizationsFollowedByUser(mLoading, userObjectId, new FunctionCallback<ArrayList<Organization>>() {
+        OrgsDataSource.getOrganizationsFollowedByUserInRange(mLoading, userObjectId, new FunctionCallback<ArrayList<Organization>>() {
             @Override
             public void done(ArrayList<Organization> orgs, ParseException e) {
                 if (e == null) {

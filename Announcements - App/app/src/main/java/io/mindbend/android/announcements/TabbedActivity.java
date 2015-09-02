@@ -8,6 +8,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
+import android.support.annotation.NonNull;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -46,16 +48,12 @@ import io.mindbend.android.announcements.tabbedFragments.AdminFragment;
 import io.mindbend.android.announcements.tabbedFragments.DiscoverFragment;
 import io.mindbend.android.announcements.tabbedFragments.YouFragment;
 import io.mindbend.android.announcements.tabbedFragments.TodayFragment;
-import it.neokree.materialtabs.MaterialTab;
-import it.neokree.materialtabs.MaterialTabHost;
-import it.neokree.materialtabs.MaterialTabListener;
 
-
-public class TabbedActivity extends ActionBarActivity implements MaterialTabListener, ViewPager.OnPageChangeListener, Serializable {
+public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPageChangeListener, Serializable {
 
 
     //tab bar
-    private transient MaterialTabHost mTabBar;
+    private transient TabLayout mTabBar;
 
     //viewpager; what allows the swiping between fragments
     private transient android.support.v4.view.ViewPager mViewPager;
@@ -93,18 +91,15 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
         }
 
         //gets backwards compatible toolbar
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         //gets tabBar, adds tabs
-        mTabBar = (MaterialTabHost) findViewById(R.id.tab_bar);
-        mTabBar.addTab(mTabBar.newTab().setText("Today").setTabListener(this));
-        mTabBar.addTab(mTabBar.newTab().setText("Discover").setTabListener(this));
-        mTabBar.addTab(mTabBar.newTab().setText("You").setTabListener(this));
-        if(userIsAdmin)
-            mTabBar.addTab(mTabBar.newTab().setText("Admin").setTabListener(this));
+        mTabBar = (TabLayout) findViewById(R.id.tab_bar);
+        mTabBar.setupWithViewPager(mViewPager);
+        setupTabsForTabBar();
 
-        mToolbar.setTitle(getString(R.string.format_tabbed_activity_toolbar_text, ParseUser.getCurrentUser().getString(VerificationDataSource.USER_FIRST_NAME))); //TODO: pull in user's name
-        setSupportActionBar(mToolbar);
+        toolbar.setTitle(getString(R.string.format_tabbed_activity_toolbar_text, ParseUser.getCurrentUser().getString(VerificationDataSource.USER_FIRST_NAME))); //TODO: pull in user's name
+        setSupportActionBar(toolbar);
 
         mTitleTextView = (TextView)findViewById(R.id.landscape_toolbar_title);
 
@@ -127,17 +122,41 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
 
     }
 
+    private void setupTabsForTabBar() {
+        for (int i = 0; i < mTabBar.getTabCount() ; i++) {
+            mTabBar.getTabAt(i).setText(getCurrentTabTitle(i));
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            mTabBar.setVisibility(View.GONE);
+            mTitleTextView.setVisibility(View.VISIBLE);
+            updateLandscapePageText();
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            mTabBar.setVisibility(View.VISIBLE);
+            mTitleTextView.setVisibility(View.GONE);
+        }
+    }
+
     public void nonAdminUserIsNowAdmin(ArrayList<Organization> organizations) {
         userIsAdmin = true;
         mAdminFragment = AdminFragment.newInstance(organizations);
-        mTabBar.addTab(mTabBar.newTab().setText("Admin").setTabListener(TabbedActivity.this));
+        mTabBar.addTab(mTabBar.newTab().setText("Admin"));
         mAdapter.notifyDataSetChanged();
-        mTabBar.notifyDataSetChanged();
     }
 
     private void updateLandscapePageText() {
+        mTitleTextView.setText(getCurrentTabTitle(mViewPager.getCurrentItem()));
+    }
+
+    @NonNull
+    private String getCurrentTabTitle(int position) {
         String tabText = "";
-        switch (mViewPager.getCurrentItem()){
+        switch (position){
             case 0:
                 tabText = "Today";
                 break;
@@ -152,7 +171,7 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
                 break;
 
         }
-        mTitleTextView.setText(tabText);
+        return tabText;
     }
 
     public int getScreenOrientation()
@@ -190,26 +209,7 @@ public class TabbedActivity extends ActionBarActivity implements MaterialTabList
         if (getScreenOrientation() == Configuration.ORIENTATION_LANDSCAPE) {
             updateLandscapePageText();
         }
-        mTabBar.setSelectedNavigationItem(position);
     }
-
-    @Override
-    public void onTabSelected(MaterialTab materialTab) {
-        //gets position of tab selected, only sets nav accent bar to that tab
-        int position = materialTab.getPosition();
-        mViewPager.setCurrentItem(position);
-    }
-
-    @Override
-    public void onTabReselected(MaterialTab materialTab) {
-
-    }
-
-    @Override
-    public void onTabUnselected(MaterialTab materialTab) {
-
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
