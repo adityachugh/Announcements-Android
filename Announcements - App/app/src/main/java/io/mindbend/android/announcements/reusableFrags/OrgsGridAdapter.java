@@ -12,7 +12,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
 import java.util.List;
@@ -31,6 +34,8 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
         private final TextView mTitle;
         private final TextView mDetail;
         private final CardView mOrgCard;
+        private final ImageView mBackgroundImage;
+        private final ImageView mDarkOverlayImage;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -38,6 +43,8 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
             //getting all the elements part of the card, aside from the image
             mTitle = (TextView) itemView.findViewById(R.id.org_title);
             mDetail = (TextView) itemView.findViewById(R.id.org_banner_detail);
+            mBackgroundImage = (ImageView)itemView.findViewById(R.id.org_background_image);
+            mDarkOverlayImage = (ImageView) itemView.findViewById(R.id.org_dark_overlay);
 
             //get entire card to make clickable
             mOrgCard = (CardView) itemView.findViewById(R.id.org_card);
@@ -69,6 +76,11 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
         }
         else {
             viewHolder.mDetail.setText(orgFollowers + " Followers");
+        }
+
+        if (!org.getmCoverImageURL().equals("")){
+            Picasso.with(mContext).load(org.getmCoverImageURL()).into(viewHolder.mBackgroundImage);
+            viewHolder.mDarkOverlayImage.setVisibility(View.VISIBLE); //so the darkening of the card only occurs when an image is loaded, not on the green color
         }
 
         //set clicklistener on card

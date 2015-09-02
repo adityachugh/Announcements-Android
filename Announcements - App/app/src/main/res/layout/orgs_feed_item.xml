@@ -16,9 +16,17 @@
             android:layout_height="match_parent">
             <ImageView
                 android:id="@+id/org_background_image"
+                android:scaleType="centerCrop"
                 android:layout_height="@dimen/orgs_card_image_height"
                 android:layout_width="match_parent"
                 android:src="@color/primary"/>
+            <ImageView
+                android:id="@+id/org_dark_overlay"
+                android:visibility="invisible"
+                android:layout_height="@dimen/orgs_card_image_height"
+                android:layout_width="match_parent"
+                android:alpha="0.25"
+                android:src="@android:color/black"/>
             <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"

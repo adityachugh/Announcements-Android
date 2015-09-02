@@ -25,6 +25,7 @@ public class Organization implements Serializable, Parcelable {
     private boolean mNewOrg;
     private String mProfileImageURL;
     private boolean mIsChildless;
+    private String mCoverImageURL;
 
     public Organization(String objectId, String title, String description, int followers, String tag, boolean privateOrg, boolean newOrg){
         mObjectId = objectId;
@@ -35,6 +36,7 @@ public class Organization implements Serializable, Parcelable {
         mPrivateOrg = privateOrg;
         mNewOrg = newOrg;
         mProfileImageURL = "";
+        mCoverImageURL = "";
         mIsChildless = false;
     }
 
@@ -50,10 +52,16 @@ public class Organization implements Serializable, Parcelable {
         mFollowers = object.getInt(OrgsDataSource.ORG_FOLLOWER_COUNT);
         mPrivateOrg = object.getString(OrgsDataSource.ORG_TYPE).equals(OrgsDataSource.ORG_TYPES_PRIVATE);
         mNewOrg = OrgsDataSource.isNew(object);
-        if (object.getParseFile(OrgsDataSource.ORG_IMAGE) != null)
-            mProfileImageURL = object.getParseFile(OrgsDataSource.ORG_IMAGE).getUrl();
+        if (object.getParseFile(OrgsDataSource.ORG_PROFILE_IMAGE) != null)
+            mProfileImageURL = object.getParseFile(OrgsDataSource.ORG_PROFILE_IMAGE).getUrl();
         else
             mProfileImageURL = "";
+
+        if (object.getParseFile(OrgsDataSource.ORG_COVER_IMAGE) != null)
+            mCoverImageURL = object.getParseFile(OrgsDataSource.ORG_COVER_IMAGE).getUrl();
+        else
+            mCoverImageURL = "";
+
         mTag = object.getString(OrgsDataSource.ORG_TAG);
         mIsChildless = object.get(OrgsDataSource.ORG_CHILD_CONFIG) == null;
     }
@@ -147,4 +155,8 @@ public class Organization implements Serializable, Parcelable {
             return new Organization[size];
         }
     };
+
+    public String getmCoverImageURL() {
+        return mCoverImageURL;
+    }
 }

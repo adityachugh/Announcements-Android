@@ -36,13 +36,14 @@ public class OrgsDataSource {
     public final static String ORG_TYPE = "organizationType";
     public final static String ORG_REQUEST_CODE = "requestCode";
     public final static String ORG_TAG = "handle";
-    public final static String ORG_IMAGE = "image";
+    public final static String ORG_PROFILE_IMAGE = "image";
+    public static final String ORG_COVER_IMAGE = "coverPhoto";
+
+
     public final static String ORG_CHILD_CONFIG = "childLevelConfig";
-
-
     public final static String ORG_TYPES_PRIVATE = "PRI";
-    public final static String ORG_TYPES_PUBLIC = "PUB";
 
+    public final static String ORG_TYPES_PUBLIC = "PUB";
     public final static String FOLLOW_STATE_ACCEPTED = "A";
     public final static String FOLLOW_STATE_NO_REQUEST_SENT = null;
     public final static String FOLLOW_STATE_PENDING = "P";
