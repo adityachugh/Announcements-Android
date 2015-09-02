@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.InputType;
@@ -23,7 +24,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.parse.FunctionCallback;
 import com.parse.ParseException;
@@ -364,7 +364,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         alert.setTitle("Send follow request to " + mOrg.getTitle());
         alert.setPositiveButton("Send", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                OrgsDataSource.privateOrganizationAccessCodeEntered(getActivity(), mLoading, mOrg.getmObjectId(), requestCode.getText().toString(), new FunctionCallback<Boolean>() {
+                OrgsDataSource.privateOrganizationAccessCodeEntered(mView, mLoading, mOrg.getmObjectId(), requestCode.getText().toString(), new FunctionCallback<Boolean>() {
                     @Override
                     public void done(Boolean followRequestSent, ParseException e) {
                         if (e == null){
@@ -399,7 +399,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            UserDataSource.updateFollowStateForUser(getActivity(), toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
+                            UserDataSource.updateFollowStateForUser(mView, toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
                                 @Override
                                 public void done(Boolean success, ParseException e) {
                                     if (success) {
@@ -414,7 +414,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                     })
                     .show();
         } else {
-            UserDataSource.updateFollowStateForUser(getActivity(), toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
+            UserDataSource.updateFollowStateForUser(mView, toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
                 @Override
                 public void done(Boolean success, ParseException e) {
                     if (success) {
@@ -449,7 +449,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                     if (transaction.isEmpty())
                         transaction.add(R.id.profile_content_framelayout, userOrgsFollowedFragment, BOTTOM_FRAG_TAG).commitAllowingStateLoss();
                 } else {
-                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(mView, "Error", Snackbar.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
             }
@@ -490,7 +490,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                     if (transaction.isEmpty())
                         transaction.add(R.id.profile_content_framelayout, orgPostsFragment, BOTTOM_FRAG_TAG).commitAllowingStateLoss();
                 } else {
-                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(mView, "Error", Snackbar.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
             }
@@ -578,22 +578,22 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 if (!interestOneET.getText().toString().equals("") && !interestTwoET.getText().toString().equals("")) {
                     final String i1 = interestOneET.getText().toString();
                     final String i2 = interestTwoET.getText().toString();
-                    UserDataSource.updateUserDescription(getActivity(), ((TabbedActivity) getActivity()).mYouFragment.mLoading, "Interested in " + i1 + " and " + i2, new FunctionCallback<Boolean>() {
+                    UserDataSource.updateUserDescription(mView, getActivity(), ((TabbedActivity) getActivity()).mYouFragment.mLoading, "Interested in " + i1 + " and " + i2, new FunctionCallback<Boolean>() {
                         @Override
                         public void done(Boolean success, ParseException e) {
                             if (success) {
-                                Toast.makeText(getActivity(), "Interests updated", Toast.LENGTH_SHORT).show();
+                                Snackbar.make(mView, "Interests updated", Snackbar.LENGTH_SHORT).show();
                                 mUser.setInterestOne(i1);
                                 mUser.setInterestTwo(i2);
                                 mProfileDetail.setText(mUser.getInterests());
                             } else {
-                                Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                                Snackbar.make(mView, "Error", Snackbar.LENGTH_SHORT).show();
                                 e.printStackTrace();
                             }
                         }
                     });
                 } else
-                    Toast.makeText(getActivity(), "Cannot leave fields blank!", Toast.LENGTH_LONG).show();
+                    Snackbar.make(mView, "Cannot leave fields blank!", Snackbar.LENGTH_LONG).show();
 
             }
         });

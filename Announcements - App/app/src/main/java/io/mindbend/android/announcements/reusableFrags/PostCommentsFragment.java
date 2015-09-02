@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -25,7 +26,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
@@ -108,7 +108,7 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
             mFab = (ImageButton) mView.findViewById(R.id.comments_fab);
             mFab.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onClick(final View v) {
                     //TODO: dialogue box to add a comment
                     // get prompts.xml view
                     LayoutInflater li = LayoutInflater.from(getActivity());
@@ -139,7 +139,7 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
                                             if (userInput.getText().toString().equals(""))
-                                                Toast.makeText(getActivity(), R.string.empty_comment_message, Toast.LENGTH_SHORT).show();
+                                                Snackbar.make(v, R.string.empty_comment_message, Snackbar.LENGTH_SHORT).show();
                                             else {
                                                 CommentsDataSource.postCommentAsUserOnPost(mLoading, getActivity(), mPost.getmObjectId(), userInput.getText().toString(), new FunctionCallback<Comment>() {
                                                     @Override
@@ -149,7 +149,7 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
                                                             mCommentsAdapter.notifyDataSetChanged();
                                                         } else {
                                                             e.printStackTrace();
-                                                            Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT);
+                                                            Snackbar.make(v, "Error", Snackbar.LENGTH_SHORT);
                                                         }
                                                     }
                                                 });
@@ -183,7 +183,7 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
         return mView;
     }
 
-    private void loadComments(final boolean loadingMoreComments, RelativeLayout loading, int startIndex, int numberOfComments) {
+    private void loadComments(final boolean loadingMoreComments, final RelativeLayout loading, int startIndex, int numberOfComments) {
         CommentsDataSource.getRangeOfCommentsForPost(loading, getActivity(), startIndex, numberOfComments, mPost.getmObjectId(), new FunctionCallback<ArrayList<Comment>>() {
             @Override
             public void done(ArrayList<Comment> comments, ParseException e) {
@@ -205,9 +205,9 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
 
                 } else {
                     if (e.getCode() == ParseException.INCORRECT_TYPE)
-                        Toast.makeText(getActivity(), R.string.no_more_comments_message, Toast.LENGTH_SHORT).show();
+                        Snackbar.make(loading, R.string.no_more_comments_message, Snackbar.LENGTH_SHORT).show();
                     else
-                        Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(loading, "Error", Snackbar.LENGTH_SHORT).show();
 
                     e.printStackTrace();
                 }

@@ -2,6 +2,7 @@ package io.mindbend.android.announcements.reusableFrags;
 
 import android.app.ActionBar;
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,7 +12,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -83,7 +83,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
                 @Override
                 public void onClick(View v) {
                     //TODO: add user as admin
-                    Toast.makeText(mContext, user.getName()+" is now an admin", Toast.LENGTH_LONG).show();
+                    Snackbar.make(v, user.getName() + " is now an admin", Snackbar.LENGTH_LONG).show();
                 }
             });
         }

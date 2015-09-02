@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -26,7 +27,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.parse.FunctionCallback;
 import com.parse.ParseException;
@@ -68,11 +68,13 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
     private transient TextView mTitleTextView;
 
     private boolean userIsAdmin = false;
+    private View mView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tabbed);
+        mView = getLayoutInflater().inflate(R.layout.activity_tabbed, null);
+        setContentView(mView);
 
         //to fix the "rotate & back button" crashing bug
         mSavedInstanceState = savedInstanceState;
@@ -109,7 +111,7 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
             updateLandscapePageText();
         }
 
-        UserDataSource.getOrganizationsThatUserIsAdminOf(this, (ProgressBar)findViewById(R.id.activity_overall_progressbar), ParseUser.getCurrentUser().getObjectId(), new FunctionCallback<ArrayList<Organization>>() {
+        UserDataSource.getOrganizationsThatUserIsAdminOf(mView,(ProgressBar)findViewById(R.id.activity_overall_progressbar), ParseUser.getCurrentUser().getObjectId(), new FunctionCallback<ArrayList<Organization>>() {
             @Override
             public void done(ArrayList<Organization> organizations, ParseException e) {
                 if (e == null){
@@ -339,7 +341,7 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
                     mAdminFragment.getmAdminMainFrag().getmNewAnnouncementFragment().setmImageBytes(imageBytes);
                 } catch (IOException f){
                     Log.wtf("crash", "sad face");
-                    Toast.makeText(this, "Failed to add image", Toast.LENGTH_LONG).show();
+                    Snackbar.make(mView, "Failed to add image", Snackbar.LENGTH_LONG).show();
                 }
             }
             if (requestCode == ModifyOrganizationFragment.UPLOAD_OR_MODIFY_PHOTO){
@@ -355,7 +357,7 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
                     mAdminFragment.getmAdminMainFrag().getmModifyOrganizationFragment().setImageBytes(imageBytes);
                 } catch (IOException f){
                     Log.wtf("crash", "sad face");
-                    Toast.makeText(this, "Failed to add image", Toast.LENGTH_LONG).show();
+                    Snackbar.make(mView, "Failed to add image", Snackbar.LENGTH_LONG).show();
                 }
             }
             if (requestCode == AdminMainFragment.CHANGE_PARENT_PHOTO){
@@ -371,7 +373,7 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
                     //TODO: send to Parse
                 } catch (IOException f){
                     Log.wtf("crash", "sad face");
-                    Toast.makeText(this, "Failed to add image", Toast.LENGTH_LONG).show();
+                    Snackbar.make(mView, "Failed to add image", Snackbar.LENGTH_LONG).show();
                 }
             }
 
@@ -388,7 +390,7 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
                     byte[] imageBytes = stream.toByteArray();
                     Log.wtf("Image", "Converted bytes are: " + imageBytes.toString());
                     boolean isUpdatingProfilePhoto = (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE);
-                    UserDataSource.updateUserProfileImages(this, mYouFragment.mLoading, imageBytes, new FunctionCallback<Boolean>() {
+                    UserDataSource.updateUserProfileImages(mView, this, mYouFragment.mLoading, imageBytes, new FunctionCallback<Boolean>() {
                         @Override
                         public void done(Boolean success, ParseException e) {
                             if (success) {
@@ -396,16 +398,16 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
                                     ((ProfileFragment) mYouFragment.getmProfileFragment()).updateProfileImage(image);
                                 else
                                     ((ProfileFragment) mYouFragment.getmProfileFragment()).updateCoverImage(image);
-                                Toast.makeText(TabbedActivity.this, "Image successfully updated", Toast.LENGTH_LONG).show();
+                                Snackbar.make(mView, "Image successfully updated", Snackbar.LENGTH_LONG).show();
                             } else {
-                                Toast.makeText(TabbedActivity.this, "Failure", Toast.LENGTH_SHORT).show();
+                                Snackbar.make(mView, "Failure", Snackbar.LENGTH_SHORT).show();
                                 e.printStackTrace();
                             }
                         }
                     }, isUpdatingProfilePhoto);
                 } catch (IOException f){
                     Log.wtf("crash", "sad face");
-                    Toast.makeText(this, "Failed to add image", Toast.LENGTH_LONG).show();
+                    Snackbar.make(mView, "Failed to add image", Snackbar.LENGTH_LONG).show();
                 }
             }
         }

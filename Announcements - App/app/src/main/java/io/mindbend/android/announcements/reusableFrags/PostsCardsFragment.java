@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,7 +16,6 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.AbsListView;
-import android.widget.Toast;
 
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
@@ -193,7 +193,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
                         mPosts.addAll(posts);
                         mPostFeedAdapter.notifyDataSetChanged();
                     } else {
-                        Toast.makeText(getActivity(), R.string.no_more_posts_message, Toast.LENGTH_SHORT).show();
+                        Snackbar.make(mView, R.string.no_more_posts_message, Snackbar.LENGTH_SHORT).show();
                     }
                 }
             }

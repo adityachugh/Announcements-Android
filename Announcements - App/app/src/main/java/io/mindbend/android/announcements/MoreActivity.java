@@ -2,6 +2,7 @@ package io.mindbend.android.announcements;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,7 +14,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.facebook.rebound.BaseSpringSystem;
 import com.facebook.rebound.SimpleSpringListener;
@@ -62,7 +62,7 @@ public class MoreActivity extends AppCompatActivity {
                     Log.i("Finished sending email", "");
                 }
                 catch (android.content.ActivityNotFoundException ex) {
-                    Toast.makeText(MoreActivity.this, "There is no email client installed.", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(v, "There is no email client installed.", Snackbar.LENGTH_SHORT).show();
                 }
             }
         });

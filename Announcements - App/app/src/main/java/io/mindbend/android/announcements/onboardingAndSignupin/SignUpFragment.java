@@ -3,6 +3,7 @@ package io.mindbend.android.announcements.onboardingAndSignupin;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,10 +74,10 @@ public class SignUpFragment extends Fragment implements Serializable {
                 String password = mPassword.getText().toString();
 
                 if(firstName.equals("") || lastName.equals("") || username.equals("") || email.equals("") || password.equals(""))
-                    Toast.makeText(getActivity(), "Please fill in all fields.", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(v, "Please fill in all fields.", Snackbar.LENGTH_SHORT).show();
                 else {
                     //check if fields in use
-                    VerificationDataSource.signupUser(mLoader, getActivity(), firstName, lastName, password, username, email);
+                    VerificationDataSource.signupUser(v, mLoader, getActivity(), firstName, lastName, password, username, email);
                 }
             }
         });

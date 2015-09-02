@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -84,7 +85,7 @@ public class SignInFragment extends Fragment
             @Override
             public void onClick(View v) {
                 if (username.getText().toString().equals("") || password.getText().toString().equals("")){
-                    Toast.makeText(getActivity(), "Please enter your username and password", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(v, "Please enter your username and password", Snackbar.LENGTH_SHORT).show();
                 } else {
                     mLoading.setVisibility(View.VISIBLE);
                     ParseUser.logInInBackground(username.getText().toString(), password.getText().toString(), new LogInCallback() {

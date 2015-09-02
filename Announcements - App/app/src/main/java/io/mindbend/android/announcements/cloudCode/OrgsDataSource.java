@@ -1,6 +1,7 @@
 package io.mindbend.android.announcements.cloudCode;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -163,7 +164,7 @@ public class OrgsDataSource {
         });
     }
 
-    public static void isFollowingOrganization (final Context context, final ProgressBar loading, String userObjectId, String organizationObjectId, final FunctionCallback<String> callback){
+    public static void isFollowingOrganization (final View layout, final ProgressBar loading, String userObjectId, String organizationObjectId, final FunctionCallback<String> callback){
         loading.setVisibility(View.VISIBLE);
 
         HashMap<String, String> params = new HashMap<>();
@@ -176,7 +177,7 @@ public class OrgsDataSource {
 //                int i = 0;
                 loading.setVisibility(View.GONE);
                 if (e != null){
-                    Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(layout, "Error", Snackbar.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
                 else {
@@ -186,7 +187,7 @@ public class OrgsDataSource {
         });
     }
 
-    public static void privateOrganizationAccessCodeEntered (final Context context, final ProgressBar loading, String organizationObjectId, String enteredAccessCode, final FunctionCallback<Boolean> callback){
+    public static void privateOrganizationAccessCodeEntered (final View layout, final ProgressBar loading, String organizationObjectId, String enteredAccessCode, final FunctionCallback<Boolean> callback){
         loading.setVisibility(View.VISIBLE);
 
         HashMap<String, Object> params = new HashMap<>();
@@ -205,7 +206,7 @@ public class OrgsDataSource {
                 if (e == null){
                     callback.done(correctCodeEntered, e);
                 } else {
-                    Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(layout, "Error", Snackbar.LENGTH_SHORT).show();
                 }
             }
         });

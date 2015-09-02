@@ -3,6 +3,7 @@ package io.mindbend.android.announcements.reusableFrags;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.SearchView;
@@ -13,7 +14,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.parse.FunctionCallback;
 import com.parse.ParseException;
@@ -88,7 +88,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
                 break;
             case ORGS_TYPE:
 
-                loadDiscoverOrgs("oc3Wmbqhsl", 0, 10); //TODO: update so reflects current school (TFSS rn)
+                loadDiscoverOrgs(v, "oc3Wmbqhsl", 0, 10); //TODO: update so reflects current school (TFSS rn)
 
                 OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(mOrgs, this, this);
                 FragmentTransaction ft2 = getFragmentManager().beginTransaction();
@@ -105,7 +105,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
         return v;
     }
 
-    private void loadDiscoverOrgs(String parentOrganizationObjectId, int startIndex, int numberOfOrganizations) {
+    private void loadDiscoverOrgs(final View v, String parentOrganizationObjectId, int startIndex, int numberOfOrganizations) {
         OrgsDataSource.getChildOrganizationsInRange(mLoading, parentOrganizationObjectId, startIndex, numberOfOrganizations, new FunctionCallback<ArrayList<Organization>>() {
             @Override
             public void done(ArrayList<Organization> organizations, ParseException e) {
@@ -115,7 +115,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
                     if (ft2.isEmpty())
                         ft2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag, orgsGridFragment).commitAllowingStateLoss();
                 } else {
-                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(v, "Error", Snackbar.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
             }

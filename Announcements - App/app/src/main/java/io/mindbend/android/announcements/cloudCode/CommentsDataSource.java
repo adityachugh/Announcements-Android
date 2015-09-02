@@ -2,6 +2,7 @@ package io.mindbend.android.announcements.cloudCode;
 
 import android.content.Context;
 import android.nfc.Tag;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -81,11 +82,11 @@ public class CommentsDataSource {
             public void done(Boolean success, ParseException e) {
                 loadingLayout.setVisibility(View.GONE);
                 if (e == null){
-                    Toast.makeText(context, "Deleted comment", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(loadingLayout, "Deleted comment", Snackbar.LENGTH_SHORT).show();
                     callback.done(success, e);
                 } else {
                     e.printStackTrace();
-                    Toast.makeText(context, "Error deleting comment.", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(null, "Error deleting comment.", Snackbar.LENGTH_SHORT).show();
                 }
             }
         });

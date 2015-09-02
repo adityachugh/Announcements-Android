@@ -2,6 +2,7 @@ package io.mindbend.android.announcements.cloudCode;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -57,7 +58,7 @@ public class UserDataSource {
 
     }
 
-    public static void updateUserProfileImages (final Context context, final ProgressBar loading, final byte[] image, final FunctionCallback<Boolean> callback, final Boolean profilePhoto) {
+    public static void updateUserProfileImages (final View layout, final Context context, final ProgressBar loading, final byte[] image, final FunctionCallback<Boolean> callback, final Boolean profilePhoto) {
         loading.setVisibility(View.VISIBLE);
 
         loginDialog(context, new LogInCallback() {
@@ -81,7 +82,7 @@ public class UserDataSource {
                     });
                 } else {
                     //did not login
-                    Toast.makeText(context, context.getResources().getString(R.string.incorrect_login_credentials), Toast.LENGTH_SHORT).show();
+                    Snackbar.make(layout, context.getResources().getString(R.string.incorrect_login_credentials), Snackbar.LENGTH_SHORT).show();
                 }
             }
         });
@@ -89,7 +90,7 @@ public class UserDataSource {
 
 
 
-    public static void updateUserDescription (final Context context, final ProgressBar loading, final String description, final FunctionCallback<Boolean> callback) {
+    public static void updateUserDescription (final View layout, final Context context, final ProgressBar loading, final String description, final FunctionCallback<Boolean> callback) {
         loading.setVisibility(View.VISIBLE);
 
         loginDialog(context, new LogInCallback() {
@@ -110,13 +111,13 @@ public class UserDataSource {
                     });
                 } else {
                     //did not login
-                    Toast.makeText(context, context.getResources().getString(R.string.incorrect_login_credentials), Toast.LENGTH_SHORT).show();
+                    Snackbar.make(layout, context.getResources().getString(R.string.incorrect_login_credentials), Snackbar.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
-    public static void updateFollowStateForUser (final Context context, final Boolean isFollowing, String organizationObjectId, final FunctionCallback<Boolean> callback){
+    public static void updateFollowStateForUser (final View layout, final Boolean isFollowing, String organizationObjectId, final FunctionCallback<Boolean> callback){
         HashMap<String, Object> params = new HashMap<>();
         params.put("isFollowing", isFollowing);
         params.put("organizationObjectId", organizationObjectId);
@@ -134,7 +135,7 @@ public class UserDataSource {
                     e.printStackTrace();
                     message = "Error";
                 }
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                Snackbar.make(layout, message, Snackbar.LENGTH_SHORT).show();
             }
         });
     }
@@ -175,7 +176,7 @@ public class UserDataSource {
         });
     }
 
-    public static void getOrganizationsThatUserIsAdminOf (final Context context, final ProgressBar loading, String userObjectId, final FunctionCallback<ArrayList<Organization>> callback){
+    public static void getOrganizationsThatUserIsAdminOf (final View layout, final ProgressBar loading, String userObjectId, final FunctionCallback<ArrayList<Organization>> callback){
         loading.setVisibility(View.VISIBLE);
 
         HashMap<String, String> params = new HashMap<>();
@@ -195,7 +196,7 @@ public class UserDataSource {
                     callback.done(orgs, e);
                 } else {
                     e.printStackTrace();
-                    Toast.makeText(context, "Error loading org admins", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(layout, "Error loading org admins", Snackbar.LENGTH_SHORT).show();
                 }
             }
         });

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -31,7 +32,7 @@ public class VerificationDataSource {
     public static final String USER_USERNAME = "username";
     public static final String USER_PASSWORD = "password";
 
-    public static void signupUser (final ProgressBar loader, final Context context, final String firsttName, final String lastName, final String password, final String username, final String email){
+    public static void signupUser (final View layout, final ProgressBar loader, final Context context, final String firsttName, final String lastName, final String password, final String username, final String email){
         final AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.DialogTheme);
         builder.setTitle("Field(s) in use.");
         builder.setPositiveButton("OK", null);
@@ -66,14 +67,14 @@ public class VerificationDataSource {
                                         });
                                     }
                                 } else {
-                                    Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+                                    Snackbar.make(layout, "Error", Snackbar.LENGTH_SHORT).show();
                                     e.printStackTrace();
                                 }
                             }
                         });
                     }
                 } else {
-                    Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(layout, "Error", Snackbar.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
             }
