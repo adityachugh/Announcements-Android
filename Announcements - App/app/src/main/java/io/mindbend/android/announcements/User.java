@@ -3,6 +3,7 @@ package io.mindbend.android.announcements;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.parse.ParseException;
 import com.parse.ParseUser;
 
 import java.io.Serializable;
@@ -45,6 +46,11 @@ public class User implements Serializable, Parcelable{
     }
 
     public User (ParseUser user){
+        try {
+            user.fetchIfNeeded();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         mObjectId = user.getObjectId();
         mFirstName = user.getString(UserDataSource.FIRST_NAME);
         mLastName = user.getString(UserDataSource.LAST_NAME);
