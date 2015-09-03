@@ -168,7 +168,6 @@ public class AdminFragment extends Fragment implements Serializable,
 
     @Override
     public void userListOpened(final Organization parentOrg) {
-
         OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, parentOrg.getmObjectId(), 0, 50, new FunctionCallback<HashMap<Boolean, Object>>() {
             @Override
             public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
@@ -287,8 +286,22 @@ public class AdminFragment extends Fragment implements Serializable,
     }
 
     @Override
-    public void viewMembers(Organization org) {
-        userListOpened(org);
+    public void viewMembers(final Organization org, final boolean isAdmin) {
+        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, org.getmObjectId(), 0, 50, new FunctionCallback<HashMap<Boolean, Object>>() {
+            @Override
+            public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
+
+                ArrayList<User> users = (ArrayList<User>)booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
+                HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>)booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
+
+                ListFragment adminList = ListFragment.newInstance(isAdmin, AdminFragment.this, false, null, null, null, null, users, AdminFragment.this, typeOfUsers, org);
+                getChildFragmentManager().beginTransaction()
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .replace(R.id.admin_framelayout, adminList)
+                        .addToBackStack(null)
+                        .commitAllowingStateLoss();
+            }
+        });
     }
 
     @Override

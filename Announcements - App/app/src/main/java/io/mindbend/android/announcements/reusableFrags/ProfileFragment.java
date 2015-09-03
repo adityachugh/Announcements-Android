@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import com.parse.FunctionCallback;
 import com.parse.ParseException;
+import com.parse.ParseUser;
 import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
@@ -52,6 +53,9 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     private static final String TAG = "ProfileFragment";
     public static final int UPDATE_PROFILE_IMAGE = 5;
     public static final int UPDATE_COVER_IMAGE = 6;
+
+    private static final int COVER_PHOTO_WIDTH = 1000;
+    private static final int COVER_PHOTO_HEIGHT = 600;
 
     //To add frags to backstack
     public static final String ORG_PROFILE_FRAG = "org_profile_frag";
@@ -244,7 +248,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 if (!mUser.getmProfilePictureURL().equals(""))
                     Picasso.with(getActivity()).load(mUser.getmProfilePictureURL()).into(mUserImage);
                 if (!mUser.getmCoverPictureURL().equals(""))
-                    Picasso.with(getActivity()).load(mUser.getmCoverPictureURL()).into(mCoverImage);
+                    Picasso.with(getActivity()).load(mUser.getmCoverPictureURL()).resize(COVER_PHOTO_WIDTH,COVER_PHOTO_HEIGHT).into(mCoverImage);
 
                 //Fill bottom fragment with discover grid if user
                 loadOrgsFollowed(mUser.getmObjectId());
@@ -257,7 +261,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 if (!mOrg.getmProfileImageURL().equals(""))
                     Picasso.with(getActivity()).load(mOrg.getmProfileImageURL()).into(mUserImage);
                 if (!mOrg.getmCoverImageURL().equals(""))
-                    Picasso.with(getActivity()).load(mOrg.getmCoverImageURL()).into(mCoverImage);
+                    Picasso.with(getActivity()).load(mOrg.getmCoverImageURL()).resize(COVER_PHOTO_WIDTH,COVER_PHOTO_HEIGHT).into(mCoverImage);
 
                 if (mOrg.isPrivateOrg()) {
                     ImageView isPrivate = (ImageView) mView.findViewById(R.id.profile_private_org_lock_icon);
@@ -335,7 +339,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                     @Override
                     public void onClick(View v) {
                         //TODO: get followers of org
-                        mListener.viewMembers(mOrg);
+                        mListener.viewMembers(mOrg, mToEdit);
                     }
                 });
             }
@@ -538,7 +542,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 mListener.modifyOrg(mOrg);
                 break;
             case VIEW_MEMBERS:
-                mListener.viewMembers(mOrg);
+                mListener.viewMembers(mOrg, mToEdit);
                 break;
             case VIEW_ANNOUNCEMENTS:
                 mListener.viewAnnouncementsState(mOrg);
@@ -638,7 +642,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
 
         void modifyOrg(Organization org);
 
-        void viewMembers(Organization org);
+        void viewMembers(Organization org, boolean isAdmin);
 
         void viewAnnouncementsState(Organization org);
     }

@@ -153,7 +153,6 @@ public class UserDataSource {
         final AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.DialogTheme);
         View view = ((TabbedActivity)context).getLayoutInflater().inflate(R.layout.login_user_dialog, null);
         builder.setView(view);
-        final EditText username = (EditText)view.findViewById(R.id.login_dialog_username);
         final EditText password = (EditText)view.findViewById(R.id.login_dialog_password);
         Button login = (Button)view.findViewById(R.id.login_dialog_button);
 
@@ -163,12 +162,12 @@ public class UserDataSource {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String usernameT = username.getText().toString();
+                String usernameT = ParseUser.getCurrentUser().getUsername();
                 String passwordT = password.getText().toString();
 
                 dialog.dismiss();
 
-                if (usernameT.equals("") || passwordT.equals("")) {
+                if (passwordT.equals("")) {
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
                     builder.setTitle(context.getString(R.string.incorrect_login_credentials))
                             .setPositiveButton("OK", null)

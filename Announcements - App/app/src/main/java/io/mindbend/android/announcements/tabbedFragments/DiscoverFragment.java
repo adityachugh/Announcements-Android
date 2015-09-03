@@ -139,28 +139,22 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
     }
 
     @Override
-    public void viewMembers(Organization org) {
-        //TODO: grab admin list from db
-        ArrayList<User> users = new ArrayList<User>();
-        users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
-        users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
-        users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
-        users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
-        users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
+    public void viewMembers(final Organization org, final boolean isAdmin) {
+        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, org.getmObjectId(), 0, 50, new FunctionCallback<HashMap<Boolean, Object>>() {
+            @Override
+            public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
 
-        //for test purposes, randomly selects what type of users list to display (admin, pending, or normal)
-        HashMap<User, Integer> typeOfUsers = new HashMap<>();
-        for (User user : users){
-            Random r = new Random();
-            typeOfUsers.put(user, r.nextInt(3));
-        }
+                ArrayList<User> users = (ArrayList<User>)booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
+                HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>)booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
 
-        ListFragment adminList = ListFragment.newInstance(true, DiscoverFragment.this, false, null, null, null, null, users, DiscoverFragment.this, typeOfUsers, org);
-        getChildFragmentManager().beginTransaction()
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .replace(R.id.discover_framelayout, adminList)
-                .addToBackStack(null)
-                .commitAllowingStateLoss();
+                ListFragment adminList = ListFragment.newInstance(isAdmin, DiscoverFragment.this, false, null, null, null, null, users, DiscoverFragment.this, typeOfUsers, org);
+                getChildFragmentManager().beginTransaction()
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .replace(R.id.discover_framelayout, adminList)
+                        .addToBackStack(null)
+                        .commitAllowingStateLoss();
+            }
+        });
     }
 
     @Override
