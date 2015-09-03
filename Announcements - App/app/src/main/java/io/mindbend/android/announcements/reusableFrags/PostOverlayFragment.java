@@ -34,8 +34,6 @@ public class PostOverlayFragment extends Fragment implements Serializable, Posts
     //to allow the activity to figure out if the today frag is on posts or comments
     private boolean isOnComments = false;
 
-    private PostCommentsFragment mCurrentComments;
-    private PostCardFullFragment mFullPost;
     private PostsOverlayListener mListener;
     private ArrayList<Post> mPosts;
     private transient View mView;
@@ -104,7 +102,7 @@ public class PostOverlayFragment extends Fragment implements Serializable, Posts
 
         else if (!mOnProfile){
             //replace the current posts frag with the comments frag, while adding it to a backstack (in case user clicks a commenters profile in which case returning to the comments frag would be required)
-            mCurrentComments = PostCommentsFragment.newInstance(postPressed, this);
+            PostCommentsFragment mCurrentComments = PostCommentsFragment.newInstance(postPressed, this);
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
             transaction.replace(R.id.posts_overlay_container, mCurrentComments).addToBackStack(COMMENTS_FRAG).commitAllowingStateLoss();
         }
@@ -122,7 +120,7 @@ public class PostOverlayFragment extends Fragment implements Serializable, Posts
             mListener.fullPostProfile(post);
         }
         else if (!mOnProfile){
-            mFullPost = PostCardFullFragment.newInstance(post, this);
+            PostCardFullFragment mFullPost = PostCardFullFragment.newInstance(post, this);
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
             transaction.replace(R.id.posts_overlay_container, mFullPost).addToBackStack(FULL_POST_FRAG).commitAllowingStateLoss();
         }

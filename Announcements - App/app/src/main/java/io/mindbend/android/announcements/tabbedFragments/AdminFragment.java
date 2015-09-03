@@ -23,6 +23,7 @@ import java.util.Random;
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.TabbedActivity;
 import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.adminClasses.AdminMainFragment;
 import io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment;
@@ -61,6 +62,16 @@ public class AdminFragment extends Fragment implements Serializable,
     private boolean onYou = false;
     private boolean onAdmin = true;
     private transient View mView;
+
+    private transient Fragment mCurrentOrgModifyFrag;
+
+    public Fragment getmCurrentOrgModifyFrag() {
+        return mCurrentOrgModifyFrag;
+    }
+
+    public void setmCurrentOrgModifyFrag(Fragment mCurrentOrgModifyFrag) {
+        this.mCurrentOrgModifyFrag = mCurrentOrgModifyFrag;
+    }
 
     public AdminFragment() {
         // Required empty public constructor
@@ -146,9 +157,10 @@ public class AdminFragment extends Fragment implements Serializable,
 
     @Override
     public void addChildOrganization(Organization parentOrg) {
+        mCurrentOrgModifyFrag = ModifyOrganizationFragment.newInstance(parentOrg, null);
         getChildFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .replace(R.id.admin_framelayout, ModifyOrganizationFragment.newInstance(parentOrg, null))
+                .replace(R.id.admin_framelayout, mCurrentOrgModifyFrag)
                 .addToBackStack(null)
                 .commitAllowingStateLoss();
     }
@@ -268,9 +280,11 @@ public class AdminFragment extends Fragment implements Serializable,
 
     @Override
     public void modifyOrg(Organization org) {
+        ((TabbedActivity)getActivity()).getmViewPager().setCurrentItem(3);
+        mCurrentOrgModifyFrag = ModifyOrganizationFragment.newInstance(null, org);
         getChildFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .replace(R.id.admin_framelayout, ModifyOrganizationFragment.newInstance(null, org))
+                .replace(R.id.admin_framelayout, mCurrentOrgModifyFrag)
                 .addToBackStack(null)
                 .commitAllowingStateLoss();
     }

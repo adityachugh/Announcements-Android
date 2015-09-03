@@ -17,6 +17,8 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import java.io.Serializable;
+
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
 
@@ -25,10 +27,11 @@ import io.mindbend.android.announcements.R;
  * Use the {@link ModifyOrganizationFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ModifyOrganizationFragment extends Fragment {
+public class ModifyOrganizationFragment extends Fragment implements Serializable {
     private static final String ARG_PARENT = "parent_org";
     private static final String ARG_ORG = "if_to_modify_org";
-    public static final int UPLOAD_OR_MODIFY_PHOTO = 3;
+    public static final int UPLOAD_OR_MODIFY_PROFILE_PHOTO = 3;
+    public static final int UPLOAD_OR_MODIFY_COVER_PHOTO = 8;
     private Organization mParentOrg;
     private Organization mOrgToModify;
 
@@ -38,7 +41,8 @@ public class ModifyOrganizationFragment extends Fragment {
     private Switch mOrgType;
     private EditText mAccessCode;
     private TextView mAccessCodeTitle;
-    private byte[] imageBytes;
+    private byte[] toUploadProfileImageBytes;
+    private byte[] toUploadCoverImageBytes;
 
     public static ModifyOrganizationFragment newInstance(Organization parentOrg, Organization orgToModifyIfNeeded) {
         ModifyOrganizationFragment fragment = new ModifyOrganizationFragment();
@@ -128,8 +132,12 @@ public class ModifyOrganizationFragment extends Fragment {
         }
     }
 
-    public void setImageBytes(byte[] imageBytes) {
-        this.imageBytes = imageBytes;
+    public void setProfileImageBytes(byte[] profileImageBytes) {
+        toUploadProfileImageBytes = profileImageBytes;
+    }
+
+    public void setCoverImageBytes(byte[] coverImageBytes) {
+        toUploadCoverImageBytes = coverImageBytes;
     }
 
     private void setupViews(View v) {
@@ -162,7 +170,7 @@ public class ModifyOrganizationFragment extends Fragment {
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 getActivity().startActivityForResult(Intent.createChooser(intent,
-                        "Select Picture"), UPLOAD_OR_MODIFY_PHOTO);
+                        "Select Picture"), UPLOAD_OR_MODIFY_PROFILE_PHOTO);
             }
         });
 
@@ -175,7 +183,7 @@ public class ModifyOrganizationFragment extends Fragment {
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 getActivity().startActivityForResult(Intent.createChooser(intent,
-                        "Select Picture"), UPLOAD_OR_MODIFY_PHOTO);
+                        "Select Picture"), UPLOAD_OR_MODIFY_COVER_PHOTO);
             }
         });
 

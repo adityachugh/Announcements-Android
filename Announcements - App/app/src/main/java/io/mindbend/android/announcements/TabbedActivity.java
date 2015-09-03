@@ -213,6 +213,14 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
         }
     }
 
+    public ViewPager getmViewPager() {
+        return mViewPager;
+    }
+
+    public AdminFragment getmAdminFragment() {
+        return mAdminFragment;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -344,7 +352,7 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
                     Snackbar.make(mView, "Failed to add image", Snackbar.LENGTH_LONG).show();
                 }
             }
-            if (requestCode == ModifyOrganizationFragment.UPLOAD_OR_MODIFY_PHOTO){
+            if (requestCode == ModifyOrganizationFragment.UPLOAD_OR_MODIFY_PROFILE_PHOTO || requestCode == ModifyOrganizationFragment.UPLOAD_OR_MODIFY_COVER_PHOTO){
                 Log.wtf("Image", "intent result was okay");
                 Uri selectedImageUri = data.getData();
                 try {
@@ -354,61 +362,46 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
                     image.compress(Bitmap.CompressFormat.JPEG, 70, stream);
                     byte[] imageBytes = stream.toByteArray();
                     Log.wtf("Image", "Converted bytes are: " + imageBytes);
-                    mAdminFragment.getmAdminMainFrag().getmModifyOrganizationFragment().setImageBytes(imageBytes);
+                    if (requestCode == ModifyOrganizationFragment.UPLOAD_OR_MODIFY_PROFILE_PHOTO){
+                        ((ModifyOrganizationFragment) mAdminFragment.getmCurrentOrgModifyFrag()).setProfileImageBytes(imageBytes);
+                    }
+                    else {
+                        ((ModifyOrganizationFragment) mAdminFragment.getmCurrentOrgModifyFrag()).setCoverImageBytes(imageBytes);
+                    }
                 } catch (IOException f){
                     Log.wtf("crash", "sad face");
                     Snackbar.make(mView, "Failed to add image", Snackbar.LENGTH_LONG).show();
                 }
             }
-            if (requestCode == AdminMainFragment.CHANGE_PARENT_PHOTO){
+            if (requestCode == AdminMainFragment.CHANGE_PARENT_PROFILE_PHOTO || requestCode == AdminMainFragment.CHANGE_PARENT_COVER_PHOTO){
                 Log.wtf("Image", "intent result was okay");
                 Uri selectedImageUri = data.getData();
-                try {
-                    Bitmap image = getBitmapFromUri(selectedImageUri);
-                    Log.wtf("Image", "Bitmap is: " + image.toString());
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    image.compress(Bitmap.CompressFormat.JPEG, 70, stream);
-                    byte[] imageBytes = stream.toByteArray();
-                    Log.wtf("Image", "Converted bytes are: " + imageBytes);
-                    //TODO: send to Parse
-                } catch (IOException f){
-                    Log.wtf("crash", "sad face");
-                    Snackbar.make(mView, "Failed to add image", Snackbar.LENGTH_LONG).show();
-                }
+                byte[] imageBytes = convertImageUriToUploadableByteArray(selectedImageUri, requestCode, AdminMainFragment.CHANGE_PARENT_PROFILE_PHOTO);
+                Log.wtf("Image", "Converted bytes are: " + imageBytes);
+                //TODO: upload photo to parse straight away
             }
 
             if (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE || requestCode == ProfileFragment.UPDATE_COVER_IMAGE){
                 Log.wtf("Image", "intent result was okay");
-                Uri selectedImageUri = data.getData();
-                try {
-                    int resW = (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE) ? 500 : 2000;
-                    int resH = (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE) ? 500 : 1200;
-                    final Bitmap image = Bitmap.createScaledBitmap(getBitmapFromUri(selectedImageUri), resW, resH, true);
-                    Log.wtf("Image", "Bitmap is: " + image.toString());
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    image.compress(Bitmap.CompressFormat.JPEG, 70, stream);
-                    byte[] imageBytes = stream.toByteArray();
-                    Log.wtf("Image", "Converted bytes are: " + imageBytes.toString());
-                    boolean isUpdatingProfilePhoto = (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE);
-                    UserDataSource.updateUserProfileImages(mView, this, mYouFragment.mLoading, imageBytes, new FunctionCallback<Boolean>() {
-                        @Override
-                        public void done(Boolean success, ParseException e) {
-                            if (success) {
-                                if (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE)
-                                    ((ProfileFragment) mYouFragment.getmProfileFragment()).updateProfileImage(image);
-                                else
-                                    ((ProfileFragment) mYouFragment.getmProfileFragment()).updateCoverImage(image);
-                                Snackbar.make(mView, "Image successfully updated", Snackbar.LENGTH_LONG).show();
-                            } else {
-                                Snackbar.make(mView, "Failure", Snackbar.LENGTH_SHORT).show();
-                                e.printStackTrace();
-                            }
+                final Uri selectedImageUri = data.getData();
+                byte[] imageBytes = convertImageUriToUploadableByteArray(selectedImageUri, requestCode, ProfileFragment.UPDATE_PROFILE_IMAGE);
+                Log.wtf("Image", "Converted bytes are: " + imageBytes.toString());
+                boolean isUpdatingProfilePhoto = (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE);
+                UserDataSource.updateUserProfileImages(mView, this, mYouFragment.mLoading, imageBytes, new FunctionCallback<Boolean>() {
+                    @Override
+                    public void done(Boolean success, ParseException e) {
+                        if (success) {
+                            if (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE)
+                                ((ProfileFragment) mYouFragment.getmProfileFragment()).updateProfileImage(returnToUploadBitmapFromImage(selectedImageUri, requestCode, ProfileFragment.UPDATE_PROFILE_IMAGE));
+                            else
+                                ((ProfileFragment) mYouFragment.getmProfileFragment()).updateCoverImage(returnToUploadBitmapFromImage(selectedImageUri, requestCode, ProfileFragment.UPDATE_PROFILE_IMAGE));
+                            Snackbar.make(mView, "Image successfully updated", Snackbar.LENGTH_LONG).show();
+                        } else {
+                            Snackbar.make(mView, "Failure", Snackbar.LENGTH_SHORT).show();
+                            e.printStackTrace();
                         }
-                    }, isUpdatingProfilePhoto);
-                } catch (IOException f){
-                    Log.wtf("crash", "sad face");
-                    Snackbar.make(mView, "Failed to add image", Snackbar.LENGTH_LONG).show();
-                }
+                    }
+                }, isUpdatingProfilePhoto);
             }
         }
     }
@@ -420,5 +413,27 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
         Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
         parcelFileDescriptor.close();
         return image;
+    }
+
+    private byte[] convertImageUriToUploadableByteArray (Uri uri, int requestCode, int profileImageRequestCode){
+            final Bitmap image = returnToUploadBitmapFromImage(uri, requestCode, profileImageRequestCode);
+            Log.wtf("Image", "Bitmap is: " + image.toString());
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            image.compress(Bitmap.CompressFormat.JPEG, 70, stream);
+            return stream.toByteArray();
+    }
+
+    private Bitmap returnToUploadBitmapFromImage(Uri uri, int requestCode, int profileImageRequestCode){
+        int resW = (requestCode == profileImageRequestCode) ? 500 : 2000;
+        int resH = (requestCode == profileImageRequestCode) ? 500 : 1200;
+        Bitmap source = null;
+        try {
+            source = getBitmapFromUri(uri);
+            return Bitmap.createScaledBitmap(source, resW, resH, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Snackbar.make(mView, "Could not convert image", Snackbar.LENGTH_SHORT).show();
+            return null;
+        }
     }
 }

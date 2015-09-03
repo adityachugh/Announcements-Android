@@ -23,6 +23,7 @@ import java.util.Random;
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.TabbedActivity;
 import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment;
 import io.mindbend.android.announcements.cloudCode.AdminDataSource;
@@ -134,11 +135,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
 
     @Override
     public void modifyOrg(Organization org) {
-        getChildFragmentManager().beginTransaction()
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .replace(R.id.discover_framelayout, ModifyOrganizationFragment.newInstance(null, org))
-                .addToBackStack(null)
-                .commitAllowingStateLoss();
+        ((TabbedActivity)getActivity()).getmAdminFragment().modifyOrg(org);
     }
 
     @Override

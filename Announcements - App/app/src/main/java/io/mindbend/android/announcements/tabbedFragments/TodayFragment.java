@@ -240,11 +240,7 @@ public class TodayFragment extends Fragment implements Serializable,
 
     @Override
     public void modifyOrg(Organization org) {
-        getChildFragmentManager().beginTransaction()
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .replace(R.id.today_framelayout, ModifyOrganizationFragment.newInstance(null, org))
-                .addToBackStack(null)
-                .commitAllowingStateLoss();
+        ((TabbedActivity)getActivity()).getmAdminFragment().modifyOrg(org);
     }
 
     @Override

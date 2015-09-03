@@ -22,13 +22,13 @@ public class AdminMainFragment extends Fragment implements Serializable {
     private static final String ARG_ADMIN_LISTENER = "param1";
     private static final String ARG_ADMIN_ORG = "current_admin_org";
     private static final String ADMIN_MAIN_TAG = "admin_main_frag";
-    public static final int CHANGE_PARENT_PHOTO = 4;
+    public static final int CHANGE_PARENT_PROFILE_PHOTO = 4;
+    public static final int CHANGE_PARENT_COVER_PHOTO = 7;
 
     private AdminInteractionListener mListener;
     private View mView;
     private Organization mOrg;
     private NewAnnouncementFragment mNewAnnouncementFragment;
-    private ModifyOrganizationFragment mModifyOrganizationFragment;
 
 
     /**
@@ -130,7 +130,6 @@ public class AdminMainFragment extends Fragment implements Serializable {
                 @Override
                 public void onClick(View v) {
                     Log.d(ADMIN_MAIN_TAG, "add admin");
-                    mModifyOrganizationFragment = ModifyOrganizationFragment.newInstance(mOrg, null);
                     mListener.addChildOrganization(mOrg);
                 }
             });
@@ -175,7 +174,7 @@ public class AdminMainFragment extends Fragment implements Serializable {
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 getActivity().startActivityForResult(Intent.createChooser(intent,
-                        "Select Picture"), CHANGE_PARENT_PHOTO);
+                        "Select Picture"), CHANGE_PARENT_PROFILE_PHOTO);
             }
         });
 
@@ -188,7 +187,7 @@ public class AdminMainFragment extends Fragment implements Serializable {
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 getActivity().startActivityForResult(Intent.createChooser(intent,
-                        "Select Picture"), CHANGE_PARENT_PHOTO);
+                        "Select Picture"), CHANGE_PARENT_COVER_PHOTO);
             }
         });
     }
@@ -216,7 +215,4 @@ public class AdminMainFragment extends Fragment implements Serializable {
         return mNewAnnouncementFragment;
     }
 
-    public ModifyOrganizationFragment getmModifyOrganizationFragment() {
-        return mModifyOrganizationFragment;
-    }
 }
