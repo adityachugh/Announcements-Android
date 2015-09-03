@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import io.mindbend.android.announcements.adminClasses.AdminMainFragment;
 import io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment;
 import io.mindbend.android.announcements.adminClasses.NewAnnouncementFragment;
+import io.mindbend.android.announcements.cloudCode.AdminDataSource;
 import io.mindbend.android.announcements.cloudCode.UserDataSource;
 import io.mindbend.android.announcements.cloudCode.VerificationDataSource;
 import io.mindbend.android.announcements.reusableFrags.ProfileFragment;
@@ -69,12 +70,15 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
 
     private boolean userIsAdmin = false;
     private View mView;
+    private ProgressBar mLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mView = getLayoutInflater().inflate(R.layout.activity_tabbed, null);
         setContentView(mView);
+
+        mLoading = (ProgressBar)findViewById(R.id.activity_overall_progressbar);
 
         //to fix the "rotate & back button" crashing bug
         mSavedInstanceState = savedInstanceState;
@@ -111,7 +115,7 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
             updateLandscapePageText();
         }
 
-        UserDataSource.getOrganizationsThatUserIsAdminOf(mView,(ProgressBar)findViewById(R.id.activity_overall_progressbar), ParseUser.getCurrentUser().getObjectId(), new FunctionCallback<ArrayList<Organization>>() {
+        UserDataSource.getOrganizationsThatUserIsAdminOf(mView, mLoading, ParseUser.getCurrentUser().getObjectId(), new FunctionCallback<ArrayList<Organization>>() {
             @Override
             public void done(ArrayList<Organization> organizations, ParseException e) {
                 if (e == null){
@@ -378,7 +382,11 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
                 Uri selectedImageUri = data.getData();
                 byte[] imageBytes = convertImageUriToUploadableByteArray(selectedImageUri, requestCode, AdminMainFragment.CHANGE_PARENT_PROFILE_PHOTO);
                 Log.wtf("Image", "Converted bytes are: " + imageBytes);
-                //TODO: upload photo to parse straight away
+                if (requestCode == AdminMainFragment.CHANGE_PARENT_PROFILE_PHOTO){
+                    AdminDataSource.updateOrganizationProfilePhoto(mView, TabbedActivity.this, mLoading, mAdminFragment.getmAdminMainFrag().getmOrg().getmObjectId(), imageBytes, null);
+                } else {
+                    AdminDataSource.updateOrganizationCoverPhoto(mView, TabbedActivity.this, mLoading, mAdminFragment.getmAdminMainFrag().getmOrg().getmObjectId(), imageBytes, null);
+                }
             }
 
             if (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE || requestCode == ProfileFragment.UPDATE_COVER_IMAGE){

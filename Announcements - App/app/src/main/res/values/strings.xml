@@ -108,4 +108,6 @@
     <string name="format_unfollow_org_message">You are currently following %1$s. Do you want to unfollow this organization?</string>
     <string name="org_profile_image">Profile Image</string>
     <string name="org_cover_image">Cover Image</string>
+    <string name="could_not_upload_org_photo">Could not update organization photo</string>
+    <string name="succes_updated_org_photo">Successfully updated organization photo</string>
 </resources>

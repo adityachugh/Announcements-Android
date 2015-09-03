@@ -47,6 +47,10 @@ public class AdminMainFragment extends Fragment implements Serializable {
         return fragment;
     }
 
+    public Organization getmOrg() {
+        return mOrg;
+    }
+
     public AdminMainFragment() {
         // Required empty public constructor
     }

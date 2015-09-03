@@ -123,7 +123,7 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
     private void submitOrg() {
         if(mOrgToModify != null){
             //this is where you UPDATE the org that was passed in
-            //TODO: update org in database
+            //TODO: update org in database, ex. update photos
         }else {
             /**
              * Create the new org in Parse (with an access code if necessary)
