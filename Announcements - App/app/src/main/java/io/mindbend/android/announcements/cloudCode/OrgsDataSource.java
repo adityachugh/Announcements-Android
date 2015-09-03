@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import io.mindbend.android.announcements.Organization;
+import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
 
 /**
@@ -204,6 +205,31 @@ public class OrgsDataSource {
                     callback.done(correctCodeEntered, e);
                 } else {
                     Snackbar.make(layout, "Error", Snackbar.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    public static void getOrganizationsForDiscoverTabInRange (final View view, final Context context, final ProgressBar loading, String userObjectId, int startIndex, int numberOfOrganizations, final FunctionCallback<ArrayList<Organization>> callback) {
+        loading.setVisibility(View.VISIBLE);
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("userObjectId", userObjectId);
+        params.put("startIndex", startIndex);
+        params.put("numberOfOrganizations", numberOfOrganizations);
+
+        ParseCloud.callFunctionInBackground("getOrganizationsForDiscoverTabInRange", params, new FunctionCallback<List<ParseObject>>() {
+            @Override
+            public void done(List<ParseObject> parseOrgs, ParseException e) {
+                loading.setVisibility(View.GONE);
+                if (e == null){
+                    ArrayList<Organization> orgs = new ArrayList<Organization>();
+                    for (ParseObject org : parseOrgs){
+                        orgs.add(new Organization(org));
+                    }
+                    callback.done(orgs, e);
+                } else {
+                    e.printStackTrace();
+                    Snackbar.make(view, context.getString(R.string.error_getting_discover_orgs), Snackbar.LENGTH_SHORT).show();
                 }
             }
         });

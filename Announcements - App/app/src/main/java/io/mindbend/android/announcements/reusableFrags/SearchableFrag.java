@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 
 import com.parse.FunctionCallback;
 import com.parse.ParseException;
+import com.parse.ParseUser;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
     private OrgsGridFragment.OrgsGridInteractionListener mOrgsGridInteractionListener = this;
 
     private ArrayList<Organization> mOrgs = new ArrayList<Organization>();
+    private transient View mView;
 
     public static SearchableFrag newInstance(int typeOfList, Organization parentOrganization, SearchInterface listener) {
         SearchableFrag fragment = new SearchableFrag();
@@ -74,9 +76,9 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_searchable, container, false);
-        mSearchView = (SearchView)v.findViewById(R.id.searchable_searchview);
-        mLoading = (ProgressBar)v.findViewById(R.id.searchable_frag_progressbar);
+        mView = inflater.inflate(R.layout.fragment_searchable, container, false);
+        mSearchView = (SearchView) mView.findViewById(R.id.searchable_searchview);
+        mLoading = (ProgressBar) mView.findViewById(R.id.searchable_frag_progressbar);
 
         switch (mTypeOfList){
             case USERS_TYPE:
@@ -88,7 +90,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
                 break;
             case ORGS_TYPE:
 
-                loadDiscoverOrgs(v, "oc3Wmbqhsl", 0, 10); //TODO: update so reflects current school (TFSS rn)
+                loadDiscoverOrgs(ParseUser.getCurrentUser().getObjectId(), 0, 10);
 
                 OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(mOrgs, this, this);
                 FragmentTransaction ft2 = getFragmentManager().beginTransaction();
@@ -102,21 +104,18 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
         //Stop keyboard from automatically popping up
         mSearchView.clearFocus();
 
-        return v;
+        return mView;
     }
 
-    private void loadDiscoverOrgs(final View v, String parentOrganizationObjectId, int startIndex, int numberOfOrganizations) {
-        OrgsDataSource.getChildOrganizationsInRange(mLoading, parentOrganizationObjectId, startIndex, numberOfOrganizations, new FunctionCallback<ArrayList<Organization>>() {
+    private void loadDiscoverOrgs(String userObjectId, int startIndex, int numberOfOrganizations) {
+        OrgsDataSource.getOrganizationsForDiscoverTabInRange(mView, getActivity(), mLoading, userObjectId, startIndex, numberOfOrganizations, new FunctionCallback<ArrayList<Organization>>() {
             @Override
             public void done(ArrayList<Organization> organizations, ParseException e) {
-                if (e == null) {
+                if (e == null && organizations != null) {
                     OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(organizations, mOrgInteractionListener, mOrgsGridInteractionListener);
                     FragmentTransaction ft2 = getFragmentManager().beginTransaction();
                     if (ft2.isEmpty())
                         ft2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag, orgsGridFragment).commitAllowingStateLoss();
-                } else {
-                    Snackbar.make(v, "Error", Snackbar.LENGTH_SHORT).show();
-                    e.printStackTrace();
                 }
             }
         });
