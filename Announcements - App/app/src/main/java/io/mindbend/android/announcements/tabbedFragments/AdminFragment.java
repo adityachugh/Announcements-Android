@@ -29,6 +29,7 @@ import io.mindbend.android.announcements.adminClasses.AdminMainFragment;
 import io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment;
 import io.mindbend.android.announcements.cloudCode.AdminDataSource;
 import io.mindbend.android.announcements.cloudCode.OrgsDataSource;
+import io.mindbend.android.announcements.cloudCode.UserDataSource;
 import io.mindbend.android.announcements.reusableFrags.ListFragment;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridAdapter;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridFragment;
@@ -166,35 +167,23 @@ public class AdminFragment extends Fragment implements Serializable,
     }
 
     @Override
-    public void userListOpened(Organization parentOrg) {
+    public void userListOpened(final Organization parentOrg) {
 
-        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, parentOrg.getmObjectId(), 0, 50, new FunctionCallback<ArrayList<User>>() {
+        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, parentOrg.getmObjectId(), 0, 50, new FunctionCallback<HashMap<Boolean, Object>>() {
             @Override
-            public void done(ArrayList<User> users, ParseException e) {
-                //here
+            public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
+
+                ArrayList<User> users = (ArrayList<User>)booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
+                HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>)booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
+
+                ListFragment adminList = ListFragment.newInstance(true, AdminFragment.this, false, null, null, null, null, users, AdminFragment.this, typeOfUsers, parentOrg);
+                getChildFragmentManager().beginTransaction()
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .replace(R.id.admin_framelayout, adminList)
+                        .addToBackStack(null)
+                        .commitAllowingStateLoss();
             }
         });
-
-        ArrayList<User> users = new ArrayList<User>();
-        users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
-        users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
-        users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
-        users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
-        users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
-
-        //for test purposes, randomly selects what type of users list to display (admin, pending, or normal)
-        HashMap<User, Integer> typeOfUsers = new HashMap<>();
-        for (User user : users){
-            Random r = new Random();
-            typeOfUsers.put(user, r.nextInt(3));
-        }
-
-        ListFragment adminList = ListFragment.newInstance(true, this, false, null, null, null, null, users, AdminFragment.this, typeOfUsers, parentOrg);
-        getChildFragmentManager().beginTransaction()
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .replace(R.id.admin_framelayout, adminList)
-                .addToBackStack(null)
-                .commitAllowingStateLoss();
     }
 
     @Override

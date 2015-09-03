@@ -43,6 +43,14 @@ public class UserDataSource {
     public final static String COVER_PHOTO = "coverPhoto";
     public final static String FOLLOWER_USER_FIELD = "user";
 
+
+    //for the user types of a follower object: admin, follower, and penging
+    public final static String FOLLOWER_NORMAL = "F";
+    public final static String FOLLOWER_ADMIN = "A";
+    public final static String FOLLOWER_PENDING = "P";
+
+    public final static String FOLLOWER_USER_TYPE_FIELD = "userType";
+
     //TODO: profile photo, cover photo
 
     public static void getCurrentUserWithInfo(final ProgressBar loading, final FunctionCallback<User> callback) {

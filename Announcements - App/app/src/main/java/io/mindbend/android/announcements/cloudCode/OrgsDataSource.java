@@ -26,6 +26,7 @@ import java.util.Stack;
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
+import io.mindbend.android.announcements.reusableFrags.UserListAdapter;
 
 /**
  * Created by Akshay Pall on 21/08/2015.
@@ -49,6 +50,11 @@ public class OrgsDataSource {
     public final static String FOLLOW_STATE_NO_REQUEST_SENT = null;
     public final static String FOLLOW_STATE_PENDING = "P";
     public final static String FOLLOW_STATE_REJECTED = "R";
+
+
+    //for the map callback given in getFollowersFollowRequestsAndAdminsForOrganizationInRange function
+    public final static Boolean MAP_USER_TYPES_KEY = true;
+    public final static Boolean MAP_USER_LIST_KEY= false;
 
 
     public static boolean isNew(ParseObject org) {
@@ -235,7 +241,9 @@ public class OrgsDataSource {
         });
     }
 
-    public static void getFollowersFollowRequestsAndAdminsForOrganizationInRange (final View view, final Context context, final ProgressBar loading, String organizationObjectId, int startIndex, int numberOfUsers, final FunctionCallback<ArrayList<User>> callback) {
+    public static void getFollowersFollowRequestsAndAdminsForOrganizationInRange (final View view, final Context context, final ProgressBar loading,
+                                                                                  String organizationObjectId, int startIndex, int numberOfUsers,
+                                                                                  final FunctionCallback<HashMap<Boolean, Object>> callback) {
         loading.setVisibility(View.GONE);
         HashMap<String, Object> params = new HashMap<>();
         params.put("organizationObjectId", organizationObjectId);
@@ -249,14 +257,34 @@ public class OrgsDataSource {
                 loading.setVisibility(View.GONE);
                 if (e == null){
                     ArrayList<User> users = new ArrayList<User>();
+                    HashMap<User, Integer> userTypes = new HashMap<User, Integer>();
                     for (ParseObject follow : followObjects){
-                        users.add(new User(follow.getParseUser(UserDataSource.FOLLOWER_USER_FIELD)));
+                        User user = new User(follow.getParseUser(UserDataSource.FOLLOWER_USER_FIELD));
+                        users.add(user);
+                        userTypes.put(user, getTypeOfFollower(follow.getString(UserDataSource.FOLLOWER_USER_TYPE_FIELD)));
                     }
+
+                    HashMap<Boolean, Object> toReturnMap = new HashMap<Boolean, Object>();
+                    toReturnMap.put(MAP_USER_LIST_KEY, users);
+                    toReturnMap.put(MAP_USER_TYPES_KEY, userTypes);
+
+                    callback.done(toReturnMap, e);
                 } else {
                     e.printStackTrace();
                     Snackbar.make(view, context.getString(R.string.error_loading_org_members), Snackbar.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+
+    public static Integer getTypeOfFollower(String userTypeFromFollowObject){
+        switch (userTypeFromFollowObject){
+            case UserDataSource.FOLLOWER_NORMAL:
+                return UserListAdapter.USERS_MEMBERS;
+            case UserDataSource.FOLLOWER_ADMIN:
+                return UserListAdapter.USERS_ADMINS;
+            default: //is pending
+                return UserListAdapter.USERS_PENDING;
+        }
     }
 }
