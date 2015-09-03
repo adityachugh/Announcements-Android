@@ -102,9 +102,8 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
             Picasso.with(mContext).load(post.getmPostImageURL()).into(viewHolder.mPostImage);
         }
 
-        //TODO: uncomment and fix crashing issue of crash when viewing an org's profile
-//        if (!post.getmPosterOrg().getmProfileImageURL().equals("") && !post.getmPosterOrg().getmProfileImageURL().equals(null))
-//            Picasso.with(mContext).load(post.getmPosterOrg().getmProfileImageURL()).into(viewHolder.mPosterImage);
+        if (!post.getmPosterOrg().getmProfileImageURL().equals(""))
+            Picasso.with(mContext).load(post.getmPosterOrg().getmProfileImageURL()).into(viewHolder.mPosterImage);
 
         viewHolder.mPostCard.setOnClickListener(new View.OnClickListener() {
             @Override

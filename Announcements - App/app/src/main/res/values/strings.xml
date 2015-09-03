@@ -111,4 +111,5 @@
     <string name="could_not_upload_org_photo">Could not update organization photo</string>
     <string name="succes_updated_org_photo">Successfully updated organization photo</string>
     <string name="error_getting_discover_orgs">Could not get Discover organizations</string>
+    <string name="error_loading_org_members">Could not get followers of organization</string>
 </resources>

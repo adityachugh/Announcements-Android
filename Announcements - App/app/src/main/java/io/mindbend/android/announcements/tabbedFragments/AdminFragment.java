@@ -167,6 +167,14 @@ public class AdminFragment extends Fragment implements Serializable,
 
     @Override
     public void userListOpened(Organization parentOrg) {
+
+        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, parentOrg.getmObjectId(), 0, 50, new FunctionCallback<ArrayList<User>>() {
+            @Override
+            public void done(ArrayList<User> users, ParseException e) {
+                //here
+            }
+        });
+
         ArrayList<User> users = new ArrayList<User>();
         users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));
         users.add(new User("Tech", "Retreater", "all things Waterloo", "CS", "Admin", 10));

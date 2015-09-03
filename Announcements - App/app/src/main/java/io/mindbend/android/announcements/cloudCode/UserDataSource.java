@@ -41,6 +41,7 @@ public class UserDataSource {
     public final static String ORG_FOLLOWED_COUNT = "organizationsFollowedCount";
     public final static String PROFILE_PHOTO = "profilePhoto";
     public final static String COVER_PHOTO = "coverPhoto";
+    public final static String FOLLOWER_USER_FIELD = "user";
 
     //TODO: profile photo, cover photo
 

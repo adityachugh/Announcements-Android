@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.parse.FunctionCallback;
 import com.parse.ParseException;
+import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
 import java.util.List;
@@ -72,6 +73,10 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
         //setting up the onClick name or image of commenter in order to open a profile frag
         viewHolder.mCommenterName.setOnClickListener(this);
         viewHolder.mPosterImage.setOnClickListener(this);
+
+        String posterImageUrl = mCurrentComment.getmUser().getmProfilePictureURL();
+        if (!posterImageUrl.equals(""))
+            Picasso.with(mContext).load(posterImageUrl).into(viewHolder.mPosterImage);
 
         viewHolder.mEntireLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override

@@ -234,4 +234,29 @@ public class OrgsDataSource {
             }
         });
     }
+
+    public static void getFollowersFollowRequestsAndAdminsForOrganizationInRange (final View view, final Context context, final ProgressBar loading, String organizationObjectId, int startIndex, int numberOfUsers, final FunctionCallback<ArrayList<User>> callback) {
+        loading.setVisibility(View.GONE);
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("organizationObjectId", organizationObjectId);
+        params.put("startIndex", startIndex);
+        params.put("numberOfUsers", numberOfUsers);
+
+        ParseCloud.callFunctionInBackground("getFollowersFollowRequestsAndAdminsForOrganizationInRange", params, new FunctionCallback<List<ParseObject>>() {
+            @Override
+            public void done(List<ParseObject> followObjects, ParseException e) {
+//                int i = 0;
+                loading.setVisibility(View.GONE);
+                if (e == null){
+                    ArrayList<User> users = new ArrayList<User>();
+                    for (ParseObject follow : followObjects){
+                        users.add(new User(follow.getParseUser(UserDataSource.FOLLOWER_USER_FIELD)));
+                    }
+                } else {
+                    e.printStackTrace();
+                    Snackbar.make(view, context.getString(R.string.error_loading_org_members), Snackbar.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
 }

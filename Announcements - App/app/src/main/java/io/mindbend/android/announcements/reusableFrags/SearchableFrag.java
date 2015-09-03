@@ -46,6 +46,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
     private OrgsGridFragment.OrgsGridInteractionListener mOrgsGridInteractionListener = this;
 
     private ArrayList<Organization> mOrgs = new ArrayList<Organization>();
+    private ArrayList<User> mUsers;
     private transient View mView;
 
     public static SearchableFrag newInstance(int typeOfList, Organization parentOrganization, SearchInterface listener) {
@@ -82,8 +83,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
 
         switch (mTypeOfList){
             case USERS_TYPE:
-                ArrayList<User> users = new ArrayList<>();
-                final ListFragment searchListFrag = ListFragment.newInstance(false, null, true, null, null, null, null, users, SearchableFrag.this, null, mOrgOfUsers);
+                final ListFragment searchListFrag = ListFragment.newInstance(false, null, true, null, null, null, null, mUsers, SearchableFrag.this, null, mOrgOfUsers);
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 if(ft.isEmpty())
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag, searchListFrag).commitAllowingStateLoss();
