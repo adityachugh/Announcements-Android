@@ -253,6 +253,12 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
 
             if (mOrg != null) {
                 name.setText(mOrg.getTitle());
+
+                if (!mOrg.getmProfileImageURL().equals(""))
+                    Picasso.with(getActivity()).load(mOrg.getmProfileImageURL()).into(mUserImage);
+                if (!mOrg.getmCoverImageURL().equals(""))
+                    Picasso.with(getActivity()).load(mOrg.getmCoverImageURL()).into(mCoverImage);
+
                 if (mOrg.isPrivateOrg()) {
                     ImageView isPrivate = (ImageView) mView.findViewById(R.id.profile_private_org_lock_icon);
                     isPrivate.setVisibility(View.VISIBLE);

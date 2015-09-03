@@ -48,7 +48,6 @@ public class OrgsDataSource {
     public final static String FOLLOW_STATE_NO_REQUEST_SENT = null;
     public final static String FOLLOW_STATE_PENDING = "P";
     public final static String FOLLOW_STATE_REJECTED = "R";
-    public final static String FOLLOW_STATE_UNFOLLOWED = "N";
 
 
     public static boolean isNew(ParseObject org) {

@@ -153,8 +153,21 @@ public class ModifyOrganizationFragment extends Fragment {
             }
         });
 
-        LinearLayout imageField = (LinearLayout)v.findViewById(R.id.newO_image_field);
-        imageField.setOnClickListener(new View.OnClickListener() {
+        LinearLayout profileImageField = (LinearLayout)v.findViewById(R.id.newO_profile_image_field);
+        profileImageField.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.wtf("Image", "image selection begun");
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                getActivity().startActivityForResult(Intent.createChooser(intent,
+                        "Select Picture"), UPLOAD_OR_MODIFY_PHOTO);
+            }
+        });
+
+        LinearLayout coverImageField = (LinearLayout)v.findViewById(R.id.newO_cover_image_field);
+        coverImageField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.wtf("Image", "image selection begun");

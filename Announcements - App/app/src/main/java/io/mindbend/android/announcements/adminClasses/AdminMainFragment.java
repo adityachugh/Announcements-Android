@@ -13,13 +13,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
-import io.mindbend.android.announcements.User;
-import io.mindbend.android.announcements.reusableFrags.ListFragment;
-import io.mindbend.android.announcements.reusableFrags.UserListAdapter;
 
 public class AdminMainFragment extends Fragment implements Serializable {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -107,6 +103,9 @@ public class AdminMainFragment extends Fragment implements Serializable {
 
         TextView changeOrgPhoto= (TextView) mView.findViewById(R.id.text_change_org_picture);
         changeOrgPhoto.setText(getString(R.string.format_change_org_photo, typeOfOrg));
+
+        TextView changeOrgCoverPhoto = (TextView)mView.findViewById(R.id.text_change_org_cover_picture);
+        changeOrgCoverPhoto.setText(getString(R.string.format_change_org_cover_photo, typeOfOrg));
     }
 
     private void setupClickableValues() {
@@ -167,8 +166,21 @@ public class AdminMainFragment extends Fragment implements Serializable {
         });
 
 
-        LinearLayout changeOrgPhoto= (LinearLayout) mView.findViewById(R.id.admin_change_org_picture);
+        LinearLayout changeOrgPhoto= (LinearLayout) mView.findViewById(R.id.admin_change_profile_org_picture);
         changeOrgPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(ADMIN_MAIN_TAG, "change photo");
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                getActivity().startActivityForResult(Intent.createChooser(intent,
+                        "Select Picture"), CHANGE_PARENT_PHOTO);
+            }
+        });
+
+        LinearLayout changeOrgCoverPhoto = (LinearLayout) mView.findViewById(R.id.admin_change_cover_org_picture);
+        changeOrgCoverPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(ADMIN_MAIN_TAG, "change photo");

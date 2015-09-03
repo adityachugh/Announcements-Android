@@ -105,9 +105,7 @@
                                 android:id="@+id/profile_view_members_button" />
                         </LinearLayout>
 
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="5dp"/>
+
 
                         <TextView
                             android:id="@+id/follow_count"
