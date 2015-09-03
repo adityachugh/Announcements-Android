@@ -79,7 +79,7 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
         }
 
         if (!org.getmCoverImageURL().equals("")){
-            Picasso.with(mContext).load(org.getmCoverImageURL()).into(viewHolder.mBackgroundImage);
+            Picasso.with(mContext).load(org.getmCoverImageURL()).resize(500,500).skipMemoryCache().into(viewHolder.mBackgroundImage);
             viewHolder.mDarkOverlayImage.setVisibility(View.VISIBLE); //so the darkening of the card only occurs when an image is loaded, not on the green color
         }
 

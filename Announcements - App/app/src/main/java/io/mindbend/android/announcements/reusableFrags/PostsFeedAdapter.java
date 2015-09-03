@@ -99,7 +99,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
             int imageHeightinPx = (int) (200 * mScale + 0.5f);
             viewHolder.mPostImage.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, imageHeightinPx));
 
-            Picasso.with(mContext).load(post.getmPostImageURL()).into(viewHolder.mPostImage);
+            Picasso.with(mContext).load(post.getmPostImageURL()).skipMemoryCache().into(viewHolder.mPostImage);
         }
 
         if (!post.getmPosterOrg().getmProfileImageURL().equals(""))
