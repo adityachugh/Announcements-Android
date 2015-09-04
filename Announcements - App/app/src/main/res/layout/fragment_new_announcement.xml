@@ -131,7 +131,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        android:text="August 16, 2015"/>
+                        android:text="August 16, 2015  4:20"/>
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"
@@ -160,7 +160,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        android:text="August 20, 2015"/>
+                        android:text="August 20, 2015  4:20"/>
                 </LinearLayout>
                 <View
                     android:layout_marginTop="@dimen/card_inner_margin"
@@ -194,7 +194,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/divider_color"/>
-                <LinearLayout
+                <!-- <LinearLayout
                     android:orientation="horizontal" android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingLeft="@dimen/card_inner_margin"
@@ -224,7 +224,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/divider_color"/>
+                    android:background="@color/divider_color"/> -->
             </LinearLayout>
         </ScrollView>
 

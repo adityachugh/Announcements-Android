@@ -2,6 +2,7 @@ package io.mindbend.android.announcements.adminClasses;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -29,7 +31,7 @@ import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 
-public class NewAnnouncementFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
+public class NewAnnouncementFragment extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
     private static final String ARG_ORGANIZATION = "org";
     public static final int ADD_PHOTO = 2;
     private Organization mOrg;
@@ -50,7 +52,6 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
     private Date mEndDate;
 
     private Switch mAllowComments;
-    private Switch mOrgToNotify;
 
     public static NewAnnouncementFragment newInstance(Organization posterOrg) {
         NewAnnouncementFragment fragment = new NewAnnouncementFragment();
@@ -85,7 +86,7 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
             @Override
             public void onClick(View v) {
                 //check text
-                if (mTitle.getText().toString().equals("") || mBody.getText().toString().equals("")){
+                if (mTitle.getText().toString().equals("") || mBody.getText().toString().equals("")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
                     builder.setMessage("Cannot leave title or body of announcement empty!")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -99,7 +100,7 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
                 //checking dates
                 else if (!areDatesAppropriate()) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
-                    builder.setMessage("The end date for an announcement must be 0-5 days after the start date")
+                    builder.setMessage("The end date for an announcement must be after the start date")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -113,7 +114,6 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
                 else {
                     String title = mTitle.getText().toString();
                     String body = mBody.getText().toString();
-                    boolean notifyParent = mOrgToNotify.isChecked();
                     boolean areCommentsAllowed = mAllowComments.isChecked();
                     //TODO: only send imageBytes if not null
                     //TODO: send data to parse
@@ -125,11 +125,13 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
     }
 
     private void setupView(View v) {
+        mStartDate = new Date();
+        mEndDate = new Date();
+
         mTitle = (EditText)v.findViewById(R.id.newA_title_ET);
         mBody = (EditText)v.findViewById(R.id.newA_body_ET);
 
         mStartDateTV = (TextView)v.findViewById(R.id.newA_start_date_TV);
-
         mStartDateTV.setText(dateToString(new Date()));
         mStartDateSelector = (LinearLayout)v.findViewById(R.id.newA_start_date_field);
         mStartDateSelector.setOnClickListener(new View.OnClickListener() {
@@ -166,16 +168,16 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
         });
 
         mAllowComments = (Switch)v.findViewById(R.id.newA_allow_comments_SWITCH);
-        mOrgToNotify = (Switch)v.findViewById(R.id.newA_post_in_parent_SWITCH);
-        mOrgToNotify.setTextOff(mOrg.getTitle()); //TODO: GET PARENT TYPE
     }
 
     private void openDatePickerDialog() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date()); //new Date gets the current date and time
+        int year = selectingStartDate ? mStartDate.getYear() : mEndDate.getYear();
+        year += 1900;
+        int month = selectingStartDate ? mStartDate.getMonth() : mEndDate.getMonth();
+        int day = selectingStartDate ? mStartDate.getDate() : mEndDate.getDate();
 
         //instantiate the date picker dialog and implement the onDateSet method (it is implemented by the today frag)
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), R.style.DialogTheme, NewAnnouncementFragment.this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), R.style.DialogTheme, NewAnnouncementFragment.this, year, month, day);
         datePickerDialog.show();
     }
 
@@ -190,22 +192,26 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
     }
 
     private String dateToString (Date date){
-        SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy");
+        SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy  hh:mm a");
         return df.format(date);
     }
 
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-        Date date = new Date(year-1900, monthOfYear, dayOfMonth); //have to subtract 1900 as it otherwise returns 39xx
+        int hours = selectingStartDate ? mStartDate.getHours() : mEndDate.getHours();
+        int minutes = selectingStartDate ? mStartDate.getMinutes() : mEndDate.getMinutes();
+        Date date = new Date(year-1900, monthOfYear, dayOfMonth, hours, minutes);
         if (selectingStartDate){
             mStartDate = date;
             mStartDateTV.setText(dateToString(date));
-
         }
         else {
             mEndDate = date;
             mEndDateTV.setText(dateToString(date));
         }
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), R.style.DialogTheme, NewAnnouncementFragment.this, hours, minutes, false);
+        timePickerDialog.show();
     }
 
     public void setmImageBytes(byte[] mImageBytes) {
@@ -219,8 +225,22 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
         if (end.isBefore(start))
             return false;
         else {
-            int daysBetween = Days.daysBetween(start, end).getDays();
-            return (daysBetween < 5);
+//            int daysBetween = Days.daysBetween(start, end).getDays();
+//            return (daysBetween < 5);
+            return true;
+        }
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        if (selectingStartDate){
+            mStartDate.setHours(hourOfDay);
+            mStartDate.setMinutes(minute);
+            mStartDateTV.setText(dateToString(mStartDate));
+        } else {
+            mEndDate.setHours(hourOfDay);
+            mEndDate.setMinutes(minute);
+            mEndDateTV.setText(dateToString(mEndDate));
         }
     }
 }

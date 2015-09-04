@@ -32,6 +32,7 @@ import com.parse.FunctionCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -78,7 +79,7 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
         mView = getLayoutInflater().inflate(R.layout.activity_tabbed, null);
         setContentView(mView);
 
-        mLoading = (ProgressBar)findViewById(R.id.activity_overall_progressbar);
+        mLoading = (ProgressBar) findViewById(R.id.activity_overall_progressbar);
 
         //to fix the "rotate & back button" crashing bug
         mSavedInstanceState = savedInstanceState;
@@ -107,7 +108,7 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
         toolbar.setTitle(getString(R.string.format_tabbed_activity_toolbar_text, ParseUser.getCurrentUser().getString(VerificationDataSource.USER_FIRST_NAME))); //TODO: pull in user's name
         setSupportActionBar(toolbar);
 
-        mTitleTextView = (TextView)findViewById(R.id.landscape_toolbar_title);
+        mTitleTextView = (TextView) findViewById(R.id.landscape_toolbar_title);
 
         if (getScreenOrientation() == Configuration.ORIENTATION_LANDSCAPE) {
             mTabBar.setVisibility(View.GONE);
@@ -118,8 +119,8 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
         UserDataSource.getOrganizationsThatUserIsAdminOf(mView, mLoading, ParseUser.getCurrentUser().getObjectId(), new FunctionCallback<ArrayList<Organization>>() {
             @Override
             public void done(ArrayList<Organization> organizations, ParseException e) {
-                if (e == null){
-                    if (organizations != null && organizations.size() > 0){
+                if (e == null) {
+                    if (organizations != null && organizations.size() > 0) {
                         nonAdminUserIsNowAdmin(organizations);
                     }
                 }
@@ -129,7 +130,7 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
     }
 
     private void setupTabsForTabBar() {
-        for (int i = 0; i < mTabBar.getTabCount() ; i++) {
+        for (int i = 0; i < mTabBar.getTabCount(); i++) {
             mTabBar.getTabAt(i).setText(getCurrentTabTitle(i));
         }
     }
@@ -162,7 +163,7 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
     @NonNull
     private String getCurrentTabTitle(int position) {
         String tabText = "";
-        switch (position){
+        switch (position) {
             case 0:
                 tabText = "Today";
                 break;
@@ -180,20 +181,19 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
         return tabText;
     }
 
-    public int getScreenOrientation()
-    {
+    public int getScreenOrientation() {
         /**
          * This method is being used instead of getResources.getConfiguration.orientation
          * as that sometimes returns the WRONG orientation on old devices.
          */
         Display getOrient = getWindowManager().getDefaultDisplay();
         int orientation = Configuration.ORIENTATION_UNDEFINED;
-        if(getOrient.getWidth()==getOrient.getHeight()){
+        if (getOrient.getWidth() == getOrient.getHeight()) {
             orientation = Configuration.ORIENTATION_SQUARE;
-        } else{
-            if(getOrient.getWidth() < getOrient.getHeight()){
+        } else {
+            if (getOrient.getWidth() < getOrient.getHeight()) {
                 orientation = Configuration.ORIENTATION_PORTRAIT;
-            }else {
+            } else {
                 orientation = Configuration.ORIENTATION_LANDSCAPE;
             }
         }
@@ -255,21 +255,21 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
             case 0:
                 if (!mTodayFragment.getmPostsOverlayFragment().isVisible())
                     mTodayFragment.getChildFragmentManager().popBackStack();
-                else if (!mTodayFragment.getmPostsOverlayFragment().getmPostsFragment().isVisible()){
+                else if (!mTodayFragment.getmPostsOverlayFragment().getmPostsFragment().isVisible()) {
                     mTodayFragment.getmPostsOverlayFragment().pressedBackToPosts();
                 }
                 break;
             case 1:
-                if(!mDiscoverFragment.getmOrgsGridFrag().isVisible())
+                if (!mDiscoverFragment.getmOrgsGridFrag().isVisible())
                     mDiscoverFragment.getChildFragmentManager().popBackStack();
                 break;
             case 2:
-                if(!mYouFragment.getmProfileFragment().isVisible())
+                if (!mYouFragment.getmProfileFragment().isVisible())
                     mYouFragment.getChildFragmentManager().popBackStack();
                 break;
             case 3:
-                if(!mAdminFragment.getmAdminOrgsFrag().isVisible())
-                mAdminFragment.getChildFragmentManager().popBackStack();
+                if (!mAdminFragment.getmAdminOrgsFrag().isVisible())
+                    mAdminFragment.getChildFragmentManager().popBackStack();
                 break;
         }
     }
@@ -294,22 +294,22 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
             switch (position) {
                 case 0:
                     if (mSavedInstanceState != null)
-                        mTodayFragment = (TodayFragment)getSupportFragmentManager().findFragmentById(R.id.today_frag);
+                        mTodayFragment = (TodayFragment) getSupportFragmentManager().findFragmentById(R.id.today_frag);
                     else if (mTodayFragment == null) mTodayFragment = new TodayFragment();
                     return mTodayFragment;
                 case 1:
                     if (mSavedInstanceState != null)
-                        mDiscoverFragment = (DiscoverFragment)getSupportFragmentManager().findFragmentById(R.id.discove_frag);
+                        mDiscoverFragment = (DiscoverFragment) getSupportFragmentManager().findFragmentById(R.id.discove_frag);
                     else if (mDiscoverFragment == null) mDiscoverFragment = new DiscoverFragment();
                     return mDiscoverFragment;
                 case 2:
                     if (mSavedInstanceState != null)
-                        mYouFragment = (YouFragment)getSupportFragmentManager().findFragmentById(R.id.you_frag);
+                        mYouFragment = (YouFragment) getSupportFragmentManager().findFragmentById(R.id.you_frag);
                     else if (mYouFragment == null) mYouFragment = new YouFragment();
                     return mYouFragment;
                 case 3:
                     if (mSavedInstanceState != null)
-                        mAdminFragment = (AdminFragment)getSupportFragmentManager().findFragmentById(R.id.admin_frag);
+                        mAdminFragment = (AdminFragment) getSupportFragmentManager().findFragmentById(R.id.admin_frag);
                     else if (mAdminFragment == null) mAdminFragment = new AdminFragment();
                     return mAdminFragment;
             }
@@ -318,19 +318,19 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            Fragment fragment = (Fragment)super.instantiateItem(container, position);
-            switch (position){
+            Fragment fragment = (Fragment) super.instantiateItem(container, position);
+            switch (position) {
                 case 0:
-                    mTodayFragment = (TodayFragment)fragment;
+                    mTodayFragment = (TodayFragment) fragment;
                     break;
                 case 1:
-                    mDiscoverFragment = (DiscoverFragment)fragment;
+                    mDiscoverFragment = (DiscoverFragment) fragment;
                     break;
                 case 2:
-                    mYouFragment = (YouFragment)fragment;
+                    mYouFragment = (YouFragment) fragment;
                     break;
                 case 3:
-                    mAdminFragment = (AdminFragment)fragment;
+                    mAdminFragment = (AdminFragment) fragment;
                     break;
             }
 
@@ -351,12 +351,12 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
                     byte[] imageBytes = stream.toByteArray();
                     Log.wtf("Image", "Converted bytes are: " + imageBytes);
                     mAdminFragment.getmAdminMainFrag().getmNewAnnouncementFragment().setmImageBytes(imageBytes);
-                } catch (IOException f){
+                } catch (IOException f) {
                     Log.wtf("crash", "sad face");
                     Snackbar.make(mView, "Failed to add image", Snackbar.LENGTH_LONG).show();
                 }
             }
-            if (requestCode == ModifyOrganizationFragment.UPLOAD_OR_MODIFY_PROFILE_PHOTO || requestCode == ModifyOrganizationFragment.UPLOAD_OR_MODIFY_COVER_PHOTO){
+            if (requestCode == ModifyOrganizationFragment.UPLOAD_OR_MODIFY_PROFILE_PHOTO || requestCode == ModifyOrganizationFragment.UPLOAD_OR_MODIFY_COVER_PHOTO) {
                 Log.wtf("Image", "intent result was okay");
                 Uri selectedImageUri = data.getData();
                 try {
@@ -366,30 +366,29 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
                     image.compress(Bitmap.CompressFormat.JPEG, 70, stream);
                     byte[] imageBytes = stream.toByteArray();
                     Log.wtf("Image", "Converted bytes are: " + imageBytes);
-                    if (requestCode == ModifyOrganizationFragment.UPLOAD_OR_MODIFY_PROFILE_PHOTO){
+                    if (requestCode == ModifyOrganizationFragment.UPLOAD_OR_MODIFY_PROFILE_PHOTO) {
                         ((ModifyOrganizationFragment) mAdminFragment.getmCurrentOrgModifyFrag()).setProfileImageBytes(imageBytes);
-                    }
-                    else {
+                    } else {
                         ((ModifyOrganizationFragment) mAdminFragment.getmCurrentOrgModifyFrag()).setCoverImageBytes(imageBytes);
                     }
-                } catch (IOException f){
+                } catch (IOException f) {
                     Log.wtf("crash", "sad face");
                     Snackbar.make(mView, "Failed to add image", Snackbar.LENGTH_LONG).show();
                 }
             }
-            if (requestCode == AdminMainFragment.CHANGE_PARENT_PROFILE_PHOTO || requestCode == AdminMainFragment.CHANGE_PARENT_COVER_PHOTO){
+            if (requestCode == AdminMainFragment.CHANGE_PARENT_PROFILE_PHOTO || requestCode == AdminMainFragment.CHANGE_PARENT_COVER_PHOTO) {
                 Log.wtf("Image", "intent result was okay");
                 Uri selectedImageUri = data.getData();
                 byte[] imageBytes = convertImageUriToUploadableByteArray(selectedImageUri, requestCode, AdminMainFragment.CHANGE_PARENT_PROFILE_PHOTO);
                 Log.wtf("Image", "Converted bytes are: " + imageBytes);
-                if (requestCode == AdminMainFragment.CHANGE_PARENT_PROFILE_PHOTO){
+                if (requestCode == AdminMainFragment.CHANGE_PARENT_PROFILE_PHOTO) {
                     AdminDataSource.updateOrganizationProfilePhoto(mView, TabbedActivity.this, mLoading, mAdminFragment.getmAdminMainFrag().getmOrg().getmObjectId(), imageBytes, null);
                 } else {
                     AdminDataSource.updateOrganizationCoverPhoto(mView, TabbedActivity.this, mLoading, mAdminFragment.getmAdminMainFrag().getmOrg().getmObjectId(), imageBytes, null);
                 }
             }
 
-            if (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE || requestCode == ProfileFragment.UPDATE_COVER_IMAGE){
+            if (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE || requestCode == ProfileFragment.UPDATE_COVER_IMAGE) {
                 Log.wtf("Image", "intent result was okay");
                 final Uri selectedImageUri = data.getData();
                 byte[] imageBytes = convertImageUriToUploadableByteArray(selectedImageUri, requestCode, ProfileFragment.UPDATE_PROFILE_IMAGE);
@@ -423,15 +422,26 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
         return image;
     }
 
-    private byte[] convertImageUriToUploadableByteArray (Uri uri, int requestCode, int profileImageRequestCode){
-            final Bitmap image = returnToUploadBitmapFromImage(uri, requestCode, profileImageRequestCode);
-            Log.wtf("Image", "Bitmap is: " + image.toString());
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            image.compress(Bitmap.CompressFormat.JPEG, 70, stream);
-            return stream.toByteArray();
+    private byte[] convertImageUriToUploadableByteArray(Uri uri, int requestCode, int profileImageRequestCode) {
+        final Bitmap image = returnToUploadBitmapFromImage(uri, requestCode, profileImageRequestCode);
+        Log.wtf("Image", "Bitmap is: " + image.toString());
+        int maxSizeOfUpload = (requestCode == profileImageRequestCode) ? 50*1024 : 100*1024;
+        int qualityToUse = 100;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, qualityToUse, stream);
+        int imageBytesSize = stream.toByteArray().length;
+        while (imageBytesSize > maxSizeOfUpload && qualityToUse >= 20) {
+            qualityToUse -= 5;
+            stream = new ByteArrayOutputStream();
+            image.compress(Bitmap.CompressFormat.JPEG, qualityToUse, stream);
+            imageBytesSize = stream.toByteArray().length;
+            Log.wtf("Image size:", imageBytesSize+"");
+        }
+        Log.wtf("Image size FINAL:", imageBytesSize+"");
+        return stream.toByteArray();
     }
 
-    private Bitmap returnToUploadBitmapFromImage(Uri uri, int requestCode, int profileImageRequestCode){
+    private Bitmap returnToUploadBitmapFromImage(Uri uri, int requestCode, int profileImageRequestCode) {
         int resW = (requestCode == profileImageRequestCode) ? 500 : 2000;
         int resH = (requestCode == profileImageRequestCode) ? 500 : 1200;
         Bitmap source = null;

@@ -139,6 +139,15 @@ public class AdminMainFragment extends Fragment implements Serializable {
             });
         }
 
+        LinearLayout modifyOrg = (LinearLayout)mView.findViewById(R.id.admin_view_modify_org);
+        modifyOrg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(ADMIN_MAIN_TAG, "add announcement");
+                mListener.modifyOrg(mOrg);
+            }
+        });
+
         LinearLayout addOrgAnnouncement = (LinearLayout) mView.findViewById(R.id.admin_add_org_announcement);
         addOrgAnnouncement.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -213,6 +222,7 @@ public class AdminMainFragment extends Fragment implements Serializable {
         void addChildOrganization (Organization parentOrg);
         void userListOpened(Organization parentOrg);
         void viewAnnouncementsState(Organization organization);
+        void modifyOrg (Organization organization);
     }
 
     public NewAnnouncementFragment getmNewAnnouncementFragment() {

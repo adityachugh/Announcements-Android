@@ -112,4 +112,5 @@
     <string name="succes_updated_org_photo">Successfully updated organization photo</string>
     <string name="error_getting_discover_orgs">Could not get Discover organizations</string>
     <string name="error_loading_org_members">Could not get followers of organization</string>
+    <string name="admin_main_modify_org">Modfy organization</string>
 </resources>
