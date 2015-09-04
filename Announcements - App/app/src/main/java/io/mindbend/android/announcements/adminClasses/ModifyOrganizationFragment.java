@@ -75,6 +75,7 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
         setupViews(v);
 
         if (mOrgToModify != null){
+            mName.setText(mOrgToModify.getTitle());
             mHandle.setText(mOrgToModify.getTag());
             mHandle.setEnabled(false);
             mHandleTV.setTextColor(getResources().getColor(R.color.text_secondary));

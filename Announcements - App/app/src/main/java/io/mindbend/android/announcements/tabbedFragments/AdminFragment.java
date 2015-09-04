@@ -129,22 +129,16 @@ public class AdminFragment extends Fragment implements Serializable,
          * this method is called when "view schools" is pressed
          */
 
-        //TODO: actually query children org from Parse
-        //the following is fake data
-        ArrayList<Organization> orgs = new ArrayList<>();
-
-        Organization testOrg1 = new Organization("test Id", "Turner Fenton SS", "The best (IB) school in Peel, 100%", 2000, "#TFSS", false, true); //TODO: change "NEW" to be a dynamically chosen banner
-        orgs.add(testOrg1);
-
-        Organization testOrg2 = new Organization("test Id", "Glenforest SS", "The second best IB school in Peel", 1500, "#GFSS", false, false); //TODO: change "NEW" to be a dynamically chosen banner
-        orgs.add(testOrg2);
-
-        Organization testOrg3 = new Organization("test Id", "North Park SS", "A great tech school!", 1500, "#NPSS", false, true); //TODO: change "NEW" to be a dynamically chosen banner
-        orgs.add(testOrg3);
-
-        OrgsGridFragment childrenOrgs = OrgsGridFragment.newInstance(orgs, this, this);
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, childrenOrgs).addToBackStack(null).commitAllowingStateLoss();
+        OrgsDataSource.getAllChildOrganizations(mLoading, org.getmObjectId(), new FunctionCallback<ArrayList<Organization>>() {
+            @Override
+            public void done(ArrayList<Organization> organizations, ParseException e) {
+                if (e == null) {
+                    OrgsGridFragment childrenOrgs = OrgsGridFragment.newInstance(organizations, AdminFragment.this, AdminFragment.this);
+                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, childrenOrgs).addToBackStack(null).commitAllowingStateLoss();
+                }
+            }
+        });
     }
 
     @Override
@@ -168,7 +162,7 @@ public class AdminFragment extends Fragment implements Serializable,
 
     @Override
     public void userListOpened(final Organization parentOrg) {
-        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, parentOrg.getmObjectId(), 0, 50, new FunctionCallback<HashMap<Boolean, Object>>() {
+        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, parentOrg.getmObjectId(), 0, 50, true, new FunctionCallback<HashMap<Boolean, Object>>() {
             @Override
             public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
 
@@ -287,7 +281,7 @@ public class AdminFragment extends Fragment implements Serializable,
 
     @Override
     public void viewMembers(final Organization org, final boolean isAdmin) {
-        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, org.getmObjectId(), 0, 50, new FunctionCallback<HashMap<Boolean, Object>>() {
+        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, org.getmObjectId(), 0, 50, isAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
             @Override
             public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
 

@@ -13,12 +13,12 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/card_outer_margin">
                 <TextView
-                    android:layout_marginTop="16dp"
-                    android:textSize="16dp"
-                    android:layout_width="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_height="wrap_content"
-                    android:text="No comments for this post."/>
+                android:layout_marginTop="16dp"
+                android:textSize="16dp"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_height="wrap_content"
+                android:text="No comments for this post."/>
                     <com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

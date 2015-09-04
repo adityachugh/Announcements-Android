@@ -26,6 +26,8 @@ import io.mindbend.android.announcements.Notification;
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
+import io.mindbend.android.announcements.cloudCode.OrgsDataSource;
+import io.mindbend.android.announcements.cloudCode.UserDataSource;
 
 public class ListFragment extends Fragment implements Serializable {
     private final static String ARG_LISTENER = "fab_listener";
@@ -130,9 +132,24 @@ public class ListFragment extends Fragment implements Serializable {
         else if (getArguments().getParcelableArrayList(ARG_USERS) != null)  {
             whatObjectList = USERS_SELECTED;
             mUsers = getArguments().getParcelableArrayList(ARG_USERS);
+            mTypeOfUsers = (HashMap<User, Integer>)getArguments().getSerializable(ARG_USERS_TYPE);
+//            if(!mIsAdmin)
+//                hidePendingUsers();
             mOrgOfUsers = (Organization)getArguments().getSerializable(ARG_ORG_OF_USERS);
             mUserListener = (UserListAdapter.UserListInteractionListener)getArguments().getSerializable(ARG_INTERFACE);
-            mTypeOfUsers = (HashMap<User, Integer>)getArguments().getSerializable(ARG_USERS_TYPE);
+        }
+    }
+
+    private void hidePendingUsers() {
+        /**
+         * deprecated. the cc function will handle what type of users to return if the user is/isn't an admin
+         */
+        //if user is NOT admin of an org, change the mUsers and mTypeOfUsers objects to only contain admins and normal users
+        for (User user : mUsers) {
+            if (mTypeOfUsers.get(user) == UserListAdapter.USERS_PENDING){
+                mTypeOfUsers.remove(user);
+                mUsers.remove(user);
+            }
         }
     }
 

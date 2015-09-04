@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.AbsListView;
+import android.widget.TextView;
 
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
@@ -51,6 +52,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
     private float mScale;
     private transient SwipyRefreshLayout mRefreshTodayPosts;
     private boolean mIsViewingState;
+    private TextView noPostsMessage;
 
     /**
      * Use this factory method to create a new instance of
@@ -119,9 +121,21 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
                 mRefreshTodayPosts.setOnRefreshListener(this);
             else
                 mRefreshTodayPosts.setEnabled(false);
+
+            noPostsMessage = (TextView)mView.findViewById(R.id.posts_no_posts_to_load);
+
+            updateNoPostsTextMessage();
         }
 
         return mView;
+    }
+
+    public void updateNoPostsTextMessage() {
+        if (mPosts.size() == 0){
+            noPostsMessage.setVisibility(View.VISIBLE);
+        } else {
+            noPostsMessage.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -192,6 +206,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
                     if (posts.size() > 0){
                         mPosts.addAll(posts);
                         mPostFeedAdapter.notifyDataSetChanged();
+                        updateNoPostsTextMessage();
                     } else {
                         Snackbar.make(mView, R.string.no_more_posts_message, Snackbar.LENGTH_SHORT).show();
                     }

@@ -242,18 +242,19 @@ public class OrgsDataSource {
     }
 
     public static void getFollowersFollowRequestsAndAdminsForOrganizationInRange (final View view, final Context context, final ProgressBar loading,
-                                                                                  String organizationObjectId, int startIndex, int numberOfUsers,
+                                                                                  String organizationObjectId, int startIndex, int numberOfUsers, boolean isAdmin,
                                                                                   final FunctionCallback<HashMap<Boolean, Object>> callback) {
         loading.setVisibility(View.GONE);
         HashMap<String, Object> params = new HashMap<>();
         params.put("organizationObjectId", organizationObjectId);
         params.put("startIndex", startIndex);
         params.put("numberOfUsers", numberOfUsers);
+        params.put("isAdmin", isAdmin);
 
         ParseCloud.callFunctionInBackground("getFollowersFollowRequestsAndAdminsForOrganizationInRange", params, new FunctionCallback<List<ParseObject>>() {
             @Override
             public void done(List<ParseObject> followObjects, ParseException e) {
-//                int i = 0;
+                int i = 0;
                 loading.setVisibility(View.GONE);
                 if (e == null){
                     ArrayList<User> users = new ArrayList<User>();
