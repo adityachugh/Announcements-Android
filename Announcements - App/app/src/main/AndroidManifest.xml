@@ -32,6 +32,7 @@
         </activity>
         <activity
             android:name=".MoreActivity"
+            android:noHistory="true"
             android:label="@string/title_activity_more" >
         </activity>
     </application>
