@@ -16,20 +16,23 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.parse.FunctionCallback;
+import com.parse.ParseException;
+
 import org.joda.time.DateTime;
-import org.joda.time.Days;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import io.mindbend.android.announcements.Organization;
-import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.cloudCode.PostsDataSource;
 
 public class NewAnnouncementFragment extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
     private static final String ARG_ORGANIZATION = "org";
@@ -51,7 +54,11 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
     private TextView mEndDateTV;
     private Date mEndDate;
 
-    private Switch mAllowComments;
+    private Switch mNotifyFollowers;
+    private View mView;
+    private RadioGroup mRadioGroup;
+
+    private ProgressBar mLoading;
 
     public static NewAnnouncementFragment newInstance(Organization posterOrg) {
         NewAnnouncementFragment fragment = new NewAnnouncementFragment();
@@ -77,11 +84,11 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_new_announcement, container, false);
+        mView = inflater.inflate(R.layout.fragment_new_announcement, container, false);
 
-        setupView(v);
+        setupView(mView);
 
-        ImageButton uploadFab = (ImageButton)v.findViewById(R.id.upload_announcement_fab);
+        ImageButton uploadFab = (ImageButton) mView.findViewById(R.id.upload_announcement_fab);
         uploadFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,17 +121,38 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
                 else {
                     String title = mTitle.getText().toString();
                     String body = mBody.getText().toString();
-                    boolean areCommentsAllowed = mAllowComments.isChecked();
-                    //TODO: only send imageBytes if not null
-                    //TODO: send data to parse
+                    boolean notify = mNotifyFollowers.isChecked();
+                    mRadioGroup = (RadioGroup) mView.findViewById(R.id.newA_priority_group);
+                    PostsDataSource.uploadPostForOrganization(mView, mLoading, mOrg.getmObjectId(), title, body, mImageBytes, mStartDate, mEndDate, getPrioritySelected(), notify, new FunctionCallback<Boolean>() {
+                        @Override
+                        public void done(Boolean success, ParseException e) {
+                            if (e == null && success)
+                                getActivity().onBackPressed();
+                        }
+                    });
                 }
             }
         });
 
-        return v;
+        return mView;
+    }
+
+    private int getPrioritySelected() {
+        switch (mRadioGroup.getCheckedRadioButtonId()){
+            case R.id.newA_priority_low:
+                return PostsDataSource.LOW_PRIORITY;
+            case R.id.newA_priority_medium:
+                return PostsDataSource.MEDIUM_PRIORITY;
+            case R.id.newA_priority_high:
+                return PostsDataSource.HIGH_PRIORITY;
+
+        }
+        return 0;
     }
 
     private void setupView(View v) {
+        mLoading = (ProgressBar)v.findViewById(R.id.newA_submition_progressbar);
+
         mStartDate = new Date();
         mEndDate = new Date();
 
@@ -167,7 +195,7 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
             }
         });
 
-        mAllowComments = (Switch)v.findViewById(R.id.newA_allow_comments_SWITCH);
+        mNotifyFollowers = (Switch)v.findViewById(R.id.newA_notify_followers_SWITCH);
     }
 
     private void openDatePickerDialog() {

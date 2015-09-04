@@ -1,6 +1,7 @@
 package io.mindbend.android.announcements.cloudCode;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -83,6 +84,37 @@ public class PostsDataSource {
 
                 loading.setVisibility(View.GONE);
                 callback.done(orgPosts, e);
+            }
+        });
+    }
+
+    public static void uploadPostForOrganization (final View view, final ProgressBar loading, String organizationObjectId,
+                                                  String title, String body, byte[] photo, Date startDate, Date endDate,
+                                                  int priority, boolean notify, final FunctionCallback<Boolean> callback){
+        loading.setVisibility(View.VISIBLE);
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("organizationObjectId", organizationObjectId);
+        params.put("title", title);
+        params.put("body", body);
+        params.put("photo", photo);
+        params.put("startDate", startDate);
+        params.put("endDate", endDate);
+        params.put("priority", priority);
+        params.put("notify", notify);
+
+        ParseCloud.callFunctionInBackground("uploadPostForOrganization", params, new FunctionCallback<Boolean>() {
+            @Override
+            public void done(Boolean successful, ParseException e) {
+                loading.setVisibility(View.GONE);
+                String message = "Error uploading announcement";
+                if (e == null){
+                    message = "Successfully uploaded announcement";
+                    callback.done(successful, e);
+                }else {
+                    e.printStackTrace();
+                }
+
+                Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
             }
         });
     }

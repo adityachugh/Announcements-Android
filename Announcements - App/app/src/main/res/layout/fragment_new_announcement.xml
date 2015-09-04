@@ -180,15 +180,60 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:text="@string/new_announce_Allow_Comments"
+                        android:text="@string/new_announce_Notify"
                         android:layout_gravity="center_vertical"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                         android:textSize="@dimen/list_text_size" />
                     <Switch
-                        android:id="@+id/newA_allow_comments_SWITCH"
+                        android:id="@+id/newA_notify_followers_SWITCH"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         style="@style/DialogTheme" />
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider_color"/>
+                <LinearLayout
+                    android:orientation="horizontal" android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/card_inner_margin"
+                    android:paddingRight="@dimen/card_inner_margin"
+                    android:paddingTop="@dimen/card_outer_margin"
+                    android:paddingBottom="@dimen/card_outer_margin"
+                    android:background="@android:color/white">
+                    <TextView
+                        android:layout_marginLeft="@dimen/card_outer_margin"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/new_announce_Priority"
+                        android:layout_gravity="center_vertical"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textSize="@dimen/list_text_size" />
+                    <RadioGroup
+                        android:id="@+id/newA_priority_group"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:checkedButton="@+id/newA_priority_low"
+                        style="@style/DialogTheme">
+                        <RadioButton
+                            android:id="@+id/newA_priority_low"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/newA_priority_low"/>
+                        <RadioButton
+                            android:id="@+id/newA_priority_medium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/newA_priority_medium"/>
+                        <RadioButton
+                            android:id="@+id/newA_priority_high"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/newA_priority_high"/>
+                    </RadioGroup>
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"
