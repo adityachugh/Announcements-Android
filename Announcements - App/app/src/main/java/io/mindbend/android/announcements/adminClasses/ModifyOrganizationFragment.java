@@ -30,6 +30,7 @@ import java.io.Serializable;
 
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.TabbedActivity;
 import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.cloudCode.AdminDataSource;
 import io.mindbend.android.announcements.cloudCode.OrgsDataSource;
@@ -200,7 +201,7 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
                 public void done(Boolean success, ParseException e) {
                     if (success && e == null){
                         Snackbar.make(mView, "Successfully created "+mName.getText().toString(), Snackbar.LENGTH_SHORT).show();
-                        getFragmentManager().popBackStack();
+                        ((TabbedActivity)getActivity()).getmAdminFragment().getChildFragmentManager().popBackStack();
                     }
                 }
             });
