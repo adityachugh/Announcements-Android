@@ -189,7 +189,7 @@ public class OrgsDataSource {
 
         HashMap<String, Object> params = new HashMap<>();
 
-        int accessCode = 0;
+        Integer accessCode = null;
         if (!enteredAccessCode.equals(""))
             accessCode = Integer.parseInt(enteredAccessCode);
         Log.wtf("attempt to follow PRI org", "Access code: "+accessCode);
