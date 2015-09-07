@@ -63,7 +63,7 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
     private View mView;
     private ProgressBar mLoading;
 
-    private boolean isPrivate;
+    private boolean isPrivate = true;
 
     public static ModifyOrganizationFragment newInstance(Organization parentOrg, Organization orgToModifyIfNeeded,
                                                          ModifyOrgInterface listener) {
@@ -142,40 +142,46 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
                                 public void onClick(DialogInterface dialog, int which) {
                                     //nothing
                                 }
-                            });
-                    AlertDialog alertDialog = builder.show();
-                } else if (isPrivate && mAccessCode.getText().toString().equals("")) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
-                    builder.setMessage(getActivity().getString(R.string.create_private_org_without_access_code_message))
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    submitOrg();
-                                }
                             })
-                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    //nothing
-                                }
-                            });
-                    AlertDialog alertDialog = builder.show();
-                }else if (isPrivate && mAccessCode.getText().toString().length() < 4) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
-                    builder.setMessage(getActivity().getString(R.string.access_code_length_message))
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    //nothing
-                                }
-                            })
-                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    //nothing
-                                }
-                            });
-                    AlertDialog alertDialog = builder.show();
+                            .show();
+                } else if (isPrivate){
+                    String accessCode = mAccessCode.getText().toString();
+                    Log.wtf("Access Code", accessCode+"----->"+accessCode.length());
+                    if (accessCode.length() == 0) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
+                        builder.setMessage(getActivity().getString(R.string.create_private_org_without_access_code_message))
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        submitOrg();
+                                    }
+                                })
+                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        //nothing
+                                    }
+                                })
+                                .show();
+                    } else if (accessCode.length() == 4){
+                        submitOrg();
+                    } else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
+                        builder.setMessage(getActivity().getString(R.string.access_code_length_message))
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        //nothing
+                                    }
+                                })
+                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        //nothing
+                                    }
+                                })
+                                .show();
+                    }
                 } else {
                     submitOrg();
                 }

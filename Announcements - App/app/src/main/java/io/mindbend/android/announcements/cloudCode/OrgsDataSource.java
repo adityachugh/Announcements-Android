@@ -36,7 +36,7 @@ public class OrgsDataSource {
     public final static String ORG_DESCRIPTION = "organizationDescription";
     public final static String ORG_FOLLOWER_COUNT = "followerCount";
     public final static String ORG_TYPE = "organizationType";
-    public final static String ORG_REQUEST_CODE = "requestCode";
+    public final static String ORG_ACCESS_CODE = "accessCode";
     public final static String ORG_TAG = "handle";
     public final static String ORG_PROFILE_IMAGE = "image";
     public static final String ORG_COVER_IMAGE = "coverPhoto";
@@ -192,6 +192,7 @@ public class OrgsDataSource {
         int accessCode = 0;
         if (!enteredAccessCode.equals(""))
             accessCode = Integer.parseInt(enteredAccessCode);
+        Log.wtf("attempt to follow PRI org", "Access code: "+accessCode);
 
         params.put("enteredAccessCode", accessCode);
         params.put("organizationObjectId", organizationObjectId);
