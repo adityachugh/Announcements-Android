@@ -155,6 +155,7 @@ public class AdminDataSource {
         ParseCloud.callFunctionInBackground("actOnFollowRequest", params, new FunctionCallback<Boolean>() {
             @Override
             public void done(Boolean success, ParseException e) {
+                loading.setVisibility(View.GONE);
                 if (success && e == null) {
                     Log.wtf("Act on follow request", "successfully completed");
                     functionCallback.done(success, e);

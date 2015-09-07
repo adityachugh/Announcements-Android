@@ -121,12 +121,26 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         }
     }
 
-    public void actOnFollowRequestCompleted(final User user, boolean isApproved) {
+    public void actOnFollowRequestCompleted(final User user, final boolean isApproved) {
         AdminDataSource.actOnFollowRequest(mView, mLoading, mOrg.getmObjectId(), user.getmFollowObjectId(), isApproved, new FunctionCallback<Boolean>() {
             @Override
             public void done(Boolean success, ParseException e) {
-                if (success && e == null)
-                    mUsers.remove(user);
+                if (success && e == null){
+                    mTypeOfUsers.remove(user);
+                    if (isApproved){
+                        mTypeOfUsers.put(user, USERS_MEMBERS);
+                    }
+                    for (int i = 0; i < mUsers.size(); i++){
+                        if (mUsers.get(i).equals(user)){
+                            if (isApproved)
+                                notifyItemChanged(i);
+                            else {
+                                mUsers.remove(user);
+                                notifyItemRemoved(i);
+                            }
+                        }
+                    }
+                }
             }
         });
     }
@@ -146,6 +160,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         mTypeOfUsers = typeOfUsers;
         mIsSearching = isSearching;
         mOrg = parentOrgIfSearching;
+
 
         mView = view;
         mLoading = loading;
