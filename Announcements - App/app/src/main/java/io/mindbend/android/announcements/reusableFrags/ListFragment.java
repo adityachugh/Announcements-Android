@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -157,7 +158,7 @@ public class ListFragment extends Fragment implements Serializable {
                 recyclerView.setAdapter(notifsAdapter);
                 break;
             case USERS_SELECTED:
-                UserListAdapter userAdapter = new UserListAdapter(getActivity(), mUsers, mUserListener, mTypeOfUsers, mIsSearching, mOrgOfUsers);
+                UserListAdapter userAdapter = new UserListAdapter(getActivity(), mUsers, mUserListener, mTypeOfUsers, mIsSearching, mOrgOfUsers, v, (ProgressBar)v.findViewById(R.id.list_progressbar));
                 recyclerView.setAdapter(userAdapter);
                 if (mIsAdmin) {
                     //the add admin fab

@@ -248,13 +248,14 @@ public class OrgsDataSource {
         ParseCloud.callFunctionInBackground("getFollowersFollowRequestsAndAdminsForOrganizationInRange", params, new FunctionCallback<List<ParseObject>>() {
             @Override
             public void done(List<ParseObject> followObjects, ParseException e) {
-//                int i = 0;
+                int i = 0;
                 loading.setVisibility(View.GONE);
                 if (e == null){
                     ArrayList<User> users = new ArrayList<User>();
                     HashMap<User, Integer> userTypes = new HashMap<User, Integer>();
                     for (ParseObject follow : followObjects){
                         User user = new User(follow.getParseUser(UserDataSource.FOLLOWER_USER_FIELD));
+                        user.setmFollowObjectId(follow.getObjectId());
                         users.add(user);
                         userTypes.put(user, getTypeOfFollower(follow.getString(UserDataSource.FOLLOWER_USER_TYPE_FIELD)));
                     }

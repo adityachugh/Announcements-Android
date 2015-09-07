@@ -18,6 +18,8 @@ public class User implements Serializable, Parcelable{
     //Current content reflects what is needed for profile page found in "you" tab
 
     private String mObjectId;
+    private String mFollowObjectId; //the id for the follow object of this current user and the org it's following (based on context)
+    //this is for acting on the follow request of pending users in private orgs
 
     //Will be concatenated upon return
     private String mFirstName;
@@ -31,8 +33,6 @@ public class User implements Serializable, Parcelable{
     private String mProfilePictureURL;
     private String mCoverPictureURL;
 
-    //TODO: add fields for profile photo, cover photo
-
     public User(String firstName, String lastName, String interestOne, String interestTwo, String userCategory, int numberOfOrganizationsFollowed){
         mFirstName = firstName;
         mLastName = lastName;
@@ -43,6 +43,7 @@ public class User implements Serializable, Parcelable{
         mProfilePictureURL = "";
         mNumberOfOrganizationsFollowed = numberOfOrganizationsFollowed;
         mCoverPictureURL = "";
+        mFollowObjectId = "";
     }
 
     public User (ParseUser user){
@@ -66,6 +67,8 @@ public class User implements Serializable, Parcelable{
             mCoverPictureURL = user.getParseFile(UserDataSource.COVER_PHOTO).getUrl();
         else
             mCoverPictureURL = "";
+
+        mFollowObjectId = "";
     }
 
     public  User (Parcel in){
@@ -79,6 +82,7 @@ public class User implements Serializable, Parcelable{
         mNumberOfOrganizationsFollowed = in.readInt();
         mProfilePictureURL = in.readString();
         mCoverPictureURL = in.readString();
+        mFollowObjectId = in.readString();
     }
 
     public String getName() {
@@ -132,6 +136,14 @@ public class User implements Serializable, Parcelable{
         return mDescription;
     }
 
+    public String getmFollowObjectId() {
+        return mFollowObjectId;
+    }
+
+    public void setmFollowObjectId(String mFollowObjectId) {
+        this.mFollowObjectId = mFollowObjectId;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -149,6 +161,7 @@ public class User implements Serializable, Parcelable{
         dest.writeInt(mNumberOfOrganizationsFollowed);
         dest.writeString(mProfilePictureURL);
         dest.writeString(mCoverPictureURL);
+        dest.writeString(mFollowObjectId);
     }
 
     public String getUserCategory() {

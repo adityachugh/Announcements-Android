@@ -11,7 +11,11 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.parse.FunctionCallback;
+import com.parse.ParseException;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -59,6 +63,10 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
     private boolean mIsSearching;
     private Organization mOrg;
 
+    //for acting on a follow request
+    private View mView;
+    private ProgressBar mLoading;
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.users_list_item, viewGroup, false);
@@ -67,7 +75,6 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(final ViewHolder viewHolder, int i) {
-        //TODO: pass data from notif to the elements of the feed item
         final User user = mUsers.get(i);
         viewHolder.mName.setText(user.getName());
 
@@ -98,20 +105,30 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
                 viewHolder.mAcceptUser.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //TODO: interface for acceptance here
                         Log.wtf("pending user", "accept");
+                        actOnFollowRequestCompleted(user, true);
                     }
                 });
 
                 viewHolder.mDenyUser.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //TODO: interface for decline here
                         Log.wtf("pending user", "deny");
+                        actOnFollowRequestCompleted(user, false);
                     }
                 });
             }
         }
+    }
+
+    public void actOnFollowRequestCompleted(final User user, boolean isApproved) {
+        AdminDataSource.actOnFollowRequest(mView, mLoading, mOrg.getmObjectId(), user.getmFollowObjectId(), isApproved, new FunctionCallback<Boolean>() {
+            @Override
+            public void done(Boolean success, ParseException e) {
+                if (success && e == null)
+                    mUsers.remove(user);
+            }
+        });
     }
 
     @Override
@@ -119,7 +136,9 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         return mUsers.size();
     }
 
-    public UserListAdapter (Context context, List<User> users, UserListInteractionListener listener, HashMap<User, Integer> typeOfUsers, boolean isSearching, Organization parentOrgIfSearching) {
+    public UserListAdapter (Context context, List<User> users, UserListInteractionListener listener,
+                            HashMap<User, Integer> typeOfUsers, boolean isSearching,
+                            Organization parentOrgIfSearching, View view, ProgressBar loading) {
         //save the mPosts private field as what is passed in
         mContext = context;
         mUsers = users;
@@ -127,6 +146,9 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         mTypeOfUsers = typeOfUsers;
         mIsSearching = isSearching;
         mOrg = parentOrgIfSearching;
+
+        mView = view;
+        mLoading = loading;
     }
 
     @Override

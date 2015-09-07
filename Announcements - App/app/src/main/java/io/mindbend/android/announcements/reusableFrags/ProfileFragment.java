@@ -338,7 +338,6 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 viewMembersButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //TODO: get followers of org
                         mListener.viewMembers(mOrg, mToEdit);
                     }
                 });

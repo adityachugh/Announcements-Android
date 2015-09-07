@@ -21,7 +21,7 @@ import io.mindbend.android.announcements.R;
  * Created by Avik Hasija on 8/23/2015.
  */
 public class AdminDataSource {
-    public static void checkIfUserIsAdminOfOrganization (final ProgressBar loading, final Context context, String organizationObjectId, String userObjectId, final FunctionCallback<Boolean> callback){
+    public static void checkIfUserIsAdminOfOrganization(final ProgressBar loading, final Context context, String organizationObjectId, String userObjectId, final FunctionCallback<Boolean> callback) {
         loading.setVisibility(View.VISIBLE);
         HashMap<String, Object> params = new HashMap<>();
         params.put("organizationObjectId", organizationObjectId);
@@ -31,7 +31,7 @@ public class AdminDataSource {
             @Override
             public void done(Boolean bool, ParseException e) {
                 Boolean isAdmin = false;
-                if (e == null){
+                if (e == null) {
                     isAdmin = bool;
                 }
                 loading.setVisibility(View.GONE);
@@ -40,7 +40,7 @@ public class AdminDataSource {
         });
     }
 
-    public static void updateOrganizationProfilePhoto (final View view, final Context context, final ProgressBar loading, String organizationObjectId, byte[] photo, final FunctionCallback<Boolean> callback){
+    public static void updateOrganizationProfilePhoto(final View view, final Context context, final ProgressBar loading, String organizationObjectId, byte[] photo, final FunctionCallback<Boolean> callback) {
         loading.setVisibility(View.VISIBLE);
 
         HashMap<String, Object> params = new HashMap<>();
@@ -51,12 +51,11 @@ public class AdminDataSource {
             @Override
             public void done(Boolean isSuccessful, ParseException e) {
                 loading.setVisibility(View.GONE);
-                if (e == null){
+                if (e == null) {
                     if (callback != null)
                         callback.done(isSuccessful, e);
                     Snackbar.make(view, context.getString(R.string.succes_updated_org_photo), Snackbar.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
                     e.printStackTrace();
                     Snackbar.make(view, context.getString(R.string.could_not_upload_org_photo), Snackbar.LENGTH_SHORT).show();
                 }
@@ -64,7 +63,7 @@ public class AdminDataSource {
         });
     }
 
-    public static void updateOrganizationCoverPhoto (final View view, final Context context, final ProgressBar loading, String organizationObjectId, byte[] photo, final FunctionCallback<Boolean> callback){
+    public static void updateOrganizationCoverPhoto(final View view, final Context context, final ProgressBar loading, String organizationObjectId, byte[] photo, final FunctionCallback<Boolean> callback) {
         loading.setVisibility(View.VISIBLE);
 
         HashMap<String, Object> params = new HashMap<>();
@@ -75,12 +74,11 @@ public class AdminDataSource {
             @Override
             public void done(Boolean isSuccessful, ParseException e) {
                 loading.setVisibility(View.GONE);
-                if (e == null){
+                if (e == null) {
                     if (callback != null)
                         callback.done(isSuccessful, e);
                     Snackbar.make(view, context.getString(R.string.succes_updated_org_photo), Snackbar.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
                     e.printStackTrace();
                     Snackbar.make(view, context.getString(R.string.could_not_upload_org_photo), Snackbar.LENGTH_SHORT).show();
                 }
@@ -88,8 +86,8 @@ public class AdminDataSource {
         });
     }
 
-    public static void addAdminToOrganization (final View view, final ProgressBar loading, String organizationObjectId,
-                                               String selectedUserToBeAdminObjectId, final FunctionCallback<Boolean> callback){
+    public static void addAdminToOrganization(final View view, final ProgressBar loading, String organizationObjectId,
+                                              String selectedUserToBeAdminObjectId, final FunctionCallback<Boolean> callback) {
         loading.setVisibility(View.VISIBLE);
 
         HashMap<String, String> params = new HashMap<>();
@@ -100,7 +98,7 @@ public class AdminDataSource {
             @Override
             public void done(Boolean success, ParseException e) {
                 loading.setVisibility(View.GONE);
-                if (e != null || !success){
+                if (e != null || !success) {
                     Snackbar.make(view, "Error adding user as an admin", Snackbar.LENGTH_SHORT).show();
                 } else {
                     callback.done(success, e);
@@ -109,11 +107,11 @@ public class AdminDataSource {
         });
     }
 
-    public static void createNewChildOrganization (final View view, final Context context, final ProgressBar loading, String organizationObjectId,
-                                                   String levelConfigObjectId, String configObjectId, String organizationName, String organizationHandle,
-                                                   boolean isPrivate, String adminObjectId, boolean approvalRequired, Integer accessCode,
-                                                   byte[] profilePhoto, byte[] coverPhoto, String description,
-                                                   final FunctionCallback<Boolean> callback){
+    public static void createNewChildOrganization(final View view, final Context context, final ProgressBar loading, String organizationObjectId,
+                                                  String levelConfigObjectId, String configObjectId, String organizationName, String organizationHandle,
+                                                  boolean isPrivate, String adminObjectId, boolean approvalRequired, Integer accessCode,
+                                                  byte[] profilePhoto, byte[] coverPhoto, String description,
+                                                  final FunctionCallback<Boolean> callback) {
         //levelConfigObjectId is the child level config of the org that's calling this function
         loading.setVisibility(View.VISIBLE);
 
@@ -131,16 +129,38 @@ public class AdminDataSource {
         params.put("profilePhoto", profilePhoto);
         params.put("coverPhoto", coverPhoto);
         params.put("description", description);
-        
+
         ParseCloud.callFunctionInBackground("createNewChildOrganization", params, new FunctionCallback<Boolean>() {
             @Override
             public void done(Boolean success, ParseException e) {
                 loading.setVisibility(View.GONE);
-                if (e != null || !success){
+                if (e != null || !success) {
                     Snackbar.make(view, context.getString(R.string.error_creating_org_message), Snackbar.LENGTH_SHORT).show();
                     e.printStackTrace();
                 } else {
                     callback.done(success, e);
+                }
+            }
+        });
+    }
+
+    public static void actOnFollowRequest(final View view, final ProgressBar loading, String organizationObjectId, String followObjectId, boolean isApproved, final FunctionCallback<Boolean> functionCallback) {
+        loading.setVisibility(View.VISIBLE);
+
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("organizationObjectId", organizationObjectId);
+        params.put("followObjectId", followObjectId);
+        params.put("approvalState", isApproved);
+
+        ParseCloud.callFunctionInBackground("actOnFollowRequest", params, new FunctionCallback<Boolean>() {
+            @Override
+            public void done(Boolean success, ParseException e) {
+                if (success && e == null) {
+                    Log.wtf("Act on follow request", "successfully completed");
+                    functionCallback.done(success, e);
+                } else {
+                    Snackbar.make(view, "Could not act on follow request", Snackbar.LENGTH_SHORT).show();
+                    e.printStackTrace();
                 }
             }
         });
