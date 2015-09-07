@@ -106,7 +106,7 @@ public class AdminFragment extends Fragment implements Serializable,
         mLoading = (ProgressBar) mView.findViewById(R.id.admin_frag_progressbar);
 
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-        if (ft.isEmpty()){
+        if (ft.isEmpty()) {
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .add(R.id.admin_framelayout, mAdminOrgsFrag)
                     .addToBackStack(ADMIN_ORGS_TAG)
@@ -167,8 +167,8 @@ public class AdminFragment extends Fragment implements Serializable,
             @Override
             public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
 
-                ArrayList<User> users = (ArrayList<User>)booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
-                HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>)booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
+                ArrayList<User> users = (ArrayList<User>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
+                HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
 
                 ListFragment adminList = ListFragment.newInstance(true, AdminFragment.this, false, null, null, null, null, users, AdminFragment.this, typeOfUsers, parentOrg);
                 getChildFragmentManager().beginTransaction()
@@ -204,18 +204,17 @@ public class AdminFragment extends Fragment implements Serializable,
                 .commitAllowingStateLoss();
     }
 
-    private boolean isLookingAtAdminOrgs () {
+    private boolean isLookingAtAdminOrgs() {
         return mAdminOrgsFrag.isVisible();
     }
 
     /**
      * The rest of the interfaces (required to have "infinite depth" on the admin tab) are listed below
-     *
      */
 
     @Override
     public void pressedOrg(final Organization orgSelected) {
-        if (isLookingAtAdminOrgs()){
+        if (isLookingAtAdminOrgs()) {
             mAdminMain = AdminMainFragment.newInstance(orgSelected, AdminFragment.this);
             getChildFragmentManager().beginTransaction()
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -224,27 +223,16 @@ public class AdminFragment extends Fragment implements Serializable,
                     .commitAllowingStateLoss();
         } else {
             Log.wtf(TAG, "PARSE USER " + ParseUser.getCurrentUser().getObjectId());
-            AdminDataSource.checkIfUserIsAdminOfOrganization(mLoading, getActivity(), orgSelected.getmObjectId(), ParseUser.getCurrentUser().getObjectId(), new FunctionCallback<Boolean>() {
+            //replace the current profile frag with new org profile frag, while adding it to a backstack
+            OrgsDataSource.isFollowingOrganization(mView, mLoading, ParseUser.getCurrentUser().getObjectId(), orgSelected.getmObjectId(), new FunctionCallback<String>() {
                 @Override
-                public void done(final Boolean isAdmin, ParseException e) {
-                    if (e == null) {
-                        Log.wtf(TAG, "IS USER ADMIN? " + isAdmin);
-                        //replace the current profile frag with new org profile frag, while adding it to a backstack
-                        OrgsDataSource.isFollowingOrganization(mView, mLoading, ParseUser.getCurrentUser().getObjectId(), orgSelected.getmObjectId(), new FunctionCallback<String>() {
-                            @Override
-                            public void done(String followState, ParseException e) {
-                                ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, followState, AdminFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
-                                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
-                            }
-                        });
-                        Log.d(TAG, "org has been pressed on admin page " + orgSelected.toString());
-                    } else {
-                        Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
-                        e.printStackTrace();
-                    }
+                public void done(String followState, ParseException e) {
+                    ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, followState, AdminFragment.this, followState.equals(UserDataSource.FOLLOWER_ADMIN), onToday, onDiscover, onYou, onAdmin);
+                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
                 }
             });
+            Log.d(TAG, "org has been pressed on admin page " + orgSelected.toString());
         }
     }
 
@@ -265,13 +253,13 @@ public class AdminFragment extends Fragment implements Serializable,
 
     @Override
     public void pressedUserFromCommentOfOrgPost(User userPressed) {
-        ProfileFragment userProfile = ProfileFragment.newInstance(userPressed, null, null,  this, false, onToday, onDiscover, onYou, onAdmin);
+        ProfileFragment userProfile = ProfileFragment.newInstance(userPressed, null, null, this, false, onToday, onDiscover, onYou, onAdmin);
         getChildFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, userProfile).addToBackStack(null).commitAllowingStateLoss();
     }
 
     @Override
     public void modifyOrg(Organization org) {
-        ((TabbedActivity)getActivity()).getmViewPager().setCurrentItem(3);
+        ((TabbedActivity) getActivity()).getmViewPager().setCurrentItem(3);
         mCurrentOrgModifyFrag = ModifyOrganizationFragment.newInstance(null, org, AdminFragment.this);
         getChildFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -286,8 +274,8 @@ public class AdminFragment extends Fragment implements Serializable,
             @Override
             public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
 
-                ArrayList<User> users = (ArrayList<User>)booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
-                HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>)booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
+                ArrayList<User> users = (ArrayList<User>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
+                HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
 
                 ListFragment adminList = ListFragment.newInstance(isAdmin, AdminFragment.this, false, null, null, null, null, users, AdminFragment.this, typeOfUsers, org);
                 getChildFragmentManager().beginTransaction()
@@ -307,17 +295,17 @@ public class AdminFragment extends Fragment implements Serializable,
     @Override
     public void selectedUserToBeAdmin(final User user, Organization nullableOrg) {
         //check if a user is being added to an existing org or is being saved to be an admin for a NEW org
-        if(!mCurrentOrgModifyFrag.isHidden()){
-            Log.wtf("test", "attempt to add "+user.getName()+" as initial admin");
+        if (!mCurrentOrgModifyFrag.isHidden()) {
+            Log.wtf("test", "attempt to add " + user.getName() + " as initial admin");
             //save user for setting as admin for new org
-            ((ModifyOrganizationFragment)mCurrentOrgModifyFrag).setInitialAdmin(user);
+            ((ModifyOrganizationFragment) mCurrentOrgModifyFrag).setInitialAdmin(user);
             getChildFragmentManager().popBackStack();
         } else {
             //add user to existing org
             AdminDataSource.addAdminToOrganization(mView, mLoading, nullableOrg.getmObjectId(), user.getmObjectId(), new FunctionCallback<Boolean>() {
                 @Override
                 public void done(Boolean success, ParseException e) {
-                    if (success && e == null){
+                    if (success && e == null) {
                         //TODO: error handling for adding an existing admin
                         Snackbar.make(mView, getActivity().getString(R.string.format_added_user_as_admin_success_message, user.getName()), Snackbar.LENGTH_SHORT).show();
                     }

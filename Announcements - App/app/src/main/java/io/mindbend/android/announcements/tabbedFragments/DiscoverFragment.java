@@ -29,6 +29,7 @@ import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment;
 import io.mindbend.android.announcements.cloudCode.AdminDataSource;
 import io.mindbend.android.announcements.cloudCode.OrgsDataSource;
+import io.mindbend.android.announcements.cloudCode.UserDataSource;
 import io.mindbend.android.announcements.reusableFrags.ListFragment;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridAdapter;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridFragment;
@@ -102,30 +103,21 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
     @Override
     public void pressedOrgFromProfile(final Organization orgPressed) {
         Log.wtf(TAG, "PARSE USER " + ParseUser.getCurrentUser().getObjectId());
-        AdminDataSource.checkIfUserIsAdminOfOrganization(mLoading, getActivity(), orgPressed.getmObjectId(), ParseUser.getCurrentUser().getObjectId(), new FunctionCallback<Boolean>() {
+        //replace the current profile frag with new org profile frag, while adding it to a backstack
+        OrgsDataSource.isFollowingOrganization(mView, mLoading, ParseUser.getCurrentUser().getObjectId(), orgPressed.getmObjectId(), new FunctionCallback<String>() {
             @Override
-            public void done(final Boolean isAdmin, ParseException e) {
-                if (e == null) {
-                    Log.wtf(TAG, "IS USER ADMIN? " + isAdmin);
-                    //replace the current profile frag with new org profile frag, while adding it to a backstack
-                    OrgsDataSource.isFollowingOrganization(mView, mLoading, ParseUser.getCurrentUser().getObjectId(), orgPressed.getmObjectId(), new FunctionCallback<String>() {
-                        @Override
-                        public void done(String followState, ParseException e) {
+            public void done(String followState, ParseException e) {
 //
-                                ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgPressed, followState, DiscoverFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
-                                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
+                ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgPressed, followState, DiscoverFragment.this, followState.equals(UserDataSource.FOLLOWER_ADMIN), onToday, onDiscover, onYou, onAdmin);
+                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
 //
-                        }
-                    });
-                    Log.d(TAG, "org has been pressed on discover page " + orgPressed.toString());
-                } else {
-                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                }
             }
         });
+        Log.d(TAG, "org has been pressed on discover page " + orgPressed.toString());
+
     }
+
 
     @Override
     public void pressedUserFromCommentOfOrgPost(User userPressed) {
@@ -136,17 +128,17 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
 
     @Override
     public void modifyOrg(Organization org) {
-        ((TabbedActivity)getActivity()).getmAdminFragment().modifyOrg(org);
+        ((TabbedActivity) getActivity()).getmAdminFragment().modifyOrg(org);
     }
 
     @Override
     public void viewMembers(final Organization org, final boolean isAdmin) {
-        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, org.getmObjectId(), 0, 50,isAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
+        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, org.getmObjectId(), 0, 50, isAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
             @Override
             public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
 
-                ArrayList<User> users = (ArrayList<User>)booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
-                HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>)booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
+                ArrayList<User> users = (ArrayList<User>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
+                HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
 
                 ListFragment adminList = ListFragment.newInstance(isAdmin, DiscoverFragment.this, false, null, null, null, null, users, DiscoverFragment.this, typeOfUsers, org);
                 getChildFragmentManager().beginTransaction()
@@ -203,7 +195,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
         AdminDataSource.addAdminToOrganization(mView, mLoading, nullableOrg.getmObjectId(), user.getmObjectId(), new FunctionCallback<Boolean>() {
             @Override
             public void done(Boolean success, ParseException e) {
-                if (success && e == null){
+                if (success && e == null) {
                     //TODO: error handling for adding an existing admin
                     Snackbar.make(mView, getActivity().getString(R.string.format_added_user_as_admin_success_message, user.getName()), Snackbar.LENGTH_SHORT).show();
                 }

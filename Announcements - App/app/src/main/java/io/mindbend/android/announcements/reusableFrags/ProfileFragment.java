@@ -299,11 +299,12 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 mFollowFab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (!mOrg.isPrivateOrg())
+                        Log.wtf("has access code?", ""+mOrg.hasAccessCode());
+                        if (!mOrg.isPrivateOrg() || !mOrg.hasAccessCode())//if it's public or private but with no access code
                             updateFollowState();
                         else {
                             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
-                            if (mOrgFollowState == UserDataSource.FOLLOWER_NOT_FOLLOWING) {
+                            if (mOrgFollowState.equals(UserDataSource.FOLLOWER_NOT_FOLLOWING)) {
                                 sendFollowRequestToPrivateOrg();
                             } else {
                                 switch (mOrgFollowState) {
@@ -420,8 +421,13 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 @Override
                 public void done(Boolean success, ParseException e) {
                     if (success) {
-                        mFollowFab.setImageResource(R.drawable.ic_following);
-                        mOrgFollowState = UserDataSource.FOLLOWER_NORMAL;
+                        if (mOrg.isPrivateOrg()){
+                            mFollowFab.setImageResource(R.drawable.ic_pending);
+                            mOrgFollowState = UserDataSource.FOLLOWER_PENDING;
+                        } else {
+                            mFollowFab.setImageResource(R.drawable.ic_following);
+                            mOrgFollowState = UserDataSource.FOLLOWER_NORMAL;
+                        }
                     }
                 }
             });

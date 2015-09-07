@@ -40,6 +40,7 @@ public class OrgsDataSource {
     public final static String ORG_TAG = "handle";
     public final static String ORG_PROFILE_IMAGE = "image";
     public static final String ORG_COVER_IMAGE = "coverPhoto";
+    public static final String HAS_ACCESS_CODE = "hasAccessCode";
 
 
     public final static String ORG_TYPES_PRIVATE = "PRI";
@@ -171,7 +172,7 @@ public class OrgsDataSource {
         ParseCloud.callFunctionInBackground("isFollowingOrganization", params, new FunctionCallback<String>() {
             @Override
             public void done(String followStatus, ParseException e) {
-                //int i = 0;
+                int i = 0;
                 loading.setVisibility(View.GONE);
                 callback.done(followStatus, e);
             }

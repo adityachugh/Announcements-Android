@@ -43,7 +43,7 @@ import io.mindbend.android.announcements.reusableFrags.UserListAdapter;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class YouFragment extends Fragment implements Serializable, ProfileFragment.ProfileInteractionListener, SearchableFrag.SearchInterface, ListFragment.ListFabListener, UserListAdapter.UserListInteractionListener, PostOverlayFragment.PostsOverlayListener{
+public class YouFragment extends Fragment implements Serializable, ProfileFragment.ProfileInteractionListener, SearchableFrag.SearchInterface, ListFragment.ListFabListener, UserListAdapter.UserListInteractionListener, PostOverlayFragment.PostsOverlayListener {
     private static final String TAG = "TAG";
     private static final String DEFAULT = "default_frag";
     private ProfileFragment mProfileFragment;
@@ -84,6 +84,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
 
         return mView;
     }
+
     public Fragment getmProfileFragment() {
         return mProfileFragment;
     }
@@ -91,30 +92,20 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
     @Override
     public void userProfileToOrgProfile(final Organization orgSelected) {
         Log.wtf(TAG, "PARSE USER " + ParseUser.getCurrentUser().getObjectId());
-        AdminDataSource.checkIfUserIsAdminOfOrganization(mLoading, getActivity(), orgSelected.getmObjectId(), ParseUser.getCurrentUser().getObjectId(), new FunctionCallback<Boolean>() {
+        //replace the current profile frag with new org profile frag, while adding it to a backstack
+        OrgsDataSource.isFollowingOrganization(mView, mLoading, ParseUser.getCurrentUser().getObjectId(), orgSelected.getmObjectId(), new FunctionCallback<String>() {
             @Override
-            public void done(final Boolean isAdmin, ParseException e) {
+            public void done(String retrievedFollowState, ParseException e) {
                 if (e == null) {
-                    Log.wtf(TAG, "IS USER ADMIN? " + isAdmin);
-                    //replace the current profile frag with new org profile frag, while adding it to a backstack
-                    OrgsDataSource.isFollowingOrganization(mView, mLoading, ParseUser.getCurrentUser().getObjectId(), orgSelected.getmObjectId(), new FunctionCallback<String>() {
-                        @Override
-                        public void done(String retrievedFollowState, ParseException e) {
-                            if (e == null) {
-                                ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, retrievedFollowState, YouFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
-                                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.you_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
-                            }
-                        }
-                    });
-                    Log.d(TAG, "org has been pressed on profile page " + orgSelected.toString());
-                } else {
-                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
+                    ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, retrievedFollowState, YouFragment.this, retrievedFollowState.equals(UserDataSource.FOLLOWER_ADMIN), onToday, onDiscover, onYou, onAdmin);
+                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.you_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
                 }
             }
         });
+        Log.d(TAG, "org has been pressed on profile page " + orgSelected.toString());
     }
+
 
     @Override
     public void pressedOrgFromProfile(Organization orgPressed) {
@@ -127,14 +118,15 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.you_framelayout, userToVisit).addToBackStack(null).commitAllowingStateLoss();
     }
+
     @Override
     public void modifyOrg(Organization org) {
-        ((TabbedActivity)getActivity()).getmAdminFragment().modifyOrg(org);
+        ((TabbedActivity) getActivity()).getmAdminFragment().modifyOrg(org);
     }
 
     @Override
     public void viewMembers(final Organization org, final boolean isAdmin) {
-        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, org.getmObjectId(), 0, 50,isAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
+        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, org.getmObjectId(), 0, 50, isAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
             @Override
             public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
 
@@ -186,7 +178,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
         AdminDataSource.addAdminToOrganization(mView, mLoading, nullableOrg.getmObjectId(), user.getmObjectId(), new FunctionCallback<Boolean>() {
             @Override
             public void done(Boolean success, ParseException e) {
-                if (success && e == null){
+                if (success && e == null) {
                     //TODO: error handling for adding an existing admin
                     Snackbar.make(mView, getActivity().getString(R.string.format_added_user_as_admin_success_message, user.getName()), Snackbar.LENGTH_SHORT).show();
                 }

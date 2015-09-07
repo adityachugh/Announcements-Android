@@ -52,6 +52,7 @@ import io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment
 import io.mindbend.android.announcements.cloudCode.AdminDataSource;
 import io.mindbend.android.announcements.cloudCode.OrgsDataSource;
 import io.mindbend.android.announcements.cloudCode.PostsDataSource;
+import io.mindbend.android.announcements.cloudCode.UserDataSource;
 import io.mindbend.android.announcements.reusableFrags.ListFragment;
 import io.mindbend.android.announcements.reusableFrags.PostCommentsFragment;
 import io.mindbend.android.announcements.reusableFrags.PostOverlayFragment;
@@ -216,38 +217,31 @@ public class TodayFragment extends Fragment implements Serializable,
 
     @Override
     public void openOrgProfileFromPosts(final Organization organization) {
-        AdminDataSource.checkIfUserIsAdminOfOrganization(mLoading, getActivity(), organization.getmObjectId(), ParseUser.getCurrentUser().getObjectId(), new FunctionCallback<Boolean>() {
+        OrgsDataSource.isFollowingOrganization(mView, mLoading, ParseUser.getCurrentUser().getObjectId(), organization.getmObjectId(), new FunctionCallback<String>() {
             @Override
-            public void done(final Boolean isAdmin, ParseException e) {
+            public void done(String followState, ParseException e) {
                 if (e == null) {
-                    OrgsDataSource.isFollowingOrganization(mView, mLoading, ParseUser.getCurrentUser().getObjectId(), organization.getmObjectId(), new FunctionCallback<String>() {
-                        @Override
-                        public void done(String followState, ParseException e) {
-                            if (e == null) {
-                                ProfileFragment orgProfile = ProfileFragment.newInstance(null, organization, followState, TodayFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
-                                getChildFragmentManager().beginTransaction()
-                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                        .replace(R.id.today_framelayout, orgProfile)
-                                        .addToBackStack(null)
-                                        .commitAllowingStateLoss();
-                            }
-                        }
-                    });
-
-
+                    ProfileFragment orgProfile = ProfileFragment.newInstance(null, organization, followState, TodayFragment.this, followState.equals(UserDataSource.FOLLOWER_ADMIN), onToday, onDiscover, onYou, onAdmin);
+                    getChildFragmentManager().beginTransaction()
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .replace(R.id.today_framelayout, orgProfile)
+                            .addToBackStack(null)
+                            .commitAllowingStateLoss();
                 }
             }
         });
+
+
     }
 
     @Override
     public void modifyOrg(Organization org) {
-        ((TabbedActivity)getActivity()).getmAdminFragment().modifyOrg(org);
+        ((TabbedActivity) getActivity()).getmAdminFragment().modifyOrg(org);
     }
 
     @Override
     public void viewMembers(final Organization org, final boolean isAdmin) {
-        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, org.getmObjectId(), 0, 50,isAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
+        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, org.getmObjectId(), 0, 50, isAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
             @Override
             public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
 
@@ -299,7 +293,7 @@ public class TodayFragment extends Fragment implements Serializable,
         AdminDataSource.addAdminToOrganization(mView, mLoading, nullableOrg.getmObjectId(), user.getmObjectId(), new FunctionCallback<Boolean>() {
             @Override
             public void done(Boolean success, ParseException e) {
-                if (success && e == null){
+                if (success && e == null) {
                     //TODO: error handling for adding an existing admin
                     Snackbar.make(mView, getActivity().getString(R.string.format_added_user_as_admin_success_message, user.getName()), Snackbar.LENGTH_SHORT).show();
                 }
