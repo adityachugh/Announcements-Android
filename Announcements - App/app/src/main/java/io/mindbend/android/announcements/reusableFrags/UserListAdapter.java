@@ -54,6 +54,8 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
     public static final int USERS_MEMBERS = 0;
     public static final int USERS_ADMINS = 1;
     public static final int USERS_PENDING = 2;
+    public static final int USERS_REJECTED = 3;
+    public static final int USERS_NOT_FOLLOWING = 4;
 
 
     private List<User> mUsers;

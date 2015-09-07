@@ -273,8 +273,12 @@ public class OrgsDataSource {
                 return UserListAdapter.USERS_MEMBERS;
             case UserDataSource.FOLLOWER_ADMIN:
                 return UserListAdapter.USERS_ADMINS;
-            default: //is pending
+            case UserDataSource.FOLLOWER_PENDING:
                 return UserListAdapter.USERS_PENDING;
+            case UserDataSource.FOLLOWER_REJECTED:
+                return UserListAdapter.USERS_REJECTED;
+            default:
+                return UserListAdapter.USERS_NOT_FOLLOWING;
         }
     }
 }

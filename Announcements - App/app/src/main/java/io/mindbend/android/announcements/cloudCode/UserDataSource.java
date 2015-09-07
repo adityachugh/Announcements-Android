@@ -51,9 +51,7 @@ public class UserDataSource {
     public final static String FOLLOWER_NOT_FOLLOWING = "NFO";
     public final static String FOLLOWER_REJECTED = "REJ";
 
-    public final static String FOLLOWER_USER_TYPE_FIELD = "userType";
-
-    //TODO: profile photo, cover photo
+    public final static String FOLLOWER_USER_TYPE_FIELD = "type";
 
     public static void getCurrentUserWithInfo(final ProgressBar loading, final FunctionCallback<User> callback) {
         loading.setVisibility(View.VISIBLE);
