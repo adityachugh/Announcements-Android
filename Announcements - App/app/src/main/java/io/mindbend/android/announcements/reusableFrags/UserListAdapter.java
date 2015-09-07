@@ -129,7 +129,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
             public void done(Boolean success, ParseException e) {
                 if (success && e == null){
                     mTypeOfUsers.remove(user);
-                    if (isApproved){
+                    if (isApproved){ //working
                         mTypeOfUsers.put(user, USERS_MEMBERS);
                     }
                     for (int i = 0; i < mUsers.size(); i++){
