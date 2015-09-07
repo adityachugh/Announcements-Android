@@ -45,12 +45,6 @@ public class OrgsDataSource {
     public final static String ORG_TYPES_PRIVATE = "PRI";
     public final static String ORG_TYPES_PUBLIC = "PUB";
 
-    public final static String FOLLOW_STATE_ACCEPTED = "A";
-    public final static String FOLLOW_STATE_NO_REQUEST_SENT = null;
-    public final static String FOLLOW_STATE_PENDING = "P";
-    public final static String FOLLOW_STATE_REJECTED = "R";
-
-
     //for the map callback given in getFollowersFollowRequestsAndAdminsForOrganizationInRange function
     public final static Boolean MAP_USER_TYPES_KEY = true;
     public final static Boolean MAP_USER_LIST_KEY= false;
@@ -248,7 +242,7 @@ public class OrgsDataSource {
         ParseCloud.callFunctionInBackground("getFollowersFollowRequestsAndAdminsForOrganizationInRange", params, new FunctionCallback<List<ParseObject>>() {
             @Override
             public void done(List<ParseObject> followObjects, ParseException e) {
-                int i = 0;
+//                int i = 0;
                 loading.setVisibility(View.GONE);
                 if (e == null){
                     ArrayList<User> users = new ArrayList<User>();

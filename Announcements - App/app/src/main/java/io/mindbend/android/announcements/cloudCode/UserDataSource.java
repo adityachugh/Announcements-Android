@@ -45,9 +45,11 @@ public class UserDataSource {
 
 
     //for the user types of a follower object: admin, follower, and penging
-    public final static String FOLLOWER_NORMAL = "F";
-    public final static String FOLLOWER_ADMIN = "A";
-    public final static String FOLLOWER_PENDING = "P";
+    public final static String FOLLOWER_NORMAL = "FOL";
+    public final static String FOLLOWER_ADMIN = "ADM";
+    public final static String FOLLOWER_PENDING = "PEN";
+    public final static String FOLLOWER_NOT_FOLLOWING = "NFO";
+    public final static String FOLLOWER_REJECTED = "REJ";
 
     public final static String FOLLOWER_USER_TYPE_FIELD = "userType";
 

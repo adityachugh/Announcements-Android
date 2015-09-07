@@ -266,7 +266,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 if (mOrg.isPrivateOrg()) {
                     ImageView isPrivate = (ImageView) mView.findViewById(R.id.profile_private_org_lock_icon);
                     isPrivate.setVisibility(View.VISIBLE);
-                    if (mOrgFollowState != null && mOrgFollowState.equals(OrgsDataSource.FOLLOW_STATE_ACCEPTED))
+                    if (mOrgFollowState != null && (mOrgFollowState.equals(UserDataSource.FOLLOWER_NORMAL) || mOrgFollowState.equals(UserDataSource.FOLLOWER_ADMIN)))
                         loadOrgPosts(mOrg.getmObjectId(), 0, 10);
                 } else {
                     loadOrgPosts(mOrg.getmObjectId(), 0, 10);
@@ -279,15 +279,18 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 mFollowFab = (ImageButton) mView.findViewById(R.id.profile_follow_state_fab);
                 mFollowFab.setVisibility(View.VISIBLE);
 
-                if (mOrgFollowState != OrgsDataSource.FOLLOW_STATE_NO_REQUEST_SENT) {
+                if (!mOrgFollowState.equals(UserDataSource.FOLLOWER_NOT_FOLLOWING)) {
                     switch (mOrgFollowState) {
-                        case OrgsDataSource.FOLLOW_STATE_ACCEPTED:
+                        case UserDataSource.FOLLOWER_ADMIN:
                             mFollowFab.setImageResource(R.drawable.ic_following);
                             break;
-                        case OrgsDataSource.FOLLOW_STATE_PENDING:
+                        case UserDataSource.FOLLOWER_NORMAL:
+                            mFollowFab.setImageResource(R.drawable.ic_following);
+                            break;
+                        case UserDataSource.FOLLOWER_PENDING:
                             mFollowFab.setImageResource(R.drawable.ic_pending);
                             break;
-                        default:
+                        case UserDataSource.FOLLOWER_REJECTED:
                             mFollowFab.setImageResource(R.drawable.ic_rejected);
                             break;
                     }
@@ -300,17 +303,17 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                             updateFollowState();
                         else {
                             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
-                            if (mOrgFollowState == OrgsDataSource.FOLLOW_STATE_NO_REQUEST_SENT) {
+                            if (mOrgFollowState == UserDataSource.FOLLOWER_NOT_FOLLOWING) {
                                 sendFollowRequestToPrivateOrg();
                             } else {
                                 switch (mOrgFollowState) {
-                                    case OrgsDataSource.FOLLOW_STATE_PENDING:
+                                    case UserDataSource.FOLLOWER_PENDING:
                                         builder.setTitle(R.string.follow_request_already_sent)
                                                 .setMessage(R.string.follow_request_already_sent_dialog_detailed_message)
                                                 .setPositiveButton("OK", null)
                                                 .show();
                                         break;
-                                    case OrgsDataSource.FOLLOW_STATE_REJECTED:
+                                    case UserDataSource.FOLLOWER_REJECTED:
                                         builder.setTitle(R.string.rejected_resend_follow_request_dialog_title)
                                                 .setMessage(R.string.rejected_resend_follow_request_dialog_message)
                                                 .setNegativeButton("Cancel", null)
@@ -368,7 +371,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                     public void done(Boolean followRequestSent, ParseException e) {
                         if (e == null){
                             if (followRequestSent){
-                                mOrgFollowState = OrgsDataSource.FOLLOW_STATE_PENDING;
+                                mOrgFollowState = UserDataSource.FOLLOWER_PENDING;
                                 mFollowFab.setImageResource(R.drawable.ic_pending);
                             } else {
                                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
@@ -386,7 +389,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     }
 
     private void updateFollowState() {
-        final boolean isFollowing = mOrgFollowState != null && mOrgFollowState.equals(OrgsDataSource.FOLLOW_STATE_ACCEPTED);
+        final boolean isFollowing = mOrgFollowState != null && (mOrgFollowState.equals(UserDataSource.FOLLOWER_NORMAL) || mOrgFollowState.equals(UserDataSource.FOLLOWER_ADMIN));
         final boolean toChangeStateTo = !isFollowing;
 
         if (isFollowing) {
@@ -405,7 +408,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                                         //unfollows
                                         mFollowFab.setImageResource(R.drawable.ic_not_following);
                                         mToEdit = false;
-                                        mOrgFollowState = OrgsDataSource.FOLLOW_STATE_NO_REQUEST_SENT;
+                                        mOrgFollowState = UserDataSource.FOLLOWER_NOT_FOLLOWING;
                                     }
                                 }
                             });
@@ -418,7 +421,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 public void done(Boolean success, ParseException e) {
                     if (success) {
                         mFollowFab.setImageResource(R.drawable.ic_following);
-                        mOrgFollowState = OrgsDataSource.FOLLOW_STATE_NO_REQUEST_SENT;
+                        mOrgFollowState = UserDataSource.FOLLOWER_NORMAL;
                     }
                 }
             });
