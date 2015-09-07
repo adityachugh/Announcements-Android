@@ -57,14 +57,12 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
     private EditText mAccessCode;
     private TextView mAccessCodeTitle;
     private EditText mDescription;
-    private LinearLayout mInitialAdminField;
     private byte[] toUploadProfileImageBytes;
     private byte[] toUploadCoverImageBytes;
     private User mInitialAdmin;
     private View mView;
     private ProgressBar mLoading;
 
-    private RadioGroup mOrgType;
     private boolean isPrivate;
 
     public static ModifyOrganizationFragment newInstance(Organization parentOrg, Organization orgToModifyIfNeeded,
@@ -105,6 +103,8 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
             mHandle.setText(mOrgToModify.getTag());
             mHandle.setEnabled(false);
             mHandleTV.setTextColor(getResources().getColor(R.color.text_secondary));
+            LinearLayout approvalRequired = (LinearLayout)mView.findViewById(R.id.newO_approval_required_field);
+            approvalRequired.setVisibility(View.GONE);
             if (mOrgToModify.isPrivateOrg()){
                 isPrivate = true;
                 ((RadioButton)mView.findViewById(R.id.newO_type_private)).setChecked(true);
@@ -113,7 +113,7 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
                 ((RadioButton)mView.findViewById(R.id.newO_type_public)).setChecked(true);
             }
         } else {
-            mInitialAdminField = (LinearLayout) mView.findViewById(R.id.newO_add_admin_field);
+            LinearLayout mInitialAdminField = (LinearLayout) mView.findViewById(R.id.newO_add_admin_field);
             mInitialAdminField.setVisibility(View.VISIBLE);
             mInitialAdminField.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -195,8 +195,9 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
              */
         String initAdminObjectId = mInitialAdmin == null ? ParseUser.getCurrentUser().getObjectId() : mInitialAdmin.getmObjectId();
             Integer accessCode = (!isPrivate || mAccessCode.getText().toString().equals("")) ? null : Integer.parseInt(mAccessCode.getText().toString());
+            boolean approvalRequired = ((Switch)mView.findViewById(R.id.newO_approval_required_switch)).isChecked();
             //TODO: send org config object id (not level config) and send in correct approvalRequired
-            AdminDataSource.createNewChildOrganization(mView, getActivity(), mLoading, mParentOrg.getmObjectId(), mParentOrg.getmMainLevel().getmObjectId(), "testsetsetsettes", mName.getText().toString(), isPrivate, initAdminObjectId, false, accessCode, toUploadProfileImageBytes, toUploadCoverImageBytes, mDescription.getText().toString(), new FunctionCallback<Boolean>() {
+            AdminDataSource.createNewChildOrganization(mView, getActivity(), mLoading, mParentOrg.getmObjectId(), mParentOrg.getmMainLevel().getmObjectId(), mParentOrg.getmConfigId(), mName.getText().toString(), isPrivate, initAdminObjectId, approvalRequired, accessCode, toUploadProfileImageBytes, toUploadCoverImageBytes, mDescription.getText().toString(), new FunctionCallback<Boolean>() {
                 @Override
                 public void done(Boolean success, ParseException e) {
                     if (success && e == null){
@@ -223,7 +224,7 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
         mHandleTV = (TextView)v.findViewById(R.id.newO_handle_TV);
         mAccessCode = (EditText)v.findViewById(R.id.newO_access_code_ET);
         mAccessCodeTitle = (TextView)v.findViewById(R.id.newO_access_code_TV);
-        mOrgType = (RadioGroup)v.findViewById(R.id.newO_org_type);
+        RadioGroup mOrgType = (RadioGroup) v.findViewById(R.id.newO_org_type);
 
         mDescription = (EditText)mView.findViewById(R.id.newO_description);
         if (mOrgToModify != null)
@@ -232,7 +233,7 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
         mOrgType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId){
+                switch (checkedId) {
                     case R.id.newO_type_private:
                         isPrivate = true;
                         mAccessCode.setEnabled(true);

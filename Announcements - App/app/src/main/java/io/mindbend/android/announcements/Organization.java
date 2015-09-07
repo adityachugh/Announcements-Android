@@ -10,7 +10,6 @@ import java.io.Serializable;
 
 import io.mindbend.android.announcements.cloudCode.ConfigDataSource;
 import io.mindbend.android.announcements.cloudCode.OrgsDataSource;
-import io.mindbend.android.announcements.tabbedFragments.LevelConfig;
 
 /**
  * Created by Akshay Pall on 01/08/2015.
@@ -28,6 +27,7 @@ public class Organization implements Serializable, Parcelable {
     private String mProfileImageURL;
     private boolean mIsChildless;
     private String mCoverImageURL;
+    private String mConfigId;
     private LevelConfig mMainLevel;
     private LevelConfig mChildLevel;
 
@@ -42,6 +42,7 @@ public class Organization implements Serializable, Parcelable {
         mProfileImageURL = "";
         mCoverImageURL = "";
         mIsChildless = false;
+        mConfigId = "";
     }
 
     public Organization (ParseObject object){
@@ -68,6 +69,8 @@ public class Organization implements Serializable, Parcelable {
 
         mTag = object.getString(OrgsDataSource.ORG_TAG);
         mIsChildless = object.get(ConfigDataSource.ORG_CHILD_LEVEL_CONFIG) == null;
+
+        mConfigId = object.getParseObject(ConfigDataSource.ORG_CONFIG).getObjectId();
     }
 
     public static LevelConfig getLevelTitle (boolean isChild, ParseObject organization){
@@ -100,9 +103,9 @@ public class Organization implements Serializable, Parcelable {
 
         mChildLevel = (LevelConfig)in.readSerializable();
         mMainLevel = (LevelConfig)in.readSerializable();
+
+        mConfigId = in.readString();
     }
-
-
 
     public String getmObjectId() {
         return mObjectId;
@@ -161,6 +164,10 @@ public class Organization implements Serializable, Parcelable {
         return mChildLevel;
     }
 
+    public String getmConfigId() {
+        return mConfigId;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mObjectId);
@@ -184,6 +191,8 @@ public class Organization implements Serializable, Parcelable {
 
         dest.writeSerializable(mChildLevel);
         dest.writeSerializable(mMainLevel);
+
+        dest.writeString(mConfigId);
     }
 
     public static final Parcelable.Creator<Organization> CREATOR

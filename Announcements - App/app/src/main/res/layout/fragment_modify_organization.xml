@@ -285,6 +285,44 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/divider_color" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/newO_approval_required_field">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/white"
+                        android:orientation="horizontal"
+                        android:paddingBottom="@dimen/card_outer_margin"
+                        android:paddingLeft="@dimen/card_inner_margin"
+                        android:paddingRight="@dimen/card_inner_margin"
+                        android:paddingTop="@dimen/card_outer_margin">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="@dimen/card_outer_margin"
+                            android:layout_weight="1"
+                            android:text="@string/new_org_approval_required"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                            android:textSize="@dimen/list_text_size" />
+
+                        <Switch
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/newO_approval_required_switch"
+                            style="@style/DialogTheme"
+                            android:layout_marginRight="@dimen/card_inner_margin"/>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/divider_color" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"

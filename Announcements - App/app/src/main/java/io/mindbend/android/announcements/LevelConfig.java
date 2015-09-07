@@ -1,4 +1,4 @@
-package io.mindbend.android.announcements.tabbedFragments;
+package io.mindbend.android.announcements;
 
 import com.parse.ParseObject;
 
@@ -13,7 +13,7 @@ public class LevelConfig implements Serializable {
     private String mObjectId;
     private String mLevelTitle;
 
-    public LevelConfig (ParseObject object){
+    public LevelConfig(ParseObject object){
         if (object != null){
             mObjectId = object.getObjectId();
             mLevelTitle = object.getString(ConfigDataSource.LEVEL_CONFIG_TITLE);
