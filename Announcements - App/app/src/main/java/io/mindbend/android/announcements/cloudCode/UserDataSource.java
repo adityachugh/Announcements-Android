@@ -194,11 +194,15 @@ public class UserDataSource {
             @Override
             public void done(List<ParseObject> followFields, ParseException e) {
                 loading.setVisibility(View.GONE);
-//                int i = 0; for debugging
+//                int i = 0; //for debugging
                 if (e == null) {
                     ArrayList<Organization> orgs = new ArrayList<Organization>();
                     for (ParseObject followField : followFields) {
-                        orgs.add(new Organization(followField.getParseObject("organization")));
+                        ParseObject orgObject = followField.getParseObject("organization");
+                        Organization org = new Organization(orgObject);
+                        org.setmLevelTitle(Organization.getLevelTitle(false, orgObject));
+                        org.setmChildLevel(Organization.getLevelTitle(true, orgObject));
+                        orgs.add(org);
                     }
 
                     callback.done(orgs, e);

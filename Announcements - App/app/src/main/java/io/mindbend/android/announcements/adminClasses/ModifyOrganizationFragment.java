@@ -4,6 +4,7 @@ package io.mindbend.android.announcements.adminClasses;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
@@ -15,14 +16,23 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import com.parse.FunctionCallback;
+import com.parse.ParseException;
+import com.parse.ParseUser;
 
 import java.io.Serializable;
 
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
+import io.mindbend.android.announcements.cloudCode.AdminDataSource;
+import io.mindbend.android.announcements.cloudCode.OrgsDataSource;
 import io.mindbend.android.announcements.reusableFrags.SearchableFrag;
 
 /**
@@ -43,13 +53,18 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
     private EditText mName;
     private EditText mHandle;
     private TextView mHandleTV;
-    private Switch mOrgType;
     private EditText mAccessCode;
     private TextView mAccessCodeTitle;
+    private EditText mDescription;
     private LinearLayout mInitialAdminField;
     private byte[] toUploadProfileImageBytes;
     private byte[] toUploadCoverImageBytes;
     private User mInitialAdmin;
+    private View mView;
+    private ProgressBar mLoading;
+
+    private RadioGroup mOrgType;
+    private boolean isPrivate;
 
     public static ModifyOrganizationFragment newInstance(Organization parentOrg, Organization orgToModifyIfNeeded,
                                                          ModifyOrgInterface listener) {
@@ -80,18 +95,24 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v =  inflater.inflate(R.layout.fragment_modify_organization, container, false);
+        mView = inflater.inflate(R.layout.fragment_modify_organization, container, false);
 
-        setupViews(v);
+        setupViews(mView);
 
         if (mOrgToModify != null){
             mName.setText(mOrgToModify.getTitle());
             mHandle.setText(mOrgToModify.getTag());
             mHandle.setEnabled(false);
             mHandleTV.setTextColor(getResources().getColor(R.color.text_secondary));
-            mOrgType.setChecked(!mOrgToModify.isPrivateOrg());
+            if (mOrgToModify.isPrivateOrg()){
+                isPrivate = true;
+                ((RadioButton)mView.findViewById(R.id.newO_type_private)).setChecked(true);
+            } else {
+                isPrivate = false;
+                ((RadioButton)mView.findViewById(R.id.newO_type_public)).setChecked(true);
+            }
         } else {
-            mInitialAdminField = (LinearLayout)v.findViewById(R.id.newO_add_admin_field);
+            mInitialAdminField = (LinearLayout) mView.findViewById(R.id.newO_add_admin_field);
             mInitialAdminField.setVisibility(View.VISIBLE);
             mInitialAdminField.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -108,7 +129,7 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
             });
         }
 
-        ImageButton updateOrCreateOrgFab = (ImageButton)v.findViewById(R.id.new_OR_modify_org_fab);
+        ImageButton updateOrCreateOrgFab = (ImageButton) mView.findViewById(R.id.new_OR_modify_org_fab);
         updateOrCreateOrgFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,13 +143,29 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
                                 }
                             });
                     AlertDialog alertDialog = builder.show();
-                } else if (!mOrgType.isChecked() && mAccessCode.getText().toString().equals("")) {
+                } else if (isPrivate && mAccessCode.getText().toString().equals("")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
-                    builder.setMessage("If your private organization does not have an access code, any user will be able to submit a follow request to your administrators. Is this okay?")
+                    builder.setMessage(getActivity().getString(R.string.create_private_org_without_access_code_message))
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     submitOrg();
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //nothing
+                                }
+                            });
+                    AlertDialog alertDialog = builder.show();
+                }else if (isPrivate && mAccessCode.getText().toString().length() < 4) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
+                    builder.setMessage(getActivity().getString(R.string.access_code_length_message))
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //nothing
                                 }
                             })
                             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -144,7 +181,7 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
             }
         });
 
-        return v;
+        return mView;
     }
 
     private void submitOrg() {
@@ -155,7 +192,18 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
             /**
              * Create the new org in Parse (with an access code if necessary)
              */
-            //TODO: create new org in database
+        String initAdminObjectId = mInitialAdmin == null ? ParseUser.getCurrentUser().getObjectId() : mInitialAdmin.getmObjectId();
+            Integer accessCode = (!isPrivate || mAccessCode.getText().toString().equals("")) ? null : Integer.parseInt(mAccessCode.getText().toString());
+            //TODO: send org config object id (not level config) and send in correct approvalRequired
+            AdminDataSource.createNewChildOrganization(mView, getActivity(), mLoading, mParentOrg.getmObjectId(), mParentOrg.getmMainLevel().getmObjectId(), "testsetsetsettes", mName.getText().toString(), isPrivate, initAdminObjectId, false, accessCode, toUploadProfileImageBytes, toUploadCoverImageBytes, mDescription.getText().toString(), new FunctionCallback<Boolean>() {
+                @Override
+                public void done(Boolean success, ParseException e) {
+                    if (success && e == null){
+                        Snackbar.make(mView, "Successfully created "+mName.getText().toString(), Snackbar.LENGTH_SHORT).show();
+                        getFragmentManager().popBackStack();
+                    }
+                }
+            });
         }
     }
 
@@ -168,22 +216,32 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
     }
 
     private void setupViews(View v) {
+        mLoading = (ProgressBar)mView.findViewById(R.id.newO_creation_progressbar);
         mName = (EditText)v.findViewById(R.id.newO_name);
         mHandle = (EditText)v.findViewById(R.id.newO_handle);
         mHandleTV = (TextView)v.findViewById(R.id.newO_handle_TV);
         mAccessCode = (EditText)v.findViewById(R.id.newO_access_code_ET);
         mAccessCodeTitle = (TextView)v.findViewById(R.id.newO_access_code_TV);
-        mOrgType = (Switch)v.findViewById(R.id.newO_org_type);
+        mOrgType = (RadioGroup)v.findViewById(R.id.newO_org_type);
 
-        mOrgType.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mDescription = (EditText)mView.findViewById(R.id.newO_description);
+        if (mOrgToModify != null)
+            mDescription.setText(mOrgToModify.getDescription());
+
+        mOrgType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    mAccessCode.setEnabled(false);
-                    mAccessCodeTitle.setTextColor(getResources().getColor(R.color.text_secondary));
-                } else {
-                    mAccessCode.setEnabled(true);
-                    mAccessCodeTitle.setTextColor(getResources().getColor(R.color.text_primary));
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId){
+                    case R.id.newO_type_private:
+                        isPrivate = true;
+                        mAccessCode.setEnabled(true);
+                        mAccessCodeTitle.setTextColor(getResources().getColor(R.color.text_primary));
+                        break;
+                    case R.id.newO_type_public:
+                        isPrivate = false;
+                        mAccessCode.setEnabled(false);
+                        mAccessCodeTitle.setTextColor(getResources().getColor(R.color.text_secondary));
+                        break;
                 }
             }
         });

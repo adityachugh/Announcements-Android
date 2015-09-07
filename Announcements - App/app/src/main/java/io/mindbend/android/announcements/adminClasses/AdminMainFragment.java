@@ -79,9 +79,8 @@ public class AdminMainFragment extends Fragment implements Serializable {
     }
 
     private void setupTextOfOrg() {
-        //TODO: get org name (ex. "board") based on config
-        String typeOfOrg = "Board";
-        String typeOfChild = "School";
+        String typeOfOrg = mOrg.getmMainLevel().getmLevelTitle();
+        String typeOfChild = mOrg.getmChildLevel().getmLevelTitle();
 
         if (!mOrg.isChildless()){
             LinearLayout hasChildrenFunctions = (LinearLayout)mView.findViewById(R.id.admin_main_has_children_fields);

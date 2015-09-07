@@ -108,4 +108,40 @@ public class AdminDataSource {
             }
         });
     }
+
+    public static void createNewChildOrganization (final View view, final Context context, final ProgressBar loading, String organizationObjectId,
+                                                   String levelConfigObjectId, String configObjectId, String organizationName,
+                                                   boolean isPrivate, String adminObjectId, boolean approvalRequired, Integer accessCode,
+                                                   byte[] profilePhoto, byte[] coverPhoto, String description,
+                                                   final FunctionCallback<Boolean> callback){
+        //levelConfigObjectId is the child level config of the org that's calling this function
+        loading.setVisibility(View.VISIBLE);
+
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("organizationObjectId", organizationObjectId);
+        params.put("levelConfigObjectId", levelConfigObjectId);
+        params.put("configObjectId", configObjectId);
+        params.put("organizationName", organizationName);
+        String organizationType = isPrivate ? OrgsDataSource.ORG_TYPES_PRIVATE : OrgsDataSource.ORG_TYPES_PUBLIC;
+        params.put("organizationType", organizationType);
+        params.put("adminObjectId", adminObjectId);
+        params.put("approvalRequired", approvalRequired);
+        params.put("accessCode", accessCode);
+        params.put("profilePhoto", profilePhoto);
+        params.put("coverPhoto", coverPhoto);
+        params.put("description", description);
+        
+        ParseCloud.callFunctionInBackground("createNewChildOrganization", params, new FunctionCallback<Boolean>() {
+            @Override
+            public void done(Boolean success, ParseException e) {
+                loading.setVisibility(View.GONE);
+                if (e != null || !success){
+                    Snackbar.make(view, context.getString(R.string.error_creating_org_message), Snackbar.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                } else {
+                    callback.done(success, e);
+                }
+            }
+        });
+    }
 }

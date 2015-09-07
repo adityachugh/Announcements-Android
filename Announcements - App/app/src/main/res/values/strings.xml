@@ -106,8 +106,8 @@
     <string name="enter_access_code_for_private_org_message">Enter access code here.</string>
     <string name="unfollow_org_title">Unfollow organization?</string>
     <string name="format_unfollow_org_message">You are currently following %1$s. Do you want to unfollow this organization?</string>
-    <string name="org_profile_image">Profile Image</string>
-    <string name="org_cover_image">Cover Image</string>
+    <string name="org_profile_image">Profile Photo</string>
+    <string name="org_cover_image">Cover Photo</string>
     <string name="could_not_upload_org_photo">Could not update organization photo</string>
     <string name="succes_updated_org_photo">Successfully updated organization photo</string>
     <string name="error_getting_discover_orgs">Could not get Discover organizations</string>
@@ -119,4 +119,8 @@
     <string name="newA_priority_high">High</string>
     <string name="format_added_user_as_admin_success_message">Added %1$s as admin</string>
     <string name="initial_admin">Initial Admin</string>
+    <string name="error_creating_org_message">Could not create organization</string>
+    <string name="new_org_description">Description</string>
+    <string name="access_code_length_message">Your access code must be 4 digits long!</string>
+    <string name="create_private_org_without_access_code_message">If your private organization does not have an access code, any user will be able to submit a follow request to your administrators. Is this okay?</string>
 </resources>

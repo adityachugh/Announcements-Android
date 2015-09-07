@@ -8,7 +8,9 @@ import com.parse.ParseObject;
 
 import java.io.Serializable;
 
+import io.mindbend.android.announcements.cloudCode.ConfigDataSource;
 import io.mindbend.android.announcements.cloudCode.OrgsDataSource;
+import io.mindbend.android.announcements.tabbedFragments.LevelConfig;
 
 /**
  * Created by Akshay Pall on 01/08/2015.
@@ -26,6 +28,8 @@ public class Organization implements Serializable, Parcelable {
     private String mProfileImageURL;
     private boolean mIsChildless;
     private String mCoverImageURL;
+    private LevelConfig mMainLevel;
+    private LevelConfig mChildLevel;
 
     public Organization(String objectId, String title, String description, int followers, String tag, boolean privateOrg, boolean newOrg){
         mObjectId = objectId;
@@ -63,7 +67,20 @@ public class Organization implements Serializable, Parcelable {
             mCoverImageURL = "";
 
         mTag = object.getString(OrgsDataSource.ORG_TAG);
-        mIsChildless = object.get(OrgsDataSource.ORG_CHILD_CONFIG) == null;
+        mIsChildless = object.get(ConfigDataSource.ORG_CHILD_LEVEL_CONFIG) == null;
+    }
+
+    public static LevelConfig getLevelTitle (boolean isChild, ParseObject organization){
+        String levelToPull = isChild ? ConfigDataSource.ORG_CHILD_LEVEL_CONFIG : ConfigDataSource.ORG_LEVEL_CONFIG;
+        ParseObject config = organization.getParseObject(levelToPull);
+        try {
+            if (config != null)
+                config.fetchIfNeeded();
+            return new LevelConfig(config);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public Organization(Parcel in){
@@ -80,7 +97,12 @@ public class Organization implements Serializable, Parcelable {
         mProfileImageURL = in.readString();
 
         mIsChildless = in.readInt() != 0;
+
+        mChildLevel = (LevelConfig)in.readSerializable();
+        mMainLevel = (LevelConfig)in.readSerializable();
     }
+
+
 
     public String getmObjectId() {
         return mObjectId;
@@ -123,6 +145,22 @@ public class Organization implements Serializable, Parcelable {
         return 0;
     }
 
+    public void setmLevelTitle(LevelConfig mainLevel) {
+        mMainLevel = mainLevel;
+    }
+
+    public LevelConfig getmMainLevel() {
+        return mMainLevel;
+    }
+
+    public void setmChildLevel(LevelConfig childLevel) {
+        mChildLevel = childLevel;
+    }
+
+    public LevelConfig getmChildLevel() {
+        return mChildLevel;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mObjectId);
@@ -143,6 +181,9 @@ public class Organization implements Serializable, Parcelable {
 
         if (mIsChildless) dest.writeInt(1);
         else dest.writeInt(0);
+
+        dest.writeSerializable(mChildLevel);
+        dest.writeSerializable(mMainLevel);
     }
 
     public static final Parcelable.Creator<Organization> CREATOR
