@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.parse.FunctionCallback;
 import com.parse.ParseException;
+import com.parse.ParseUser;
 import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
@@ -81,25 +82,27 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
         viewHolder.mEntireLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.DialogTheme);
-                builder.setTitle("Delete Comment?")
-                        .setMessage("Do you want to delete the comment: \""+mCurrentComment.getmText()+"\".")
-                        .setNegativeButton("Cancel", null)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                CommentsDataSource.deleteComment(mLoadingLayout, mContext, mCurrentComment.getmObjectId(), new FunctionCallback<Boolean>() {
-                                    @Override
-                                    public void done(Boolean deleted, ParseException e) {
-                                        if (e == null && deleted){
-                                            mListener.deletedComment(mCurrentComment);
+                if (mCurrentComment.getmUser().getmObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.DialogTheme);
+                    builder.setTitle("Delete Comment?")
+                            .setMessage("Do you want to delete the comment: \""+mCurrentComment.getmText()+"\".")
+                            .setNegativeButton("Cancel", null)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    CommentsDataSource.deleteComment(mLoadingLayout, mCurrentComment.getmObjectId(), new FunctionCallback<Boolean>() {
+                                        @Override
+                                        public void done(Boolean deleted, ParseException e) {
+                                            if (e == null && deleted){
+                                                mListener.deletedComment(mCurrentComment);
+                                            }
                                         }
-                                    }
-                                });
-                            }
-                        })
-                        .show();
+                                    });
+                                }
+                            })
+                            .show();
+                }
                 return true;
             }
         });

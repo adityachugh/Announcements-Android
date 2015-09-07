@@ -2,6 +2,7 @@ package io.mindbend.android.announcements.tabbedFragments;
 
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -49,7 +50,7 @@ public class AdminFragment extends Fragment implements Serializable,
         OrgsGridFragment.OrgsGridInteractionListener,
         ProfileFragment.ProfileInteractionListener,
         PostOverlayFragment.PostsOverlayListener,
-        UserListAdapter.UserListInteractionListener, ListFragment.ListFabListener, SearchableFrag.SearchInterface {
+        UserListAdapter.UserListInteractionListener, ListFragment.ListFabListener, SearchableFrag.SearchInterface, ModifyOrganizationFragment.ModifyOrgInterface {
     private static final String ADMIN_ORGS_TAG = "main_admin_frag";
     private static final String TAG = "AdminFragment";
     private static final String ARG_ADMIN_ORGS = "admin_orgs";
@@ -152,7 +153,7 @@ public class AdminFragment extends Fragment implements Serializable,
 
     @Override
     public void addChildOrganization(Organization parentOrg) {
-        mCurrentOrgModifyFrag = ModifyOrganizationFragment.newInstance(parentOrg, null);
+        mCurrentOrgModifyFrag = ModifyOrganizationFragment.newInstance(parentOrg, null, AdminFragment.this);
         getChildFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.admin_framelayout, mCurrentOrgModifyFrag)
@@ -271,7 +272,7 @@ public class AdminFragment extends Fragment implements Serializable,
     @Override
     public void modifyOrg(Organization org) {
         ((TabbedActivity)getActivity()).getmViewPager().setCurrentItem(3);
-        mCurrentOrgModifyFrag = ModifyOrganizationFragment.newInstance(null, org);
+        mCurrentOrgModifyFrag = ModifyOrganizationFragment.newInstance(null, org, AdminFragment.this);
         getChildFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.admin_framelayout, mCurrentOrgModifyFrag)
@@ -304,9 +305,30 @@ public class AdminFragment extends Fragment implements Serializable,
     }
 
     @Override
+    public void selectedUserToBeAdmin(final User user, Organization nullableOrg) {
+        //check if a user is being added to an existing org or is being saved to be an admin for a NEW org
+        if(!mCurrentOrgModifyFrag.isHidden()){
+            Log.wtf("test", "attempt to add "+user.getName()+" as initial admin");
+            //save user for setting as admin for new org
+            ((ModifyOrganizationFragment)mCurrentOrgModifyFrag).setInitialAdmin(user);
+            getChildFragmentManager().popBackStack();
+        } else {
+            //add user to existing org
+            AdminDataSource.addAdminToOrganization(mView, mLoading, nullableOrg.getmObjectId(), user.getmObjectId(), new FunctionCallback<Boolean>() {
+                @Override
+                public void done(Boolean success, ParseException e) {
+                    if (success && e == null){
+                        //TODO: error handling for adding an existing admin
+                        Snackbar.make(mView, getActivity().getString(R.string.format_added_user_as_admin_success_message, user.getName()), Snackbar.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+    }
+
+    @Override
     public void searchForAdmins(Organization organization) {
-        //TODO: open searchfrag here
-        SearchableFrag searchableFrag = SearchableFrag.newInstance(SearchableFrag.USERS_TYPE, organization, AdminFragment.this);
+        SearchableFrag searchableFrag = SearchableFrag.newInstance(SearchableFrag.USERS_TYPE, organization, AdminFragment.this, true);
         getChildFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, searchableFrag).addToBackStack(null).commitAllowingStateLoss();
     }
 

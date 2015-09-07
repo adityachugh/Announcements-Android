@@ -20,6 +20,7 @@ import java.util.List;
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
+import io.mindbend.android.announcements.cloudCode.AdminDataSource;
 
 /**
  * Created by Akshay Pall on 06/08/2015.
@@ -65,7 +66,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(final ViewHolder viewHolder, int i) {
         //TODO: pass data from notif to the elements of the feed item
         final User user = mUsers.get(i);
         viewHolder.mName.setText(user.getName());
@@ -82,8 +83,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
             viewHolder.mUserIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO: add user as admin
-                    Snackbar.make(v, user.getName() + " is now an admin", Snackbar.LENGTH_LONG).show();
+                    mListener.selectedUserToBeAdmin(user, mOrg);
                 }
             });
         }
@@ -136,5 +136,6 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 
     public interface UserListInteractionListener extends Serializable {
         void userSelected (User userPressed);
+        void selectedUserToBeAdmin (User user, Organization nullableOrg);
     }
 }

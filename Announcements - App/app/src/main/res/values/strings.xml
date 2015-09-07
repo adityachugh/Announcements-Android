@@ -117,4 +117,6 @@
     <string name="newA_priority_low">Low</string>
     <string name="newA_priority_medium">Medium</string>
     <string name="newA_priority_high">High</string>
+    <string name="format_added_user_as_admin_success_message">Added %1$s as admin</string>
+    <string name="initial_admin">Initial Admin</string>
 </resources>

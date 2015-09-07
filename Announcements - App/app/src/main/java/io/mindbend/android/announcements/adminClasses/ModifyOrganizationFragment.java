@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +22,8 @@ import java.io.Serializable;
 
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.User;
+import io.mindbend.android.announcements.reusableFrags.SearchableFrag;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,10 +33,12 @@ import io.mindbend.android.announcements.R;
 public class ModifyOrganizationFragment extends Fragment implements Serializable {
     private static final String ARG_PARENT = "parent_org";
     private static final String ARG_ORG = "if_to_modify_org";
+    private static final String ARG_LISTENER = "listener";
     public static final int UPLOAD_OR_MODIFY_PROFILE_PHOTO = 3;
     public static final int UPLOAD_OR_MODIFY_COVER_PHOTO = 8;
     private Organization mParentOrg;
     private Organization mOrgToModify;
+    private ModifyOrgInterface mListener;
 
     private EditText mName;
     private EditText mHandle;
@@ -41,14 +46,18 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
     private Switch mOrgType;
     private EditText mAccessCode;
     private TextView mAccessCodeTitle;
+    private LinearLayout mInitialAdminField;
     private byte[] toUploadProfileImageBytes;
     private byte[] toUploadCoverImageBytes;
+    private User mInitialAdmin;
 
-    public static ModifyOrganizationFragment newInstance(Organization parentOrg, Organization orgToModifyIfNeeded) {
+    public static ModifyOrganizationFragment newInstance(Organization parentOrg, Organization orgToModifyIfNeeded,
+                                                         ModifyOrgInterface listener) {
         ModifyOrganizationFragment fragment = new ModifyOrganizationFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_PARENT, parentOrg);
         args.putSerializable(ARG_ORG, orgToModifyIfNeeded);
+        args.putSerializable(ARG_LISTENER, listener);
         fragment.setArguments(args);
         return fragment;
     }
@@ -63,6 +72,7 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
         if (getArguments() != null) {
             mParentOrg = (Organization)getArguments().getSerializable(ARG_PARENT);
             mOrgToModify = (Organization)getArguments().getSerializable(ARG_ORG);
+            mListener = (ModifyOrgInterface)getArguments().getSerializable(ARG_LISTENER);
         }
     }
 
@@ -80,6 +90,22 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
             mHandle.setEnabled(false);
             mHandleTV.setTextColor(getResources().getColor(R.color.text_secondary));
             mOrgType.setChecked(!mOrgToModify.isPrivateOrg());
+        } else {
+            mInitialAdminField = (LinearLayout)v.findViewById(R.id.newO_add_admin_field);
+            mInitialAdminField.setVisibility(View.VISIBLE);
+            mInitialAdminField.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.wtf("Create new org", "choosing initial admin...");
+                    //take you to search view to choose an initial admin
+                    if (mListener != null)
+                        mListener.searchForAdmins(null);
+                    else {
+                        Log.wtf("Create new org", "listener (interface) is null!");
+                    }
+
+                }
+            });
         }
 
         ImageButton updateOrCreateOrgFab = (ImageButton)v.findViewById(R.id.new_OR_modify_org_fab);
@@ -187,7 +213,13 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
                         "Select Picture"), UPLOAD_OR_MODIFY_COVER_PHOTO);
             }
         });
+    }
 
+    public void setInitialAdmin(User initialAdmin) {
+        mInitialAdmin = initialAdmin;
+    }
 
+    public interface ModifyOrgInterface extends Serializable {
+        void searchForAdmins(Organization organization);
     }
 }

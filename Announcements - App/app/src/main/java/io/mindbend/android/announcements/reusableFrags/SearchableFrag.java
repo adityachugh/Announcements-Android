@@ -35,6 +35,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
     private final static String ARG_PARENT_ORG = "parent_org";
     private final static String ARG_INTERFACE = "interface";
     private final static String ARG_TYPE_OF_LIST = "type";
+    private final static String ARG_IS_ADMIN = "is_admin";
 
     private Organization mOrgOfUsers;
     private SearchInterface mListener;
@@ -47,14 +48,16 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
 
     private ArrayList<Organization> mOrgs = new ArrayList<Organization>();
     private ArrayList<User> mUsers;
+    private boolean mIsAdmin;
     private transient View mView;
 
-    public static SearchableFrag newInstance(int typeOfList, Organization parentOrganization, SearchInterface listener) {
+    public static SearchableFrag newInstance(int typeOfList, Organization parentOrganization, SearchInterface listener, boolean isAdmin) {
         SearchableFrag fragment = new SearchableFrag();
         Bundle args = new Bundle();
         args.putSerializable(ARG_PARENT_ORG, parentOrganization);
         args.putSerializable(ARG_INTERFACE, listener);
         args.putInt(ARG_TYPE_OF_LIST, typeOfList);
+        args.putBoolean(ARG_IS_ADMIN, isAdmin);
         fragment.setArguments(args);
         return fragment;
     }
@@ -70,6 +73,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
             mOrgOfUsers = (Organization)getArguments().getSerializable(ARG_PARENT_ORG);
             mListener = (SearchInterface)getArguments().getSerializable(ARG_INTERFACE);
             mTypeOfList = getArguments().getInt(ARG_TYPE_OF_LIST);
+            mIsAdmin = getArguments().getBoolean(ARG_IS_ADMIN);
         }
     }
 
@@ -83,7 +87,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
 
         switch (mTypeOfList){
             case USERS_TYPE:
-                final ListFragment searchListFrag = ListFragment.newInstance(false, null, true, null, null, null, null, mUsers, SearchableFrag.this, null, mOrgOfUsers);
+                final ListFragment searchListFrag = ListFragment.newInstance(mIsAdmin, null, true, null, null, null, null, mUsers, SearchableFrag.this, null, mOrgOfUsers);
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 if(ft.isEmpty())
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag, searchListFrag).commitAllowingStateLoss();
@@ -138,6 +142,11 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
     }
 
     @Override
+    public void selectedUserToBeAdmin(User user, Organization nullableOrg) {
+        mListener.selectedUserToBeAdmin(user,nullableOrg);
+    }
+
+    @Override
     public void pressedOrg(Organization orgSelected) {
         mListener.searchOrgPressed(orgSelected);
     }
@@ -178,5 +187,6 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
     public interface SearchInterface extends Serializable {
         void searchUserPressed(User userPressed);
         void searchOrgPressed(Organization orgPressed);
+        void selectedUserToBeAdmin (User user, Organization nullableOrg);
     }
 }

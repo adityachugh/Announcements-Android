@@ -87,4 +87,25 @@ public class AdminDataSource {
             }
         });
     }
+
+    public static void addAdminToOrganization (final View view, final ProgressBar loading, String organizationObjectId,
+                                               String selectedUserToBeAdminObjectId, final FunctionCallback<Boolean> callback){
+        loading.setVisibility(View.VISIBLE);
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("organizationObjectId", organizationObjectId);
+        params.put("selectedUserToBeAdminObjectId", selectedUserToBeAdminObjectId);
+
+        ParseCloud.callFunctionInBackground("addAdminToOrganization", params, new FunctionCallback<Boolean>() {
+            @Override
+            public void done(Boolean success, ParseException e) {
+                loading.setVisibility(View.GONE);
+                if (e != null || !success){
+                    Snackbar.make(view, "Error adding user as an admin", Snackbar.LENGTH_SHORT).show();
+                } else {
+                    callback.done(success, e);
+                }
+            }
+        });
+    }
 }

@@ -56,7 +56,11 @@ public class OrgsListAdapter extends RecyclerView.Adapter<OrgsListAdapter.ViewHo
 
     @Override
     public int getItemCount() {
-        return mOrgs.size();
+        if (mOrgs == null)
+            return 0;
+        else {
+            return mOrgs.size();
+        }
     }
 
     public OrgsListAdapter(Context context, List<Organization> orgs, OrgListInteractionListener listener) {

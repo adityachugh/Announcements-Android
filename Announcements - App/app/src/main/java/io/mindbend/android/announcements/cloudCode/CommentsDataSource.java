@@ -57,6 +57,7 @@ public class CommentsDataSource {
     }
 
     public static void postCommentAsUserOnPost(final RelativeLayout loadingLayout, final Context context, String postObjectId, String commentText, final FunctionCallback<Comment> callback){
+        loadingLayout.setVisibility(View.VISIBLE);
         final HashMap<String, String> params = new HashMap<>();
         params.put("commentText", commentText);
         params.put("postObjectId", postObjectId);
@@ -64,6 +65,7 @@ public class CommentsDataSource {
         ParseCloud.callFunctionInBackground("postCommentAsUserOnPost", params, new FunctionCallback<ParseObject>() {
             @Override
             public void done(ParseObject parseObject, ParseException e) {
+                loadingLayout.setVisibility(View.GONE);
                 Comment comment = null;
                 if (e == null)
                     comment = new Comment(context, parseObject);
@@ -72,7 +74,7 @@ public class CommentsDataSource {
         });
     }
 
-    public static void deleteComment (final RelativeLayout loadingLayout, final Context context, String commentObjectId, final FunctionCallback<Boolean> callback){
+    public static void deleteComment (final RelativeLayout loadingLayout, String commentObjectId, final FunctionCallback<Boolean> callback){
         loadingLayout.setVisibility(View.VISIBLE);
         HashMap<String, String> params = new HashMap<>();
         params.put("commentObjectId", commentObjectId);
@@ -86,7 +88,7 @@ public class CommentsDataSource {
                     callback.done(success, e);
                 } else {
                     e.printStackTrace();
-                    Snackbar.make(null, "Error deleting comment.", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(loadingLayout, "Error deleting comment.", Snackbar.LENGTH_SHORT).show();
                 }
             }
         });

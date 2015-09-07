@@ -2,6 +2,7 @@ package io.mindbend.android.announcements.tabbedFragments;
 
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -71,7 +72,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
 
         mLoading = (ProgressBar) mView.findViewById(R.id.discover_frag_progressbar);
 
-        mOrgsGridFrag = SearchableFrag.newInstance(SearchableFrag.ORGS_TYPE, null, this);
+        mOrgsGridFrag = SearchableFrag.newInstance(SearchableFrag.ORGS_TYPE, null, this, false);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.discover_framelayout, mOrgsGridFrag).commitAllowingStateLoss();
         return mView;
@@ -197,9 +198,22 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
     }
 
     @Override
+    public void selectedUserToBeAdmin(final User user, Organization nullableOrg) {
+        //add user to existing org
+        AdminDataSource.addAdminToOrganization(mView, mLoading, nullableOrg.getmObjectId(), user.getmObjectId(), new FunctionCallback<Boolean>() {
+            @Override
+            public void done(Boolean success, ParseException e) {
+                if (success && e == null){
+                    //TODO: error handling for adding an existing admin
+                    Snackbar.make(mView, getActivity().getString(R.string.format_added_user_as_admin_success_message, user.getName()), Snackbar.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    @Override
     public void searchForAdmins(Organization organization) {
-        //TODO: open searchfrag here
-        SearchableFrag searchableFrag = SearchableFrag.newInstance(SearchableFrag.USERS_TYPE, organization, DiscoverFragment.this);
+        SearchableFrag searchableFrag = SearchableFrag.newInstance(SearchableFrag.USERS_TYPE, organization, DiscoverFragment.this, true);
         getChildFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, searchableFrag).addToBackStack(null).commitAllowingStateLoss();
     }
 

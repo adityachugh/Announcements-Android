@@ -6,6 +6,7 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -29,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FunctionCallback;
+import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
@@ -292,9 +294,22 @@ public class TodayFragment extends Fragment implements Serializable,
     }
 
     @Override
+    public void selectedUserToBeAdmin(final User user, Organization nullableOrg) {
+        //add user to existing org
+        AdminDataSource.addAdminToOrganization(mView, mLoading, nullableOrg.getmObjectId(), user.getmObjectId(), new FunctionCallback<Boolean>() {
+            @Override
+            public void done(Boolean success, ParseException e) {
+                if (success && e == null){
+                    //TODO: error handling for adding an existing admin
+                    Snackbar.make(mView, getActivity().getString(R.string.format_added_user_as_admin_success_message, user.getName()), Snackbar.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    @Override
     public void searchForAdmins(Organization organization) {
-        //TODO: open searchfrag here
-        SearchableFrag searchableFrag = SearchableFrag.newInstance(SearchableFrag.USERS_TYPE, organization, TodayFragment.this);
+        SearchableFrag searchableFrag = SearchableFrag.newInstance(SearchableFrag.USERS_TYPE, organization, TodayFragment.this, true);
         getChildFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.today_framelayout, searchableFrag).addToBackStack(null).commitAllowingStateLoss();
     }
 
