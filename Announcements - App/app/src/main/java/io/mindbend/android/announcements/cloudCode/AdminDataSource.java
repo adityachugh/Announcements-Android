@@ -110,7 +110,7 @@ public class AdminDataSource {
     }
 
     public static void createNewChildOrganization (final View view, final Context context, final ProgressBar loading, String organizationObjectId,
-                                                   String levelConfigObjectId, String configObjectId, String organizationName,
+                                                   String levelConfigObjectId, String configObjectId, String organizationName, String organizationHandle,
                                                    boolean isPrivate, String adminObjectId, boolean approvalRequired, Integer accessCode,
                                                    byte[] profilePhoto, byte[] coverPhoto, String description,
                                                    final FunctionCallback<Boolean> callback){
@@ -125,6 +125,7 @@ public class AdminDataSource {
         String organizationType = isPrivate ? OrgsDataSource.ORG_TYPES_PRIVATE : OrgsDataSource.ORG_TYPES_PUBLIC;
         params.put("organizationType", organizationType);
         params.put("adminObjectId", adminObjectId);
+        params.put("organizationHandle", organizationHandle);
         params.put("approvalRequired", approvalRequired);
         params.put("accessCode", accessCode);
         params.put("profilePhoto", profilePhoto);

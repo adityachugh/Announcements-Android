@@ -196,8 +196,7 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
         String initAdminObjectId = mInitialAdmin == null ? ParseUser.getCurrentUser().getObjectId() : mInitialAdmin.getmObjectId();
             Integer accessCode = (!isPrivate || mAccessCode.getText().toString().equals("")) ? null : Integer.parseInt(mAccessCode.getText().toString());
             boolean approvalRequired = ((Switch)mView.findViewById(R.id.newO_approval_required_switch)).isChecked();
-            //TODO: send org config object id (not level config) and send in correct approvalRequired
-            AdminDataSource.createNewChildOrganization(mView, getActivity(), mLoading, mParentOrg.getmObjectId(), mParentOrg.getmMainLevel().getmObjectId(), mParentOrg.getmConfigId(), mName.getText().toString(), isPrivate, initAdminObjectId, approvalRequired, accessCode, toUploadProfileImageBytes, toUploadCoverImageBytes, mDescription.getText().toString(), new FunctionCallback<Boolean>() {
+            AdminDataSource.createNewChildOrganization(mView, getActivity(), mLoading, mParentOrg.getmObjectId(), mParentOrg.getmChildLevel().getmObjectId(), mParentOrg.getmConfigId(), mName.getText().toString(),mHandle.getText().toString(), isPrivate, initAdminObjectId, approvalRequired, accessCode, toUploadProfileImageBytes, toUploadCoverImageBytes, mDescription.getText().toString(), new FunctionCallback<Boolean>() {
                 @Override
                 public void done(Boolean success, ParseException e) {
                     if (success && e == null){
