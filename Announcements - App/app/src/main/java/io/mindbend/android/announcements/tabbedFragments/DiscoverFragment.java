@@ -111,11 +111,11 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
                     OrgsDataSource.isFollowingOrganization(mView, mLoading, ParseUser.getCurrentUser().getObjectId(), orgPressed.getmObjectId(), new FunctionCallback<String>() {
                         @Override
                         public void done(String followState, ParseException e) {
-                            if (e == null) {
+//
                                 ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgPressed, followState, DiscoverFragment.this, isAdmin, onToday, onDiscover, onYou, onAdmin);
                                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                                 transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, orgProfile).addToBackStack(null).commitAllowingStateLoss();
-                            }
+//
                         }
                     });
                     Log.d(TAG, "org has been pressed on discover page " + orgPressed.toString());
