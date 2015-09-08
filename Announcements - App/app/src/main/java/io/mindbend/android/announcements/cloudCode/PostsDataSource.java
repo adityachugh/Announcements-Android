@@ -90,7 +90,7 @@ public class PostsDataSource {
 
     public static void uploadPostForOrganization (final View view, final ProgressBar loading, String organizationObjectId,
                                                   String title, String body, byte[] photo, Date startDate, Date endDate,
-                                                  int priority, boolean notify, final FunctionCallback<Boolean> callback){
+                                                  int priority, boolean notifyParent, final FunctionCallback<Boolean> callback){
         loading.setVisibility(View.VISIBLE);
         HashMap<String, Object> params = new HashMap<>();
         params.put("organizationObjectId", organizationObjectId);
@@ -100,7 +100,7 @@ public class PostsDataSource {
         params.put("startDate", startDate);
         params.put("endDate", endDate);
         params.put("priority", priority);
-        params.put("notify", notify);
+        params.put("notifyParent", notifyParent);
 
         ParseCloud.callFunctionInBackground("uploadPostForOrganization", params, new FunctionCallback<Boolean>() {
             @Override

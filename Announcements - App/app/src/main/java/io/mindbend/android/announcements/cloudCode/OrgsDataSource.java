@@ -172,7 +172,7 @@ public class OrgsDataSource {
         ParseCloud.callFunctionInBackground("isFollowingOrganization", params, new FunctionCallback<String>() {
             @Override
             public void done(String followStatus, ParseException e) {
-                int i = 0;
+//                int i = 0;
                 loading.setVisibility(View.GONE);
                 callback.done(followStatus, e);
             }

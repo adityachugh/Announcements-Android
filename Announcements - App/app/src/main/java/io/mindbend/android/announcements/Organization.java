@@ -31,6 +31,7 @@ public class Organization implements Serializable, Parcelable {
     private LevelConfig mMainLevel;
     private LevelConfig mChildLevel;
     private boolean mHasAccessCode;
+    private Integer mAccessCode;
 
     public Organization(String objectId, String title, String description, int followers, String tag, boolean privateOrg, boolean newOrg){
         mObjectId = objectId;
@@ -44,7 +45,6 @@ public class Organization implements Serializable, Parcelable {
         mCoverImageURL = "";
         mIsChildless = false;
         mConfigId = "";
-        mHasAccessCode = false;
     }
 
     public Organization (ParseObject object){
@@ -75,6 +75,8 @@ public class Organization implements Serializable, Parcelable {
         mConfigId = object.getParseObject(ConfigDataSource.ORG_CONFIG).getObjectId();
 
         mHasAccessCode = object.getBoolean(OrgsDataSource.HAS_ACCESS_CODE);
+        if (mHasAccessCode)
+            mAccessCode = object.getInt("accessCode");
     }
 
     public static LevelConfig getLevelTitle (boolean isChild, ParseObject organization){
@@ -111,6 +113,8 @@ public class Organization implements Serializable, Parcelable {
         mConfigId = in.readString();
 
         mHasAccessCode = in.readInt() == 1;
+        if (hasAccessCode())
+            mAccessCode = in.readInt();
     }
 
     public String getmObjectId() {
@@ -178,6 +182,10 @@ public class Organization implements Serializable, Parcelable {
         return mHasAccessCode;
     }
 
+    public Integer getmAccessCode() {
+        return mAccessCode;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mObjectId);
@@ -206,6 +214,9 @@ public class Organization implements Serializable, Parcelable {
 
         if (mHasAccessCode) dest.writeInt(1);
         else dest.writeInt(0);
+
+        if (hasAccessCode())
+            dest.writeInt(mAccessCode);
     }
 
     public static final Parcelable.Creator<Organization> CREATOR

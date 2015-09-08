@@ -34,13 +34,13 @@ public class AdminDataSource {
             public void done(Boolean isSuccessful, ParseException e) {
                 loading.setVisibility(View.GONE);
                 if (e == null) {
-                    if (callback != null)
-                        callback.done(isSuccessful, e);
                     Snackbar.make(view, context.getString(R.string.succes_updated_org_photo), Snackbar.LENGTH_SHORT).show();
                 } else {
                     e.printStackTrace();
                     Snackbar.make(view, context.getString(R.string.could_not_upload_org_photo), Snackbar.LENGTH_SHORT).show();
                 }
+                if (callback != null)
+                    callback.done(isSuccessful, e);
             }
         });
     }
@@ -57,13 +57,13 @@ public class AdminDataSource {
             public void done(Boolean isSuccessful, ParseException e) {
                 loading.setVisibility(View.GONE);
                 if (e == null) {
-                    if (callback != null)
-                        callback.done(isSuccessful, e);
                     Snackbar.make(view, context.getString(R.string.succes_updated_org_photo), Snackbar.LENGTH_SHORT).show();
                 } else {
                     e.printStackTrace();
                     Snackbar.make(view, context.getString(R.string.could_not_upload_org_photo), Snackbar.LENGTH_SHORT).show();
                 }
+                if (callback != null)
+                    callback.done(isSuccessful, e);
             }
         });
     }
@@ -145,6 +145,107 @@ public class AdminDataSource {
                     Snackbar.make(view, "Could not act on follow request", Snackbar.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
+            }
+        });
+    }
+
+    public static void changeOrganizationType (final View view, final ProgressBar loading, String organizationObjectId,
+                                               String type, String nullableAccessCode, final FunctionCallback<Boolean> callback){
+        loading.setVisibility(View.VISIBLE);
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("organizationObjectId", organizationObjectId);
+        params.put("type", type);
+        Integer accessCode = (nullableAccessCode == null || nullableAccessCode.equals("")) ? null : Integer.parseInt(nullableAccessCode);
+        params.put("accessCode", accessCode);
+
+        ParseCloud.callFunctionInBackground("changeOrganizationType", params, new FunctionCallback<Boolean>() {
+            @Override
+            public void done(Boolean success, ParseException e) {
+                loading.setVisibility(View.GONE);
+                if (success && e == null){
+                    Snackbar.make(view, "Organization type changed", Snackbar.LENGTH_SHORT).show();
+                } else {
+                    Snackbar.make(view, "Failed to change organization type", Snackbar.LENGTH_SHORT).show();
+                    if (e!= null)
+                        e.printStackTrace();
+                }
+                callback.done(success, e);
+            }
+        });
+    }
+
+    public static void updateOrganizationName (final View view, final ProgressBar loading,
+                                                String organizationObjectId, String name,
+                                                final FunctionCallback<Boolean> callback){
+        loading.setVisibility(View.VISIBLE);
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("organizationObjectId", organizationObjectId);
+        params.put("name", name);
+
+        ParseCloud.callFunctionInBackground("updateOrganizationName", params, new FunctionCallback<Boolean>() {
+            @Override
+            public void done(Boolean success, ParseException e) {
+                loading.setVisibility(View.GONE);
+                if (e == null && success){
+                    Snackbar.make(view, "Updated organization name", Snackbar.LENGTH_SHORT).show();
+                } else {
+                    if (e!=null)
+                        e.printStackTrace();
+                    Snackbar.make(view, "Could not update organization name", Snackbar.LENGTH_SHORT).show();
+                }
+                callback.done(success, e);
+            }
+        });
+    }
+
+    public static void updateOrganizationDescription (final View view, final ProgressBar loading,
+                                               String organizationObjectId, String description,
+                                               final FunctionCallback<Boolean> callback){
+        loading.setVisibility(View.VISIBLE);
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("organizationObjectId", organizationObjectId);
+        params.put("description", description);
+
+        ParseCloud.callFunctionInBackground("updateOrganizationDescription", params, new FunctionCallback<Boolean>() {
+            @Override
+            public void done(Boolean success, ParseException e) {
+                loading.setVisibility(View.GONE);
+                if (e == null&& success){
+                    Snackbar.make(view, "Updated organization description", Snackbar.LENGTH_SHORT).show();
+                } else {
+                    if (e!=null)
+                        e.printStackTrace();
+                    Snackbar.make(view, "Could not update organization description", Snackbar.LENGTH_SHORT).show();
+                }
+                callback.done(success, e);
+            }
+        });
+    }
+
+    public static void updateOrganizationAccessCode (final View view, final ProgressBar loading,
+                                                      String organizationObjectId, String nullableAccessCode,
+                                                      final FunctionCallback<Boolean> callback){
+        loading.setVisibility(View.VISIBLE);
+
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("organizationObjectId", organizationObjectId);
+        Integer accessCode = (nullableAccessCode == null || nullableAccessCode.equals("")) ? null : Integer.parseInt(nullableAccessCode);
+        params.put("accessCode", accessCode);
+
+        ParseCloud.callFunctionInBackground("updateOrganizationAccessCode", params, new FunctionCallback<Boolean>() {
+            @Override
+            public void done(Boolean success, ParseException e) {
+                loading.setVisibility(View.GONE);
+                if (e == null&& success){
+                    Snackbar.make(view, "Updated organization access code", Snackbar.LENGTH_SHORT).show();
+                } else {
+                    if (e!=null)
+                        e.printStackTrace();
+                    Snackbar.make(view, "Could not update organization access code", Snackbar.LENGTH_SHORT).show();
+                }
+                callback.done(success, e);
             }
         });
     }

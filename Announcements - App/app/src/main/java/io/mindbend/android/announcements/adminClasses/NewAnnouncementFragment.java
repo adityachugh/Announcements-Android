@@ -54,7 +54,7 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
     private TextView mEndDateTV;
     private Date mEndDate;
 
-    private Switch mNotifyFollowers;
+    private Switch mNotifyParent;
     private View mView;
     private RadioGroup mRadioGroup;
 
@@ -121,9 +121,8 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
                 else {
                     String title = mTitle.getText().toString();
                     String body = mBody.getText().toString();
-                    boolean notify = mNotifyFollowers.isChecked();
                     mRadioGroup = (RadioGroup) mView.findViewById(R.id.newA_priority_group);
-                    PostsDataSource.uploadPostForOrganization(mView, mLoading, mOrg.getmObjectId(), title, body, mImageBytes, mStartDate, mEndDate, getPrioritySelected(), notify, new FunctionCallback<Boolean>() {
+                    PostsDataSource.uploadPostForOrganization(mView, mLoading, mOrg.getmObjectId(), title, body, mImageBytes, mStartDate, mEndDate, getPrioritySelected(), mNotifyParent.isChecked(), new FunctionCallback<Boolean>() {
                         @Override
                         public void done(Boolean success, ParseException e) {
                             if (e == null && success)
@@ -195,7 +194,9 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
             }
         });
 
-        mNotifyFollowers = (Switch)v.findViewById(R.id.newA_notify_followers_SWITCH);
+        mNotifyParent = (Switch)v.findViewById(R.id.newA_notify_followers_SWITCH);
+        TextView notifyParentTV = (TextView)v.findViewById(R.id.newO_notify_parent_TV);
+//        notifyParentTV.setText(mOrg.getmParentLevel().getLevelTitle());
     }
 
     private void openDatePickerDialog() {

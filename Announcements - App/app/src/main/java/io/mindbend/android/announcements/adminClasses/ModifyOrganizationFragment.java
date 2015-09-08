@@ -64,6 +64,7 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
     private ProgressBar mLoading;
 
     private boolean isPrivate = true;
+    private int mUpdatesToBeMade;
 
     public static ModifyOrganizationFragment newInstance(Organization parentOrg, Organization orgToModifyIfNeeded,
                                                          ModifyOrgInterface listener) {
@@ -144,9 +145,9 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
                                 }
                             })
                             .show();
-                } else if (isPrivate){
+                } else if (isPrivate) {
                     String accessCode = mAccessCode.getText().toString();
-                    Log.wtf("Access Code", accessCode+"----->"+accessCode.length());
+                    Log.wtf("Access Code", accessCode + "----->" + accessCode.length());
                     if (accessCode.length() == 0) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
                         builder.setMessage(getActivity().getString(R.string.create_private_org_without_access_code_message))
@@ -163,7 +164,7 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
                                     }
                                 })
                                 .show();
-                    } else if (accessCode.length() == 4){
+                    } else if (accessCode.length() == 4) {
                         submitOrg();
                     } else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
@@ -194,7 +195,87 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
     private void submitOrg() {
         if(mOrgToModify != null){
             //this is where you UPDATE the org that was passed in
-            //TODO: update org in database, ex. update photos
+            mUpdatesToBeMade = 0;
+
+            //check what fields have changed
+            if (!mName.getText().toString().equals(mOrgToModify.getTitle())){
+                mUpdatesToBeMade++;
+                //update name
+                AdminDataSource.updateOrganizationName(mView, mLoading, mOrgToModify.getmObjectId(), mName.getText().toString(), new FunctionCallback<Boolean>() {
+                    @Override
+                    public void done(Boolean aBoolean, ParseException e) {
+                        changesCompleted();
+                    }
+                });
+            } if (!mDescription.getText().toString().equals(mOrgToModify.getDescription())){
+                mUpdatesToBeMade++;
+                //update description
+                AdminDataSource.updateOrganizationDescription(mView, mLoading, mOrgToModify.getmObjectId(), mDescription.getText().toString(), new FunctionCallback<Boolean>() {
+                    @Override
+                    public void done(Boolean aBoolean, ParseException e) {
+                        changesCompleted();
+                    }
+                });
+            } if (toUploadProfileImageBytes != null){
+                mUpdatesToBeMade++;
+                AdminDataSource.updateOrganizationProfilePhoto(mView, getActivity(), mLoading, mOrgToModify.getmObjectId(), toUploadProfileImageBytes, new FunctionCallback<Boolean>() {
+                    @Override
+                    public void done(Boolean success, ParseException e) {
+                        if (success && e == null)
+                            changesCompleted();
+                    }
+                });
+            } if (toUploadCoverImageBytes != null){
+                mUpdatesToBeMade++;
+                AdminDataSource.updateOrganizationCoverPhoto(mView, getActivity(), mLoading, mOrgToModify.getmObjectId(), toUploadCoverImageBytes, new FunctionCallback<Boolean>() {
+                    @Override
+                    public void done(Boolean success, ParseException e) {
+                        changesCompleted();
+                    }
+                });
+            } if (mOrgToModify.isPrivateOrg()){
+                if (isPrivate){
+                    if (mOrgToModify.hasAccessCode() && mAccessCode.getText().toString().equals("")){
+                        mUpdatesToBeMade++;
+                        //remove access code
+                        AdminDataSource.updateOrganizationAccessCode(mView, mLoading, mOrgToModify.getmObjectId(), mAccessCode.getText().toString(), new FunctionCallback<Boolean>() {
+                            @Override
+                            public void done(Boolean success, ParseException e) {
+                                changesCompleted();
+                            }
+                        });
+                    } else if (!mOrgToModify.hasAccessCode() && !mAccessCode.getText().toString().equals("")){
+                        mUpdatesToBeMade++;
+                        //add access code
+                        AdminDataSource.updateOrganizationAccessCode(mView, mLoading, mOrgToModify.getmObjectId(), mAccessCode.getText().toString(), new FunctionCallback<Boolean>() {
+                            @Override
+                            public void done(Boolean success, ParseException e) {
+                                changesCompleted();
+                            }
+                        });
+                    }
+                } else {
+                    mUpdatesToBeMade++;
+                    //remove access code and change org type to public
+                    AdminDataSource.changeOrganizationType(mView, mLoading, mOrgToModify.getmObjectId(),
+                            OrgsDataSource.ORG_TYPES_PUBLIC, null, new FunctionCallback<Boolean>() {
+                                @Override
+                                public void done(Boolean success, ParseException e) {
+                                    changesCompleted();
+                                }
+                            });
+                }
+            } else if (!mOrgToModify.isPrivateOrg() && isPrivate){
+                mUpdatesToBeMade++;
+                //change org type to private
+                AdminDataSource.changeOrganizationType(mView, mLoading, mOrgToModify.getmObjectId(),
+                        OrgsDataSource.ORG_TYPES_PRIVATE, mAccessCode.getText().toString(), new FunctionCallback<Boolean>() {
+                            @Override
+                            public void done(Boolean success, ParseException e) {
+                                changesCompleted();
+                            }
+                        });
+            }
         }else {
             /**
              * Create the new org in Parse (with an access code if necessary)
@@ -222,6 +303,12 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
         toUploadCoverImageBytes = coverImageBytes;
     }
 
+    private void changesCompleted(){
+        mUpdatesToBeMade--;
+        if (mUpdatesToBeMade == 0)
+            getFragmentManager().popBackStack();
+    }
+
     private void setupViews(View v) {
         mLoading = (ProgressBar)mView.findViewById(R.id.newO_creation_progressbar);
         mName = (EditText)v.findViewById(R.id.newO_name);
@@ -232,8 +319,11 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
         RadioGroup mOrgType = (RadioGroup) v.findViewById(R.id.newO_org_type);
 
         mDescription = (EditText)mView.findViewById(R.id.newO_description);
-        if (mOrgToModify != null)
+        if (mOrgToModify != null){
+            if (mOrgToModify.hasAccessCode())
+                mAccessCode.setText(""+mOrgToModify.getmAccessCode());
             mDescription.setText(mOrgToModify.getDescription());
+        }
 
         mOrgType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
