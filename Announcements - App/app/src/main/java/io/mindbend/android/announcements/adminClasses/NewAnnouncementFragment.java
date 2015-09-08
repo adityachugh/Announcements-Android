@@ -196,7 +196,12 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
 
         mNotifyParent = (Switch)v.findViewById(R.id.newA_notify_followers_SWITCH);
         TextView notifyParentTV = (TextView)v.findViewById(R.id.newO_notify_parent_TV);
-//        notifyParentTV.setText(mOrg.getmParentLevel().getLevelTitle());
+        if (mOrg.getmParentLevel() == null){
+            LinearLayout notifyParentField = (LinearLayout)mView.findViewById(R.id.newO_notify_parent_field);
+            notifyParentField.setVisibility(View.GONE);
+        } else {
+            notifyParentTV.setText(getString(R.string.format_new_announce_Notify, mOrg.getmParentLevel().getmLevelTitle()));
+        }
     }
 
     private void openDatePickerDialog() {

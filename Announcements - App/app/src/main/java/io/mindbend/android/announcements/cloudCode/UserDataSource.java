@@ -3,12 +3,10 @@ package io.mindbend.android.announcements.cloudCode;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.support.design.widget.Snackbar;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.parse.FunctionCallback;
 import com.parse.GetCallback;
@@ -18,11 +16,9 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.zip.Deflater;
 
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
@@ -200,8 +196,11 @@ public class UserDataSource {
                     for (ParseObject followField : followFields) {
                         ParseObject orgObject = followField.getParseObject("organization");
                         Organization org = new Organization(orgObject);
-                        org.setmLevelTitle(Organization.getLevelTitle(false, orgObject));
-                        org.setmChildLevel(Organization.getLevelTitle(true, orgObject));
+                        org.setmLevel(Organization.getLevel(ConfigDataSource.ORG_LEVEL_CONFIG, orgObject));
+                        if (Organization.getLevel(ConfigDataSource.ORG_CHILD_LEVEL_CONFIG, orgObject) != null)
+                            org.setmChildLevel(Organization.getLevel(ConfigDataSource.ORG_CHILD_LEVEL_CONFIG, orgObject));
+                        if (Organization.getLevel(ConfigDataSource.ORG_PARENT_LEVEL_CONFIG, orgObject) != null)
+                            org.setmParentLevel(Organization.getLevel(ConfigDataSource.ORG_PARENT_LEVEL_CONFIG, orgObject));
                         orgs.add(org);
                     }
 

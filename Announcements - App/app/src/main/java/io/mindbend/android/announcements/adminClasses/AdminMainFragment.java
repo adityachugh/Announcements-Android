@@ -80,7 +80,8 @@ public class AdminMainFragment extends Fragment implements Serializable {
 
     private void setupTextOfOrg() {
         String typeOfOrg = mOrg.getmMainLevel().getmLevelTitle();
-        String typeOfChild = mOrg.getmChildLevel().getmLevelTitle();
+        String typeOfChild = mOrg.getmChildLevel() == null ? "child" : mOrg.getmChildLevel().getmLevelTitle();
+        String typeOfParent = mOrg.getmParentLevel() == null ? "parent" : mOrg.getmParentLevel().getmLevelTitle();
 
         if (!mOrg.isChildless()){
             LinearLayout hasChildrenFunctions = (LinearLayout)mView.findViewById(R.id.admin_main_has_children_fields);
