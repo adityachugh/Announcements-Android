@@ -92,7 +92,7 @@ public class AdminDataSource {
     public static void createNewChildOrganization(final View view, final Context context, final ProgressBar loading, String organizationObjectId,
                                                   String levelConfigObjectId, String configObjectId, String organizationName, String organizationHandle,
                                                   boolean isPrivate, String adminObjectId, boolean approvalRequired, Integer accessCode,
-                                                  byte[] profilePhoto, byte[] coverPhoto, String description,
+                                                  byte[] profilePhoto, byte[] coverPhoto, String description, String parentLevelConfigObjectId,
                                                   final FunctionCallback<Boolean> callback) {
         //levelConfigObjectId is the child level config of the org that's calling this function
         loading.setVisibility(View.VISIBLE);
@@ -111,6 +111,7 @@ public class AdminDataSource {
         params.put("profilePhoto", profilePhoto);
         params.put("coverPhoto", coverPhoto);
         params.put("description", description);
+        params.put("parentLevelConfigObjectId", parentLevelConfigObjectId);
 
         ParseCloud.callFunctionInBackground("createNewChildOrganization", params, new FunctionCallback<Boolean>() {
             @Override
