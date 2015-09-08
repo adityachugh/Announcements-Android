@@ -94,6 +94,10 @@ public class AdminMainFragment extends Fragment implements Serializable {
             TextView addChildOrg= (TextView) mView.findViewById(R.id.text_add_child_org);
             addChildOrg.setText(getString(R.string.format_add_child_org, typeOfChild));
             addChildOrg.setVisibility(View.VISIBLE);
+
+            TextView viewPendingPosts= (TextView) mView.findViewById(R.id.text_view_child_pending_posts);
+            viewPendingPosts.setText(getString(R.string.format_view_child_pending_posts, typeOfChild));
+            viewPendingPosts.setVisibility(View.VISIBLE);
         }
 
         TextView addOrgAnnouncement = (TextView) mView.findViewById(R.id.text_add_org_announcement);
@@ -135,6 +139,15 @@ public class AdminMainFragment extends Fragment implements Serializable {
                 public void onClick(View v) {
                     Log.d(ADMIN_MAIN_TAG, "add admin");
                     mListener.addChildOrganization(mOrg);
+                }
+            });
+
+            LinearLayout viewChildPendingPosts= (LinearLayout) mView.findViewById(R.id.admin_view_pending_posts);
+            viewChildPendingPosts.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(ADMIN_MAIN_TAG, "view child pending");
+                    mListener.getChildPendingPosts(mOrg);
                 }
             });
         }
@@ -220,6 +233,7 @@ public class AdminMainFragment extends Fragment implements Serializable {
         void viewChildren(Organization org);
         void addAnnouncement(Organization organization);
         void addChildOrganization (Organization parentOrg);
+        void getChildPendingPosts (Organization parentOrg);
         void userListOpened(Organization parentOrg);
         void viewAnnouncementsState(Organization organization);
         void modifyOrg (Organization organization);

@@ -35,6 +35,7 @@ import io.mindbend.android.announcements.cloudCode.PostsDataSource;
 public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.ViewHolder> implements Serializable{
     private static final String SHARE_TAG = "Share_post_tag";
     private float mScale;
+    private boolean mIsApproving;
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView mTitle;
@@ -139,6 +140,9 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
             viewHolder.mAnnouncementState.setTextColor(textColor);
             viewHolder.mAnnouncementState.setText(typeString);
         }
+        else if (mIsApproving){
+            //if approving posts (admin)
+        }
         else {
             //normal view
             viewHolder.mCommentButton.setOnClickListener(new View.OnClickListener() {
@@ -171,11 +175,12 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
         return mPosts.size();
     }
 
-    public PostsFeedAdapter(Context context, List<Post> posts, PostInteractionListener listener, boolean isViewingState, float scale) {
+    public PostsFeedAdapter(Context context, List<Post> posts, PostInteractionListener listener, boolean isViewingState, float scale, boolean isApproving) {
         //save the mPosts private field as what is passed in
         mContext = context;
         mPosts = posts;
         mScale = scale;
+        mIsApproving = isApproving;
 
         /**
          * The listener should be NULL only if the @param isViewingState is TRUE

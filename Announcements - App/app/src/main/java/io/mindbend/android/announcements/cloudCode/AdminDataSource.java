@@ -12,9 +12,12 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import io.mindbend.android.announcements.Organization;
+import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 
 /**
@@ -105,6 +108,29 @@ public class AdminDataSource {
                 } else {
                     callback.done(success, e);
                 }
+            }
+        });
+    }
+
+    public static void getPostsToBeApprovedInRange (final Context context, String organizationObjectId, int startIndex, int numberOfPosts, final FunctionCallback<ArrayList<Post>> callback){
+        //loading.setVisibility(View.VISIBLE);
+
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("organizationObjectId", organizationObjectId);
+        params.put("startIndex", startIndex);
+        params.put("numberOfPosts", numberOfPosts);
+
+        ParseCloud.callFunctionInBackground("getPostsToBeApprovedInRange", params, new FunctionCallback<List<ParseObject>>() {
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e) {
+                ArrayList<Post> pendingPosts = new ArrayList<Post>();
+                if (e == null){
+                    for (ParseObject object : parseObjects){
+                        pendingPosts.add(new Post(context, object));
+                    }
+                }
+                //loading.setVisibility(View.GONE);
+                callback.done(pendingPosts, e);
             }
         });
     }

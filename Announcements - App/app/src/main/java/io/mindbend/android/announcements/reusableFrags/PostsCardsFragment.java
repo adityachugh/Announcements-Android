@@ -41,6 +41,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
     private static final String ARG_POSTS_LISTENER = "post_touch_listener";
     private static final String ARG_POSTS_OVERLAY_LISTENER = "post_overlay_listener";
     private static final String ARG_IS_VIEWING_STATE = "is_viewing_announcements_state";
+    private static final String ARG_IS_APPROVING = "is_approving_posts";
 
     // TODO: Rename and change types of parameters
     private List<Post> mPosts;
@@ -50,8 +51,10 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
     private transient View mView;
     //To pass into feed adapter (dynamic sizing)
     private float mScale;
+
     private transient SwipyRefreshLayout mRefreshTodayPosts;
     private boolean mIsViewingState;
+    private boolean mIsApproving;
     private TextView noPostsMessage;
 
     /**
@@ -62,13 +65,14 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
      * @return A new instance of fragment PostsCardsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PostsCardsFragment newInstance(ArrayList<Post> posts, PostsFeedAdapter.PostInteractionListener postTouchListener, boolean isViewingState, PostOverlayFragment.PostsOverlayListener postsOverlayListener) {
+    public static PostsCardsFragment newInstance(ArrayList<Post> posts, PostsFeedAdapter.PostInteractionListener postTouchListener, boolean isViewingState, PostOverlayFragment.PostsOverlayListener postsOverlayListener, boolean isApproving) {
         PostsCardsFragment fragment = new PostsCardsFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_POSTS, posts);
         args.putSerializable(ARG_POSTS_LISTENER, postTouchListener);
         args.putSerializable(ARG_POSTS_OVERLAY_LISTENER, postsOverlayListener);
         args.putBoolean(ARG_IS_VIEWING_STATE, isViewingState);
+        args.putBoolean(ARG_IS_APPROVING, isApproving);
         fragment.setArguments(args);
         return fragment;
     }
@@ -89,7 +93,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
             mPostTouchListener = (PostsFeedAdapter.PostInteractionListener)getArguments().getSerializable(ARG_POSTS_LISTENER);
             mIsViewingState = getArguments().getBoolean(ARG_IS_VIEWING_STATE);
             mPostsOverlayListener = (PostOverlayFragment.PostsOverlayListener)getArguments().getSerializable(ARG_POSTS_OVERLAY_LISTENER);
-
+            mIsApproving = getArguments().getBoolean(ARG_IS_APPROVING);
             mScale = getActivity().getResources().getDisplayMetrics().density;
         }
     }
@@ -105,7 +109,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
             //Initialize and set the adapter
-            mPostFeedAdapter = new PostsFeedAdapter(getActivity(), mPosts, mPostTouchListener, mIsViewingState, mScale);
+            mPostFeedAdapter = new PostsFeedAdapter(getActivity(), mPosts, mPostTouchListener, mIsViewingState, mScale, mIsApproving);
             recyclerView.setAdapter(mPostFeedAdapter);
 
             //the animation for the recycler view to slide in from the bottom of the view

@@ -162,13 +162,35 @@ public class AdminFragment extends Fragment implements Serializable,
     }
 
     @Override
+    public void getChildPendingPosts(Organization parentOrg) {
+        //TODO: load up posts - getPostsToBeApprovedInRange
+        //can reuse cards frag,add new field (isAdminApproving) in new instance to change button texts and clicks.
+        //actOnApprovalRequest
+        loadPendingPosts(parentOrg.getmObjectId());
+    }
+
+    private void loadPendingPosts(String parentId){
+        AdminDataSource.getPostsToBeApprovedInRange(getActivity(), parentId, 0, 10, new FunctionCallback<ArrayList<Post>>() {
+            @Override
+            public void done(ArrayList<Post> posts, ParseException e) {
+                if (e == null) {
+                    Log.wtf("AdminFragment", "posts loaded: " + posts.get(0).getmPostDetail());
+                } else {
+                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    @Override
     public void userListOpened(final Organization parentOrg) {
         OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, parentOrg.getmObjectId(), 0, 50, true, new FunctionCallback<HashMap<Boolean, Object>>() {
             @Override
             public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
 
-                ArrayList<User> users = (ArrayList<User>)booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
-                HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>)booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
+                ArrayList<User> users = (ArrayList<User>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
+                HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
 
                 ListFragment adminList = ListFragment.newInstance(true, AdminFragment.this, false, null, null, null, null, users, AdminFragment.this, typeOfUsers, parentOrg);
                 getChildFragmentManager().beginTransaction()
@@ -196,7 +218,7 @@ public class AdminFragment extends Fragment implements Serializable,
         Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio", "");
         posts.add(testPost3);
 
-        PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true, this);
+        PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true, this, false);
         getChildFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.admin_framelayout, announcementsStateList)

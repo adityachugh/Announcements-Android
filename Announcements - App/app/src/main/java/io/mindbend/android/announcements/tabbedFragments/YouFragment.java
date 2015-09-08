@@ -167,7 +167,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
         Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio", "hasImage");
         posts.add(testPost3);
 
-        PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true, this);
+        PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true, this, false);
         getChildFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.you_framelayout, announcementsStateList)

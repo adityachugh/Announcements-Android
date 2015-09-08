@@ -50,6 +50,7 @@
     <string name="format_new_org_announcment">New %1$s Announcement</string>
     <string name="format_view_children">View %1$s</string>
     <string name="format_add_child_org">Add New %1$s</string>
+    <string name="format_view_child_pending_posts">View %1$s Pending Posts</string>
     <string name="format_view_org_admin">View %1$s Admins</string>
     <string name="format_change_org_photo">Change %1$s Profile Photo</string>
     <string name="format_change_org_cover_photo">Change %1$s Cover Photo</string>
