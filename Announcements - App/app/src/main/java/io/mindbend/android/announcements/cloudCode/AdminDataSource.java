@@ -139,7 +139,7 @@ public class AdminDataSource {
             @Override
             public void done(Boolean success, ParseException e) {
                 loading.setVisibility(View.GONE);
-                if (success && e == null) {
+                if (e == null&& success) {
                     Log.wtf("Act on follow request", "successfully completed");
                     functionCallback.done(success, e);
                 } else {
@@ -156,14 +156,14 @@ public class AdminDataSource {
         HashMap<String, Object> params = new HashMap<>();
         params.put("organizationObjectId", organizationObjectId);
         params.put("type", type);
-        Integer accessCode = (nullableAccessCode == null || nullableAccessCode.equals("")) ? null : Integer.parseInt(nullableAccessCode);
-        params.put("accessCode", accessCode);
+        if ((nullableAccessCode != null && !nullableAccessCode.equals("")))
+            params.put("accessCode", Integer.parseInt(nullableAccessCode));
 
         ParseCloud.callFunctionInBackground("changeOrganizationType", params, new FunctionCallback<Boolean>() {
             @Override
             public void done(Boolean success, ParseException e) {
                 loading.setVisibility(View.GONE);
-                if (success && e == null){
+                if (e == null && success){
                     Snackbar.make(view, "Organization type changed", Snackbar.LENGTH_SHORT).show();
                 } else {
                     Snackbar.make(view, "Failed to change organization type", Snackbar.LENGTH_SHORT).show();

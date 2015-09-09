@@ -348,7 +348,7 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
                     Log.wtf("Image", "Bitmap is: " + image.toString());
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     image.compress(Bitmap.CompressFormat.JPEG, 70, stream);
-                    byte[] imageBytes = stream.toByteArray();
+                    byte[] imageBytes = convertImageUriToUploadableByteArray(selectedImageUri, requestCode, ModifyOrganizationFragment.UPLOAD_OR_MODIFY_PROFILE_PHOTO); //uses cover photo size
                     Log.wtf("Image", "Converted bytes are: " + imageBytes);
                     mAdminFragment.getmAdminMainFrag().getmNewAnnouncementFragment().setmImageBytes(imageBytes);
                 } catch (IOException f) {
@@ -364,7 +364,7 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
                     Log.wtf("Image", "Bitmap is: " + image.toString());
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     image.compress(Bitmap.CompressFormat.JPEG, 70, stream);
-                    byte[] imageBytes = stream.toByteArray();
+                    byte[] imageBytes = convertImageUriToUploadableByteArray(selectedImageUri, requestCode, ModifyOrganizationFragment.UPLOAD_OR_MODIFY_PROFILE_PHOTO); //uses cover photo size
                     Log.wtf("Image", "Converted bytes are: " + imageBytes);
                     if (requestCode == ModifyOrganizationFragment.UPLOAD_OR_MODIFY_PROFILE_PHOTO) {
                         ((ModifyOrganizationFragment) mAdminFragment.getmCurrentOrgModifyFrag()).setProfileImageBytes(imageBytes);

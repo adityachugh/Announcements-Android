@@ -221,8 +221,7 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
                 AdminDataSource.updateOrganizationProfilePhoto(mView, getActivity(), mLoading, mOrgToModify.getmObjectId(), toUploadProfileImageBytes, new FunctionCallback<Boolean>() {
                     @Override
                     public void done(Boolean success, ParseException e) {
-                        if (success && e == null)
-                            changesCompleted();
+                        changesCompleted();
                     }
                 });
             } if (toUploadCoverImageBytes != null){
