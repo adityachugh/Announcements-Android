@@ -16,11 +16,13 @@ import android.widget.TextView;
 
 import com.parse.FunctionCallback;
 import com.parse.ParseException;
+import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
@@ -35,6 +37,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         private final TextView mName;
         private final LinearLayout mUserLayout;
         private final ImageView mUserIcon;
+        private final CircleImageView mUserImage;
 
         //for the accept and decline buttons, if a pending user
         private final ImageButton mAcceptUser;
@@ -48,6 +51,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
             mUserIcon = (ImageView)itemView.findViewById(R.id.user_list_right_icon);
             mAcceptUser = (ImageButton)itemView.findViewById(R.id.pending_user_accept_button);
             mDenyUser = (ImageButton)itemView.findViewById(R.id.pending_user_deny_button);
+            mUserImage = (CircleImageView)itemView.findViewById(R.id.user_list_image);
         }
     }
 
@@ -79,6 +83,9 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
     public void onBindViewHolder(final ViewHolder viewHolder, int i) {
         final User user = mUsers.get(i);
         viewHolder.mName.setText(user.getName());
+
+        if (user.getmProfilePictureURL() != null && !user.getmProfilePictureURL().equals(""))
+            Picasso.with(mContext).load(user.getmProfilePictureURL()).skipMemoryCache().resize(100,100).into(viewHolder.mUserImage);
 
         viewHolder.mUserLayout.setOnClickListener(new View.OnClickListener() {
             @Override

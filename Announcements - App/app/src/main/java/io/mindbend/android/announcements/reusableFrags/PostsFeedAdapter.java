@@ -103,7 +103,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
         }
 
         if (!post.getmPosterOrg().getmProfileImageURL().equals(""))
-            Picasso.with(mContext).load(post.getmPosterOrg().getmProfileImageURL()).into(viewHolder.mPosterImage);
+            Picasso.with(mContext).load(post.getmPosterOrg().getmProfileImageURL()).skipMemoryCache().resize(100,100).into(viewHolder.mPosterImage);
 
         viewHolder.mPostCard.setOnClickListener(new View.OnClickListener() {
             @Override
