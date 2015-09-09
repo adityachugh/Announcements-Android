@@ -245,12 +245,7 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
             mEndDateTV.setText(dateToString(date));
         }
 
-//        TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), R.style.DialogTheme, NewAnnouncementFragment.this, hours, minutes, false);
-//        timePickerDialog.show();
-
-        CustomTimePickerDialog timePickerDialog = new CustomTimePickerDialog(getActivity(), NewAnnouncementFragment.this,
-                hours, CustomTimePickerDialog.getRoundedMinute(minutes) + CustomTimePickerDialog.TIME_PICKER_INTERVAL,
-                false);
+        TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), R.style.DialogTheme, NewAnnouncementFragment.this, hours, minutes, false);
         timePickerDialog.show();
     }
 
