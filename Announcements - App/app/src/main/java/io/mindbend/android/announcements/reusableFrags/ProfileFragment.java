@@ -300,7 +300,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                     @Override
                     public void onClick(View v) {
                         Log.wtf("has access code?", ""+mOrg.hasAccessCode());
-                        if (!mOrg.isPrivateOrg() || !mOrg.hasAccessCode())//if it's public or private but with no access code
+                        if (!mOrg.isPrivateOrg() || (mOrg.isPrivateOrg() && !mOrg.hasAccessCode() && !mOrgFollowState.equals(UserDataSource.FOLLOWER_PENDING)))//if it's public or private but with no access code
                             updateFollowState();
                         else {
                             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
@@ -402,7 +402,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            UserDataSource.updateFollowStateForUser(mView, toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
+                            UserDataSource.updateFollowStateForUser(mOrg.isPrivateOrg(), mView, toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
                                 @Override
                                 public void done(Boolean success, ParseException e) {
                                     if (success) {
@@ -417,7 +417,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                     })
                     .show();
         } else {
-            UserDataSource.updateFollowStateForUser(mView, toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
+            UserDataSource.updateFollowStateForUser(mOrg.isPrivateOrg(), mView, toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
                 @Override
                 public void done(Boolean success, ParseException e) {
                     if (success) {

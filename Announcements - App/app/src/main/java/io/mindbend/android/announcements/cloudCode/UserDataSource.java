@@ -122,7 +122,7 @@ public class UserDataSource {
         });
     }
 
-    public static void updateFollowStateForUser (final View layout, final Boolean isFollowing, String organizationObjectId, final FunctionCallback<Boolean> callback){
+    public static void updateFollowStateForUser (final boolean isPrivate, final View layout, final Boolean isFollowing, String organizationObjectId, final FunctionCallback<Boolean> callback){
         HashMap<String, Object> params = new HashMap<>();
         params.put("isFollowing", isFollowing);
         params.put("organizationObjectId", organizationObjectId);
@@ -133,7 +133,7 @@ public class UserDataSource {
             public void done(Boolean isSuccessful, ParseException e) {
                 String message = "Failure";
                 if (e == null && isSuccessful) {
-                    message = "Successfully " + toastText + "followed organization";
+                    message = (isPrivate && isFollowing) ? "Sent follow request to organization" : "Successfully " + toastText + "followed organization";
                     callback.done(isSuccessful, e);
                 }
                 if (e != null) {
