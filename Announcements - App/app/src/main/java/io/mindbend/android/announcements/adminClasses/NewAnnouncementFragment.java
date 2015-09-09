@@ -226,6 +226,7 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
     }
 
     private String dateToString (Date date){
+        date.setMinutes(roundMinuteToIntervals(date.getMinutes()));
         SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy  hh:mm a");
         return df.format(date);
     }
@@ -244,7 +245,12 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
             mEndDateTV.setText(dateToString(date));
         }
 
-        TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), R.style.DialogTheme, NewAnnouncementFragment.this, hours, minutes, false);
+//        TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), R.style.DialogTheme, NewAnnouncementFragment.this, hours, minutes, false);
+//        timePickerDialog.show();
+
+        CustomTimePickerDialog timePickerDialog = new CustomTimePickerDialog(getActivity(), NewAnnouncementFragment.this,
+                hours, CustomTimePickerDialog.getRoundedMinute(minutes) + CustomTimePickerDialog.TIME_PICKER_INTERVAL,
+                false);
         timePickerDialog.show();
     }
 
@@ -265,8 +271,22 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
         }
     }
 
+
+
+    private static final int TIME_PICKER_INTERVAL=15;
+    private boolean mIgnoreEvent=false;
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
+        if (mIgnoreEvent)
+            return;
+        if (minute%TIME_PICKER_INTERVAL!=0){
+            minute = roundMinuteToIntervals(minute);
+            mIgnoreEvent=true;
+            view.setCurrentMinute(minute);
+            mIgnoreEvent=false;
+        }
+
         if (selectingStartDate){
             mStartDate.setHours(hourOfDay);
             mStartDate.setMinutes(minute);
@@ -276,5 +296,16 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
             mEndDate.setMinutes(minute);
             mEndDateTV.setText(dateToString(mEndDate));
         }
+    }
+
+    public int roundMinuteToIntervals(int minute) {
+        //to round to 15 minute intervals
+        if(minute%TIME_PICKER_INTERVAL!=0){
+            int minuteFloor=minute-(minute%TIME_PICKER_INTERVAL);
+            minute=minuteFloor + (minute==minuteFloor+1 ? TIME_PICKER_INTERVAL : 0);
+            if (minute==60)
+                minute=0;
+        }
+        return minute;
     }
 }
