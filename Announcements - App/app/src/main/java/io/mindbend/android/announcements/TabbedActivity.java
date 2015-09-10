@@ -105,7 +105,7 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
         mTabBar.setupWithViewPager(mViewPager);
         setupTabsForTabBar();
 
-        toolbar.setTitle(getString(R.string.format_tabbed_activity_toolbar_text, ParseUser.getCurrentUser().getString(VerificationDataSource.USER_FIRST_NAME))); //TODO: pull in user's name
+        toolbar.setTitle(getString(R.string.format_tabbed_activity_toolbar_text, ParseUser.getCurrentUser().getString(VerificationDataSource.USER_FIRST_NAME)));
         setSupportActionBar(toolbar);
 
         mTitleTextView = (TextView) findViewById(R.id.landscape_toolbar_title);

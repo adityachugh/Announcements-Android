@@ -25,8 +25,12 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
+import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 import com.parse.FunctionCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.squareup.picasso.Picasso;
 
@@ -109,6 +113,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     private transient TextView mProfileTag;
     private transient ProgressBar mLoading;
     private transient ImageButton mFollowFab;
+    private transient SwipyRefreshLayout mRefresher;
 
     /**
      * Use this factory method to create a new instance of
@@ -171,6 +176,15 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
             mView = inflater.inflate(R.layout.fragment_profile, container, false);
 
             mLoading = (ProgressBar) mView.findViewById(R.id.profile_frag_progressbar);
+
+//            mRefresher = (SwipyRefreshLayout)mView.findViewById(R.id.profile_refresh);
+//            mRefresher.setColorSchemeResources(R.color.accent, R.color.primary);
+//            if (mUser != null) { //don't need user refresh of info, can`t refresh user orgs due to fixed parallax view height
+//                mRefresher.setVisibility(View.GONE);
+//            }
+//            else {
+//                mRefresher.setOnRefreshListener(this);
+//            }
 
             //fetch embedded relativelayout
             mProfileContentFrameLayoutEmbedded = (RelativeLayout) mView.findViewById(R.id.profile_content_framelayout_embedded);

@@ -51,7 +51,7 @@ public class AdminFragment extends Fragment implements Serializable,
         ProfileFragment.ProfileInteractionListener,
         PostOverlayFragment.PostsOverlayListener,
         UserListAdapter.UserListInteractionListener, ListFragment.ListFabListener, SearchableFrag.SearchInterface, ModifyOrganizationFragment.ModifyOrgInterface {
-    private static final String ADMIN_ORGS_TAG = "main_admin_frag";
+    public static final String ADMIN_ORGS_TAG = "main_admin_frag";
     private static final String TAG = "AdminFragment";
     private static final String ARG_ADMIN_ORGS = "admin_orgs";
     private transient OrgsGridFragment mAdminOrgsFrag;
@@ -122,6 +122,11 @@ public class AdminFragment extends Fragment implements Serializable,
 
     public OrgsGridFragment getmAdminOrgsFrag() {
         return mAdminOrgsFrag;
+    }
+
+    public void updateModifiedAdminOrg(Organization updatedOrg){
+        Log.wtf("AdminFrag", "Org updated");
+        mAdminOrgsFrag.updateSingleOrg(updatedOrg);
     }
 
     @Override
@@ -196,7 +201,7 @@ public class AdminFragment extends Fragment implements Serializable,
         Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio", "");
         posts.add(testPost3);
 
-        PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true, this);
+        PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true, AdminFragment.this);
         getChildFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.admin_framelayout, announcementsStateList)

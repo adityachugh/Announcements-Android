@@ -34,6 +34,7 @@ public class Organization implements Serializable, Parcelable {
     private Integer mAccessCode;
     private LevelConfig mParentLevel;
 
+
     public Organization(String objectId, String title, String description, int followers, String tag, boolean privateOrg, boolean newOrg) {
         mObjectId = objectId;
         mTitle = title;
@@ -157,6 +158,30 @@ public class Organization implements Serializable, Parcelable {
     public boolean isChildless() {
         return mIsChildless;
     }
+
+    //for updating an org after modifying it
+
+    public void setmTitle(String mTitle) {
+        this.mTitle = mTitle;
+    }
+
+    public void setmDescription(String mDescription) {
+        this.mDescription = mDescription;
+    }
+
+    public void setmFollowers(int mFollowers) {
+        this.mFollowers = mFollowers;
+    }
+
+    public void setmPrivateOrg(boolean mPrivateOrg) {
+        this.mPrivateOrg = mPrivateOrg;
+    }
+
+    public void setmHasAccessCode(boolean mHasAccessCode) {
+        this.mHasAccessCode = mHasAccessCode;
+    }
+
+
 
     @Override
     public int describeContents() {

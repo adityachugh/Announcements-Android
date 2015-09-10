@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,6 +86,27 @@ public class OrgsGridFragment extends Fragment implements OrgsGridAdapter.OrgInt
     @Override
     public void pressedOrg(Organization orgSelected) {
         mListener.pressedOrgFromGrid(orgSelected);
+    }
+
+    public void updateSingleOrg(Organization updatedOrg) {
+        if (mOrgs != null && mOrgs.size() > 0){
+            for (int i = 0; i < mOrgs.size() ; i++){
+                Organization org = mOrgs.get(i);
+                if (org.getmObjectId().equals(updatedOrg.getmObjectId())){
+                    Log.wtf("ORG FRAG", "Org updated");
+                    mOrgs.remove(i);
+                    //update org with properties of updated org
+                    org.setmTitle(updatedOrg.getTitle());
+                    org.setmDescription(updatedOrg.getDescription());
+                    org.setmFollowers(updatedOrg.getFollowers());
+                    org.setmPrivateOrg(updatedOrg.isPrivateOrg());
+                    org.setmHasAccessCode(updatedOrg.hasAccessCode());
+
+                    mOrgs.add(i, org);
+                    mOrgsAdapter.notifyDataSetChanged();
+                }
+            }
+        }
     }
 
     public interface OrgsGridInteractionListener extends Serializable{

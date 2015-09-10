@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ViewSwitcher;
 
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import java.io.Serializable;

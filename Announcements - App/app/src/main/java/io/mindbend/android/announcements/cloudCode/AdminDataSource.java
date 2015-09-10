@@ -250,4 +250,33 @@ public class AdminDataSource {
             }
         });
     }
+
+    public static void updateOrganizationFields (final View view, final ProgressBar loading, String organizationObjectId,
+                                                 String accessCodeString, String description, String name,
+                                                 final FunctionCallback<Organization> orgModified){
+
+        loading.setVisibility(View.VISIBLE);
+
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("organizationObjectId", organizationObjectId);
+        Integer accessCode = (accessCodeString == null || accessCodeString.equals("")) ? null : Integer.parseInt(accessCodeString);
+        params.put("accessCode", accessCode);
+        params.put("description", description);
+        params.put("name", name);
+        
+        ParseCloud.callFunctionInBackground("updateOrganizationFields", params, new FunctionCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject orgReturned, ParseException e) {
+//                int i = 0;
+                loading.setVisibility(View.GONE);
+                if (e == null && orgModified != null){
+                    Snackbar.make(view, "Successfully updated organization", Snackbar.LENGTH_SHORT).show();
+                    orgModified.done(new Organization(orgReturned), e);
+                }
+                else {
+                    Snackbar.make(view, "Failed to update organization", Snackbar.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
 }
