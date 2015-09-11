@@ -9,14 +9,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+
+import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
+import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
+import com.parse.FunctionCallback;
+import com.parse.ParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.cloudCode.OrgsDataSource;
+import io.mindbend.android.announcements.tabbedFragments.TodayFragment;
 
-public class OrgsGridFragment extends Fragment implements OrgsGridAdapter.OrgInteractionListener, Serializable{
+public class OrgsGridFragment extends Fragment implements OrgsGridAdapter.OrgInteractionListener, Serializable, SwipyRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "OrgsGridFragment";
 
@@ -25,18 +33,26 @@ public class OrgsGridFragment extends Fragment implements OrgsGridAdapter.OrgInt
     private static final String ARG_ORGS_LISTENER = "orgs_listener";
     private static final String ARG_ORGS_LIST = "orgs";
     private static final String ARG_GRID_LISTENER = "grid_listener";
+    private static final String ARG_SEARCH_QUERY_TEXT = "search_org_text"; //in order to recall searchOrg method with same text
 
     private OrgsGridAdapter.OrgInteractionListener mOrgsListener;
     private ArrayList<Organization> mOrgs;
     private OrgsGridAdapter mOrgsAdapter;
     private OrgsGridInteractionListener mListener;
+    private String mQueryText;
+    private View mView;
+    private ProgressBar mLoading;
+    private transient SwipyRefreshLayout mLoadMoreSearchItems;
 
-    public static OrgsGridFragment newInstance(ArrayList<Organization> orgs, OrgsGridAdapter.OrgInteractionListener orgListener, OrgsGridInteractionListener gridListener) {
+    public static OrgsGridFragment newInstance(ArrayList<Organization> orgs, OrgsGridAdapter.OrgInteractionListener orgListener,
+                                               OrgsGridInteractionListener gridListener, String nullableSearchQuery) {
         OrgsGridFragment fragment = new OrgsGridFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_ORGS_LIST, orgs);
         args.putSerializable(ARG_ORGS_LISTENER, orgListener);
         args.putSerializable(ARG_GRID_LISTENER, gridListener);
+        if (nullableSearchQuery != null)
+            args.putString(ARG_SEARCH_QUERY_TEXT, nullableSearchQuery);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,6 +68,8 @@ public class OrgsGridFragment extends Fragment implements OrgsGridAdapter.OrgInt
             mOrgs = getArguments().getParcelableArrayList(ARG_ORGS_LIST);
             mOrgsListener = (OrgsGridAdapter.OrgInteractionListener)getArguments().getSerializable(ARG_ORGS_LISTENER);
             mListener = (OrgsGridInteractionListener)getArguments().getSerializable(ARG_GRID_LISTENER);
+            if (getArguments().getString(ARG_SEARCH_QUERY_TEXT) != null)
+                mQueryText = getArguments().getString(ARG_SEARCH_QUERY_TEXT);
         }
     }
 
@@ -59,15 +77,28 @@ public class OrgsGridFragment extends Fragment implements OrgsGridAdapter.OrgInt
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_orgs_grid, container, false);
+        mView = inflater.inflate(R.layout.fragment_orgs_grid, container, false);
 
-        RecyclerView recyclerView = (RecyclerView)v.findViewById(R.id.orgs_recycler_view);
+        RecyclerView recyclerView = (RecyclerView) mView.findViewById(R.id.orgs_recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
 
         //Initialize and set the adapter
         mOrgsAdapter = new OrgsGridAdapter (getActivity(), mOrgs, mOrgsListener);
         recyclerView.setAdapter(mOrgsAdapter);
-        return v;
+
+        mLoading = (ProgressBar)mView.findViewById(R.id.orgs_grid_progressbar);
+
+        //in order to setup scroll-to-bottom-to-load-more
+        mLoadMoreSearchItems = (SwipyRefreshLayout) mView.findViewById(R.id.orgs_refresher);
+        mLoadMoreSearchItems.setColorSchemeResources(R.color.accent, R.color.primary);
+        if (mQueryText != null){
+            mLoadMoreSearchItems.setOnRefreshListener(this);
+        }
+        else {
+            mLoadMoreSearchItems.setEnabled(false);
+        }
+
+        return mView;
     }
 
 
@@ -109,10 +140,19 @@ public class OrgsGridFragment extends Fragment implements OrgsGridAdapter.OrgInt
         }
     }
 
-    public void replaceOrgsList(ArrayList<Organization> orgsReceived){
-        mOrgs.clear();
-        mOrgs.addAll(orgsReceived);
-        mOrgsAdapter.notifyDataSetChanged();
+    @Override
+    public void onRefresh(SwipyRefreshLayoutDirection swipyRefreshLayoutDirection) {
+        OrgsDataSource.searchForOrganizationsInRange(getActivity(), mView, mLoading,
+                mQueryText, mOrgs.size(), new FunctionCallback<ArrayList<Organization>>() {
+                    @Override
+                    public void done(ArrayList<Organization> organizations, ParseException e) {
+                        if (e == null){
+                            mOrgs.addAll(organizations);
+                            mOrgsAdapter.notifyDataSetChanged();
+                            mLoadMoreSearchItems.setRefreshing(false);
+                        }
+                    }
+                });
     }
 
     public interface OrgsGridInteractionListener extends Serializable{

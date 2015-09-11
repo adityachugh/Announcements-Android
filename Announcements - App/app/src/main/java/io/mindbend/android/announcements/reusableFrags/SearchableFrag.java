@@ -1,20 +1,17 @@
 package io.mindbend.android.announcements.reusableFrags;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 
+import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
+import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 import com.parse.FunctionCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -26,8 +23,9 @@ import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.cloudCode.OrgsDataSource;
+import io.mindbend.android.announcements.cloudCode.UserDataSource;
 
-public class SearchableFrag extends Fragment implements Serializable, UserListAdapter.UserListInteractionListener, OrgsGridAdapter.OrgInteractionListener, OrgsGridFragment.OrgsGridInteractionListener, SearchView.OnQueryTextListener {
+public class SearchableFrag extends Fragment implements Serializable, UserListAdapter.UserListInteractionListener, OrgsGridAdapter.OrgInteractionListener, OrgsGridFragment.OrgsGridInteractionListener, SearchView.OnQueryTextListener{
     public final static int USERS_TYPE = 0;
     public final static int ORGS_TYPE = 1;
     public final static int SIGNUP_ORGS_TYPE = 2;
@@ -87,16 +85,10 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
                 final ListFragment searchListFrag = ListFragment.newInstance(mIsAdmin, null, true, null, null, null, null, mUsers, SearchableFrag.this, null, mOrgOfUsers);
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 if(ft.isEmpty())
-                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag, searchListFrag).commitAllowingStateLoss();
+                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag_of_items, searchListFrag).commitAllowingStateLoss();
                 break;
             case ORGS_TYPE:
-
                 loadDiscoverOrgs(ParseUser.getCurrentUser().getObjectId(), 0, 10);
-
-                mOrgsGridFragment = OrgsGridFragment.newInstance(mOrgs, this, this);
-                FragmentTransaction ft2 = getFragmentManager().beginTransaction();
-                if(ft2.isEmpty())
-                    ft2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag, mOrgsGridFragment).commitAllowingStateLoss();
                 break;
         }
 
@@ -113,7 +105,12 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
             @Override
             public void done(ArrayList<Organization> organizations, ParseException e) {
                 if (e == null && organizations != null) {
-                    mOrgsGridFragment.replaceOrgsList(organizations);
+                    mOrgs.clear();
+                    mOrgs.addAll(organizations);
+                    mOrgsGridFragment = OrgsGridFragment.newInstance(mOrgs, SearchableFrag.this, SearchableFrag.this, null);
+                    FragmentTransaction ft2 = getFragmentManager().beginTransaction();
+                    if(ft2.isEmpty())
+                        ft2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag_of_items, mOrgsGridFragment).commitAllowingStateLoss();
                 }
             }
         });
@@ -137,7 +134,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
 
     @Override
     public void selectedUserToBeAdmin(User user, Organization nullableOrg) {
-        mListener.selectedUserToBeAdmin(user,nullableOrg);
+        mListener.selectedUserToBeAdmin(user, nullableOrg);
     }
 
     @Override
@@ -151,29 +148,33 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query) {
+    public boolean onQueryTextSubmit(final String query) {
         switch (mTypeOfList){
             case USERS_TYPE:
-                //TODO: query results from database
-                ArrayList<User> users = new ArrayList<>();
-                users.add(new User(query, query, "lol", "lola", "wat", 5));
-                ListFragment searchListFrag = ListFragment.newInstance(false, null, true, null, null, null, null, users, SearchableFrag.this, null, mOrgOfUsers);
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.searchable_frag, searchListFrag).commitAllowingStateLoss();
+                UserDataSource.searchForUsersInRange(getActivity(), mView, mLoading, query, 0,
+                        new FunctionCallback<ArrayList<User>>() {
+                            @Override
+                            public void done(ArrayList<User> users, ParseException e) {
+                                if (e == null) {
+                                    ListFragment searchListFrag = ListFragment.newInstance(false, null, true, null, null, null, null, users, SearchableFrag.this, null, mOrgOfUsers);
+                                    getFragmentManager().beginTransaction()
+                                            .replace(R.id.searchable_frag_of_items, searchListFrag)
+                                            .commitAllowingStateLoss();
+                                }
+                            }
+                        });
                 break;
             case ORGS_TYPE:
-                //TODO: query results from database
                 OrgsDataSource.searchForOrganizationsInRange(getActivity(), mView, mLoading, query,
                         0, new FunctionCallback<ArrayList<Organization>>() {
                             @Override
                             public void done(ArrayList<Organization> organizations, ParseException e) {
                                 if (e == null && organizations != null) {
-                                    OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(organizations, SearchableFrag.this, SearchableFrag.this);
+                                    mOrgsGridFragment = OrgsGridFragment.newInstance(organizations, SearchableFrag.this, SearchableFrag.this, query);
                                     getFragmentManager().beginTransaction()
                                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                            .replace(R.id.searchable_frag, orgsGridFragment)
+                                            .replace(R.id.searchable_frag_of_items, mOrgsGridFragment)
                                             .commitAllowingStateLoss();
-
 
                                 }
                             }

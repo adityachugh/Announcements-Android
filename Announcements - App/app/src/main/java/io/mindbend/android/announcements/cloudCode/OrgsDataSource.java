@@ -301,6 +301,7 @@ public class OrgsDataSource {
                     for (ParseObject org : organizationsReturned){
                         orgs.add(new Organization(org));
                     }
+
                     callback.done(orgs, e);
                 } else {
                     Snackbar.make(v, context.getString(R.string.error_searching_orgs), Snackbar.LENGTH_SHORT).show();

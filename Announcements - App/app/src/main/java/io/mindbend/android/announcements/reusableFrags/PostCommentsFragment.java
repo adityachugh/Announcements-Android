@@ -203,13 +203,6 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
                         mRecyclerView.startAnimation(trans);
                     }
 
-                } else {
-                    if (e.getCode() == ParseException.INCORRECT_TYPE)
-                        Snackbar.make(loading, R.string.no_more_comments_message, Snackbar.LENGTH_SHORT).show();
-                    else
-                        Snackbar.make(loading, "Error", Snackbar.LENGTH_SHORT).show();
-
-                    e.printStackTrace();
                 }
             }
         });

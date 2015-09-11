@@ -1,13 +1,31 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:id="@+id/orgs_grid_framelayout"
-             tools:context="io.mindbend.android.announcements.reusableFrags.OrgsGridFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/orgs_grid_framelayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="io.mindbend.android.announcements.reusableFrags.OrgsGridFragment">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/orgs_recycler_view"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+        <com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout
+            android:id="@+id/orgs_refresher"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:direction="bottom">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/orgs_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout>
+
+        <ProgressBar
+            android:layout_width="@dimen/progress_bar_LARGE"
+            android:layout_height="@dimen/progress_bar_LARGE"
+            android:id="@+id/orgs_grid_progressbar"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
+    </RelativeLayout>
 
 </FrameLayout>

@@ -92,7 +92,7 @@ public class AdminFragment extends Fragment implements Serializable,
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mOrgsList = getArguments().getParcelableArrayList(ARG_ADMIN_ORGS);
-            mAdminOrgsFrag = OrgsGridFragment.newInstance(mOrgsList, AdminFragment.this, AdminFragment.this);
+            mAdminOrgsFrag = OrgsGridFragment.newInstance(mOrgsList, AdminFragment.this, AdminFragment.this, null);
         }
     }
 
@@ -139,7 +139,7 @@ public class AdminFragment extends Fragment implements Serializable,
             @Override
             public void done(ArrayList<Organization> organizations, ParseException e) {
                 if (e == null) {
-                    OrgsGridFragment childrenOrgs = OrgsGridFragment.newInstance(organizations, AdminFragment.this, AdminFragment.this);
+                    OrgsGridFragment childrenOrgs = OrgsGridFragment.newInstance(organizations, AdminFragment.this, AdminFragment.this, null);
                     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                     transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, childrenOrgs).addToBackStack(null).commitAllowingStateLoss();
                 }
@@ -300,7 +300,7 @@ public class AdminFragment extends Fragment implements Serializable,
     @Override
     public void selectedUserToBeAdmin(final User user, Organization nullableOrg) {
         //check if a user is being added to an existing org or is being saved to be an admin for a NEW org
-        if (!mCurrentOrgModifyFrag.isHidden()) {
+        if (mCurrentOrgModifyFrag != null && !mCurrentOrgModifyFrag.isHidden()) {
             Log.wtf("test", "attempt to add " + user.getName() + " as initial admin");
             //save user for setting as admin for new org
             ((ModifyOrganizationFragment) mCurrentOrgModifyFrag).setInitialAdmin(user);
@@ -311,7 +311,6 @@ public class AdminFragment extends Fragment implements Serializable,
                 @Override
                 public void done(Boolean success, ParseException e) {
                     if (success && e == null) {
-                        //TODO: error handling for adding an existing admin
                         Snackbar.make(mView, getActivity().getString(R.string.format_added_user_as_admin_success_message, user.getName()), Snackbar.LENGTH_SHORT).show();
                     }
                 }

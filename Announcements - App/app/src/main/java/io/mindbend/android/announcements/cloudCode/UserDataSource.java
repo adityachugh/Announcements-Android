@@ -212,4 +212,31 @@ public class UserDataSource {
             }
         });
     }
+
+    public static void searchForUsersInRange (final Context context, final View v, final ProgressBar loading,
+                                                      String searchString, int startIndex,
+                                                      final FunctionCallback<ArrayList<User>> callback){
+        loading.setVisibility(View.VISIBLE);
+
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("searchString", searchString);
+        params.put("startIndex", startIndex);
+
+        ParseCloud.callFunctionInBackground("searchForUsersInRange", params, new FunctionCallback<List<ParseUser>>() {
+            @Override
+            public void done(List<ParseUser> usersReturned, ParseException e) {
+                loading.setVisibility(View.GONE);
+                if (e == null){
+                    ArrayList<User> users = new ArrayList<User>();
+                    for (ParseUser user : usersReturned){
+                        users.add(new User(user));
+                    }
+
+                    callback.done(users, e);
+                } else {
+                    Snackbar.make(v, context.getString(R.string.error_searching_orgs), Snackbar.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
 }

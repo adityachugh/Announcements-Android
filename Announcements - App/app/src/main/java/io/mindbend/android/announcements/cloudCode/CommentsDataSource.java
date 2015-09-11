@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import io.mindbend.android.announcements.Comment;
+import io.mindbend.android.announcements.R;
 
 /**
  * Created by Avik Hasija on 8/22/2015.
@@ -47,10 +48,20 @@ public class CommentsDataSource {
                         for (ParseObject object : parseObjects){
                             comments.add(new Comment(context, object));
                         }
+                        loadingLayout.setVisibility(View.GONE);
+                        callback.done(comments, e);
                     }
                 }
-                loadingLayout.setVisibility(View.GONE);
-                callback.done(comments, e);
+
+                else { //e == null
+                        if (e.getCode() == ParseException.INCORRECT_TYPE)
+                            Snackbar.make(loadingLayout, R.string.no_more_comments_message, Snackbar.LENGTH_SHORT).show();
+                        else
+                            Snackbar.make(loadingLayout, "Error", Snackbar.LENGTH_SHORT).show();
+
+                        e.printStackTrace();
+
+                }
 
             }
         });

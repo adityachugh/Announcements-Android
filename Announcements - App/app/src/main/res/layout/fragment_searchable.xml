@@ -1,6 +1,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="io.mindbend.android.announcements.reusableFrags.SearchableFrag">
 
     <LinearLayout
@@ -21,7 +23,7 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/searchable_frag"/>
+                android:id="@+id/searchable_frag_of_items"/>
             <ProgressBar
                 android:layout_width="@dimen/progress_bar_LARGE"
                 android:layout_height="@dimen/progress_bar_LARGE"
