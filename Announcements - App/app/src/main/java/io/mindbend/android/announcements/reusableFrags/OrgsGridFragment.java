@@ -109,6 +109,12 @@ public class OrgsGridFragment extends Fragment implements OrgsGridAdapter.OrgInt
         }
     }
 
+    public void replaceOrgsList(ArrayList<Organization> orgsReceived){
+        mOrgs.clear();
+        mOrgs.addAll(orgsReceived);
+        mOrgsAdapter.notifyDataSetChanged();
+    }
+
     public interface OrgsGridInteractionListener extends Serializable{
         void pressedOrgFromGrid (Organization orgPressed);
     }

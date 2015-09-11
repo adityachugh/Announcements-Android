@@ -173,6 +173,8 @@ public class AdminDataSource {
                     orgModified.done(new Organization(orgReturned), e);
                 }
                 else {
+                    if (e != null)
+                        e.printStackTrace();
                     Snackbar.make(view, "Failed to update organization", Snackbar.LENGTH_SHORT).show();
                 }
             }

@@ -40,16 +40,13 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
     private Organization mOrgOfUsers;
     private SearchInterface mListener;
     private int mTypeOfList;
-    private transient SearchView mSearchView;
     private transient ProgressBar mLoading;
-
-    private OrgsGridAdapter.OrgInteractionListener mOrgInteractionListener = this;
-    private OrgsGridFragment.OrgsGridInteractionListener mOrgsGridInteractionListener = this;
 
     private ArrayList<Organization> mOrgs = new ArrayList<Organization>();
     private ArrayList<User> mUsers;
     private boolean mIsAdmin;
     private transient View mView;
+    private transient OrgsGridFragment mOrgsGridFragment;
 
     public static SearchableFrag newInstance(int typeOfList, Organization parentOrganization, SearchInterface listener, boolean isAdmin) {
         SearchableFrag fragment = new SearchableFrag();
@@ -82,7 +79,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_searchable, container, false);
-        mSearchView = (SearchView) mView.findViewById(R.id.searchable_searchview);
+        SearchView searchView = (SearchView) mView.findViewById(R.id.searchable_searchview);
         mLoading = (ProgressBar) mView.findViewById(R.id.searchable_frag_progressbar);
 
         switch (mTypeOfList){
@@ -96,17 +93,17 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
 
                 loadDiscoverOrgs(ParseUser.getCurrentUser().getObjectId(), 0, 10);
 
-                OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(mOrgs, this, this);
+                mOrgsGridFragment = OrgsGridFragment.newInstance(mOrgs, this, this);
                 FragmentTransaction ft2 = getFragmentManager().beginTransaction();
                 if(ft2.isEmpty())
-                    ft2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag, orgsGridFragment).commitAllowingStateLoss();
+                    ft2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag, mOrgsGridFragment).commitAllowingStateLoss();
                 break;
         }
 
-        mSearchView.setOnQueryTextListener(this);
-        mSearchView.onActionViewExpanded();
+        searchView.setOnQueryTextListener(this);
+        searchView.onActionViewExpanded();
         //Stop keyboard from automatically popping up
-        mSearchView.clearFocus();
+        searchView.clearFocus();
 
         return mView;
     }
@@ -116,10 +113,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
             @Override
             public void done(ArrayList<Organization> organizations, ParseException e) {
                 if (e == null && organizations != null) {
-                    OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(organizations, mOrgInteractionListener, mOrgsGridInteractionListener);
-                    FragmentTransaction ft2 = getFragmentManager().beginTransaction();
-                    if (ft2.isEmpty())
-                        ft2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag, orgsGridFragment).commitAllowingStateLoss();
+                    mOrgsGridFragment.replaceOrgsList(organizations);
                 }
             }
         });
@@ -169,11 +163,22 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
                 break;
             case ORGS_TYPE:
                 //TODO: query results from database
-                ArrayList<Organization> orgs = new ArrayList<>();
-                orgs.add(new Organization("test", query, query, 54, query, false, true));
-                OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(orgs, this, this);
-                FragmentTransaction ft2 = getFragmentManager().beginTransaction();
-                ft2.replace(R.id.searchable_frag, orgsGridFragment).commitAllowingStateLoss();
+                OrgsDataSource.searchForOrganizationsInRange(getActivity(), mView, mLoading, query,
+                        0, new FunctionCallback<ArrayList<Organization>>() {
+                            @Override
+                            public void done(ArrayList<Organization> organizations, ParseException e) {
+                                if (e == null && organizations != null) {
+                                    OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(organizations, SearchableFrag.this, SearchableFrag.this);
+                                    getFragmentManager().beginTransaction()
+                                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                            .replace(R.id.searchable_frag, orgsGridFragment)
+                                            .commitAllowingStateLoss();
+
+
+                                }
+                            }
+                        });
+
                 break;
         }
         return true;

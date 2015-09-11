@@ -86,7 +86,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
 
     @Override
     public void pressedPostComments(Post postPressed) {
-        //TODO: do stuff, although switching to comments frag is already handled
+        //do stuff, although switching to comments frag is already handled
         Log.d(TAG, "post pressed");
     }
 

@@ -124,4 +124,5 @@
     <string name="access_code_length_message">Your access code must be 4 digits long!</string>
     <string name="create_private_org_without_access_code_message">If your private organization does not have an access code, any user will be able to submit a follow request to your administrators. Is this okay?</string>
     <string name="new_org_approval_required">Approval Required?</string>
+    <string name="error_searching_orgs">Could not search for organizations</string>
 </resources>

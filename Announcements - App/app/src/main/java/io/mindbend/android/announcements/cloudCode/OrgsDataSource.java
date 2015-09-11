@@ -187,7 +187,7 @@ public class OrgsDataSource {
         Integer accessCode = null;
         if (!enteredAccessCode.equals(""))
             accessCode = Integer.parseInt(enteredAccessCode);
-        Log.wtf("attempt to follow PRI org", "Access code: "+accessCode);
+        Log.wtf("attempt to follow PRI org", "Access code: " + accessCode);
 
         params.put("enteredAccessCode", accessCode);
         params.put("organizationObjectId", organizationObjectId);
@@ -281,5 +281,31 @@ public class OrgsDataSource {
             default:
                 return UserListAdapter.USERS_NOT_FOLLOWING;
         }
+    }
+
+    public static void searchForOrganizationsInRange (final Context context, final View v, final ProgressBar loading,
+                                                      String searchString, int startIndex,
+                                                      final FunctionCallback<ArrayList<Organization>> callback){
+        loading.setVisibility(View.VISIBLE);
+
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("searchString", searchString);
+        params.put("startIndex", startIndex);
+
+        ParseCloud.callFunctionInBackground("searchForOrganizationsInRange", params, new FunctionCallback<List<ParseObject>>() {
+            @Override
+            public void done(List<ParseObject> organizationsReturned, ParseException e) {
+                loading.setVisibility(View.GONE);
+                if (e == null){
+                    ArrayList<Organization> orgs = new ArrayList<Organization>();
+                    for (ParseObject org : organizationsReturned){
+                        orgs.add(new Organization(org));
+                    }
+                    callback.done(orgs, e);
+                } else {
+                    Snackbar.make(v, context.getString(R.string.error_searching_orgs), Snackbar.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }
