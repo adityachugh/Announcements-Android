@@ -39,12 +39,12 @@ public class CommentsDataSource {
         ParseCloud.callFunctionInBackground("getRangeOfCommentsForPost", params, new FunctionCallback<List<ParseObject>>() {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
+                int i = 0;
                 //parseobject to comments
                 ArrayList<Comment> comments = new ArrayList<>();
                 if (e == null){
                     if (parseObjects != null && parseObjects.size() > 0){
                         for (ParseObject object : parseObjects){
-                            ParseUser user = (ParseUser)object.get(CommentsDataSource.COMMENT_USER);
                             comments.add(new Comment(context, object));
                         }
                     }

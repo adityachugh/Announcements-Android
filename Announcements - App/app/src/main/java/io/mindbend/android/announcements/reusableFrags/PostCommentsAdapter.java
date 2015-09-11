@@ -28,7 +28,7 @@ import io.mindbend.android.announcements.cloudCode.CommentsDataSource;
 /**
  * Created by Akshay Pall on 02/08/2015.
  */
-public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapter.ViewHolder> implements View.OnClickListener, Serializable {
+public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapter.ViewHolder> implements Serializable {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView mCommenterName;
@@ -52,8 +52,6 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
     private transient RelativeLayout mLoadingLayout;
     private Context mContext;
     private CommenterInteractionListener mListener;
-    private io.mindbend.android.announcements.Comment mCurrentComment;
-    private User mPoster;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, final int i) {
@@ -63,39 +61,48 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        mCurrentComment = mComments.get(i);
-        mPoster = mCurrentComment.getmUser();
+        final Comment currentComment = mComments.get(i);
 
-        //viewHolder.mCommenterName.setText(mCurrentComment.getmUserId());
-        viewHolder.mCommentText.setText(mCurrentComment.getmText());
-        viewHolder.mTimeSince.setText(mCurrentComment.getmTimeSince());
-        viewHolder.mCommenterName.setText(mPoster.getName());
+        //viewHolder.mCommenterName.setText(currentComment.getmUserId());
+        viewHolder.mCommentText.setText(currentComment.getmText());
+        viewHolder.mTimeSince.setText(currentComment.getmTimeSince());
+        viewHolder.mCommenterName.setText(currentComment.getmUser().getName());
 
         //setting up the onClick name or image of commenter in order to open a profile frag
-        viewHolder.mCommenterName.setOnClickListener(this);
-        viewHolder.mPosterImage.setOnClickListener(this);
+        viewHolder.mCommenterName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                commenterClicked(currentComment.getmUser());
+            }
+        });
+        viewHolder.mPosterImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                commenterClicked(currentComment.getmUser());
+            }
+        });
 
-        String posterImageUrl = mCurrentComment.getmUser().getmProfilePictureURL();
+        String posterImageUrl = currentComment.getmUser().getmProfilePictureURL();
         if (!posterImageUrl.equals(""))
             Picasso.with(mContext).load(posterImageUrl).into(viewHolder.mPosterImage);
 
         viewHolder.mEntireLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if (mCurrentComment.getmUser().getmObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
+                if (currentComment.getmUser().getmObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.DialogTheme);
                     builder.setTitle("Delete Comment?")
-                            .setMessage("Do you want to delete the comment: \""+mCurrentComment.getmText()+"\".")
+                            .setMessage("Do you want to delete the comment: \""+currentComment.getmText()+"\".")
                             .setNegativeButton("Cancel", null)
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
-                                    CommentsDataSource.deleteComment(mLoadingLayout, mCurrentComment.getmObjectId(), new FunctionCallback<Boolean>() {
+                                    CommentsDataSource.deleteComment(mLoadingLayout, currentComment.getmObjectId(), new FunctionCallback<Boolean>() {
                                         @Override
                                         public void done(Boolean deleted, ParseException e) {
                                             if (e == null && deleted){
-                                                mListener.deletedComment(mCurrentComment);
+                                                mListener.deletedComment(currentComment);
                                             }
                                         }
                                     });
@@ -108,10 +115,9 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
         });
     }
 
-    @Override
-    public void onClick(View v) {
-        mListener.commenterProfilePressed(mPoster);
-    }
+    private void commenterClicked(User poster) {
+        mListener.commenterProfilePressed(poster);
+}
 
     @Override
     public int getItemCount() {
