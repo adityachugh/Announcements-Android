@@ -89,8 +89,14 @@ public class MoreActivity extends AppCompatActivity {
                     public void done(ParseException e) {
                         //sign out of parse, then...
                         mLoading.setVisibility(View.GONE);
+
+                        //finish tabbed activity
+                        Intent myIntent = new Intent(TabbedActivity.ACTION_CLOSE);
+                        sendBroadcast(myIntent);
+
                         Intent i = new Intent(MoreActivity.this, OnboardingActivity.class);
                         startActivity(i);
+                        finish();
                     }
                 });
             }

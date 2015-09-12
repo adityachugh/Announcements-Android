@@ -1,7 +1,10 @@
 package io.mindbend.android.announcements;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -53,6 +56,9 @@ import io.mindbend.android.announcements.tabbedFragments.TodayFragment;
 
 public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPageChangeListener, Serializable {
 
+    //to destroy this activity if signing out of account
+    public static final String ACTION_CLOSE = "yourPackageName.ACTION_CLOSE";
+    private FirstReceiver mFirstReceiver;
 
     //tab bar
     private transient TabLayout mTabBar;
@@ -241,6 +247,9 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_more) {
+            IntentFilter filter = new IntentFilter(ACTION_CLOSE);
+            mFirstReceiver = new FirstReceiver();
+            registerReceiver(mFirstReceiver , filter);
             Intent i = new Intent(this, MoreActivity.class);
             startActivity(i);
             return true;
@@ -430,6 +439,22 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
             e.printStackTrace();
             Snackbar.make(mView, "Could not convert image", Snackbar.LENGTH_SHORT).show();
             return null;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mFirstReceiver);
+    }
+
+    class FirstReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.e("FirstReceiver", "FirstReceiver");
+            if (intent.getAction().equals(ACTION_CLOSE)) {
+                TabbedActivity.this.finish();
+            }
         }
     }
 }

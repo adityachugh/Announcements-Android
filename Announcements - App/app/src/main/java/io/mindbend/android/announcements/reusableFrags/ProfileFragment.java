@@ -64,8 +64,6 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     //To add frags to backstack
     public static final String ORG_PROFILE_FRAG = "org_profile_frag";
     private static final String BOTTOM_FRAG_TAG = "tag_for_bottom_frag_of_orgs_and_profiles";
-    private Fragment mFullPost;
-    private Fragment mCurrentComments;
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_USER = "user";
@@ -110,10 +108,8 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     private transient de.hdodenhof.circleimageview.CircleImageView mUserImage;
     private transient ImageView mCoverImage;
     private transient TextView mProfileDetail;
-    private transient TextView mProfileTag;
     private transient ProgressBar mLoading;
     private transient ImageButton mFollowFab;
-    private transient SwipyRefreshLayout mRefresher;
 
     /**
      * Use this factory method to create a new instance of
@@ -196,7 +192,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
             TextView name = (TextView) mView.findViewById(R.id.profile_name);
             TextView followCount = (TextView) mView.findViewById(R.id.follow_count);
             mProfileDetail = (TextView) mView.findViewById(R.id.profile_detail);
-            mProfileTag = (TextView) mView.findViewById(R.id.profile_tag);
+            TextView mProfileTag = (TextView) mView.findViewById(R.id.profile_tag);
             ImageButton modifyButton = (ImageButton) mView.findViewById(R.id.profile_edit_org);
 
             //get device height and px to dp scale (for dynamic sizing)
@@ -688,7 +684,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     @Override
     public void fullPostProfile(Post clickedPost) {
         //Open full post frag in parent frame layout
-        mFullPost = PostCardFullFragment.newInstance(clickedPost, mFullPostInteractionListener, false);
+        Fragment mFullPost = PostCardFullFragment.newInstance(clickedPost, mFullPostInteractionListener, false);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(getAppropriateFramelayout(), mFullPost).addToBackStack(FULL_POST_FRAG).commitAllowingStateLoss();
     }
@@ -696,7 +692,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     @Override
     public void profileComments(Post post) {
         //Open comment frag in parent frame layout
-        mCurrentComments = PostCommentsFragment.newInstance(post, mCommentsInteractionListener);
+        Fragment mCurrentComments = PostCommentsFragment.newInstance(post, mCommentsInteractionListener);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(getAppropriateFramelayout(), mCurrentComments).addToBackStack(COMMENTS_FRAG).commitAllowingStateLoss();
     }
