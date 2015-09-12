@@ -28,7 +28,6 @@ import io.mindbend.android.announcements.cloudCode.UserDataSource;
 public class SearchableFrag extends Fragment implements Serializable, UserListAdapter.UserListInteractionListener, OrgsGridAdapter.OrgInteractionListener, OrgsGridFragment.OrgsGridInteractionListener, SearchView.OnQueryTextListener{
     public final static int USERS_TYPE = 0;
     public final static int ORGS_TYPE = 1;
-    public final static int SIGNUP_ORGS_TYPE = 2;
 
     private final static String ARG_PARENT_ORG = "parent_org";
     private final static String ARG_INTERFACE = "interface";
@@ -86,6 +85,10 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
                 break;
             case ORGS_TYPE:
                 loadDiscoverOrgs(ParseUser.getCurrentUser().getObjectId(), 0, 10);
+                OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(mOrgs, this, this, null, false);
+                FragmentTransaction ft2 = getFragmentManager().beginTransaction();
+                if(ft2.isEmpty())
+                    ft2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag_of_items, orgsGridFragment).commitAllowingStateLoss();
                 break;
         }
 
@@ -104,7 +107,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
                 if (e == null && organizations != null) {
                     mOrgs.clear();
                     mOrgs.addAll(organizations);
-                    mOrgsGridFragment = OrgsGridFragment.newInstance(mOrgs, SearchableFrag.this, SearchableFrag.this, null);
+                    mOrgsGridFragment = OrgsGridFragment.newInstance(mOrgs, SearchableFrag.this, SearchableFrag.this, null, false);
                     FragmentTransaction ft2 = getFragmentManager().beginTransaction();
                     if(ft2.isEmpty())
                         ft2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag_of_items, mOrgsGridFragment).commitAllowingStateLoss();
@@ -167,7 +170,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
                             @Override
                             public void done(ArrayList<Organization> organizations, ParseException e) {
                                 if (e == null && organizations != null) {
-                                    mOrgsGridFragment = OrgsGridFragment.newInstance(organizations, SearchableFrag.this, SearchableFrag.this, query);
+                                    mOrgsGridFragment = OrgsGridFragment.newInstance(organizations, SearchableFrag.this, SearchableFrag.this, query, false);
                                     getFragmentManager().beginTransaction()
                                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                             .replace(R.id.searchable_frag_of_items, mOrgsGridFragment)
@@ -176,7 +179,6 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
                                 }
                             }
                         });
-
                 break;
         }
         return true;

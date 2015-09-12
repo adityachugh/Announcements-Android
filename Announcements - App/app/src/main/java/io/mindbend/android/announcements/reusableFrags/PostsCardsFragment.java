@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,10 @@ import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
+import io.mindbend.android.announcements.adminClasses.AdminMainFragment;
+import io.mindbend.android.announcements.cloudCode.AdminDataSource;
 import io.mindbend.android.announcements.cloudCode.PostsDataSource;
+import io.mindbend.android.announcements.tabbedFragments.AdminFragment;
 import io.mindbend.android.announcements.tabbedFragments.TodayFragment;
 
 public class PostsCardsFragment extends Fragment implements Serializable, PostOverlayFragment.PostsOverlayListener, SwipyRefreshLayout.OnRefreshListener {
@@ -41,6 +45,8 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
     private static final String ARG_POSTS_LISTENER = "post_touch_listener";
     private static final String ARG_POSTS_OVERLAY_LISTENER = "post_overlay_listener";
     private static final String ARG_IS_VIEWING_STATE = "is_viewing_announcements_state";
+    private static final String ARG_IS_APPROVING = "is_approving_posts";
+    private static final String ARG_PARENT_ID_IF_APPROVING = "parent_id_if_approving";
 
     // TODO: Rename and change types of parameters
     private List<Post> mPosts;
@@ -50,8 +56,11 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
     private transient View mView;
     //To pass into feed adapter (dynamic sizing)
     private float mScale;
+
     private transient SwipyRefreshLayout mRefreshTodayPosts;
     private boolean mIsViewingState;
+    private boolean mIsApproving;
+    private String mParentOrgIdIfApproving;
     private TextView noPostsMessage;
 
     /**
@@ -62,13 +71,15 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
      * @return A new instance of fragment PostsCardsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PostsCardsFragment newInstance(ArrayList<Post> posts, PostsFeedAdapter.PostInteractionListener postTouchListener, boolean isViewingState, PostOverlayFragment.PostsOverlayListener postsOverlayListener) {
+    public static PostsCardsFragment newInstance(ArrayList<Post> posts, PostsFeedAdapter.PostInteractionListener postTouchListener, boolean isViewingState, PostOverlayFragment.PostsOverlayListener postsOverlayListener, boolean isApproving, String parentOrgIdIfApproving) {
         PostsCardsFragment fragment = new PostsCardsFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_POSTS, posts);
         args.putSerializable(ARG_POSTS_LISTENER, postTouchListener);
         args.putSerializable(ARG_POSTS_OVERLAY_LISTENER, postsOverlayListener);
         args.putBoolean(ARG_IS_VIEWING_STATE, isViewingState);
+        args.putBoolean(ARG_IS_APPROVING, isApproving);
+        args.putString(ARG_PARENT_ID_IF_APPROVING, parentOrgIdIfApproving);
         fragment.setArguments(args);
         return fragment;
     }
@@ -89,7 +100,8 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
             mPostTouchListener = (PostsFeedAdapter.PostInteractionListener)getArguments().getSerializable(ARG_POSTS_LISTENER);
             mIsViewingState = getArguments().getBoolean(ARG_IS_VIEWING_STATE);
             mPostsOverlayListener = (PostOverlayFragment.PostsOverlayListener)getArguments().getSerializable(ARG_POSTS_OVERLAY_LISTENER);
-
+            mIsApproving = getArguments().getBoolean(ARG_IS_APPROVING);
+            mParentOrgIdIfApproving = getArguments().getString(ARG_PARENT_ID_IF_APPROVING);
             mScale = getActivity().getResources().getDisplayMetrics().density;
         }
     }
@@ -105,7 +117,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
             //Initialize and set the adapter
-            mPostFeedAdapter = new PostsFeedAdapter(getActivity(), mPosts, mPostTouchListener, mIsViewingState, mScale);
+            mPostFeedAdapter = new PostsFeedAdapter(getActivity(), mPosts, mPostTouchListener, mIsViewingState, mScale, mIsApproving);
             recyclerView.setAdapter(mPostFeedAdapter);
 
             //the animation for the recycler view to slide in from the bottom of the view
@@ -117,7 +129,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
             mRefreshTodayPosts = (SwipyRefreshLayout)mView.findViewById(R.id.post_refresher);
             mRefreshTodayPosts.setColorSchemeResources(R.color.accent, R.color.primary);
 
-            if (getParentFragment().getParentFragment() instanceof TodayFragment) //so the refresher is ONLY there if the user is viewing the today posts
+            if (getParentFragment().getParentFragment() instanceof TodayFragment || getParentFragment() instanceof AdminFragment) //so the refresher is ONLY there if the user is viewing the today posts OR admin (approving)
                 mRefreshTodayPosts.setOnRefreshListener(this);
             else
                 mRefreshTodayPosts.setEnabled(false);
@@ -196,22 +208,46 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
     private void loadMorePosts() {
         int startIndex = mPosts.size();
         int numberOfPostsToLoad = 10;
-        TodayFragment todayFragment = ((TodayFragment)getParentFragment().getParentFragment());
 
-        PostsDataSource.getRangeOfPostsForDay(todayFragment.mLoading, getActivity(), startIndex, numberOfPostsToLoad, todayFragment.mCurrentDateSelected, new FunctionCallback<ArrayList<Post>>() {
-            @Override
-            public void done(ArrayList<Post> posts, ParseException e) {
-                mRefreshTodayPosts.setRefreshing(false);
-                if (e == null){
-                    if (posts.size() > 0){
-                        mPosts.addAll(posts);
-                        mPostFeedAdapter.notifyDataSetChanged();
-                        updateNoPostsTextMessage();
-                    } else {
-                        Snackbar.make(mView, R.string.no_more_posts_message, Snackbar.LENGTH_SHORT).show();
+        if (mIsApproving){
+            AdminFragment adminFragment = ((AdminFragment)getParentFragment());
+            //approving, query pending posts
+            AdminDataSource.getPostsToBeApprovedInRange(adminFragment.mLoading, getActivity(), mParentOrgIdIfApproving, startIndex, numberOfPostsToLoad, new FunctionCallback<ArrayList<Post>>() {
+                @Override
+                public void done(ArrayList<Post> posts, ParseException e) {
+                    if (e == null) {
+                        if (posts.size() > 0) {
+                            mPosts.addAll(posts);
+                            mPostFeedAdapter.notifyDataSetChanged();
+                            updateNoPostsTextMessage();
+                        } else {
+                            Snackbar.make(mView, R.string.no_more_posts_approve_message, Snackbar.LENGTH_SHORT).show();
+                        }
                     }
                 }
-            }
-        });
+            });
+        } else if (mIsViewingState){
+            AdminFragment adminFragment = ((AdminFragment)getParentFragment());
+            //loading all posts
+        } else {
+            TodayFragment todayFragment = ((TodayFragment)getParentFragment().getParentFragment());
+            //querying today posts
+            PostsDataSource.getRangeOfPostsForDay(todayFragment.mLoading, getActivity(), startIndex, numberOfPostsToLoad, todayFragment.mCurrentDateSelected, new FunctionCallback<ArrayList<Post>>() {
+                @Override
+                public void done(ArrayList<Post> posts, ParseException e) {
+                    mRefreshTodayPosts.setRefreshing(false);
+                    if (e == null) {
+                        if (posts.size() > 0) {
+                            mPosts.addAll(posts);
+                            mPostFeedAdapter.notifyDataSetChanged();
+                            updateNoPostsTextMessage();
+                        } else {
+                            Snackbar.make(mView, R.string.no_more_posts_message, Snackbar.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            });
+        }
+
     }
 }

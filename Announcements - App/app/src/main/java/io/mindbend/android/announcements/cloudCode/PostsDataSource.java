@@ -32,6 +32,7 @@ public class PostsDataSource {
     public static final String POST_END_DATE = "postEndDate";
     public static final String POST_PRIORITY = "priority";
     public static final String POST_ORGANIZATION = "organization";
+    public static final String POST_STATUS = "status";
 
     //levels of priority
     public static final int LOW_PRIORITY = 3;

@@ -454,7 +454,8 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
             public void done(ArrayList<Organization> orgs, ParseException e) {
                 if (e == null) {
                     //add grid frag to bottom of user profile
-                    Fragment userOrgsFollowedFragment = OrgsGridFragment.newInstance(orgs, mOrgListener, mOrgsGridInteractionListener, null);
+                    Fragment userOrgsFollowedFragment = OrgsGridFragment.newInstance(orgs, mOrgListener, mOrgsGridInteractionListener, null, false);
+
                     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
                     //**DYNAMIC SIZING FOR USER FOLLOWED ORGS GRID**
@@ -687,7 +688,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     @Override
     public void fullPostProfile(Post clickedPost) {
         //Open full post frag in parent frame layout
-        mFullPost = PostCardFullFragment.newInstance(clickedPost, mFullPostInteractionListener);
+        mFullPost = PostCardFullFragment.newInstance(clickedPost, mFullPostInteractionListener, false);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(getAppropriateFramelayout(), mFullPost).addToBackStack(FULL_POST_FRAG).commitAllowingStateLoss();
     }

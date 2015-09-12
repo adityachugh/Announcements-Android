@@ -41,8 +41,12 @@
         </activity>
         <activity
             android:name=".MoreActivity"
-            android:noHistory="true"
-            android:label="@string/title_activity_more" >
+            android:label="@string/title_activity_more"
+            android:noHistory="true" >
+        </activity>
+        <activity
+            android:name=".onboardingAndSignupin.SignUpOrgsActivity"
+            android:label="@string/title_activity_sign_up_orgs" >
         </activity>
 
 

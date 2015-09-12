@@ -12,9 +12,12 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import io.mindbend.android.announcements.Organization;
+import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 
 /**
@@ -127,6 +130,50 @@ public class AdminDataSource {
         });
     }
 
+    public static void getPostsToBeApprovedInRange(final ProgressBar loading, final Context context, String organizationObjectId, int startIndex, int numberOfPosts, final FunctionCallback<ArrayList<Post>> callback) {
+        loading.setVisibility(View.VISIBLE);
+
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("organizationObjectId", organizationObjectId);
+        params.put("startIndex", startIndex);
+        params.put("numberOfPosts", numberOfPosts);
+
+        ParseCloud.callFunctionInBackground("getPostsToBeApprovedInRange", params, new FunctionCallback<List<ParseObject>>() {
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e) {
+                ArrayList<Post> pendingPosts = new ArrayList<Post>();
+                if (e == null) {
+                    for (ParseObject object : parseObjects) {
+                        pendingPosts.add(new Post(context, object));
+                    }
+                }
+                loading.setVisibility(View.GONE);
+                callback.done(pendingPosts, e);
+            }
+        });
+    }
+
+    public static void getAllPostsForOrganizationForRange (final ProgressBar loading, final Context context, String organizationObjectId, int startIndex, int numberOfPosts, final FunctionCallback<ArrayList<Post>> callback){
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("organizationObjectId", organizationObjectId);
+        params.put("startIndex", startIndex);
+        params.put("numberOfPosts", numberOfPosts);
+
+        ParseCloud.callFunctionInBackground("getAllPostsForOrganizationForRange", params, new FunctionCallback<List<ParseObject>>() {
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e) {
+                ArrayList<Post> posts = new ArrayList<Post>();
+                if (e == null) {
+                    for (ParseObject object : parseObjects) {
+                        posts.add(new Post(context, object));
+                    }
+                }
+                loading.setVisibility(View.GONE);
+                callback.done(posts, e);
+            }
+        });
+    }
+
     public static void actOnFollowRequest(final View view, final ProgressBar loading, String organizationObjectId, String followObjectId, boolean isApproved, final FunctionCallback<Boolean> functionCallback) {
         loading.setVisibility(View.VISIBLE);
 
@@ -139,7 +186,7 @@ public class AdminDataSource {
             @Override
             public void done(Boolean success, ParseException e) {
                 loading.setVisibility(View.GONE);
-                if (e == null&& success) {
+                if (e == null && success) {
                     Log.wtf("Act on follow request", "successfully completed");
                     functionCallback.done(success, e);
                 } else {
@@ -150,9 +197,9 @@ public class AdminDataSource {
         });
     }
 
-    public static void updateOrganizationFields (final View view, final ProgressBar loading, String organizationObjectId,
-                                                 String accessCodeString, String description, String name,
-                                                 final FunctionCallback<Organization> orgModified){
+    public static void updateOrganizationFields(final View view, final ProgressBar loading, String organizationObjectId,
+                                                String accessCodeString, String description, String name,
+                                                final FunctionCallback<Organization> orgModified) {
 
         loading.setVisibility(View.VISIBLE);
 
@@ -162,17 +209,16 @@ public class AdminDataSource {
         params.put("accessCode", accessCode);
         params.put("description", description);
         params.put("name", name);
-        
+
         ParseCloud.callFunctionInBackground("updateOrganizationFields", params, new FunctionCallback<ParseObject>() {
             @Override
             public void done(ParseObject orgReturned, ParseException e) {
 //                int i = 0;
                 loading.setVisibility(View.GONE);
-                if (e == null && orgModified != null){
+                if (e == null && orgModified != null) {
                     Snackbar.make(view, "Successfully updated organization", Snackbar.LENGTH_SHORT).show();
                     orgModified.done(new Organization(orgReturned), e);
-                }
-                else {
+                } else {
                     if (e != null)
                         e.printStackTrace();
                     Snackbar.make(view, "Failed to update organization", Snackbar.LENGTH_SHORT).show();
@@ -180,4 +226,49 @@ public class AdminDataSource {
             }
         });
     }
+
+    public static void actOnApprovalRequest(final View view, String postObjectId, String organizationObjectId, boolean approvalState, String rejectionReason, int priority, final FunctionCallback<Boolean> callback) {
+
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("postObjectId", postObjectId);
+        params.put("organizationObjectId", organizationObjectId);
+        params.put("approvalState", approvalState);
+        params.put("rejectionReason", rejectionReason);
+        params.put("priority", priority);
+
+        ParseCloud.callFunctionInBackground("actOnApprovalRequest", params, new FunctionCallback<Boolean>() {
+
+            @Override
+            public void done(Boolean success, ParseException e) {
+                if (e == null) {
+                    Log.wtf("AdminDataSource", "success? " + success);
+                    if (success)
+                        Snackbar.make(view, "Successfully approved post!", Snackbar.LENGTH_SHORT).show();
+                    else
+                        Snackbar.make(view, "Successfully declined post!", Snackbar.LENGTH_SHORT).show();
+                } else {
+                    Snackbar.make(view, "Error approving/declining post", Snackbar.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    public static void deletePost (final View view, final ProgressBar loading, String organizationObjectId, String postObjectId){
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("organizationObjectId", organizationObjectId);
+        params.put("postObjectId", postObjectId);
+
+        ParseCloud.callFunctionInBackground("deletePost", params, new FunctionCallback<Boolean>() {
+            @Override
+            public void done(Boolean done, ParseException e) {
+                if (e == null && done){
+                    Snackbar.make(view, "Successfully deleted post!", Snackbar.LENGTH_SHORT).show();
+                } else {
+                    Snackbar.make(view, "Error deleting post", Snackbar.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 }
+

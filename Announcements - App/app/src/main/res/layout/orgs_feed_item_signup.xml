@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/org_card_signup"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="255dp"
+    android:layout_margin="8dp">
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/org_background_image_signup"
+                android:scaleType="centerCrop"
+                android:layout_height="@dimen/orgs_card_image_height"
+                android:layout_width="match_parent"
+                android:src="@color/primary"/>
+            <ImageView
+                android:id="@+id/org_dark_overlay_signup"
+                android:visibility="invisible"
+                android:layout_height="@dimen/orgs_card_image_height"
+                android:layout_width="match_parent"
+                android:alpha="0.25"
+                android:src="@android:color/black"/>
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text="Organization Title"
+                android:id="@+id/org_title_signup"
+                android:textColor="@android:color/white"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:textSize="@dimen/org_grid_card_title_text_size"
+                android:layout_margin="@dimen/org_grid_card_inner_margin"
+                android:layout_alignBottom="@id/org_background_image"
+                />
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/org_follow_signup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            android:text="Follow"
+            android:background="@android:color/white"
+            android:textColor="@color/accent"/>
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

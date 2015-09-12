@@ -142,7 +142,9 @@ public class OrgsDataSource {
     public static void getAllTopLevelOrganizations (final ProgressBar loading, final FunctionCallback<ArrayList<Organization>> callback){
         loading.setVisibility(View.VISIBLE);
 
-        ParseCloud.callFunctionInBackground("getAllTopLevelOrganizations", null, new FunctionCallback<List<ParseObject>>() {
+        HashMap<String, String> params = new HashMap<>();
+
+        ParseCloud.callFunctionInBackground("getAllTopLevelOrganizations", params, new FunctionCallback<List<ParseObject>>() {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
                 ArrayList<Organization> topOrgs = new ArrayList<Organization>();

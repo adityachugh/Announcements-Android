@@ -50,7 +50,7 @@ public class PostCardFullFragment extends Fragment implements Serializable, View
      * @return A new instance of fragment PostCardFull.
      */
     // TODO: Rename and change types and number of parameters
-    public static PostCardFullFragment newInstance(Post post, FullPostInteractionListener fullPostListener) {
+    public static PostCardFullFragment newInstance(Post post, FullPostInteractionListener fullPostListener, boolean viewOnly) {
         PostCardFullFragment fragment = new PostCardFullFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_POST, post);

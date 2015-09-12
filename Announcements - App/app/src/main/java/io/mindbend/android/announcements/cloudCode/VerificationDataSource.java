@@ -19,6 +19,7 @@ import java.util.HashMap;
 
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.TabbedActivity;
+import io.mindbend.android.announcements.onboardingAndSignupin.SignUpOrgsActivity;
 
 /**
  * Created by Akshay Pall on 21/08/2015.
@@ -61,7 +62,7 @@ public class VerificationDataSource {
                                         user.signUpInBackground(new SignUpCallback() {
                                             @Override
                                             public void done(ParseException e) {
-                                                Intent i = new Intent(context, TabbedActivity.class);
+                                                Intent i = new Intent(context, SignUpOrgsActivity.class);
                                                 context.startActivity(i);
                                             }
                                         });

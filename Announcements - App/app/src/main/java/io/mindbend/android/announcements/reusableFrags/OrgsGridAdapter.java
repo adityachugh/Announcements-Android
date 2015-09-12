@@ -12,16 +12,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.onboardingAndSignupin.OrgsToFollow;
+import io.mindbend.android.announcements.onboardingAndSignupin.SignUpOrgsActivity;
 
 /**
  * Created by Akshay Pall on 01/08/2015.
@@ -29,6 +33,7 @@ import io.mindbend.android.announcements.R;
 public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHolder> implements Serializable {
 
     private static final String TAG = "OrgsGridAdapter";
+    private boolean mIsInArray;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView mTitle;
@@ -36,18 +41,31 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
         private final CardView mOrgCard;
         private final ImageView mBackgroundImage;
         private final ImageView mDarkOverlayImage;
+        private final Button mFollowButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
-            //getting all the elements part of the card, aside from the image
-            mTitle = (TextView) itemView.findViewById(R.id.org_title);
-            mDetail = (TextView) itemView.findViewById(R.id.org_banner_detail);
-            mBackgroundImage = (ImageView)itemView.findViewById(R.id.org_background_image);
-            mDarkOverlayImage = (ImageView) itemView.findViewById(R.id.org_dark_overlay);
-
-            //get entire card to make clickable
-            mOrgCard = (CardView) itemView.findViewById(R.id.org_card);
+            if (!mSignUp){
+                //getting all the elements part of the card, aside from the image
+                mTitle = (TextView) itemView.findViewById(R.id.org_title);
+                mDetail = (TextView) itemView.findViewById(R.id.org_banner_detail);
+                mBackgroundImage = (ImageView)itemView.findViewById(R.id.org_background_image);
+                mDarkOverlayImage = (ImageView) itemView.findViewById(R.id.org_dark_overlay);
+                mFollowButton = null;
+                //get entire card to make clickable
+                mOrgCard = (CardView) itemView.findViewById(R.id.org_card);
+            }
+            else{
+                //getting all the elements part of the card, aside from the image
+                mTitle = (TextView) itemView.findViewById(R.id.org_title_signup);
+                mBackgroundImage = (ImageView)itemView.findViewById(R.id.org_background_image_signup);
+                mDarkOverlayImage = (ImageView) itemView.findViewById(R.id.org_dark_overlay_signup);
+                mDetail = null;
+                mFollowButton = (Button) itemView.findViewById(R.id.org_follow_signup);
+                //get entire card to make clickable
+                mOrgCard = (CardView) itemView.findViewById(R.id.org_card_signup);
+            }
         }
     }
 
@@ -55,32 +73,91 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
     private List<Organization> mOrgs;
     private Context mContext;
     private OrgInteractionListener mOrgListener;
+    private boolean mSignUp;
+    private int mObjectPosition;
 
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+
+        View vSignUp = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.orgs_feed_item_signup, viewGroup, false);
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.orgs_feed_item, viewGroup, false);
-        return new ViewHolder(v);
+        if (mSignUp)
+            return new ViewHolder(vSignUp);
+        else
+            return new ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(final ViewHolder viewHolder, int i) {
         final Organization org = mOrgs.get(i);
 
         viewHolder.mTitle.setText(org.getTitle());
 
         int orgFollowers = org.getFollowers();
-        if (org.isNewOrg()) {
-            viewHolder.mDetail.setTextColor(mContext.getResources().getColor(R.color.accent));
-            viewHolder.mDetail.setText("NEW");
-        }
-        else {
-            viewHolder.mDetail.setText(orgFollowers + " Followers");
+        if (!mSignUp){
+            if (org.isNewOrg()) {
+                viewHolder.mDetail.setTextColor(mContext.getResources().getColor(R.color.accent));
+                viewHolder.mDetail.setText("NEW");
+            }
+            else {
+                viewHolder.mDetail.setText(orgFollowers + " Followers");
+            }
         }
 
         if (!org.getmCoverImageURL().equals("")){
             Picasso.with(mContext).load(org.getmCoverImageURL()).resize(500,500).skipMemoryCache().into(viewHolder.mBackgroundImage);
             viewHolder.mDarkOverlayImage.setVisibility(View.VISIBLE); //so the darkening of the card only occurs when an image is loaded, not on the green color
+        }
+
+        if (mSignUp){
+            ArrayList<String> followedOrgs = OrgsToFollow.getInstance();
+            if (followedOrgs != null){
+                //if arraylist isnt empty
+                for (int j = 0; j < followedOrgs.size(); j++) {
+                    String orgId = followedOrgs.get(j);
+                    if (org.getmObjectId().equals(orgId)){
+                        //following button
+                        viewHolder.mFollowButton.setText("Following");
+                        viewHolder.mFollowButton.setTextColor(mContext.getResources().getColor(R.color.white));
+                        viewHolder.mFollowButton.setBackgroundColor(mContext.getResources().getColor(R.color.accent));
+                    }
+                }
+            }
+
+
+            viewHolder.mFollowButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ArrayList<String> followedOrgs = OrgsToFollow.getInstance(); //get newest updated instance each time button is clicked
+                    mIsInArray = false; //always reset value to false on click
+
+                    for (int j = 0; j < followedOrgs.size(); j++) {
+                        String orgId = followedOrgs.get(j);
+                        if (orgId.equals(org.getmObjectId())) {
+                            //entire loop to iterate without taking action.
+                            mIsInArray = true;
+                            mObjectPosition = j;
+                        }
+                    }
+
+                    if (mIsInArray){
+                        //already in array, therefore unfollow
+                        Log.wtf(TAG, "unfollowed");
+                        OrgsToFollow.getInstance().remove(followedOrgs.get(mObjectPosition));
+                        viewHolder.mFollowButton.setText("Follow");
+                        viewHolder.mFollowButton.setTextColor(mContext.getResources().getColor(R.color.accent));
+                        viewHolder.mFollowButton.setBackgroundColor(mContext.getResources().getColor(R.color.white));
+                    } else {
+                        //not in array, therefore follow
+                        Log.wtf(TAG, "followed!");
+                        OrgsToFollow.getInstance().add(org.getmObjectId());
+                        viewHolder.mFollowButton.setText("Following");
+                        viewHolder.mFollowButton.setTextColor(mContext.getResources().getColor(R.color.white));
+                        viewHolder.mFollowButton.setBackgroundColor(mContext.getResources().getColor(R.color.accent));
+                    }
+                }
+            });
         }
 
         //set clicklistener on card
@@ -97,11 +174,12 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
         return mOrgs.size();
     }
 
-    public OrgsGridAdapter(Context context, List<Organization> orgs, OrgInteractionListener listener) {
+    public OrgsGridAdapter(Context context, List<Organization> orgs, OrgInteractionListener listener, boolean signUp) {
         //save the mPosts private field as what is passed in
         mContext = context;
         mOrgs = orgs;
         mOrgListener = listener;
+        mSignUp = signUp;
     }
 
     @Override

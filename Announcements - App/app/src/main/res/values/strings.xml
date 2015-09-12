@@ -50,6 +50,7 @@
     <string name="format_new_org_announcment">New %1$s Announcement</string>
     <string name="format_view_children">View %1$s</string>
     <string name="format_add_child_org">Add New %1$s</string>
+    <string name="format_view_child_pending_posts">View %1$s Pending Posts</string>
     <string name="format_view_org_admin">View %1$s Admins</string>
     <string name="format_change_org_photo">Change %1$s Profile Photo</string>
     <string name="format_change_org_cover_photo">Change %1$s Cover Photo</string>
@@ -119,10 +120,20 @@
     <string name="newA_priority_high">High</string>
     <string name="format_added_user_as_admin_success_message">Added %1$s as admin</string>
     <string name="initial_admin">Initial Admin</string>
+
     <string name="error_creating_org_message">Could not create organization</string>
     <string name="new_org_description">Description</string>
     <string name="access_code_length_message">Your access code must be 4 digits long!</string>
     <string name="create_private_org_without_access_code_message">If your private organization does not have an access code, any user will be able to submit a follow request to your administrators. Is this okay?</string>
     <string name="new_org_approval_required">Approval Required?</string>
     <string name="error_searching_orgs">Could not search for organizations</string>
+
+    <string name="approve_button_text">APPROVE</string>
+    <string name="decline_button_text">DECLINE</string>
+    <string name="no_more_posts_approve_message">No more posts to approve!</string>
+    <string name="declining_post_dialogbox_title">Declining Post</string>
+    <string name="declining_post_dialogbox_input_prompt">Briefly explain why you are declining this post</string>
+    <string name="cancel_button_text">Cancel</string>
+    <string name="title_activity_sign_up_orgs">SignUpOrgsActivity</string>
+
 </resources>
