@@ -175,7 +175,7 @@ public class AdminFragment extends Fragment implements Serializable,
                 ArrayList<User> users = (ArrayList<User>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
                 HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
 
-                ListFragment adminList = ListFragment.newInstance(true, AdminFragment.this, false, null, null, null, null, users, AdminFragment.this, typeOfUsers, parentOrg);
+                ListFragment adminList = ListFragment.newInstance(true, AdminFragment.this, false, null, null, null, null, users, AdminFragment.this, typeOfUsers, parentOrg, null);
                 getChildFragmentManager().beginTransaction()
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .replace(R.id.admin_framelayout, adminList)
@@ -282,7 +282,7 @@ public class AdminFragment extends Fragment implements Serializable,
                 ArrayList<User> users = (ArrayList<User>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
                 HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
 
-                ListFragment adminList = ListFragment.newInstance(isAdmin, AdminFragment.this, false, null, null, null, null, users, AdminFragment.this, typeOfUsers, org);
+                ListFragment adminList = ListFragment.newInstance(isAdmin, AdminFragment.this, false, null, null, null, null, users, AdminFragment.this, typeOfUsers, org, null);
                 getChildFragmentManager().beginTransaction()
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .replace(R.id.admin_framelayout, adminList)

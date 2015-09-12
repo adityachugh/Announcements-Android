@@ -45,6 +45,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
     private boolean mIsAdmin;
     private transient View mView;
     private transient OrgsGridFragment mOrgsGridFragment;
+    private transient ListFragment mUserSearchListFrag;
 
     public static SearchableFrag newInstance(int typeOfList, Organization parentOrganization, SearchInterface listener, boolean isAdmin) {
         SearchableFrag fragment = new SearchableFrag();
@@ -82,10 +83,6 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
 
         switch (mTypeOfList){
             case USERS_TYPE:
-                final ListFragment searchListFrag = ListFragment.newInstance(mIsAdmin, null, true, null, null, null, null, mUsers, SearchableFrag.this, null, mOrgOfUsers);
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                if(ft.isEmpty())
-                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag_of_items, searchListFrag).commitAllowingStateLoss();
                 break;
             case ORGS_TYPE:
                 loadDiscoverOrgs(ParseUser.getCurrentUser().getObjectId(), 0, 10);
@@ -156,9 +153,9 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
                             @Override
                             public void done(ArrayList<User> users, ParseException e) {
                                 if (e == null) {
-                                    ListFragment searchListFrag = ListFragment.newInstance(false, null, true, null, null, null, null, users, SearchableFrag.this, null, mOrgOfUsers);
+                                    mUserSearchListFrag = ListFragment.newInstance(false, null, true, null, null, null, null, users, SearchableFrag.this, null, mOrgOfUsers, query);
                                     getFragmentManager().beginTransaction()
-                                            .replace(R.id.searchable_frag_of_items, searchListFrag)
+                                            .replace(R.id.searchable_frag_of_items, mUserSearchListFrag)
                                             .commitAllowingStateLoss();
                                 }
                             }

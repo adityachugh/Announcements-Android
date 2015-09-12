@@ -248,7 +248,7 @@ public class TodayFragment extends Fragment implements Serializable,
                 ArrayList<User> users = (ArrayList<User>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
                 HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
 
-                ListFragment adminList = ListFragment.newInstance(isAdmin, TodayFragment.this, false, null, null, null, null, users, TodayFragment.this, typeOfUsers, org);
+                ListFragment adminList = ListFragment.newInstance(isAdmin, TodayFragment.this, false, null, null, null, null, users, TodayFragment.this, typeOfUsers, org, null);
                 getChildFragmentManager().beginTransaction()
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .replace(R.id.today_framelayout, adminList)

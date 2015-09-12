@@ -140,7 +140,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
                 ArrayList<User> users = (ArrayList<User>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
                 HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
 
-                ListFragment adminList = ListFragment.newInstance(isAdmin, DiscoverFragment.this, false, null, null, null, null, users, DiscoverFragment.this, typeOfUsers, org);
+                ListFragment adminList = ListFragment.newInstance(isAdmin, DiscoverFragment.this, false, null, null, null, null, users, DiscoverFragment.this, typeOfUsers, org, null);
                 getChildFragmentManager().beginTransaction()
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .replace(R.id.discover_framelayout, adminList)

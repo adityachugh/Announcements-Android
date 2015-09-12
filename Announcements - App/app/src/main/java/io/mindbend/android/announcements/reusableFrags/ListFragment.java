@@ -18,6 +18,11 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
+import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
+import com.parse.FunctionCallback;
+import com.parse.ParseException;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +35,7 @@ import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.cloudCode.OrgsDataSource;
 import io.mindbend.android.announcements.cloudCode.UserDataSource;
 
-public class ListFragment extends Fragment implements Serializable {
+public class ListFragment extends Fragment implements Serializable, SwipyRefreshLayout.OnRefreshListener {
     private final static String ARG_LISTENER = "fab_listener";
     private final static String ARG_IS_SEARCHING = "is_searching";
     private static final String ARG_ORGS = "param_orgs";
@@ -40,6 +45,7 @@ public class ListFragment extends Fragment implements Serializable {
     private static final String ARG_USERS_TYPE = "type_of_users";
     private static final String ARG_INTERFACE = "interface_passed_in";
     private static final String ARG_IS_ADMIN = "is_current_user_admin_of_list";
+    private static final String ARG_SEARCH_TEXT = "search_text";
 
     /**
      * The following int details WHAT object list has been passed in
@@ -68,21 +74,17 @@ public class ListFragment extends Fragment implements Serializable {
     private ImageButton mAddAdminFab;
 
     private boolean mIsSearching;
+    private String mSearchQueryText;
+    private UserListAdapter mUserAdapter;
+    private View mView;
+    private transient ProgressBar mLoading;
+    private transient SwipyRefreshLayout mRefreshLayout;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param orgsIfPresent   list of organizations if this list is used to display organizations
-     * @param notifsIfPresent list of notifications if this list is used to display notifications
-     * @param usersIfPresent  list of users if this list is used to display users
-     * @return A new instance of fragment ListFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static ListFragment newInstance(boolean isAdmin, ListFabListener listener, boolean isSearching,
                                            ArrayList<Organization> orgsIfPresent, OrgsListAdapter.OrgListInteractionListener orgListenerIfPresent,
                                            ArrayList<Notification> notifsIfPresent, NotifsListAdapter.NotifInteractionListener notifListenerIfPresent,
-                                           ArrayList<User> usersIfPresent, UserListAdapter.UserListInteractionListener userListenerIfPresent, HashMap<User, Integer> typeOfUser, Organization orgOfUsers) {
+                                           ArrayList<User> usersIfPresent, UserListAdapter.UserListInteractionListener userListenerIfPresent, HashMap<User,
+            Integer> typeOfUser, Organization orgOfUsers, String nullableSearchQueryText) {
         ListFragment fragment = new ListFragment();
         Bundle args = new Bundle();
 
@@ -103,6 +105,8 @@ public class ListFragment extends Fragment implements Serializable {
         args.putSerializable(ARG_ORG_OF_USERS, orgOfUsers);
         args.putSerializable(ARG_INTERFACE, userListenerIfPresent);
         args.putSerializable(ARG_USERS_TYPE, typeOfUser);
+        if (nullableSearchQueryText != null && isSearching)
+            args.putString(ARG_SEARCH_TEXT, nullableSearchQueryText);
 
         fragment.setArguments(args);
         return fragment;
@@ -119,6 +123,9 @@ public class ListFragment extends Fragment implements Serializable {
         mIsAdmin = getArguments().getBoolean(ARG_IS_ADMIN);
         mListener = (ListFabListener) getArguments().getSerializable(ARG_LISTENER);
         mIsSearching = getArguments().getBoolean(ARG_IS_SEARCHING);
+
+        if(getArguments().getString(ARG_SEARCH_TEXT) != null)
+            mSearchQueryText = getArguments().getString(ARG_SEARCH_TEXT);
 
         if (getArguments().getParcelableArrayList(ARG_ORGS) != null) {
             whatObjectList = ORGS_SELECTED;
@@ -142,11 +149,18 @@ public class ListFragment extends Fragment implements Serializable {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_list, container, false);
+        mView = inflater.inflate(R.layout.fragment_list, container, false);
+
+        mLoading = (ProgressBar) mView.findViewById(R.id.list_progressbar);
+
 
         //get the recycler view
-        RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.list_recyclerview);
+        RecyclerView recyclerView = (RecyclerView) mView.findViewById(R.id.list_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        mRefreshLayout = (SwipyRefreshLayout) mView.findViewById(R.id.list_refresher);
+        mRefreshLayout.setColorSchemeResources(R.color.accent, R.color.primary);
+        mRefreshLayout.setOnRefreshListener(this);
 
         switch (whatObjectList) {
             case ORGS_SELECTED:
@@ -158,11 +172,11 @@ public class ListFragment extends Fragment implements Serializable {
                 recyclerView.setAdapter(notifsAdapter);
                 break;
             case USERS_SELECTED:
-                UserListAdapter userAdapter = new UserListAdapter(getActivity(), mUsers, mUserListener, mTypeOfUsers, mIsSearching, mOrgOfUsers, v, (ProgressBar)v.findViewById(R.id.list_progressbar));
-                recyclerView.setAdapter(userAdapter);
+                mUserAdapter = new UserListAdapter(getActivity(), mUsers, mUserListener, mTypeOfUsers, mIsSearching, mOrgOfUsers, mView, mLoading);
+                recyclerView.setAdapter(mUserAdapter);
                 if (mIsAdmin) {
                     //the add admin fab
-                    mAddAdminFab = (ImageButton) v.findViewById(R.id.list_fab);
+                    mAddAdminFab = (ImageButton) mView.findViewById(R.id.list_fab);
                     mAddAdminFab.setVisibility(View.VISIBLE);
                     mAddAdminFab.setImageResource(R.drawable.ic_add_admin);
                     mAddAdminFab.setOnClickListener(new View.OnClickListener() {
@@ -179,7 +193,7 @@ public class ListFragment extends Fragment implements Serializable {
                 break;
         }
 
-        return v;
+        return mView;
     }
 
     @Override
@@ -191,6 +205,82 @@ public class ListFragment extends Fragment implements Serializable {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onRefresh(SwipyRefreshLayoutDirection swipyRefreshLayoutDirection) {
+        mRefreshLayout.setRefreshing(false);
+        switch (whatObjectList){
+            case NOTIFS_SELECTED:
+                break;
+            case ORGS_SELECTED:
+                break;
+            case USERS_SELECTED:
+                if (swipyRefreshLayoutDirection.equals(SwipyRefreshLayoutDirection.BOTTOM)){
+                    if (mSearchQueryText != null){
+                        UserDataSource.searchForUsersInRange(getActivity(), mView, mLoading, mSearchQueryText,
+                                mUsers.size(), new FunctionCallback<ArrayList<User>>() {
+                                    @Override
+                                    public void done(ArrayList<User> users, ParseException e) {
+                                        mRefreshLayout.setRefreshing(false);
+                                        if (e == null){
+                                            mUsers.addAll(users);
+                                            mUserAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+                                });
+                    } else {
+                        //load more users
+                        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(),
+                                mLoading, mOrgOfUsers.getmObjectId(), mUsers.size(), 20, mIsAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
+                                    @Override
+                                    public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
+                                        if (e == null){
+                                            ArrayList<User> usersLoaded = (ArrayList<User>)booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
+                                            HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>)booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
+
+                                            mUsers.addAll(usersLoaded);
+                                            mTypeOfUsers.putAll(typeOfUsers);
+                                            mUserAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+                                });
+                    }
+                } else {
+                    if (mSearchQueryText != null){
+                        UserDataSource.searchForUsersInRange(getActivity(), mView, mLoading, mSearchQueryText,
+                                0, new FunctionCallback<ArrayList<User>>() {
+                                    @Override
+                                    public void done(ArrayList<User> users, ParseException e) {
+                                        if (e == null){
+                                            mUsers.clear();
+                                            mUsers.addAll(users);
+                                            mUserAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+                                });
+                    } else {
+                        //refresh users
+                        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(),
+                                mLoading, mOrgOfUsers.getmObjectId(), 0, 20, mIsAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
+                                    @Override
+                                    public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
+                                        if (e == null){
+                                            ArrayList<User> usersLoaded = (ArrayList<User>)booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
+                                            HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>)booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
+
+                                            mUsers.clear();
+                                            mUsers.addAll(usersLoaded);
+                                            mTypeOfUsers.clear();
+                                            mTypeOfUsers.putAll(typeOfUsers);
+                                            mUserAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+                                });
+                    }
+                }
+                break;
+        }
     }
 
     public interface ListFabListener extends Serializable {
