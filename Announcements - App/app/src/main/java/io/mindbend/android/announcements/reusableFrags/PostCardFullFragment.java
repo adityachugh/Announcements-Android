@@ -34,12 +34,14 @@ public class PostCardFullFragment extends Fragment implements Serializable, View
 
     private static final String ARG_POST = "post";
     private static final String ARG_LISTENER = "full_post_listener";
+    private static final String ARG_VIEW_ONLY = "view_only";
 
     private static final String SHARE_TAG = "Share_post_tag";
 
     private Post mPost;
     private FullPostInteractionListener mListener;
     private transient View mView;
+    private boolean mViewOnly;
 
     /**
      * Use this factory method to create a new instance of
@@ -55,6 +57,7 @@ public class PostCardFullFragment extends Fragment implements Serializable, View
         Bundle args = new Bundle();
         args.putSerializable(ARG_POST, post);
         args.putSerializable(ARG_LISTENER, fullPostListener);
+        args.putBoolean(ARG_VIEW_ONLY, viewOnly);
         fragment.setArguments(args);
         return fragment;
     }
@@ -69,6 +72,7 @@ public class PostCardFullFragment extends Fragment implements Serializable, View
         if (getArguments() != null) {
             mPost = (Post) getArguments().getSerializable(ARG_POST);
             mListener = (FullPostInteractionListener) getArguments().getSerializable(ARG_LISTENER);
+            mViewOnly = getArguments().getBoolean(ARG_VIEW_ONLY);
         }
     }
 
@@ -136,30 +140,41 @@ public class PostCardFullFragment extends Fragment implements Serializable, View
             if (!mPost.getmPosterOrg().getmProfileImageURL().equals(""))
                 Picasso.with(getActivity()).load(mPost.getmPosterOrg().getmProfileImageURL()).into(postClubPic);
 
-            //sharing the post
-            Button shareButton = (Button) mView.findViewById(R.id.post_share_button_full);
-            final String sharingPostText = getActivity().getResources().getString(R.string.sharing_post);
-            shareButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String toShareString = String.format(sharingPostText, mPost.getmPostClubUsername(), mPost.getmPostDetail());
-                    Intent sendIntent = new Intent(Intent.ACTION_SEND);
-                    sendIntent.putExtra(Intent.EXTRA_TEXT, toShareString);
-                    sendIntent.setType("text/plain");
-                    try {
-                        getActivity().startActivity(Intent.createChooser(sendIntent, getActivity().getResources().getText(R.string.send_to)));
-                    } catch (Exception e) {
-                        Log.d(SHARE_TAG, "An error occured");
-                    }
-                }
-            });
-
-            //moving to comment frag
+            //post buttons
             Button commentButton = (Button) mView.findViewById(R.id.post_comment_button_full);
+            Button shareButton = (Button) mView.findViewById(R.id.post_share_button_full);
+
+            if (mViewOnly){
+                shareButton.setVisibility(View.GONE);
+                commentButton.setText(getActivity().getResources().getString(R.string.back_button_text));
+            } else {
+                //sharing the post IF NOT VIEW ONLY
+                final String sharingPostText = getActivity().getResources().getString(R.string.sharing_post);
+                shareButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String toShareString = String.format(sharingPostText, mPost.getmPostClubUsername(), mPost.getmPostDetail());
+                        Intent sendIntent = new Intent(Intent.ACTION_SEND);
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, toShareString);
+                        sendIntent.setType("text/plain");
+                        try {
+                            getActivity().startActivity(Intent.createChooser(sendIntent, getActivity().getResources().getText(R.string.send_to)));
+                        } catch (Exception e) {
+                            Log.d(SHARE_TAG, "An error occured");
+                        }
+                    }
+                });
+            }
+
+            //moving to comment frag OR pressing back button
             commentButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.CommentButtonClicked(mPost);
+                    if (mViewOnly){
+                        getChildFragmentManager().popBackStack();
+                    } else{
+                        mListener.CommentButtonClicked(mPost);
+                    }
                 }
             });
 

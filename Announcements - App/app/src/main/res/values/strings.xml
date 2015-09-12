@@ -135,5 +135,6 @@
     <string name="declining_post_dialogbox_input_prompt">Briefly explain why you are declining this post</string>
     <string name="cancel_button_text">Cancel</string>
     <string name="title_activity_sign_up_orgs">SignUpOrgsActivity</string>
+    <string name="back_button_text">BACK</string>
 
 </resources>

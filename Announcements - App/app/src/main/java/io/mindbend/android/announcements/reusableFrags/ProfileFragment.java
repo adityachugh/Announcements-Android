@@ -698,7 +698,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     }
 
     @Override
-    public void refreshPosts() {
+    public void refreshPosts(boolean isApproving, boolean isViewingState) {
 
     }
 

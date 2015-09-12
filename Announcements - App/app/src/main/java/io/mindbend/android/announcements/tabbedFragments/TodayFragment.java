@@ -209,7 +209,7 @@ public class TodayFragment extends Fragment implements Serializable,
     }
 
     @Override
-    public void refreshPosts() {
+    public void refreshPosts(boolean isApproving, boolean isViewingState) {
         Log.wtf(TAG, "TODAYFRAG refreshed!");
 
         //refreshing will load the latest 10 posts
@@ -265,7 +265,7 @@ public class TodayFragment extends Fragment implements Serializable,
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {
-                    PostsCardsFragment allPosts = PostsCardsFragment.newInstance(posts, TodayFragment.this, true, TodayFragment.this, false, null);
+                    PostsCardsFragment allPosts = PostsCardsFragment.newInstance(posts, TodayFragment.this, true, TodayFragment.this, false, null, null);
                     getChildFragmentManager()
                             .beginTransaction()
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)

@@ -156,7 +156,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {
-                    PostsCardsFragment allPosts = PostsCardsFragment.newInstance(posts, DiscoverFragment.this, true, DiscoverFragment.this, false, null);
+                    PostsCardsFragment allPosts = PostsCardsFragment.newInstance(posts, DiscoverFragment.this, true, DiscoverFragment.this, false, null, null);
                     getChildFragmentManager()
                             .beginTransaction()
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -228,7 +228,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
     }
 
     @Override
-    public void refreshPosts() {
+    public void refreshPosts(boolean isApproving, boolean isViewingState) {
 
     }
 

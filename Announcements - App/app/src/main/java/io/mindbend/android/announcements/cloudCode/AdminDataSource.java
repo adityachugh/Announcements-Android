@@ -154,6 +154,8 @@ public class AdminDataSource {
     }
 
     public static void getAllPostsForOrganizationForRange (final ProgressBar loading, final Context context, String organizationObjectId, int startIndex, int numberOfPosts, final FunctionCallback<ArrayList<Post>> callback){
+        loading.setVisibility(View.VISIBLE);
+
         HashMap<String, Object> params = new HashMap<>();
         params.put("organizationObjectId", organizationObjectId);
         params.put("startIndex", startIndex);

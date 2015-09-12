@@ -34,6 +34,7 @@ import io.mindbend.android.announcements.cloudCode.UserDataSource;
 import io.mindbend.android.announcements.reusableFrags.ListFragment;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridAdapter;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridFragment;
+import io.mindbend.android.announcements.reusableFrags.PostCardFullFragment;
 import io.mindbend.android.announcements.reusableFrags.PostOverlayFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsCardsFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsFeedAdapter;
@@ -52,11 +53,12 @@ public class AdminFragment extends Fragment implements Serializable,
         ProfileFragment.ProfileInteractionListener,
         PostOverlayFragment.PostsOverlayListener,
         PostsFeedAdapter.PostInteractionListener,
-        UserListAdapter.UserListInteractionListener, ListFragment.ListFabListener, SearchableFrag.SearchInterface, ModifyOrganizationFragment.ModifyOrgInterface {
+        UserListAdapter.UserListInteractionListener, ListFragment.ListFabListener, SearchableFrag.SearchInterface, ModifyOrganizationFragment.ModifyOrgInterface, PostCardFullFragment.FullPostInteractionListener {
 
     public static final String ADMIN_ORGS_TAG = "main_admin_frag";
     public static final String PENDING_POSTS = "pending_posts";
     public static final String ALL_ORG_POSTS = "all_org_posts";
+    public static final String FULL_POST = "full_post";
 
     private static final String TAG = "AdminFragment";
     private static final String ARG_ADMIN_ORGS = "admin_orgs";
@@ -66,7 +68,9 @@ public class AdminFragment extends Fragment implements Serializable,
     public transient ProgressBar mLoading;
     private PostOverlayFragment.PostsOverlayListener mPostsOverlayListener = this;
     private PostsFeedAdapter.PostInteractionListener mPostInteractionListener = this;
+    private PostCardFullFragment.FullPostInteractionListener mFullPostInteractionListener = this;
     private Organization mParentOrg;
+    private Organization mViewingOrg;
 
     private boolean onToday = false;
     private boolean onDiscover = false;
@@ -187,7 +191,7 @@ public class AdminFragment extends Fragment implements Serializable,
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {
-                    PostsCardsFragment pendingPosts = PostsCardsFragment.newInstance(posts, mPostInteractionListener, false, mPostsOverlayListener, true, parentId); //true; is approving
+                    PostsCardsFragment pendingPosts = PostsCardsFragment.newInstance(posts, mPostInteractionListener, false, mPostsOverlayListener, true, parentId, null); //true; is approving
                     getChildFragmentManager()
                             .beginTransaction()
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -223,15 +227,16 @@ public class AdminFragment extends Fragment implements Serializable,
 
     @Override
     public void viewAnnouncementsState(Organization organization) {
+        mViewingOrg = organization; //private field needed for refresh
         allOrgPosts(organization.getmObjectId());
     }
 
-    private void allOrgPosts(String orgId){
+    private void allOrgPosts(final String orgId){
         AdminDataSource.getAllPostsForOrganizationForRange(mLoading, getActivity(), orgId, 0, 10, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {
-                    PostsCardsFragment allPosts = PostsCardsFragment.newInstance(posts, mPostInteractionListener, true, mPostsOverlayListener, false, null);
+                    PostsCardsFragment allPosts = PostsCardsFragment.newInstance(posts, mPostInteractionListener, true, mPostsOverlayListener, false, null, orgId);
                     getChildFragmentManager()
                             .beginTransaction()
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -393,9 +398,12 @@ public class AdminFragment extends Fragment implements Serializable,
     }
 
     @Override
-    public void refreshPosts() {
+    public void refreshPosts(boolean isApproving, boolean isViewingState) {
         //refresh when approving posts; load the 10 latest posts
-        loadPendingPosts(mParentOrg.getmObjectId());
+        if (isApproving)
+            loadPendingPosts(mParentOrg.getmObjectId());
+        else if (isViewingState)
+            allOrgPosts(mViewingOrg.getmObjectId());
     }
 
     @Override
@@ -410,12 +418,25 @@ public class AdminFragment extends Fragment implements Serializable,
 
     @Override
     public void pressedPostCard(Post post) {
-        //In this case, open full post with approve and decline buttons
-        Log.wtf(TAG, "full post clicked!");
+        //In this case, open full post
+        PostCardFullFragment fullCard = PostCardFullFragment.newInstance(post, mFullPostInteractionListener, true);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, fullCard).addToBackStack(FULL_POST).commitAllowingStateLoss();
+
     }
 
     @Override
     public void pressedPostComments(Post postPressed) {
+
+    }
+
+    @Override
+    public void CommentButtonClicked(Post postComments) {
+
+    }
+
+    @Override
+    public void openPosterOrgProfile(Organization organization) {
 
     }
 }

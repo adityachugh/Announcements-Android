@@ -149,7 +149,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {
-                    PostsCardsFragment allPosts = PostsCardsFragment.newInstance(posts, YouFragment.this, true, YouFragment.this, false, null);
+                    PostsCardsFragment allPosts = PostsCardsFragment.newInstance(posts, YouFragment.this, true, YouFragment.this, false, null, null);
                     getChildFragmentManager()
                             .beginTransaction()
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -221,7 +221,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
     }
 
     @Override
-    public void refreshPosts() {
+    public void refreshPosts(boolean isApproving, boolean isViewingState) {
 
     }
 

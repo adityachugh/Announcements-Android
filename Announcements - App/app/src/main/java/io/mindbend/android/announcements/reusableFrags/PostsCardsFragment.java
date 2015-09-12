@@ -47,6 +47,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
     private static final String ARG_IS_VIEWING_STATE = "is_viewing_announcements_state";
     private static final String ARG_IS_APPROVING = "is_approving_posts";
     private static final String ARG_PARENT_ID_IF_APPROVING = "parent_id_if_approving";
+    private static final String ARG_ORG_ID_IF_VIEWING_STATE = "org_id_if_viewing_state";
 
     // TODO: Rename and change types of parameters
     private List<Post> mPosts;
@@ -61,6 +62,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
     private boolean mIsViewingState;
     private boolean mIsApproving;
     private String mParentOrgIdIfApproving;
+    private String mOrgIdIfViewingState;
     private TextView noPostsMessage;
 
     /**
@@ -71,7 +73,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
      * @return A new instance of fragment PostsCardsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PostsCardsFragment newInstance(ArrayList<Post> posts, PostsFeedAdapter.PostInteractionListener postTouchListener, boolean isViewingState, PostOverlayFragment.PostsOverlayListener postsOverlayListener, boolean isApproving, String parentOrgIdIfApproving) {
+    public static PostsCardsFragment newInstance(ArrayList<Post> posts, PostsFeedAdapter.PostInteractionListener postTouchListener, boolean isViewingState, PostOverlayFragment.PostsOverlayListener postsOverlayListener, boolean isApproving, String parentOrgIdIfApproving, String orgIdIfViewingState) {
         PostsCardsFragment fragment = new PostsCardsFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_POSTS, posts);
@@ -80,6 +82,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
         args.putBoolean(ARG_IS_VIEWING_STATE, isViewingState);
         args.putBoolean(ARG_IS_APPROVING, isApproving);
         args.putString(ARG_PARENT_ID_IF_APPROVING, parentOrgIdIfApproving);
+        args.putString(ARG_ORG_ID_IF_VIEWING_STATE, orgIdIfViewingState);
         fragment.setArguments(args);
         return fragment;
     }
@@ -102,6 +105,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
             mPostsOverlayListener = (PostOverlayFragment.PostsOverlayListener)getArguments().getSerializable(ARG_POSTS_OVERLAY_LISTENER);
             mIsApproving = getArguments().getBoolean(ARG_IS_APPROVING);
             mParentOrgIdIfApproving = getArguments().getString(ARG_PARENT_ID_IF_APPROVING);
+            mOrgIdIfViewingState = getArguments().getString(ARG_ORG_ID_IF_VIEWING_STATE);
             mScale = getActivity().getResources().getDisplayMetrics().density;
         }
     }
@@ -187,8 +191,8 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
     }
 
     @Override
-    public void refreshPosts() {
-        mPostsOverlayListener.refreshPosts();
+    public void refreshPosts(boolean isApproving, boolean isViewingState) {
+        mPostsOverlayListener.refreshPosts(mIsApproving, mIsViewingState);
     }
 
     @Override
@@ -199,7 +203,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
     @Override
     public void onRefresh(SwipyRefreshLayoutDirection direction) {
         if(direction == SwipyRefreshLayoutDirection.TOP)
-            refreshPosts();
+            refreshPosts(mIsApproving, mIsViewingState);
         else
             loadMorePosts();
 
@@ -215,6 +219,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
             AdminDataSource.getPostsToBeApprovedInRange(adminFragment.mLoading, getActivity(), mParentOrgIdIfApproving, startIndex, numberOfPostsToLoad, new FunctionCallback<ArrayList<Post>>() {
                 @Override
                 public void done(ArrayList<Post> posts, ParseException e) {
+                    mRefreshTodayPosts.setRefreshing(false);
                     if (e == null) {
                         if (posts.size() > 0) {
                             mPosts.addAll(posts);
@@ -229,6 +234,21 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
         } else if (mIsViewingState){
             AdminFragment adminFragment = ((AdminFragment)getParentFragment());
             //loading all posts
+            AdminDataSource.getAllPostsForOrganizationForRange(adminFragment.mLoading, getActivity(), mOrgIdIfViewingState, startIndex, numberOfPostsToLoad, new FunctionCallback<ArrayList<Post>>() {
+                @Override
+                public void done(ArrayList<Post> posts, ParseException e) {
+                    mRefreshTodayPosts.setRefreshing(false);
+                    if (e == null) {
+                        if (posts.size() > 0) {
+                            mPosts.addAll(posts);
+                            mPostFeedAdapter.notifyDataSetChanged();
+                            updateNoPostsTextMessage();
+                        } else {
+                            Snackbar.make(mView, R.string.no_more_posts_message, Snackbar.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            });
         } else {
             TodayFragment todayFragment = ((TodayFragment)getParentFragment().getParentFragment());
             //querying today posts
