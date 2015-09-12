@@ -54,6 +54,7 @@ import io.mindbend.android.announcements.cloudCode.OrgsDataSource;
 import io.mindbend.android.announcements.cloudCode.PostsDataSource;
 import io.mindbend.android.announcements.cloudCode.UserDataSource;
 import io.mindbend.android.announcements.reusableFrags.ListFragment;
+import io.mindbend.android.announcements.reusableFrags.PostCardFullFragment;
 import io.mindbend.android.announcements.reusableFrags.PostCommentsFragment;
 import io.mindbend.android.announcements.reusableFrags.PostOverlayFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsCardsFragment;
@@ -70,7 +71,7 @@ public class TodayFragment extends Fragment implements Serializable,
         View.OnClickListener,
         DatePickerDialog.OnDateSetListener,
         PostOverlayFragment.PostsOverlayListener,
-        ProfileFragment.ProfileInteractionListener, ListFragment.ListFabListener, UserListAdapter.UserListInteractionListener, SearchableFrag.SearchInterface {
+        ProfileFragment.ProfileInteractionListener, ListFragment.ListFabListener, UserListAdapter.UserListInteractionListener, SearchableFrag.SearchInterface, PostsFeedAdapter.PostInteractionListener{
 
     private static final String TAG = "TodayFragment";
 
@@ -260,26 +261,24 @@ public class TodayFragment extends Fragment implements Serializable,
 
     @Override
     public void viewAnnouncementsState(Organization org) {
-        //TODO: query today's posts data from Parse, then pass that data into a PostsCardFragment that will be created using the PostsCardsFragment.NewInstance static method
-        //in the meantime, here is fake data
-        ArrayList<Post> posts = new ArrayList<>();
+        AdminDataSource.getAllPostsForOrganizationForRange(mLoading, getActivity(), org.getmObjectId(), 0, 10, new FunctionCallback<ArrayList<Post>>() {
+            @Override
+            public void done(ArrayList<Post> posts, ParseException e) {
+                if (e == null) {
+                    PostsCardsFragment allPosts = PostsCardsFragment.newInstance(posts, TodayFragment.this, true, TodayFragment.this, false, null);
+                    getChildFragmentManager()
+                            .beginTransaction()
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .replace(R.id.today_framelayout, allPosts)
+                            .addToBackStack(null)
+                            .commitAllowingStateLoss();
+                } else {
+                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
 
-        //THE FOLLOWING ARE FAKE TEST POSTS
-        Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio", "hasImage");
-        posts.add(testPost1);
-
-        Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio", "hasImage");
-        posts.add(testPost2);
-
-        Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio", "");
-        posts.add(testPost3);
-
-        PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true, this, false, null);
-        getChildFragmentManager().beginTransaction()
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .replace(R.id.today_framelayout, announcementsStateList)
-                .addToBackStack(null)
-                .commitAllowingStateLoss();
+            }
+        });
     }
 
     @Override
@@ -294,7 +293,6 @@ public class TodayFragment extends Fragment implements Serializable,
             @Override
             public void done(Boolean success, ParseException e) {
                 if (success && e == null) {
-                    //TODO: error handling for adding an existing admin
                     Snackbar.make(mView, getActivity().getString(R.string.format_added_user_as_admin_success_message, user.getName()), Snackbar.LENGTH_SHORT).show();
                 }
             }
@@ -315,5 +313,15 @@ public class TodayFragment extends Fragment implements Serializable,
     @Override
     public void searchOrgPressed(Organization orgPressed) {
         pressedOrgFromProfile(orgPressed);
+    }
+
+    @Override
+    public void pressedPostComments(Post postPressed) {
+
+    }
+
+    @Override
+    public void pressedPostCard(Post post) {
+
     }
 }

@@ -188,9 +188,12 @@ public class AdminFragment extends Fragment implements Serializable,
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {
                     PostsCardsFragment pendingPosts = PostsCardsFragment.newInstance(posts, mPostInteractionListener, false, mPostsOverlayListener, true, parentId); //true; is approving
-                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                    if (transaction.isEmpty())
-                        transaction.replace(R.id.admin_framelayout, pendingPosts).addToBackStack(PENDING_POSTS).commitAllowingStateLoss();
+                    getChildFragmentManager()
+                            .beginTransaction()
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .replace(R.id.admin_framelayout, pendingPosts)
+                            .addToBackStack(PENDING_POSTS)
+                            .commitAllowingStateLoss();
                 } else {
                     Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
@@ -229,9 +232,12 @@ public class AdminFragment extends Fragment implements Serializable,
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {
                     PostsCardsFragment allPosts = PostsCardsFragment.newInstance(posts, mPostInteractionListener, true, mPostsOverlayListener, false, null);
-                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                    if (transaction.isEmpty())
-                        transaction.replace(R.id.admin_framelayout, allPosts).addToBackStack(ALL_ORG_POSTS).commitAllowingStateLoss();
+                    getChildFragmentManager()
+                            .beginTransaction()
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .replace(R.id.admin_framelayout, allPosts)
+                            .addToBackStack(ALL_ORG_POSTS)
+                            .commitAllowingStateLoss();
                 } else {
                     Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();

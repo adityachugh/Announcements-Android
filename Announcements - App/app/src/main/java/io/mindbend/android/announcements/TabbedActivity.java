@@ -340,45 +340,25 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
 
     public void onActivityResult(final int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
+            Log.wtf("Image", "intent result was okay");
+            final Uri selectedImageUri = data.getData();
+            String message = (selectedImageUri != null) ? selectedImageUri.toString() : "NULL URI";
+            Log.wtf("Image", "URI is: "+message);
             if (requestCode == NewAnnouncementFragment.ADD_PHOTO) {
-                Log.wtf("Image", "intent result was okay");
-                Uri selectedImageUri = data.getData();
-                try {
-                    Bitmap image = getBitmapFromUri(selectedImageUri);
-                    Log.wtf("Image", "Bitmap is: " + image.toString());
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    image.compress(Bitmap.CompressFormat.JPEG, 70, stream);
-                    byte[] imageBytes = convertImageUriToUploadableByteArray(selectedImageUri, requestCode, ModifyOrganizationFragment.UPLOAD_OR_MODIFY_PROFILE_PHOTO); //uses cover photo size
-                    Log.wtf("Image", "Converted bytes are: " + imageBytes);
-                    mAdminFragment.getmAdminMainFrag().getmNewAnnouncementFragment().setmImageBytes(imageBytes);
-                } catch (IOException f) {
-                    Log.wtf("crash", "sad face");
-                    Snackbar.make(mView, "Failed to add image", Snackbar.LENGTH_LONG).show();
+                byte[] imageBytes = convertImageUriToUploadableByteArray(selectedImageUri, requestCode, ModifyOrganizationFragment.UPLOAD_OR_MODIFY_PROFILE_PHOTO); //uses cover photo size
+                Log.wtf("Image", "Converted bytes are: " + imageBytes);
+                mAdminFragment.getmAdminMainFrag().getmNewAnnouncementFragment().setmImageBytes(imageBytes);
+            }
+            else if (requestCode == ModifyOrganizationFragment.UPLOAD_OR_MODIFY_PROFILE_PHOTO || requestCode == ModifyOrganizationFragment.UPLOAD_OR_MODIFY_COVER_PHOTO) {
+                byte[] imageBytes = convertImageUriToUploadableByteArray(selectedImageUri, requestCode, ModifyOrganizationFragment.UPLOAD_OR_MODIFY_PROFILE_PHOTO); //uses cover photo size
+                Log.wtf("Image", "Converted bytes are: " + imageBytes);
+                if (requestCode == ModifyOrganizationFragment.UPLOAD_OR_MODIFY_PROFILE_PHOTO) {
+                    ((ModifyOrganizationFragment) mAdminFragment.getmCurrentOrgModifyFrag()).setProfileImageBytes(imageBytes);
+                } else {
+                    ((ModifyOrganizationFragment) mAdminFragment.getmCurrentOrgModifyFrag()).setCoverImageBytes(imageBytes);
                 }
             }
-            if (requestCode == ModifyOrganizationFragment.UPLOAD_OR_MODIFY_PROFILE_PHOTO || requestCode == ModifyOrganizationFragment.UPLOAD_OR_MODIFY_COVER_PHOTO) {
-                Log.wtf("Image", "intent result was okay");
-                Uri selectedImageUri = data.getData();
-                try {
-                    Bitmap image = getBitmapFromUri(selectedImageUri);
-                    Log.wtf("Image", "Bitmap is: " + image.toString());
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    image.compress(Bitmap.CompressFormat.JPEG, 70, stream);
-                    byte[] imageBytes = convertImageUriToUploadableByteArray(selectedImageUri, requestCode, ModifyOrganizationFragment.UPLOAD_OR_MODIFY_PROFILE_PHOTO); //uses cover photo size
-                    Log.wtf("Image", "Converted bytes are: " + imageBytes);
-                    if (requestCode == ModifyOrganizationFragment.UPLOAD_OR_MODIFY_PROFILE_PHOTO) {
-                        ((ModifyOrganizationFragment) mAdminFragment.getmCurrentOrgModifyFrag()).setProfileImageBytes(imageBytes);
-                    } else {
-                        ((ModifyOrganizationFragment) mAdminFragment.getmCurrentOrgModifyFrag()).setCoverImageBytes(imageBytes);
-                    }
-                } catch (IOException f) {
-                    Log.wtf("crash", "sad face");
-                    Snackbar.make(mView, "Failed to add image", Snackbar.LENGTH_LONG).show();
-                }
-            }
-            if (requestCode == AdminMainFragment.CHANGE_PARENT_PROFILE_PHOTO || requestCode == AdminMainFragment.CHANGE_PARENT_COVER_PHOTO) {
-                Log.wtf("Image", "intent result was okay");
-                Uri selectedImageUri = data.getData();
+            else if (requestCode == AdminMainFragment.CHANGE_PARENT_PROFILE_PHOTO || requestCode == AdminMainFragment.CHANGE_PARENT_COVER_PHOTO) {
                 byte[] imageBytes = convertImageUriToUploadableByteArray(selectedImageUri, requestCode, AdminMainFragment.CHANGE_PARENT_PROFILE_PHOTO);
                 Log.wtf("Image", "Converted bytes are: " + imageBytes);
                 if (requestCode == AdminMainFragment.CHANGE_PARENT_PROFILE_PHOTO) {
@@ -389,8 +369,6 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
             }
 
             if (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE || requestCode == ProfileFragment.UPDATE_COVER_IMAGE) {
-                Log.wtf("Image", "intent result was okay");
-                final Uri selectedImageUri = data.getData();
                 byte[] imageBytes = convertImageUriToUploadableByteArray(selectedImageUri, requestCode, ProfileFragment.UPDATE_PROFILE_IMAGE);
                 Log.wtf("Image", "Converted bytes are: " + imageBytes.toString());
                 boolean isUpdatingProfilePhoto = (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE);

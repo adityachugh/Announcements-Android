@@ -41,6 +41,7 @@ public class CommentsDataSource {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
                 int i = 0;
+                loadingLayout.setVisibility(View.GONE);
                 //parseobject to comments
                 ArrayList<Comment> comments = new ArrayList<>();
                 if (e == null){
@@ -48,7 +49,6 @@ public class CommentsDataSource {
                         for (ParseObject object : parseObjects){
                             comments.add(new Comment(context, object));
                         }
-                        loadingLayout.setVisibility(View.GONE);
                         callback.done(comments, e);
                     }
                 }

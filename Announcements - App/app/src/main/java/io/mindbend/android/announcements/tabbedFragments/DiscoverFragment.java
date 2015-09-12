@@ -152,26 +152,24 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
 
     @Override
     public void viewAnnouncementsState(Organization org) {
-        //TODO: query today's posts data from Parse, then pass that data into a PostsCardFragment that will be created using the PostsCardsFragment.NewInstance static method
-        //in the meantime, here is fake data
-        ArrayList<Post> posts = new ArrayList<>();
+        AdminDataSource.getAllPostsForOrganizationForRange(mLoading, getActivity(), org.getmObjectId(), 0, 10, new FunctionCallback<ArrayList<Post>>() {
+            @Override
+            public void done(ArrayList<Post> posts, ParseException e) {
+                if (e == null) {
+                    PostsCardsFragment allPosts = PostsCardsFragment.newInstance(posts, DiscoverFragment.this, true, DiscoverFragment.this, false, null);
+                    getChildFragmentManager()
+                            .beginTransaction()
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .replace(R.id.discover_framelayout, allPosts)
+                            .addToBackStack(null)
+                            .commitAllowingStateLoss();
+                } else {
+                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
 
-        //THE FOLLOWING ARE FAKE TEST POSTS
-        Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio", "");
-        posts.add(testPost1);
-
-        Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio", "");
-        posts.add(testPost2);
-
-        Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio", "hasImage");
-        posts.add(testPost3);
-
-        PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true, this, false, null);
-        getChildFragmentManager().beginTransaction()
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .replace(R.id.discover_framelayout, announcementsStateList)
-                .addToBackStack(null)
-                .commitAllowingStateLoss();
+            }
+        });
     }
 
     @Override

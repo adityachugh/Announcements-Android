@@ -43,7 +43,7 @@ import io.mindbend.android.announcements.reusableFrags.UserListAdapter;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class YouFragment extends Fragment implements Serializable, ProfileFragment.ProfileInteractionListener, SearchableFrag.SearchInterface, ListFragment.ListFabListener, UserListAdapter.UserListInteractionListener, PostOverlayFragment.PostsOverlayListener {
+public class YouFragment extends Fragment implements Serializable, ProfileFragment.ProfileInteractionListener, SearchableFrag.SearchInterface, ListFragment.ListFabListener, UserListAdapter.UserListInteractionListener, PostOverlayFragment.PostsOverlayListener, PostsFeedAdapter.PostInteractionListener {
     private static final String TAG = "TAG";
     private static final String DEFAULT = "default_frag";
     private ProfileFragment mProfileFragment;
@@ -145,26 +145,24 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
 
     @Override
     public void viewAnnouncementsState(Organization org) {
-        //TODO: query today's posts data from Parse, then pass that data into a PostsCardFragment that will be created using the PostsCardsFragment.NewInstance static method
-        //in the meantime, here is fake data
-        ArrayList<Post> posts = new ArrayList<>();
+        AdminDataSource.getAllPostsForOrganizationForRange(mLoading, getActivity(), org.getmObjectId(), 0, 10, new FunctionCallback<ArrayList<Post>>() {
+            @Override
+            public void done(ArrayList<Post> posts, ParseException e) {
+                if (e == null) {
+                    PostsCardsFragment allPosts = PostsCardsFragment.newInstance(posts, YouFragment.this, true, YouFragment.this, false, null);
+                    getChildFragmentManager()
+                            .beginTransaction()
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .replace(R.id.you_framelayout, allPosts)
+                            .addToBackStack(null)
+                            .commitAllowingStateLoss();
+                } else {
+                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
 
-        //THE FOLLOWING ARE FAKE TEST POSTS
-        Post testPost1 = new Post("testID", "Test Title 1", "2 hours ago", "This is a test post with fake data", "Mindbend Studio", "hasImage");
-        posts.add(testPost1);
-
-        Post testPost2 = new Post("testID", "Test Title 2", "4 hours ago", "This is a test post with fake data", "Mindbend Studio", "");
-        posts.add(testPost2);
-
-        Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio", "hasImage");
-        posts.add(testPost3);
-
-        PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true, this, false, null);
-        getChildFragmentManager().beginTransaction()
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .replace(R.id.you_framelayout, announcementsStateList)
-                .addToBackStack(null)
-                .commitAllowingStateLoss();
+            }
+        });
     }
 
     @Override
@@ -234,6 +232,16 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
 
     @Override
     public void visitCommentersProfile(User commenterToBeVisited) {
+
+    }
+
+    @Override
+    public void pressedPostComments(Post postPressed) {
+
+    }
+
+    @Override
+    public void pressedPostCard(Post post) {
 
     }
 }

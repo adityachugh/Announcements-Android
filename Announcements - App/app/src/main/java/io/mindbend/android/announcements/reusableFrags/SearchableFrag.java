@@ -85,10 +85,6 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
                 break;
             case ORGS_TYPE:
                 loadDiscoverOrgs(ParseUser.getCurrentUser().getObjectId(), 0, 10);
-                OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(mOrgs, this, this, null, false);
-                FragmentTransaction ft2 = getFragmentManager().beginTransaction();
-                if(ft2.isEmpty())
-                    ft2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag_of_items, orgsGridFragment).commitAllowingStateLoss();
                 break;
         }
 

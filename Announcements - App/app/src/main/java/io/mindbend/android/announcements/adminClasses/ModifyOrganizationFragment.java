@@ -203,7 +203,7 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
                         @Override
                         public void done(Organization organization, ParseException e) {
                             if (e == null && organization != null){
-                                ((TabbedActivity)getActivity()).getmAdminFragment().updateModifiedAdminOrg(organization);
+                                        ((TabbedActivity) getActivity()).getmAdminFragment().updateModifiedAdminOrg(organization);
                                 OrgsGridFragment mainFragment = ((OrgsGridFragment)getFragmentManager().findFragmentByTag(AdminFragment.ADMIN_ORGS_TAG));
                                 getFragmentManager().beginTransaction().show(mainFragment);
                                 getFragmentManager().popBackStack();
