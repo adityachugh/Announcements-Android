@@ -2,7 +2,10 @@ package io.mindbend.android.announcements.cloudCode;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +25,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.zip.Deflater;
 
 import io.mindbend.android.announcements.Organization;
@@ -145,6 +149,37 @@ public class UserDataSource {
                     message = "Error";
                 }
                 Snackbar.make(layout, message, Snackbar.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public static void followOrganizations (final View v, final Context context, ProgressBar loader, ArrayList<String> orgs, final FunctionCallback<Boolean> callback){
+        HashMap <String, Object> params = new HashMap<>();
+        params.put("organizationObjectIds", orgs);
+
+        ParseCloud.callFunctionInBackground("followOrganizations", params, new FunctionCallback<Boolean>() {
+            @Override
+            public void done(Boolean success, ParseException e) {
+                if (e == null){
+                    if (success){
+                        new AlertDialog.Builder(context)
+                                .setMessage("You can find and follow organizations at any time in the 'Discover' tab")
+                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent i = new Intent(context, TabbedActivity.class);
+                                        context.startActivity(i);
+                                    }
+                                })
+                                .show();
+                    }
+
+                } else {
+                    e.printStackTrace();
+                    Snackbar.make(v, "Error following organizations", Snackbar.LENGTH_SHORT).show();
+                    Intent i = new Intent(context, TabbedActivity.class);
+                    context.startActivity(i);
+                }
             }
         });
     }

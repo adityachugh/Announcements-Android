@@ -174,7 +174,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
         Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio", "hasImage");
         posts.add(testPost3);
 
-        PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true, this, false);
+        PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true, this, false, null);
         getChildFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.discover_framelayout, announcementsStateList)

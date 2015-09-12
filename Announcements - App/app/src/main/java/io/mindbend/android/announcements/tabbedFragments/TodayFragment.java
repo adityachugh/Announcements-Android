@@ -280,7 +280,7 @@ public class TodayFragment extends Fragment implements Serializable,
         Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio", "");
         posts.add(testPost3);
 
-        PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true, this, false);
+        PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true, this, false, null);
         getChildFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.today_framelayout, announcementsStateList)

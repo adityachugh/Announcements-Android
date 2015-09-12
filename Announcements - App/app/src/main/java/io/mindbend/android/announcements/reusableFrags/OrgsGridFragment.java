@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,18 +25,21 @@ public class OrgsGridFragment extends Fragment implements OrgsGridAdapter.OrgInt
     private static final String ARG_ORGS_LISTENER = "orgs_listener";
     private static final String ARG_ORGS_LIST = "orgs";
     private static final String ARG_GRID_LISTENER = "grid_listener";
+    private static final String ARG_SIGN_UP = "sign_up";
 
     private OrgsGridAdapter.OrgInteractionListener mOrgsListener;
     private ArrayList<Organization> mOrgs;
     private OrgsGridAdapter mOrgsAdapter;
     private OrgsGridInteractionListener mListener;
+    private boolean mSignUp;
 
-    public static OrgsGridFragment newInstance(ArrayList<Organization> orgs, OrgsGridAdapter.OrgInteractionListener orgListener, OrgsGridInteractionListener gridListener) {
+    public static OrgsGridFragment newInstance(ArrayList<Organization> orgs, OrgsGridAdapter.OrgInteractionListener orgListener, OrgsGridInteractionListener gridListener, boolean signUp) {
         OrgsGridFragment fragment = new OrgsGridFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_ORGS_LIST, orgs);
         args.putSerializable(ARG_ORGS_LISTENER, orgListener);
         args.putSerializable(ARG_GRID_LISTENER, gridListener);
+        args.putBoolean(ARG_SIGN_UP, signUp);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,6 +55,7 @@ public class OrgsGridFragment extends Fragment implements OrgsGridAdapter.OrgInt
             mOrgs = getArguments().getParcelableArrayList(ARG_ORGS_LIST);
             mOrgsListener = (OrgsGridAdapter.OrgInteractionListener)getArguments().getSerializable(ARG_ORGS_LISTENER);
             mListener = (OrgsGridInteractionListener)getArguments().getSerializable(ARG_GRID_LISTENER);
+            mSignUp = getArguments().getBoolean(ARG_SIGN_UP);
         }
     }
 
@@ -64,7 +69,7 @@ public class OrgsGridFragment extends Fragment implements OrgsGridAdapter.OrgInt
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
 
         //Initialize and set the adapter
-        mOrgsAdapter = new OrgsGridAdapter (getActivity(), mOrgs, mOrgsListener);
+        mOrgsAdapter = new OrgsGridAdapter (getActivity(), mOrgs, mOrgsListener, mSignUp);
         recyclerView.setAdapter(mOrgsAdapter);
         return v;
     }

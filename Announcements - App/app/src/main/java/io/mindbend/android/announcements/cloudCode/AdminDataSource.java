@@ -134,4 +134,29 @@ public class AdminDataSource {
             }
         });
     }
+
+    public static void actOnApprovalRequest (final View view, String postObjectId, String organizationObjectId, boolean approvalState, String rejectionReason, int priority, final FunctionCallback<Boolean> callback){
+
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("postObjectId", postObjectId);
+        params.put("organizationObjectId", organizationObjectId);
+        params.put("approvalState", approvalState);
+        params.put("rejectionReason", rejectionReason);
+        params.put("priority", priority);
+
+        ParseCloud.callFunctionInBackground("actOnApprovalRequest", params, new FunctionCallback<Boolean>() {
+            @Override
+            public void done(Boolean success, ParseException e) {
+                if (e == null){
+                    if (success)
+                        Snackbar.make(view, "Successfully approved post!", Snackbar.LENGTH_SHORT).show();
+                    else
+                        Snackbar.make(view, "Successfully declined post!", Snackbar.LENGTH_SHORT).show();
+                }
+                else {
+                    Snackbar.make(view, "Error approving/declining post", Snackbar.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
 }

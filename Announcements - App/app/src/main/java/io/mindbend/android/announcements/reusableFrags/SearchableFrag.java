@@ -96,7 +96,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
 
                 loadDiscoverOrgs(ParseUser.getCurrentUser().getObjectId(), 0, 10);
 
-                OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(mOrgs, this, this);
+                OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(mOrgs, this, this, false);
                 FragmentTransaction ft2 = getFragmentManager().beginTransaction();
                 if(ft2.isEmpty())
                     ft2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag, orgsGridFragment).commitAllowingStateLoss();
@@ -116,7 +116,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
             @Override
             public void done(ArrayList<Organization> organizations, ParseException e) {
                 if (e == null && organizations != null) {
-                    OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(organizations, mOrgInteractionListener, mOrgsGridInteractionListener);
+                    OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(organizations, mOrgInteractionListener, mOrgsGridInteractionListener, false);
                     FragmentTransaction ft2 = getFragmentManager().beginTransaction();
                     if (ft2.isEmpty())
                         ft2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag, orgsGridFragment).commitAllowingStateLoss();
@@ -171,7 +171,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
                 //TODO: query results from database
                 ArrayList<Organization> orgs = new ArrayList<>();
                 orgs.add(new Organization("test", query, query, 54, query, false, true));
-                OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(orgs, this, this);
+                OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(orgs, this, this, false);
                 FragmentTransaction ft2 = getFragmentManager().beginTransaction();
                 ft2.replace(R.id.searchable_frag, orgsGridFragment).commitAllowingStateLoss();
                 break;

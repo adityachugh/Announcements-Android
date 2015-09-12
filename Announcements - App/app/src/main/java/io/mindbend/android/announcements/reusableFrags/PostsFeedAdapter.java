@@ -1,11 +1,13 @@
 package io.mindbend.android.announcements.reusableFrags;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,10 +16,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.parse.FunctionCallback;
+import com.parse.ParseCloud;
+import com.parse.ParseException;
 import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
@@ -27,6 +33,7 @@ import java.util.Random;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.cloudCode.AdminDataSource;
 import io.mindbend.android.announcements.cloudCode.PostsDataSource;
 
 /**
@@ -83,7 +90,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(final ViewHolder viewHolder, final int i) {
         final Post post = mPosts.get(i);
         viewHolder.mTitle.setText(post.getmPostTitle());
         viewHolder.mDetail.setText(post.getmPostDetail());
@@ -113,7 +120,53 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
             }
         });
 
-        if(mIsViewingState){
+        if (mIsApproving){
+            //if approving posts (admin)
+
+            //comment button becomes accept
+            viewHolder.mCommentButton.setText(mContext.getString(R.string.approve_button_text));
+            viewHolder.mCommentButton.setTextColor(mContext.getResources().getColor(R.color.announcement_accepted));
+
+            viewHolder.mCommentButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //actOnApprovalRequest; true
+                    actOnApprovalRequest(viewHolder.itemView, post.getmObjectId(), post.getmPosterOrg().getmObjectId(), true, null, post.getmPriority());
+                    mPosts.remove(i);
+                    notifyDataSetChanged();
+                }
+            });
+
+            //share button becomes decline
+            viewHolder.mShareButton.setText(mContext.getString(R.string.decline_button_text));
+            viewHolder.mShareButton.setTextColor(mContext.getResources().getColor(R.color.announcement_declined));
+
+            viewHolder.mShareButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //alert dialog to get reason
+                    final EditText reason = new EditText(mContext);
+                    reason.setHint(mContext.getString(R.string.declining_post_dialogbox_input_prompt));
+
+                    new AlertDialog.Builder(mContext)
+                            .setTitle(mContext.getString(R.string.declining_post_dialogbox_title))
+                            .setView(reason)
+                            .setPositiveButton((mContext.getString(R.string.decline_button_text)), new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    actOnApprovalRequest(viewHolder.itemView, post.getmObjectId(), post.getmPosterOrg().getmObjectId(), false, reason.getText().toString(), post.getmPriority());
+                                    mPosts.remove(i);
+                                    notifyDataSetChanged();
+                                }
+                            })
+                            .setNegativeButton(mContext.getString(R.string.cancel_button_text), new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                }
+                            })
+                            .show();
+                }
+            });
+        }
+        else if(mIsViewingState){
             viewHolder.mCommentButton.setVisibility(View.GONE);
             viewHolder.mShareButton.setVisibility(View.GONE);
             viewHolder.mAnnouncementState.setVisibility(View.VISIBLE);
@@ -140,9 +193,6 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
             viewHolder.mAnnouncementState.setTextColor(textColor);
             viewHolder.mAnnouncementState.setText(typeString);
         }
-        else if (mIsApproving){
-            //if approving posts (admin)
-        }
         else {
             //normal view
             viewHolder.mCommentButton.setOnClickListener(new View.OnClickListener() {
@@ -168,6 +218,19 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
                 }
             });
         }
+    }
+
+    //act on approval state
+    private void actOnApprovalRequest (View view, String postObjectId, String organizationObjectId, boolean approvalState, String rejectionReason, int priority){
+         AdminDataSource.actOnApprovalRequest(view, postObjectId, organizationObjectId, approvalState, rejectionReason, priority, new FunctionCallback<Boolean>() {
+            @Override
+            public void done(Boolean aBoolean, ParseException e) {
+                if (e == null){
+                    //pop back stack, load pending posts again
+                    Log.wtf("PostsFeedAdapter", "post approved! boolean returned is " + aBoolean);
+                }
+            }
+        });
     }
 
     @Override

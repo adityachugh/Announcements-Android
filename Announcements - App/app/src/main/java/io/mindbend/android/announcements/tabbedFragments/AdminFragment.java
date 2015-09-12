@@ -36,6 +36,7 @@ import io.mindbend.android.announcements.reusableFrags.OrgsGridAdapter;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridFragment;
 import io.mindbend.android.announcements.reusableFrags.PostOverlayFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsCardsFragment;
+import io.mindbend.android.announcements.reusableFrags.PostsFeedAdapter;
 import io.mindbend.android.announcements.reusableFrags.ProfileFragment;
 import io.mindbend.android.announcements.reusableFrags.SearchableFrag;
 import io.mindbend.android.announcements.reusableFrags.UserListAdapter;
@@ -50,7 +51,10 @@ public class AdminFragment extends Fragment implements Serializable,
         OrgsGridFragment.OrgsGridInteractionListener,
         ProfileFragment.ProfileInteractionListener,
         PostOverlayFragment.PostsOverlayListener,
+        PostsFeedAdapter.PostInteractionListener,
         UserListAdapter.UserListInteractionListener, ListFragment.ListFabListener, SearchableFrag.SearchInterface, ModifyOrganizationFragment.ModifyOrgInterface {
+    public static final String PENDING_POSTS = "pending_posts";
+
     private static final String ADMIN_ORGS_TAG = "main_admin_frag";
     private static final String TAG = "AdminFragment";
     private static final String ARG_ADMIN_ORGS = "admin_orgs";
@@ -58,6 +62,9 @@ public class AdminFragment extends Fragment implements Serializable,
     private transient AdminMainFragment mAdminMain;
     private ArrayList<Organization> mOrgsList;
     private transient ProgressBar mLoading;
+    private PostOverlayFragment.PostsOverlayListener mPostsOverlayListener = this;
+    private PostsFeedAdapter.PostInteractionListener mPostInteractionListener = this;
+    private Organization mParentOrg;
 
     private boolean onToday = false;
     private boolean onDiscover = false;
@@ -92,7 +99,7 @@ public class AdminFragment extends Fragment implements Serializable,
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mOrgsList = getArguments().getParcelableArrayList(ARG_ADMIN_ORGS);
-            mAdminOrgsFrag = OrgsGridFragment.newInstance(mOrgsList, AdminFragment.this, AdminFragment.this);
+            mAdminOrgsFrag = OrgsGridFragment.newInstance(mOrgsList, AdminFragment.this, AdminFragment.this, false);
         }
     }
 
@@ -134,7 +141,7 @@ public class AdminFragment extends Fragment implements Serializable,
             @Override
             public void done(ArrayList<Organization> organizations, ParseException e) {
                 if (e == null) {
-                    OrgsGridFragment childrenOrgs = OrgsGridFragment.newInstance(organizations, AdminFragment.this, AdminFragment.this);
+                    OrgsGridFragment childrenOrgs = OrgsGridFragment.newInstance(organizations, AdminFragment.this, AdminFragment.this, false);
                     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                     transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, childrenOrgs).addToBackStack(null).commitAllowingStateLoss();
                 }
@@ -163,18 +170,20 @@ public class AdminFragment extends Fragment implements Serializable,
 
     @Override
     public void getChildPendingPosts(Organization parentOrg) {
-        //TODO: load up posts - getPostsToBeApprovedInRange
-        //can reuse cards frag,add new field (isAdminApproving) in new instance to change button texts and clicks.
-        //actOnApprovalRequest
+        mParentOrg = parentOrg; //private field needed for refresh
         loadPendingPosts(parentOrg.getmObjectId());
     }
 
-    private void loadPendingPosts(String parentId){
+    private void loadPendingPosts(final String parentId){
         AdminDataSource.getPostsToBeApprovedInRange(getActivity(), parentId, 0, 10, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {
-                    Log.wtf("AdminFragment", "posts loaded: " + posts.get(0).getmPostDetail());
+                    Log.wtf("AdminFragment", "unapproved posts: " +posts.size());
+                    PostsCardsFragment pendingPosts = PostsCardsFragment.newInstance(posts, mPostInteractionListener, false, mPostsOverlayListener, true, parentId); //true; is approving
+                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                    if (transaction.isEmpty())
+                        transaction.replace(R.id.admin_framelayout, pendingPosts).addToBackStack(PENDING_POSTS).commitAllowingStateLoss();
                 } else {
                     Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
@@ -218,7 +227,7 @@ public class AdminFragment extends Fragment implements Serializable,
         Post testPost3 = new Post("testID", "Test Title 3", "5 hours ago", "This is a test post with fake data", "Mindbend Studio", "");
         posts.add(testPost3);
 
-        PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true, this, false);
+        PostsCardsFragment announcementsStateList = PostsCardsFragment.newInstance(posts, null, true, this, false, null);
         getChildFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.admin_framelayout, announcementsStateList)
@@ -386,7 +395,8 @@ public class AdminFragment extends Fragment implements Serializable,
 
     @Override
     public void refreshPosts() {
-
+        //refresh when approving posts; load the 10 latest posts
+        loadPendingPosts(mParentOrg.getmObjectId());
     }
 
     @Override
@@ -396,6 +406,17 @@ public class AdminFragment extends Fragment implements Serializable,
 
     @Override
     public void visitCommentersProfile(User commenterToBeVisited) {
+
+    }
+
+    @Override
+    public void pressedPostCard(Post post) {
+        //In this case, open full post with approve and decline buttons
+        Log.wtf(TAG, "full post clicked!");
+    }
+
+    @Override
+    public void pressedPostComments(Post postPressed) {
 
     }
 }
