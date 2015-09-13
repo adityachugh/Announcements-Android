@@ -431,9 +431,8 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
     private Bitmap returnToUploadBitmapFromImage(Uri uri, int requestCode, int profileImageRequestCode) {
         int resW = (requestCode == profileImageRequestCode) ? 500 : 2000;
         int resH = (requestCode == profileImageRequestCode) ? 500 : 1200;
-        Bitmap source = null;
         try {
-            source = getBitmapFromUri(uri);
+            Bitmap source = getBitmapFromUri(uri);
             return Bitmap.createScaledBitmap(source, resW, resH, true);
         } catch (IOException e) {
             e.printStackTrace();
