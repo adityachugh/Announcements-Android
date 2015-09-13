@@ -75,7 +75,7 @@
     <string name="searchable_activity_toggle_text">Search within parent organization</string>
     <string name="discover_search_hint">Search for organizations...</string>
     <string name="announcement_approved">Approved</string>
-    <string name="announcement_declined">Declined</string>
+    <string name="announcement_declined">Declined - Why?</string>
     <string name="announcement_pending">Pending</string>
     <string name="incorrect_login_credentials">Incorrect username or password.</string>
 
@@ -136,5 +136,8 @@
     <string name="cancel_button_text">Cancel</string>
     <string name="title_activity_sign_up_orgs">SignUpOrgsActivity</string>
     <string name="back_button_text">BACK</string>
+    <string name="delete_post_dialog_title">Delete post?</string>
+    <string name="delete_post_dialog_text">Are you sure you want to delete this post?</string>
+    <string name="yes_button_text">YES</string>
 
 </resources>

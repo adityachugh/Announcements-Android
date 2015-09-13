@@ -18,6 +18,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -171,24 +172,81 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
             viewHolder.mShareButton.setVisibility(View.GONE);
             viewHolder.mAnnouncementState.setVisibility(View.VISIBLE);
 
+            viewHolder.mPostCard.setLongClickable(true);
+            viewHolder.mPostCard.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+
+                    new AlertDialog.Builder(mContext)
+                            .setTitle(mContext.getString(R.string.delete_post_dialog_title))
+                            .setMessage(mContext.getString(R.string.delete_post_dialog_text))
+                            .setPositiveButton(mContext.getString(R.string.yes_button_text), new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    deletePost(viewHolder.itemView, post.getmPosterOrg().getmObjectId(), post.getmObjectId());
+                                    mPosts.remove(i);
+                                    notifyDataSetChanged();
+                                }
+                            })
+                            .setNegativeButton(mContext.getString(R.string.cancel_button_text), new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                }
+                            })
+                            .show();
+                    return true;
+                }
+            });
+
             String status = post.getmStatus().toUpperCase(); //just in case - already uppercase in DB
 
             int textColor;
-            String typeString;
+            final String typeString;
+            final String alertMessage;
 
                 if (status.equals("A")) {
                     textColor = mContext.getResources().getColor(R.color.announcement_accepted);
                     typeString = mContext.getResources().getString(R.string.announcement_approved);
+                    alertMessage = "Your post \"" + post.getmPostTitle() + "\" was approved!\n\nIt will run from " + post.getStartDate() + " to " + post.getEndDate();
                 } else if (status.equals("R")) {
                     textColor = mContext.getResources().getColor(R.color.announcement_declined);
                     typeString = mContext.getResources().getString(R.string.announcement_declined);
+
+                    String rejectionReason = post.getmRejectionReason();
+                    if (rejectionReason != null) //for safeproofing
+                        rejectionReason = rejectionReason.trim();
+
+                    String rejectionDialogText;
+                    if (rejectionReason == null || rejectionReason.equals(""))
+                        rejectionDialogText = "No reason given";
+                    else
+                        rejectionDialogText = rejectionReason;
+
+                    alertMessage = "Your post \"" + post.getmPostTitle() + "\" was rejected.\n\nRejection reason: " + rejectionDialogText;
                 } else /*if (status.equals("P"))*/ {
                     textColor = mContext.getResources().getColor(R.color.announcement_pending);
                     typeString = mContext.getResources().getString(R.string.announcement_pending);
+                    alertMessage = "Your post \"" + post.getmPostTitle() + "\" is pending.\n\nAn administrator will review it soon.";
                 }
 
             viewHolder.mAnnouncementState.setTextColor(textColor);
             viewHolder.mAnnouncementState.setText(typeString);
+
+            //rejection reason alert dialog
+            viewHolder.mAnnouncementState.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new AlertDialog.Builder(mContext)
+                            .setTitle(typeString)
+                            .setMessage(alertMessage)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    //nothing
+                                }
+                            })
+                            .show();
+                }
+            });
+
+
         }
         else {
             //normal view
@@ -220,11 +278,21 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
     //act on approval state
     private void actOnApprovalRequest (View view, String postObjectId, String organizationObjectId, boolean approvalState, String rejectionReason, int priority){
          AdminDataSource.actOnApprovalRequest(view, postObjectId, organizationObjectId, approvalState, rejectionReason, priority, new FunctionCallback<Boolean>() {
+             @Override
+             public void done(Boolean aBoolean, ParseException e) {
+                 if (e == null) {
+                     //handled in function
+                 }
+             }
+         });
+    }
+
+    private void deletePost (View view, String orgObjectId, String postObjectId){
+        AdminDataSource.deletePost(view, orgObjectId, postObjectId, new FunctionCallback<Boolean>() {
             @Override
             public void done(Boolean aBoolean, ParseException e) {
                 if (e == null){
-                    //pop back stack, load pending posts again
-                    Log.wtf("PostsFeedAdapter", "post approved! boolean returned is " + aBoolean);
+                    //nothing, snackbars handled in function
                 }
             }
         });

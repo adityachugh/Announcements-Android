@@ -92,7 +92,7 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
                 if (currentComment.getmUser().getmObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.DialogTheme);
                     builder.setTitle("Delete Comment?")
-                            .setMessage("Do you want to delete the comment: \""+currentComment.getmText()+"\".")
+                            .setMessage("Do you want to delete the comment: \""+currentComment.getmText()+"\"?")
                             .setNegativeButton("Cancel", null)
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override

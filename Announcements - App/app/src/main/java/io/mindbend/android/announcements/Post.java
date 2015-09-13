@@ -27,6 +27,9 @@ public class Post implements Serializable, Parcelable {
     private String  mPostImageURL = "";
     private int mPriority;
     private String mStatus;
+    private String mRejectionReason;
+    private String mStartDate;
+    private String mEndDate;
     //TODO: setup passing in club image for the post
     //private String mUrlToPicture;
 
@@ -52,6 +55,10 @@ public class Post implements Serializable, Parcelable {
         else
             mPostImageURL = "";
         mPriority = object.getInt(PostsDataSource.POST_PRIORITY);
+        mRejectionReason = object.getString(PostsDataSource.POST_REJECTION_REASON);
+        mStartDate = object.getDate(PostsDataSource.POST_START_DATE).toString();
+        mEndDate = object.getDate(PostsDataSource.POST_END_DATE).toString();
+
 
     }
 
@@ -127,6 +134,19 @@ public class Post implements Serializable, Parcelable {
     public String getmStatus() {
         return mStatus;
     }
+
+    public String getmRejectionReason() {
+        return mRejectionReason;
+    }
+
+    public String getStartDate() {
+        return mStartDate;
+    }
+
+    public String getEndDate() {
+        return mEndDate;
+    }
+
     //    public Drawable getPriorityDrawable(Context context) {
 //        Drawable priorityDrawable = context.getResources().getDrawable(R.drawable.fab);
 //        switch (mPriority){

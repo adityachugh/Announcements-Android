@@ -229,7 +229,7 @@ public class AdminDataSource {
         });
     }
 
-    public static void actOnApprovalRequest(final View view, String postObjectId, String organizationObjectId, boolean approvalState, String rejectionReason, int priority, final FunctionCallback<Boolean> callback) {
+    public static void actOnApprovalRequest(final View view, String postObjectId, String organizationObjectId, final boolean approvalState, String rejectionReason, int priority, final FunctionCallback<Boolean> callback) {
 
         HashMap<String, Object> params = new HashMap<>();
         params.put("postObjectId", postObjectId);
@@ -242,9 +242,8 @@ public class AdminDataSource {
 
             @Override
             public void done(Boolean success, ParseException e) {
-                if (e == null) {
-                    Log.wtf("AdminDataSource", "success? " + success);
-                    if (success)
+                if (e == null && success) {
+                    if (approvalState)
                         Snackbar.make(view, "Successfully approved post!", Snackbar.LENGTH_SHORT).show();
                     else
                         Snackbar.make(view, "Successfully declined post!", Snackbar.LENGTH_SHORT).show();
@@ -255,7 +254,7 @@ public class AdminDataSource {
         });
     }
 
-    public static void deletePost (final View view, final ProgressBar loading, String organizationObjectId, String postObjectId){
+    public static void deletePost (final View view, String organizationObjectId, String postObjectId, final FunctionCallback<Boolean> callback){
         HashMap<String, Object> params = new HashMap<>();
         params.put("organizationObjectId", organizationObjectId);
         params.put("postObjectId", postObjectId);
@@ -263,6 +262,7 @@ public class AdminDataSource {
         ParseCloud.callFunctionInBackground("deletePost", params, new FunctionCallback<Boolean>() {
             @Override
             public void done(Boolean done, ParseException e) {
+                Log.wtf("delete post", "did it work? " + done);
                 if (e == null && done){
                     Snackbar.make(view, "Successfully deleted post!", Snackbar.LENGTH_SHORT).show();
                 } else {

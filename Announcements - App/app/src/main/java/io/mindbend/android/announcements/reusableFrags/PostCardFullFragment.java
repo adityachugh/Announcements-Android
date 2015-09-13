@@ -171,7 +171,7 @@ public class PostCardFullFragment extends Fragment implements Serializable, View
                 @Override
                 public void onClick(View v) {
                     if (mViewOnly){
-                        getChildFragmentManager().popBackStack();
+                        getParentFragment().getChildFragmentManager().popBackStack();
                     } else{
                         mListener.CommentButtonClicked(mPost);
                     }
