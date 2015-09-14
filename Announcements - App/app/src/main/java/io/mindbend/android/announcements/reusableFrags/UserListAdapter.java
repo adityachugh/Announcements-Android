@@ -131,7 +131,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
     }
 
     public void actOnFollowRequestCompleted(final User user, final boolean isApproved) {
-        AdminDataSource.actOnFollowRequest(mView, mLoading, mOrg.getmObjectId(), user.getmFollowObjectId(), isApproved, new FunctionCallback<Boolean>() {
+        AdminDataSource.actOnFollowRequest(mContext, mView, mLoading, mOrg.getmObjectId(), user.getmFollowObjectId(), isApproved, new FunctionCallback<Boolean>() {
             @Override
             public void done(Boolean success, ParseException e) {
                 if (success && e == null){

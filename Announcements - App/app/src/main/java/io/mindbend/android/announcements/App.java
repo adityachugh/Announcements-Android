@@ -1,6 +1,9 @@
 package io.mindbend.android.announcements;
 
 import android.app.Application;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.util.Log;
 
@@ -18,7 +21,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-//        TODO: this class is to initialize parse and setup anything else that is required for the app to run. This class is run FIRST before any activity.
+//        this class is to initialize parse and setup anything else that is required for the app to run. This class is run FIRST before any activity.
         Log.i(APP_STARTED, "Application started succesfully");
 
         // Initialize Parse and Enable Local Datastore.
@@ -41,4 +44,16 @@ public class App extends Application {
         }
 
     }
+
+    public static boolean hasNetworkConnection(Context context) {
+        ConnectivityManager cm = (ConnectivityManager)
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo ni = cm.getActiveNetworkInfo();
+        if (ni == null) {
+            // There are no active networks.
+            return false;
+        } else
+            return true;
+    }
 }
+

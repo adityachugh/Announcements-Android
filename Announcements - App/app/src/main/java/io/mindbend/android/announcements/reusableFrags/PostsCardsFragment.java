@@ -216,7 +216,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
         if (mIsApproving){
             AdminFragment adminFragment = ((AdminFragment)getParentFragment());
             //approving, query pending posts
-            AdminDataSource.getPostsToBeApprovedInRange(adminFragment.mLoading, getActivity(), mParentOrgIdIfApproving, startIndex, numberOfPostsToLoad, new FunctionCallback<ArrayList<Post>>() {
+            AdminDataSource.getPostsToBeApprovedInRange(mView, adminFragment.mLoading, getActivity(), mParentOrgIdIfApproving, startIndex, numberOfPostsToLoad, new FunctionCallback<ArrayList<Post>>() {
                 @Override
                 public void done(ArrayList<Post> posts, ParseException e) {
                     mRefreshTodayPosts.setRefreshing(false);

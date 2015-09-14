@@ -187,7 +187,7 @@ public class AdminFragment extends Fragment implements Serializable,
     }
 
     private void loadPendingPosts(final String parentId){
-        AdminDataSource.getPostsToBeApprovedInRange(mLoading, getActivity(), parentId, 0, 10, new FunctionCallback<ArrayList<Post>>() {
+        AdminDataSource.getPostsToBeApprovedInRange(mView, mLoading, getActivity(), parentId, 0, 10, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {
@@ -350,7 +350,7 @@ public class AdminFragment extends Fragment implements Serializable,
             getChildFragmentManager().popBackStack();
         } else {
             //add user to existing org
-            AdminDataSource.addAdminToOrganization(mView, mLoading, nullableOrg.getmObjectId(), user.getmObjectId(), new FunctionCallback<Boolean>() {
+            AdminDataSource.addAdminToOrganization(getActivity(), mView, mLoading, nullableOrg.getmObjectId(), user.getmObjectId(), new FunctionCallback<Boolean>() {
                 @Override
                 public void done(Boolean success, ParseException e) {
                     if (success && e == null) {

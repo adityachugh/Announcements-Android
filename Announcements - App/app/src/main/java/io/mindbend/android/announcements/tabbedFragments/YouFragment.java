@@ -173,7 +173,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
     @Override
     public void selectedUserToBeAdmin(final User user, Organization nullableOrg) {
         //add user to existing org
-        AdminDataSource.addAdminToOrganization(mView, mLoading, nullableOrg.getmObjectId(), user.getmObjectId(), new FunctionCallback<Boolean>() {
+        AdminDataSource.addAdminToOrganization(getActivity(), mView, mLoading, nullableOrg.getmObjectId(), user.getmObjectId(), new FunctionCallback<Boolean>() {
             @Override
             public void done(Boolean success, ParseException e) {
                 if (success && e == null) {

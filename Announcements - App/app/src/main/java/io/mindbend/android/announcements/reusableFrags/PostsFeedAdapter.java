@@ -277,7 +277,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
 
     //act on approval state
     private void actOnApprovalRequest (View view, String postObjectId, String organizationObjectId, boolean approvalState, String rejectionReason, int priority){
-         AdminDataSource.actOnApprovalRequest(view, postObjectId, organizationObjectId, approvalState, rejectionReason, priority, new FunctionCallback<Boolean>() {
+         AdminDataSource.actOnApprovalRequest(mContext, view, postObjectId, organizationObjectId, approvalState, rejectionReason, priority, new FunctionCallback<Boolean>() {
              @Override
              public void done(Boolean aBoolean, ParseException e) {
                  if (e == null) {
@@ -288,7 +288,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
     }
 
     private void deletePost (View view, String orgObjectId, String postObjectId){
-        AdminDataSource.deletePost(view, orgObjectId, postObjectId, new FunctionCallback<Boolean>() {
+        AdminDataSource.deletePost(mContext, view, orgObjectId, postObjectId, new FunctionCallback<Boolean>() {
             @Override
             public void done(Boolean aBoolean, ParseException e) {
                 if (e == null){

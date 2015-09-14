@@ -198,7 +198,7 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
     private void submitOrg() {
         if(mOrgToModify != null){
 
-            AdminDataSource.updateOrganizationFields(mView, mLoading, mOrgToModify.getmObjectId(), mAccessCode.getText().toString(),
+            AdminDataSource.updateOrganizationFields(getActivity(), mView, mLoading, mOrgToModify.getmObjectId(), mAccessCode.getText().toString(),
                     mDescription.getText().toString(), mName.getText().toString(), new FunctionCallback<Organization>() {
                         @Override
                         public void done(Organization organization, ParseException e) {
