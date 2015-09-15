@@ -45,7 +45,7 @@ public class AdminDataSource {
                         Snackbar.make(view, context.getString(R.string.succes_updated_org_photo), Snackbar.LENGTH_SHORT).show();
                     } else {
                         e.printStackTrace();
-                        Snackbar.make(view, context.getString(R.string.could_not_upload_org_photo), Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
                     if (callback != null)
                         callback.done(isSuccessful, e);
@@ -75,7 +75,7 @@ public class AdminDataSource {
                         Snackbar.make(view, context.getString(R.string.succes_updated_org_photo), Snackbar.LENGTH_SHORT).show();
                     } else {
                         e.printStackTrace();
-                        Snackbar.make(view, context.getString(R.string.could_not_upload_org_photo), Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
                     if (callback != null)
                         callback.done(isSuccessful, e);
@@ -100,10 +100,11 @@ public class AdminDataSource {
                 @Override
                 public void done(Boolean success, ParseException e) {
                     loading.setVisibility(View.GONE);
-                    if (e != null || !success) {
-                        Snackbar.make(view, "Error adding user as an admin", Snackbar.LENGTH_SHORT).show();
+                    if (e != null) {
+                        Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     } else {
-                        callback.done(success, e);
+                        if (success)
+                            callback.done(success, e);
                     }
                 }
             });
@@ -144,11 +145,12 @@ public class AdminDataSource {
                 @Override
                 public void done(Boolean success, ParseException e) {
                     loading.setVisibility(View.GONE);
-                    if (e != null || !success) {
-                        Snackbar.make(view, context.getString(R.string.error_creating_org_message), Snackbar.LENGTH_SHORT).show();
+                    if (e != null) {
+                        Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                         e.printStackTrace();
                     } else {
-                        callback.done(success, e);
+                        if (success)
+                            callback.done(success, e);
                     }
                 }
             });
@@ -179,6 +181,8 @@ public class AdminDataSource {
                             pendingPosts.add(new Post(context, object));
                         }
                         callback.done(pendingPosts, e);
+                    } else {
+                        Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
 
                 }
@@ -210,6 +214,8 @@ public class AdminDataSource {
                             posts.add(new Post(context, object));
                         }
                         callback.done(posts, e);
+                    } else {
+                        Snackbar.make(loading, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -238,9 +244,10 @@ public class AdminDataSource {
                         Log.wtf("Act on follow request", "successfully completed");
                         functionCallback.done(success, e);
                     } else {
-                        Snackbar.make(view, "Could not act on follow request", Snackbar.LENGTH_SHORT).show();
-                        if (e!= null)
+                        if (e!= null){
+                            Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                             e.printStackTrace();
+                        }
                     }
                 }
             });
@@ -275,9 +282,10 @@ public class AdminDataSource {
                         Snackbar.make(view, "Successfully updated organization", Snackbar.LENGTH_SHORT).show();
                         orgModified.done(new Organization(orgReturned), e);
                     } else {
-                        if (e != null)
+                        if (e != null){
+                            Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                             e.printStackTrace();
-                        Snackbar.make(view, "Failed to update organization", Snackbar.LENGTH_SHORT).show();
+                        }
                     }
                 }
             });
@@ -308,7 +316,8 @@ public class AdminDataSource {
                         else
                             Snackbar.make(view, "Successfully declined post!", Snackbar.LENGTH_SHORT).show();
                     } else {
-                        Snackbar.make(view, "Error approving/declining post", Snackbar.LENGTH_SHORT).show();
+                        if (e!=null)
+                            Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -330,12 +339,12 @@ public class AdminDataSource {
                 @Override
                 public void done(Boolean done, ParseException e) {
                     Log.wtf("delete post", "did it work? " + done);
-                    if (e == null && done){
-                        Snackbar.make(view, "Successfully deleted post!", Snackbar.LENGTH_SHORT).show();
+                    if (e == null){
+                        if (done)
+                            Snackbar.make(view, "Successfully deleted post!", Snackbar.LENGTH_SHORT).show();
                     } else {
-                        Snackbar.make(view, "Error deleting post", Snackbar.LENGTH_SHORT).show();
-                        if (e!=null)
-                            e.printStackTrace();
+                        Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
+                        e.printStackTrace();
                     }
                 }
             });

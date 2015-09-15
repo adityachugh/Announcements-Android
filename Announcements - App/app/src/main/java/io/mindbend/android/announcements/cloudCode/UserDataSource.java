@@ -67,8 +67,12 @@ public class UserDataSource {
                 @Override
                 public void done(ParseUser object, ParseException e) {
                     loading.setVisibility(View.GONE);
-                    User user = new User(ParseUser.getCurrentUser());
-                    callback.done(user, e);
+                    if (e != null) {
+                        Snackbar.make(loading, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
+                    } else {
+                        User user = new User(ParseUser.getCurrentUser());
+                        callback.done(user, e);
+                    }
                 }
             });
         }
@@ -97,7 +101,11 @@ public class UserDataSource {
                             @Override
                             public void done(ParseUser parseUser, ParseException e) {
                                 loading.setVisibility(View.GONE);
-                                callback.done(e == null, e);
+                                if (e != null){
+                                    Snackbar.make(layout, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
+                                } else {
+                                    callback.done(e == null, e);
+                                }
                             }
                         });
                     } else {
@@ -138,7 +146,7 @@ public class UserDataSource {
                         });
                     } else {
                         //did not login
-                        Snackbar.make(layout, context.getResources().getString(R.string.incorrect_login_credentials), Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(layout, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -153,30 +161,30 @@ public class UserDataSource {
             loading.setVisibility(View.GONE);
             Snackbar.make(loading, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
-            //here
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("isFollowing", isFollowing);
+            params.put("organizationObjectId", organizationObjectId);
+            final String toastText = isFollowing ? "" : "un";
+
+            ParseCloud.callFunctionInBackground("updateFollowStateForUser", params, new FunctionCallback<Boolean>() {
+                @Override
+                public void done(Boolean isSuccessful, ParseException e) {
+                    loading.setVisibility(View.GONE);
+                    String message = "Failure";
+                    if (e == null && isSuccessful) {
+                        message = (isPrivate && isFollowing) ? "Sent follow request to organization" : "Successfully " + toastText + "followed organization";
+                        callback.done(isSuccessful, e);
+                    }
+                    if (e != null) {
+                        e.printStackTrace();
+                        message = ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage());
+                    }
+                    Snackbar.make(layout, message, Snackbar.LENGTH_SHORT).show();
+                }
+            });
         }
 
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("isFollowing", isFollowing);
-        params.put("organizationObjectId", organizationObjectId);
-        final String toastText = isFollowing ? "" : "un";
 
-        ParseCloud.callFunctionInBackground("updateFollowStateForUser", params, new FunctionCallback<Boolean>() {
-            @Override
-            public void done(Boolean isSuccessful, ParseException e) {
-                loading.setVisibility(View.GONE);
-                String message = "Failure";
-                if (e == null && isSuccessful) {
-                    message = (isPrivate && isFollowing) ? "Sent follow request to organization" : "Successfully " + toastText + "followed organization";
-                    callback.done(isSuccessful, e);
-                }
-                if (e != null) {
-                    e.printStackTrace();
-                    message = "Error";
-                }
-                Snackbar.make(layout, message, Snackbar.LENGTH_SHORT).show();
-            }
-        });
     }
 
     public static void followOrganizations (final View v, final Context context, final ProgressBar loader, ArrayList<String> orgs){
@@ -209,7 +217,7 @@ public class UserDataSource {
 
                     } else {
                         e.printStackTrace();
-                        Snackbar.make(v, "Error following organizations", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(v, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                         Intent i = new Intent(context, TabbedActivity.class);
                         context.startActivity(i);
                     }
@@ -235,7 +243,7 @@ public class UserDataSource {
 
             login.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onClick(final View v) {
                     String usernameT = ParseUser.getCurrentUser().getUsername();
                     String passwordT = password.getText().toString();
 
@@ -250,7 +258,11 @@ public class UserDataSource {
                         ParseUser.logInInBackground(usernameT, passwordT, new LogInCallback() {
                             @Override
                             public void done(ParseUser parseUser, ParseException e) {
-                                logInCallback.done(parseUser, e);
+                                if (e!= null){
+                                    Snackbar.make(v, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
+                                } else {
+                                    logInCallback.done(parseUser, e);
+                                }
                             }
                         });
                     }
@@ -291,7 +303,7 @@ public class UserDataSource {
                         callback.done(orgs, e);
                     } else {
                         e.printStackTrace();
-                        Snackbar.make(layout, "Error loading org admins", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(layout, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -325,7 +337,7 @@ public class UserDataSource {
 
                         callback.done(users, e);
                     } else {
-                        Snackbar.make(v, context.getString(R.string.error_searching_orgs), Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(v, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
                 }
             });

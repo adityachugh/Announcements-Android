@@ -63,7 +63,7 @@ public class CommentsDataSource {
                         if (e.getCode() == ParseException.INCORRECT_TYPE)
                             Snackbar.make(loadingLayout, R.string.no_more_comments_message, Snackbar.LENGTH_SHORT).show();
                         else
-                            Snackbar.make(loadingLayout, "Error", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(loadingLayout, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
 
                         e.printStackTrace();
 
@@ -93,6 +93,9 @@ public class CommentsDataSource {
                     Comment comment = null;
                     if (e == null)
                         comment = new Comment(context, parseObject);
+                    else {
+                        Snackbar.make(loadingLayout, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
+                    }
                     callback.done(comment, e);
                 }
             });
@@ -119,7 +122,7 @@ public class CommentsDataSource {
                         callback.done(success, e);
                     } else {
                         e.printStackTrace();
-                        Snackbar.make(loadingLayout, "Error deleting comment.", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(loadingLayout, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
                 }
             });

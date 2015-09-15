@@ -9,6 +9,8 @@ import android.util.Log;
 
 import com.parse.Parse;
 
+import java.util.HashMap;
+
 /**
  * Created by Akshay Pall on 01/08/2015.
  */

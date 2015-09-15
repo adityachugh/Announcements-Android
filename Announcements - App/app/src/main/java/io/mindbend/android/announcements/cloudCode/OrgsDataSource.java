@@ -74,6 +74,7 @@ public class OrgsDataSource {
             ParseCloud.callFunctionInBackground("getChildOrganizationsInRange", params, new FunctionCallback<List<ParseObject>>() {
                 @Override
                 public void done(List<ParseObject> parseObjects, ParseException e) {
+                    loading.setVisibility(View.GONE);
                     ArrayList<Organization> orgs = new ArrayList<Organization>();
                     if (e == null) {
                         for (ParseObject object : parseObjects) {
@@ -84,9 +85,11 @@ public class OrgsDataSource {
                             }
                             orgs.add(new Organization(object));
                         }
+                        callback.done(orgs, e);
                     }
-                    loading.setVisibility(View.GONE);
-                    callback.done(orgs, e);
+                    else {
+                        Snackbar.make(loading, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
+                    }
                 }
             });
         }
@@ -107,7 +110,7 @@ public class OrgsDataSource {
             ParseCloud.callFunctionInBackground("getAllChildOrganizations", params, new FunctionCallback<List<ParseObject>>() {
                 @Override
                 public void done(List<ParseObject> parseObjects, ParseException e) {
-
+                    loading.setVisibility(View.GONE);
                     ArrayList<Organization> orgs = new ArrayList<Organization>();
                     if (e == null) {
                         for (ParseObject object : parseObjects) {
@@ -118,9 +121,12 @@ public class OrgsDataSource {
                             }
                             orgs.add(new Organization(object));
                         }
+                        callback.done(orgs, e);
                     }
-                    loading.setVisibility(View.GONE);
-                    callback.done(orgs, e);
+                    else {
+                        Snackbar.make(loading, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
+                    }
+
                 }
             });
         }
@@ -154,6 +160,8 @@ public class OrgsDataSource {
                         }
                         loading.setVisibility(View.GONE);
                         callback.done(orgsFollowed, e);
+                    } else {
+                        Snackbar.make(loading, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
 
                 }
@@ -175,6 +183,7 @@ public class OrgsDataSource {
             ParseCloud.callFunctionInBackground("getAllTopLevelOrganizations", params, new FunctionCallback<List<ParseObject>>() {
                 @Override
                 public void done(List<ParseObject> parseObjects, ParseException e) {
+                    loading.setVisibility(View.GONE);
                     ArrayList<Organization> topOrgs = new ArrayList<Organization>();
                     if (e == null) {
                         for (ParseObject object : parseObjects){
@@ -185,9 +194,11 @@ public class OrgsDataSource {
                             }
                             topOrgs.add(new Organization(object));
                         }
+                        callback.done(topOrgs, e);
+                    } else {
+                        Snackbar.make(loading, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
-                    loading.setVisibility(View.GONE);
-                    callback.done(topOrgs, e);
+
                 }
             });
         }
@@ -209,9 +220,13 @@ public class OrgsDataSource {
             ParseCloud.callFunctionInBackground("isFollowingOrganization", params, new FunctionCallback<String>() {
                 @Override
                 public void done(String followStatus, ParseException e) {
-//                int i = 0;
                     loading.setVisibility(View.GONE);
-                    callback.done(followStatus, e);
+                    if (e != null){
+                        Snackbar.make(layout, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
+                    } else {
+                        callback.done(followStatus, e);
+                    }
+
                 }
             });
         }
@@ -241,7 +256,7 @@ public class OrgsDataSource {
                     if (e == null){
                         callback.done(correctCodeEntered, e);
                     } else {
-                        Snackbar.make(layout, "Error", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(layout, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -274,7 +289,7 @@ public class OrgsDataSource {
                         callback.done(orgs, e);
                     } else {
                         e.printStackTrace();
-                        Snackbar.make(view, context.getString(R.string.error_getting_discover_orgs), Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -320,7 +335,7 @@ public class OrgsDataSource {
                         callback.done(toReturnMap, e);
                     } else {
                         e.printStackTrace();
-                        Snackbar.make(view, context.getString(R.string.error_loading_org_members), Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -369,7 +384,7 @@ public class OrgsDataSource {
 
                         callback.done(orgs, e);
                     } else {
-                        Snackbar.make(v, context.getString(R.string.error_searching_orgs), Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(v, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
                 }
             });

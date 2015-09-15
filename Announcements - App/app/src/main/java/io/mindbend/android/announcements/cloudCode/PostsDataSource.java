@@ -65,9 +65,12 @@ public class PostsDataSource {
                         for (ParseObject object : parseObjects){
                             posts.add(new Post(context, object));
                         }
+                        //to allow each frag to do it specifically
+                        callback.done(posts, e);
+                    } else {
+                        Snackbar.make(loader, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
-                    //to allow each frag to do it specifically
-                    callback.done(posts, e);
+
                 }
             });
         }
@@ -90,15 +93,15 @@ public class PostsDataSource {
                 @Override
                 public void done(List<ParseObject> parseObjects, ParseException e) {
                     ArrayList<Post> orgPosts = new ArrayList<Post>();
-
+                    loading.setVisibility(View.GONE);
                     if (e == null){
                         for (ParseObject object : parseObjects){
                             orgPosts.add(new Post(context, object));
                         }
+                        callback.done(orgPosts, e);
+                    } else {
+                        Snackbar.make(loading, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
-
-                    loading.setVisibility(View.GONE);
-                    callback.done(orgPosts, e);
                 }
             });
         }
@@ -129,12 +132,12 @@ public class PostsDataSource {
                 @Override
                 public void done(Boolean successful, ParseException e) {
                     loading.setVisibility(View.GONE);
-                    String message = "Error uploading announcement";
+                    String message = "Successfully uploaded announcement";
                     if (e == null) {
-                        message = "Successfully uploaded announcement";
                         callback.done(successful, e);
                     } else {
                         e.printStackTrace();
+                        message = ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage());
                     }
 
                     Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();

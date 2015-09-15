@@ -72,14 +72,14 @@ public class VerificationDataSource {
                                             });
                                         }
                                     } else {
-                                        Snackbar.make(layout, "Error", Snackbar.LENGTH_SHORT).show();
+                                        Snackbar.make(layout, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                                         e.printStackTrace();
                                     }
                                 }
                             });
                         }
                     } else {
-                        Snackbar.make(layout, "Error", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(layout, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                         e.printStackTrace();
                     }
                 }
