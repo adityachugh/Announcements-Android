@@ -41,14 +41,14 @@ public class VerificationDataSource {
             final AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.DialogTheme);
             builder.setTitle("Field(s) in use.");
             builder.setPositiveButton("OK", null);
-            checkFieldInUse(loader, context, USER_CLASS, USER_EMAIL, email, new FunctionCallback<Boolean>() {
+            checkFieldInUse(layout, loader, context, USER_CLASS, USER_EMAIL, email, new FunctionCallback<Boolean>() {
                 @Override
                 public void done(Boolean aBoolean, ParseException e) {
                     if (e == null) {
                         if (aBoolean) {
                             builder.show();
                         } else {
-                            checkFieldInUse(loader, context, USER_CLASS, USER_USERNAME, username, new FunctionCallback<Boolean>() {
+                            checkFieldInUse(layout, loader, context, USER_CLASS, USER_USERNAME, username, new FunctionCallback<Boolean>() {
                                 @Override
                                 public void done(Boolean aBoolean, ParseException e) {
                                     if (e == null) {
@@ -88,12 +88,12 @@ public class VerificationDataSource {
 
     }
 
-    public static void checkFieldInUse (final ProgressBar loader, Context context, String className, String key, String value, final FunctionCallback<Boolean> callback){
+    public static void checkFieldInUse (View view, final ProgressBar loader, Context context, String className, String key, String value, final FunctionCallback<Boolean> callback){
         loader.setVisibility(View.VISIBLE);
 
         if (!App.hasNetworkConnection(context)){
             loader.setVisibility(View.GONE);
-            Snackbar.make(loader, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap<String, Object> params = new HashMap<>();
             params.put("className", className);

@@ -224,7 +224,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
         } else if (mIsViewingState){
             AdminFragment adminFragment = ((AdminFragment)getParentFragment());
             //loading all posts
-            AdminDataSource.getAllPostsForOrganizationForRange(adminFragment.mLoading, getActivity(), mOrgIdIfViewingState, startIndex, numberOfPostsToLoad, new FunctionCallback<ArrayList<Post>>() {
+            AdminDataSource.getAllPostsForOrganizationForRange(mView, adminFragment.mLoading, getActivity(), mOrgIdIfViewingState, startIndex, numberOfPostsToLoad, new FunctionCallback<ArrayList<Post>>() {
                 @Override
                 public void done(ArrayList<Post> posts, ParseException e) {
                     mRefreshTodayPosts.setRefreshing(false);
@@ -242,7 +242,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
         } else {
             TodayFragment todayFragment = ((TodayFragment)getParentFragment().getParentFragment());
             //querying today posts
-            PostsDataSource.getRangeOfPostsForDay(todayFragment.mLoading, getActivity(), startIndex, numberOfPostsToLoad, todayFragment.mCurrentDateSelected, new FunctionCallback<ArrayList<Post>>() {
+            PostsDataSource.getRangeOfPostsForDay(mView, todayFragment.mLoading, getActivity(), startIndex, numberOfPostsToLoad, todayFragment.mCurrentDateSelected, new FunctionCallback<ArrayList<Post>>() {
                 @Override
                 public void done(ArrayList<Post> posts, ParseException e) {
                     mRefreshTodayPosts.setRefreshing(false);

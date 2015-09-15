@@ -445,7 +445,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     }
 
     private void loadOrgsFollowed(final String userObjectId) {
-        OrgsDataSource.getOrganizationsFollowedByUserInRange(getActivity(), mLoading, userObjectId, new FunctionCallback<ArrayList<Organization>>() {
+        OrgsDataSource.getOrganizationsFollowedByUserInRange(mView, getActivity(), mLoading, userObjectId, new FunctionCallback<ArrayList<Organization>>() {
             @Override
             public void done(ArrayList<Organization> orgs, ParseException e) {
                 if (e == null) {
@@ -477,7 +477,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
 
 
     private void loadOrgPosts(String orgObjectId, int startIndex, int numberOfPosts) {
-        PostsDataSource.getPostsOfOrganizationInRange(mLoading, getActivity(), orgObjectId, startIndex, numberOfPosts, new FunctionCallback<ArrayList<Post>>() {
+        PostsDataSource.getPostsOfOrganizationInRange(mView, mLoading, getActivity(), orgObjectId, startIndex, numberOfPosts, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> orgPosts, ParseException e) {
                 if (e == null) {

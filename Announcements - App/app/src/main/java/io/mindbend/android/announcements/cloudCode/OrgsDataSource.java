@@ -59,12 +59,14 @@ public class OrgsDataSource {
         return (daysBetween <= 5);
     }
 
-    public static void getChildOrganizationsInRange (Context context, final ProgressBar loading, String parentOrganizationObjectId, int startIndex, int numberOfOrganizations, final FunctionCallback<ArrayList<Organization>> callback){
+    public static void getChildOrganizationsInRange (final View view, Context context, final ProgressBar loading, String parentOrganizationObjectId,
+                                                     int startIndex, int numberOfOrganizations,
+                                                     final FunctionCallback<ArrayList<Organization>> callback){
         loading.setVisibility(View.VISIBLE);
 
         if (!App.hasNetworkConnection(context)){
             loading.setVisibility(View.GONE);
-            Snackbar.make(loading, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap<String, Object> params = new HashMap<>();
             params.put("parentOrganizationObjectId", parentOrganizationObjectId);
@@ -88,7 +90,7 @@ public class OrgsDataSource {
                         callback.done(orgs, e);
                     }
                     else {
-                        Snackbar.make(loading, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -97,12 +99,12 @@ public class OrgsDataSource {
 
     }
 
-    public static void getAllChildOrganizations(Context context, final ProgressBar loading, String parentOrganizationObjectId, final FunctionCallback<ArrayList<Organization>> callback) {
+    public static void getAllChildOrganizations(final View view, Context context, final ProgressBar loading, String parentOrganizationObjectId, final FunctionCallback<ArrayList<Organization>> callback) {
         loading.setVisibility(View.VISIBLE);
 
         if (!App.hasNetworkConnection(context)){
             loading.setVisibility(View.GONE);
-            Snackbar.make(loading, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap<String, Object> params = new HashMap<>();
             params.put("parentOrganizationObjectId", parentOrganizationObjectId);
@@ -124,7 +126,7 @@ public class OrgsDataSource {
                         callback.done(orgs, e);
                     }
                     else {
-                        Snackbar.make(loading, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
 
                 }
@@ -134,13 +136,14 @@ public class OrgsDataSource {
 
     }
 
-    public static void getOrganizationsFollowedByUserInRange (Context context, final ProgressBar loading, String userObjectId, final FunctionCallback<ArrayList<Organization>> callback) {
+    public static void getOrganizationsFollowedByUserInRange (final View view, Context context, final ProgressBar loading,
+                                                              String userObjectId, final FunctionCallback<ArrayList<Organization>> callback) {
         //only for user in profile frag tab
         loading.setVisibility(View.VISIBLE);
 
         if (!App.hasNetworkConnection(context)){
             loading.setVisibility(View.GONE);
-            Snackbar.make(loading, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap<String, Object> params = new HashMap<>();
             params.put("userObjectId", userObjectId);
@@ -161,7 +164,7 @@ public class OrgsDataSource {
                         loading.setVisibility(View.GONE);
                         callback.done(orgsFollowed, e);
                     } else {
-                        Snackbar.make(loading, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
 
                 }
@@ -171,12 +174,13 @@ public class OrgsDataSource {
 
     }
 
-    public static void getAllTopLevelOrganizations (Context context, final ProgressBar loading, final FunctionCallback<ArrayList<Organization>> callback){
+    public static void getAllTopLevelOrganizations (final View view, Context context, final ProgressBar loading,
+                                                    final FunctionCallback<ArrayList<Organization>> callback){
         loading.setVisibility(View.VISIBLE);
 
         if (!App.hasNetworkConnection(context)){
             loading.setVisibility(View.GONE);
-            Snackbar.make(loading, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap<String, String> params = new HashMap<>();
 
@@ -196,7 +200,7 @@ public class OrgsDataSource {
                         }
                         callback.done(topOrgs, e);
                     } else {
-                        Snackbar.make(loading, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
 
                 }

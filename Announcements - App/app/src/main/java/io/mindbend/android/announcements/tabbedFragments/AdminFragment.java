@@ -149,7 +149,7 @@ public class AdminFragment extends Fragment implements Serializable,
          * this method is called when "view schools" is pressed
          */
 
-        OrgsDataSource.getAllChildOrganizations(getActivity(), mLoading, org.getmObjectId(), new FunctionCallback<ArrayList<Organization>>() {
+        OrgsDataSource.getAllChildOrganizations(mView, getActivity(), mLoading, org.getmObjectId(), new FunctionCallback<ArrayList<Organization>>() {
             @Override
             public void done(ArrayList<Organization> organizations, ParseException e) {
                 if (e == null) {
@@ -232,7 +232,7 @@ public class AdminFragment extends Fragment implements Serializable,
     }
 
     private void allOrgPosts(final String orgId){
-        AdminDataSource.getAllPostsForOrganizationForRange(mLoading, getActivity(), orgId, 0, 10, new FunctionCallback<ArrayList<Post>>() {
+        AdminDataSource.getAllPostsForOrganizationForRange(mView, mLoading, getActivity(), orgId, 0, 10, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {

@@ -192,12 +192,14 @@ public class AdminDataSource {
 
     }
 
-    public static void getAllPostsForOrganizationForRange (final ProgressBar loading, final Context context, String organizationObjectId, int startIndex, int numberOfPosts, final FunctionCallback<ArrayList<Post>> callback){
+    public static void getAllPostsForOrganizationForRange (final View view, final ProgressBar loading, final Context context,
+                                                           String organizationObjectId, int startIndex,
+                                                           int numberOfPosts, final FunctionCallback<ArrayList<Post>> callback){
         loading.setVisibility(View.VISIBLE);
 
         if (!App.hasNetworkConnection(context)){
             loading.setVisibility(View.GONE);
-            Snackbar.make(loading, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap<String, Object> params = new HashMap<>();
             params.put("organizationObjectId", organizationObjectId);
@@ -215,7 +217,7 @@ public class AdminDataSource {
                         }
                         callback.done(posts, e);
                     } else {
-                        Snackbar.make(loading, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -229,7 +231,7 @@ public class AdminDataSource {
 
         if (!App.hasNetworkConnection(context)){
             loading.setVisibility(View.GONE);
-            Snackbar.make(loading, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap<String, Object> params = new HashMap<>();
             params.put("organizationObjectId", organizationObjectId);
@@ -264,7 +266,7 @@ public class AdminDataSource {
 
         if (!App.hasNetworkConnection(context)){
             loading.setVisibility(View.GONE);
-            Snackbar.make(loading, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap<String, Object> params = new HashMap<>();
             params.put("organizationObjectId", organizationObjectId);

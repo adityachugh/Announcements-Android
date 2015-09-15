@@ -126,7 +126,7 @@ public class TodayFragment extends Fragment implements Serializable,
     }
 
     private void loadPosts(int startIndex, int numberOfPosts) {
-        PostsDataSource.getRangeOfPostsForDay(mLoading, getActivity(), startIndex, numberOfPosts, mCurrentDateSelected, new FunctionCallback<ArrayList<Post>>() {
+        PostsDataSource.getRangeOfPostsForDay(mView, mLoading, getActivity(), startIndex, numberOfPosts, mCurrentDateSelected, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {
@@ -261,7 +261,7 @@ public class TodayFragment extends Fragment implements Serializable,
 
     @Override
     public void viewAnnouncementsState(Organization org) {
-        AdminDataSource.getAllPostsForOrganizationForRange(mLoading, getActivity(), org.getmObjectId(), 0, 10, new FunctionCallback<ArrayList<Post>>() {
+        AdminDataSource.getAllPostsForOrganizationForRange(mView, mLoading, getActivity(), org.getmObjectId(), 0, 10, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {

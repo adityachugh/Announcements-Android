@@ -56,19 +56,19 @@ public class UserDataSource {
 
     public final static String FOLLOWER_USER_TYPE_FIELD = "type";
 
-    public static void getCurrentUserWithInfo(Context context, final ProgressBar loading, final FunctionCallback<User> callback) {
+    public static void getCurrentUserWithInfo(final View view, Context context, final ProgressBar loading, final FunctionCallback<User> callback) {
         loading.setVisibility(View.VISIBLE);
 
         if (!App.hasNetworkConnection(context)){
             loading.setVisibility(View.GONE);
-            Snackbar.make(loading, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             ParseUser.getCurrentUser().fetchInBackground(new GetCallback<ParseUser>() {
                 @Override
                 public void done(ParseUser object, ParseException e) {
                     loading.setVisibility(View.GONE);
                     if (e != null) {
-                        Snackbar.make(loading, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     } else {
                         User user = new User(ParseUser.getCurrentUser());
                         callback.done(user, e);
@@ -159,7 +159,7 @@ public class UserDataSource {
         loading.setVisibility(View.VISIBLE);
         if (!App.hasNetworkConnection(context)){
             loading.setVisibility(View.GONE);
-            Snackbar.make(loading, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(layout, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap<String, Object> params = new HashMap<>();
             params.put("isFollowing", isFollowing);

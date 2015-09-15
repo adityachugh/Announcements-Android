@@ -28,6 +28,7 @@ import io.mindbend.android.announcements.TabbedActivity;
 import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.adminClasses.ModifyOrganizationFragment;
 import io.mindbend.android.announcements.cloudCode.AdminDataSource;
+import io.mindbend.android.announcements.cloudCode.ErrorCodeMessageDataSource;
 import io.mindbend.android.announcements.cloudCode.OrgsDataSource;
 import io.mindbend.android.announcements.cloudCode.UserDataSource;
 import io.mindbend.android.announcements.reusableFrags.ListFragment;
@@ -152,7 +153,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
 
     @Override
     public void viewAnnouncementsState(Organization org) {
-        AdminDataSource.getAllPostsForOrganizationForRange(mLoading, getActivity(), org.getmObjectId(), 0, 10, new FunctionCallback<ArrayList<Post>>() {
+        AdminDataSource.getAllPostsForOrganizationForRange(mView, mLoading, getActivity(), org.getmObjectId(), 0, 10, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {
@@ -164,7 +165,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
                             .addToBackStack(null)
                             .commitAllowingStateLoss();
                 } else {
-                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(mView, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
 

@@ -72,7 +72,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
         mView = inflater.inflate(R.layout.fragment_you, container, false);
         mLoading = (ProgressBar) mView.findViewById(R.id.you_frag_progressbar);
 
-        UserDataSource.getCurrentUserWithInfo(getActivity(), mLoading, new FunctionCallback<User>() {
+        UserDataSource.getCurrentUserWithInfo(mView, getActivity(), mLoading, new FunctionCallback<User>() {
             @Override
             public void done(User user, ParseException e) {
                 mProfileFragment = ProfileFragment.newInstance(user, null, null, YouFragment.this, true, onToday, onDiscover, onYou, onAdmin);
@@ -145,7 +145,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
 
     @Override
     public void viewAnnouncementsState(Organization org) {
-        AdminDataSource.getAllPostsForOrganizationForRange(mLoading, getActivity(), org.getmObjectId(), 0, 10, new FunctionCallback<ArrayList<Post>>() {
+        AdminDataSource.getAllPostsForOrganizationForRange(mView, mLoading, getActivity(), org.getmObjectId(), 0, 10, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {

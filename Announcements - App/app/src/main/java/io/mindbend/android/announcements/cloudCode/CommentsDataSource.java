@@ -31,12 +31,12 @@ public class CommentsDataSource {
     public static final String COMMENT_TEXT = "comment";
     public static final String COMMENT_USER = "createUser";
 
-    public static void getRangeOfCommentsForPost(final RelativeLayout loadingLayout, final Context context, int startIndex, int numberOfComments, String postObjectId, final FunctionCallback<ArrayList<Comment>> callback){
+    public static void getRangeOfCommentsForPost(final View view, final RelativeLayout loadingLayout, final Context context, int startIndex, int numberOfComments, String postObjectId, final FunctionCallback<ArrayList<Comment>> callback){
         loadingLayout.setVisibility(View.VISIBLE);
 
         if (!App.hasNetworkConnection(context)){
             loadingLayout.setVisibility(View.GONE);
-            Snackbar.make(loadingLayout, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap<String, Object> params = new HashMap<>();
             params.put("postObjectId", postObjectId);
@@ -61,9 +61,9 @@ public class CommentsDataSource {
 
                     else { //e == null
                         if (e.getCode() == ParseException.INCORRECT_TYPE)
-                            Snackbar.make(loadingLayout, R.string.no_more_comments_message, Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(view, R.string.no_more_comments_message, Snackbar.LENGTH_SHORT).show();
                         else
-                            Snackbar.make(loadingLayout, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
 
                         e.printStackTrace();
 
@@ -75,12 +75,12 @@ public class CommentsDataSource {
 
     }
 
-    public static void postCommentAsUserOnPost(final RelativeLayout loadingLayout, final Context context, String postObjectId, String commentText, final FunctionCallback<Comment> callback){
+    public static void postCommentAsUserOnPost(final View view, final RelativeLayout loadingLayout, final Context context, String postObjectId, String commentText, final FunctionCallback<Comment> callback){
         loadingLayout.setVisibility(View.VISIBLE);
 
         if (!App.hasNetworkConnection(context)){
             loadingLayout.setVisibility(View.GONE);
-            Snackbar.make(loadingLayout, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             final HashMap<String, String> params = new HashMap<>();
             params.put("commentText", commentText);
@@ -94,7 +94,7 @@ public class CommentsDataSource {
                     if (e == null)
                         comment = new Comment(context, parseObject);
                     else {
-                        Snackbar.make(loadingLayout, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
                     callback.done(comment, e);
                 }
@@ -103,12 +103,12 @@ public class CommentsDataSource {
 
     }
 
-    public static void deleteComment (Context context, final RelativeLayout loadingLayout, String commentObjectId, final FunctionCallback<Boolean> callback){
+    public static void deleteComment (final View view, Context context, final RelativeLayout loadingLayout, String commentObjectId, final FunctionCallback<Boolean> callback){
         loadingLayout.setVisibility(View.VISIBLE);
 
         if (!App.hasNetworkConnection(context)){
             loadingLayout.setVisibility(View.GONE);
-            Snackbar.make(loadingLayout, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap<String, String> params = new HashMap<>();
             params.put("commentObjectId", commentObjectId);
@@ -118,11 +118,11 @@ public class CommentsDataSource {
                 public void done(Boolean success, ParseException e) {
                     loadingLayout.setVisibility(View.GONE);
                     if (e == null) {
-                        Snackbar.make(loadingLayout, "Deleted comment", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(view, "Deleted comment", Snackbar.LENGTH_SHORT).show();
                         callback.done(success, e);
                     } else {
                         e.printStackTrace();
-                        Snackbar.make(loadingLayout, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
                 }
             });

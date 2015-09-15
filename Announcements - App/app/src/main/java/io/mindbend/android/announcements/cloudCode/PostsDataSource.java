@@ -43,12 +43,12 @@ public class PostsDataSource {
     public static final int HIGH_PRIORITY = 1;
 
 
-    public static void getRangeOfPostsForDay (final ProgressBar loader, final Context context, int startIndex, int numberOfPosts, Date date, final FunctionCallback<ArrayList<Post>> callback){
+    public static void getRangeOfPostsForDay (final View view, final ProgressBar loader, final Context context, int startIndex, int numberOfPosts, Date date, final FunctionCallback<ArrayList<Post>> callback){
         loader.setVisibility(View.VISIBLE);
 
         if (!App.hasNetworkConnection(context)){
             loader.setVisibility(View.GONE);
-            Snackbar.make(loader, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap<String, Object> params = new HashMap<>();
             params.put("startIndex", startIndex);
@@ -68,7 +68,7 @@ public class PostsDataSource {
                         //to allow each frag to do it specifically
                         callback.done(posts, e);
                     } else {
-                        Snackbar.make(loader, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
 
                 }
@@ -77,12 +77,13 @@ public class PostsDataSource {
 
     }
 
-    public static void getPostsOfOrganizationInRange (final ProgressBar loading, final Context context, String OrganizationObjectId, int startIndex, int numberOfPosts, final FunctionCallback<ArrayList<Post>> callback){
+    public static void getPostsOfOrganizationInRange (final View view, final ProgressBar loading, final Context context, String OrganizationObjectId,
+                                                      int startIndex, int numberOfPosts, final FunctionCallback<ArrayList<Post>> callback){
         loading.setVisibility(View.VISIBLE);
 
         if (!App.hasNetworkConnection(context)){
             loading.setVisibility(View.GONE);
-            Snackbar.make(loading, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap<String, Object> params = new HashMap<>();
             params.put("organizationObjectId", OrganizationObjectId);
@@ -100,7 +101,7 @@ public class PostsDataSource {
                         }
                         callback.done(orgPosts, e);
                     } else {
-                        Snackbar.make(loading, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
                 }
             });
