@@ -17,6 +17,7 @@ import com.parse.SignUpCallback;
 
 import java.util.HashMap;
 
+import io.mindbend.android.announcements.App;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.TabbedActivity;
 import io.mindbend.android.announcements.onboardingAndSignupin.SignUpOrgsActivity;
@@ -34,67 +35,80 @@ public class VerificationDataSource {
     public static final String USER_PASSWORD = "password";
 
     public static void signupUser (final View layout, final ProgressBar loader, final Context context, final String firsttName, final String lastName, final String password, final String username, final String email){
-        final AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.DialogTheme);
-        builder.setTitle("Field(s) in use.");
-        builder.setPositiveButton("OK", null);
-        checkFieldInUse(loader, context, USER_CLASS, USER_EMAIL, email, new FunctionCallback<Boolean>() {
-            @Override
-            public void done(Boolean aBoolean, ParseException e) {
-                if (e == null) {
-                    if (aBoolean) {
-                        builder.show();
-                    } else {
-                        checkFieldInUse(loader, context, USER_CLASS, USER_USERNAME, username, new FunctionCallback<Boolean>() {
-                            @Override
-                            public void done(Boolean aBoolean, ParseException e) {
-                                if (e == null) {
-                                    if (aBoolean) {
-                                        builder.show();
-                                    } else {
-                                        ParseUser user = new ParseUser();
-                                        user.setUsername(username);
-                                        user.setPassword(password);
-                                        user.setEmail(email);
-                                        user.put(USER_FIRST_NAME, firsttName);
-                                        user.put(USER_LAST_NAME, lastName);
-                                        user.put(UserDataSource.DESCRIPTION, context.getString(R.string.user_default_description));
+        if (!App.hasNetworkConnection(context)){
+            Snackbar.make(layout, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+        } else {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.DialogTheme);
+            builder.setTitle("Field(s) in use.");
+            builder.setPositiveButton("OK", null);
+            checkFieldInUse(loader, context, USER_CLASS, USER_EMAIL, email, new FunctionCallback<Boolean>() {
+                @Override
+                public void done(Boolean aBoolean, ParseException e) {
+                    if (e == null) {
+                        if (aBoolean) {
+                            builder.show();
+                        } else {
+                            checkFieldInUse(loader, context, USER_CLASS, USER_USERNAME, username, new FunctionCallback<Boolean>() {
+                                @Override
+                                public void done(Boolean aBoolean, ParseException e) {
+                                    if (e == null) {
+                                        if (aBoolean) {
+                                            builder.show();
+                                        } else {
+                                            ParseUser user = new ParseUser();
+                                            user.setUsername(username);
+                                            user.setPassword(password);
+                                            user.setEmail(email);
+                                            user.put(USER_FIRST_NAME, firsttName);
+                                            user.put(USER_LAST_NAME, lastName);
+                                            user.put(UserDataSource.DESCRIPTION, context.getString(R.string.user_default_description));
 
-                                        user.signUpInBackground(new SignUpCallback() {
-                                            @Override
-                                            public void done(ParseException e) {
-                                                Intent i = new Intent(context, SignUpOrgsActivity.class);
-                                                context.startActivity(i);
-                                            }
-                                        });
+                                            user.signUpInBackground(new SignUpCallback() {
+                                                @Override
+                                                public void done(ParseException e) {
+                                                    Intent i = new Intent(context, SignUpOrgsActivity.class);
+                                                    context.startActivity(i);
+                                                }
+                                            });
+                                        }
+                                    } else {
+                                        Snackbar.make(layout, "Error", Snackbar.LENGTH_SHORT).show();
+                                        e.printStackTrace();
                                     }
-                                } else {
-                                    Snackbar.make(layout, "Error", Snackbar.LENGTH_SHORT).show();
-                                    e.printStackTrace();
                                 }
-                            }
-                        });
+                            });
+                        }
+                    } else {
+                        Snackbar.make(layout, "Error", Snackbar.LENGTH_SHORT).show();
+                        e.printStackTrace();
                     }
-                } else {
-                    Snackbar.make(layout, "Error", Snackbar.LENGTH_SHORT).show();
-                    e.printStackTrace();
                 }
-            }
-        });
+            });
+        }
+
     }
 
     public static void checkFieldInUse (final ProgressBar loader, Context context, String className, String key, String value, final FunctionCallback<Boolean> callback){
         loader.setVisibility(View.VISIBLE);
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("className", className);
-        params.put("key", key);
-        params.put("value", value);
-        ParseCloud.callFunctionInBackground("isFieldValueInUse", params, new FunctionCallback<Boolean>() {
-            @Override
-            public void done(Boolean aBoolean, ParseException e) {
-                loader.setVisibility(View.GONE);
-                callback.done(aBoolean, e);
-            }
-        });
+
+        if (!App.hasNetworkConnection(context)){
+            loader.setVisibility(View.GONE);
+            Snackbar.make(loader, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+        } else {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("className", className);
+            params.put("key", key);
+            params.put("value", value);
+            ParseCloud.callFunctionInBackground("isFieldValueInUse", params, new FunctionCallback<Boolean>() {
+                @Override
+                public void done(Boolean aBoolean, ParseException e) {
+                    loader.setVisibility(View.GONE);
+                    callback.done(aBoolean, e);
+                }
+            });
+        }
+
+
     }
 
 }

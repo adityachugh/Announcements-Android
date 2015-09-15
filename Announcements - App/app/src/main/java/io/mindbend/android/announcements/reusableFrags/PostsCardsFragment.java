@@ -39,8 +39,6 @@ import io.mindbend.android.announcements.tabbedFragments.AdminFragment;
 import io.mindbend.android.announcements.tabbedFragments.TodayFragment;
 
 public class PostsCardsFragment extends Fragment implements Serializable, PostOverlayFragment.PostsOverlayListener, SwipyRefreshLayout.OnRefreshListener {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_POSTS = "posts";
     private static final String ARG_POSTS_LISTENER = "post_touch_listener";
     private static final String ARG_POSTS_OVERLAY_LISTENER = "post_overlay_listener";
@@ -49,7 +47,6 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
     private static final String ARG_PARENT_ID_IF_APPROVING = "parent_id_if_approving";
     private static final String ARG_ORG_ID_IF_VIEWING_STATE = "org_id_if_viewing_state";
 
-    // TODO: Rename and change types of parameters
     private List<Post> mPosts;
     private PostsFeedAdapter mPostFeedAdapter;
     private PostsFeedAdapter.PostInteractionListener mPostTouchListener;
@@ -65,14 +62,6 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
     private String mOrgIdIfViewingState;
     private TextView noPostsMessage;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param posts a bundle containing a List<Post> of al posts
-     * @return A new instance of fragment PostsCardsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static PostsCardsFragment newInstance(ArrayList<Post> posts, PostsFeedAdapter.PostInteractionListener postTouchListener, boolean isViewingState, PostOverlayFragment.PostsOverlayListener postsOverlayListener, boolean isApproving, String parentOrgIdIfApproving, String orgIdIfViewingState) {
         PostsCardsFragment fragment = new PostsCardsFragment();
         Bundle args = new Bundle();
@@ -202,6 +191,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
 
     @Override
     public void onRefresh(SwipyRefreshLayoutDirection direction) {
+        mRefreshTodayPosts.setRefreshing(false);
         if(direction == SwipyRefreshLayoutDirection.TOP)
             refreshPosts(mIsApproving, mIsViewingState);
         else

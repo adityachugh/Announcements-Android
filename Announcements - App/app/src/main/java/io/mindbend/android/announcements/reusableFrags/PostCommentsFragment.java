@@ -58,15 +58,8 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
     private transient SwipyRefreshLayout mRefreshComments;
     private transient RecyclerView mRecyclerView;
     private transient RelativeLayout mLoading;
+    private TextView mNoCommentsText;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param postClicked     POST
-     * @param commentListener CommentsInteractionListener
-     * @return A new instance of fragment PostCommentsFragment.
-     */
     public static PostCommentsFragment newInstance(Post postClicked, CommentsInteractionListener commentListener) {
         PostCommentsFragment fragment = new PostCommentsFragment();
         Bundle args = new Bundle();
@@ -96,6 +89,8 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
             // Inflate the layout for this fragment
             mView = inflater.inflate(R.layout.fragment_post_comments, container, false);
 
+            mNoCommentsText = (TextView) mView.findViewById(R.id.no_comments_loaded_TV);
+
             mRecyclerView = (RecyclerView) mView.findViewById(R.id.comments_recycler_view);
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -109,7 +104,6 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
             mFab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View v) {
-                    //TODO: dialogue box to add a comment
                     // get prompts.xml view
                     LayoutInflater li = LayoutInflater.from(getActivity());
                     View addCommentView = li.inflate(R.layout.add_comment_dialog, null);
@@ -196,13 +190,26 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
                     mComments.addAll(comments);
                     mCommentsAdapter.notifyDataSetChanged();
                     if (!loadingMoreComments) {
-                        //the animation for the recycler view to slide in from the bottom of the view
-                        TranslateAnimation trans = new TranslateAnimation(0, 0, 1000, 0);
-                        trans.setDuration(500);
-                        trans.setInterpolator(new DecelerateInterpolator(1.0f));
-                        mRecyclerView.startAnimation(trans);
-                    }
+                        if (comments.size() == 0) {
+                            mNoCommentsText.setVisibility(View.VISIBLE);
+                        } else {
+                            mNoCommentsText.setVisibility(View.GONE);
+                            //the animation for the recycler view to slide in from the bottom of the view
+                            TranslateAnimation trans = new TranslateAnimation(0, 0, 1000, 0);
+                            trans.setDuration(500);
+                            trans.setInterpolator(new DecelerateInterpolator(1.0f));
+                            mRecyclerView.startAnimation(trans);
+                        }
 
+                    }
+                } else if (e.getCode() == ParseException.INCORRECT_TYPE) {
+                    mComments.clear();
+                    mCommentsAdapter.notifyDataSetChanged();
+                    mNoCommentsText.setVisibility(View.VISIBLE);
+                } else {
+                    mComments.clear();
+                    mCommentsAdapter.notifyDataSetChanged();
+                    Snackbar.make(mView, "Error", Snackbar.LENGTH_SHORT).show();
                 }
             }
         });
@@ -220,6 +227,7 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
 
     @Override
     public void onRefresh(SwipyRefreshLayoutDirection swipyRefreshLayoutDirection) {
+        mRefreshComments.setRefreshing(false);
         if (swipyRefreshLayoutDirection == SwipyRefreshLayoutDirection.TOP)
             loadComments(false, mLoading, 0, 10);
         else

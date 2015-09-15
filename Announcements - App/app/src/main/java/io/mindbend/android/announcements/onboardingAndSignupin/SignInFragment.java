@@ -88,23 +88,29 @@ public class SignInFragment extends Fragment
                     Snackbar.make(v, "Please enter your username and password", Snackbar.LENGTH_SHORT).show();
                 } else {
                     mLoading.setVisibility(View.VISIBLE);
-                    ParseUser.logInInBackground(username.getText().toString(), password.getText().toString(), new LogInCallback() {
-                        @Override
-                        public void done(ParseUser parseUser, ParseException e) {
-                            mLoading.setVisibility(View.GONE);
-                            if (e == null){
-                                //login successful!
-                                Intent i = new Intent(getActivity(), TabbedActivity.class);
-                                startActivity(i);
-                            } else {
-                                //incorrect credentials!
-                                AlertDialog.Builder failedLogin = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
-                                failedLogin.setTitle(getResources().getString(R.string.incorrect_login_credentials))
-                                        .setPositiveButton("OK", null);
-                                failedLogin.show();
+                    if (!App.hasNetworkConnection(getActivity())){
+                        mLoading.setVisibility(View.GONE);
+                        Snackbar.make(getView(), getActivity().getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+                    } else {
+                        ParseUser.logInInBackground(username.getText().toString(), password.getText().toString(), new LogInCallback() {
+                            @Override
+                            public void done(ParseUser parseUser, ParseException e) {
+                                mLoading.setVisibility(View.GONE);
+                                if (e == null){
+                                    //login successful!
+                                    Intent i = new Intent(getActivity(), TabbedActivity.class);
+                                    startActivity(i);
+                                } else {
+                                    //incorrect credentials!
+                                    AlertDialog.Builder failedLogin = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
+                                    failedLogin.setTitle(getResources().getString(R.string.incorrect_login_credentials))
+                                            .setPositiveButton("OK", null);
+                                    failedLogin.show();
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
+
                 }
             }
         });

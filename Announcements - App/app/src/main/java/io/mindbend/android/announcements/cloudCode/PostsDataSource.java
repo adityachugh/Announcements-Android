@@ -17,8 +17,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import io.mindbend.android.announcements.App;
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.Post;
+import io.mindbend.android.announcements.R;
 
 /**
  * Created by Akshay Pall on 21/08/2015.
@@ -43,81 +45,102 @@ public class PostsDataSource {
 
     public static void getRangeOfPostsForDay (final ProgressBar loader, final Context context, int startIndex, int numberOfPosts, Date date, final FunctionCallback<ArrayList<Post>> callback){
         loader.setVisibility(View.VISIBLE);
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("startIndex", startIndex);
-        params.put("numberOfPosts", numberOfPosts);
-        params.put("date", date);
-        ParseCloud.callFunctionInBackground("getRangeOfPostsForDay", params, new FunctionCallback<List<ParseObject>>() {
-            @Override
-            public void done(List<ParseObject> parseObjects, ParseException e) {
-                loader.setVisibility(View.GONE);
 
-                //convert all parseobjects to posts
-                ArrayList<Post> posts = new ArrayList<Post>();
-                if (e == null){
-                    for (ParseObject object : parseObjects){
-                        posts.add(new Post(context, object));
+        if (!App.hasNetworkConnection(context)){
+            loader.setVisibility(View.GONE);
+            Snackbar.make(loader, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+        } else {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("startIndex", startIndex);
+            params.put("numberOfPosts", numberOfPosts);
+            params.put("date", date);
+            ParseCloud.callFunctionInBackground("getRangeOfPostsForDay", params, new FunctionCallback<List<ParseObject>>() {
+                @Override
+                public void done(List<ParseObject> parseObjects, ParseException e) {
+                    loader.setVisibility(View.GONE);
+
+                    //convert all parseobjects to posts
+                    ArrayList<Post> posts = new ArrayList<Post>();
+                    if (e == null){
+                        for (ParseObject object : parseObjects){
+                            posts.add(new Post(context, object));
+                        }
                     }
+                    //to allow each frag to do it specifically
+                    callback.done(posts, e);
                 }
-                //to allow each frag to do it specifically
-                callback.done(posts, e);
-            }
-        });
+            });
+        }
+
     }
 
     public static void getPostsOfOrganizationInRange (final ProgressBar loading, final Context context, String OrganizationObjectId, int startIndex, int numberOfPosts, final FunctionCallback<ArrayList<Post>> callback){
         loading.setVisibility(View.VISIBLE);
 
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("organizationObjectId", OrganizationObjectId);
-        params.put("startIndex", startIndex);
-        params.put("numberOfPosts", numberOfPosts);
+        if (!App.hasNetworkConnection(context)){
+            loading.setVisibility(View.GONE);
+            Snackbar.make(loading, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+        } else {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("organizationObjectId", OrganizationObjectId);
+            params.put("startIndex", startIndex);
+            params.put("numberOfPosts", numberOfPosts);
 
-        ParseCloud.callFunctionInBackground("getPostsOfOrganizationInRange", params, new FunctionCallback<List<ParseObject>>() {
-            @Override
-            public void done(List<ParseObject> parseObjects, ParseException e) {
-                ArrayList<Post> orgPosts = new ArrayList<Post>();
+            ParseCloud.callFunctionInBackground("getPostsOfOrganizationInRange", params, new FunctionCallback<List<ParseObject>>() {
+                @Override
+                public void done(List<ParseObject> parseObjects, ParseException e) {
+                    ArrayList<Post> orgPosts = new ArrayList<Post>();
 
-                if (e == null){
-                    for (ParseObject object : parseObjects){
-                        orgPosts.add(new Post(context, object));
+                    if (e == null){
+                        for (ParseObject object : parseObjects){
+                            orgPosts.add(new Post(context, object));
+                        }
                     }
-                }
 
-                loading.setVisibility(View.GONE);
-                callback.done(orgPosts, e);
-            }
-        });
+                    loading.setVisibility(View.GONE);
+                    callback.done(orgPosts, e);
+                }
+            });
+        }
+
+
     }
 
-    public static void uploadPostForOrganization (final View view, final ProgressBar loading, String organizationObjectId,
+    public static void uploadPostForOrganization (Context context, final View view, final ProgressBar loading, String organizationObjectId,
                                                   String title, String body, byte[] photo, Date startDate, Date endDate,
                                                   int priority, boolean notifyParent, final FunctionCallback<Boolean> callback){
         loading.setVisibility(View.VISIBLE);
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("organizationObjectId", organizationObjectId);
-        params.put("title", title);
-        params.put("body", body);
-        params.put("photo", photo);
-        params.put("startDate", startDate);
-        params.put("endDate", endDate);
-        params.put("priority", priority);
-        params.put("notifyParent", notifyParent);
 
-        ParseCloud.callFunctionInBackground("uploadPostForOrganization", params, new FunctionCallback<Boolean>() {
-            @Override
-            public void done(Boolean successful, ParseException e) {
-                loading.setVisibility(View.GONE);
-                String message = "Error uploading announcement";
-                if (e == null){
-                    message = "Successfully uploaded announcement";
-                    callback.done(successful, e);
-                }else {
-                    e.printStackTrace();
+        if (!App.hasNetworkConnection(context)){
+            loading.setVisibility(View.GONE);
+            Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+        } else {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("organizationObjectId", organizationObjectId);
+            params.put("title", title);
+            params.put("body", body);
+            params.put("photo", photo);
+            params.put("startDate", startDate);
+            params.put("endDate", endDate);
+            params.put("priority", priority);
+            params.put("notifyParent", notifyParent);
+
+            ParseCloud.callFunctionInBackground("uploadPostForOrganization", params, new FunctionCallback<Boolean>() {
+                @Override
+                public void done(Boolean successful, ParseException e) {
+                    loading.setVisibility(View.GONE);
+                    String message = "Error uploading announcement";
+                    if (e == null) {
+                        message = "Successfully uploaded announcement";
+                        callback.done(successful, e);
+                    } else {
+                        e.printStackTrace();
+                    }
+
+                    Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
                 }
+            });
+        }
 
-                Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
-            }
-        });
     }
 }

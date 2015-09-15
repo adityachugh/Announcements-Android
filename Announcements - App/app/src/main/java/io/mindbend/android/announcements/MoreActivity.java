@@ -82,23 +82,33 @@ public class MoreActivity extends AppCompatActivity {
         LinearLayout signOut = (LinearLayout)findViewById(R.id.more_sign_out);
         signOut.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 mLoading.setVisibility(View.VISIBLE);
-                ParseUser.logOutInBackground(new LogOutCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        //sign out of parse, then...
-                        mLoading.setVisibility(View.GONE);
+                if (!App.hasNetworkConnection(MoreActivity.this)){
+                    mLoading.setVisibility(View.GONE);
+                    Snackbar.make(v, MoreActivity.this.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+                } else {
+                    ParseUser.logOutInBackground(new LogOutCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                //sign out of parse, then...
+                                mLoading.setVisibility(View.GONE);
 
-                        //finish tabbed activity
-                        Intent myIntent = new Intent(TabbedActivity.ACTION_CLOSE);
-                        sendBroadcast(myIntent);
+                                //finish tabbed activity
+                                Intent myIntent = new Intent(TabbedActivity.ACTION_CLOSE);
+                                sendBroadcast(myIntent);
 
-                        Intent i = new Intent(MoreActivity.this, OnboardingActivity.class);
-                        startActivity(i);
-                        finish();
-                    }
-                });
+                                Intent i = new Intent(MoreActivity.this, OnboardingActivity.class);
+                                startActivity(i);
+                                finish();
+                            } else {
+                                Snackbar.make(v, "Error", Snackbar.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+
             }
         });
 

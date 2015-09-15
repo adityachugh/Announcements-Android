@@ -98,7 +98,7 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
-                                    CommentsDataSource.deleteComment(mLoadingLayout, currentComment.getmObjectId(), new FunctionCallback<Boolean>() {
+                                    CommentsDataSource.deleteComment(mContext, mLoadingLayout, currentComment.getmObjectId(), new FunctionCallback<Boolean>() {
                                         @Override
                                         public void done(Boolean deleted, ParseException e) {
                                             if (e == null && deleted){

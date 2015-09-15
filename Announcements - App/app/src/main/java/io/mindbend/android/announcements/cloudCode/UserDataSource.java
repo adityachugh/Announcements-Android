@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.zip.Deflater;
 
+import io.mindbend.android.announcements.App;
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.TabbedActivity;
@@ -55,48 +56,59 @@ public class UserDataSource {
 
     public final static String FOLLOWER_USER_TYPE_FIELD = "type";
 
-    public static void getCurrentUserWithInfo(final ProgressBar loading, final FunctionCallback<User> callback) {
+    public static void getCurrentUserWithInfo(Context context, final ProgressBar loading, final FunctionCallback<User> callback) {
         loading.setVisibility(View.VISIBLE);
 
-        ParseUser.getCurrentUser().fetchInBackground(new GetCallback<ParseUser>() {
-            @Override
-            public void done(ParseUser object, ParseException e) {
-                loading.setVisibility(View.GONE);
-                User user = new User(ParseUser.getCurrentUser());
-                callback.done(user, e);
-            }
-        });
-
+        if (!App.hasNetworkConnection(context)){
+            loading.setVisibility(View.GONE);
+            Snackbar.make(loading, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+        } else {
+            ParseUser.getCurrentUser().fetchInBackground(new GetCallback<ParseUser>() {
+                @Override
+                public void done(ParseUser object, ParseException e) {
+                    loading.setVisibility(View.GONE);
+                    User user = new User(ParseUser.getCurrentUser());
+                    callback.done(user, e);
+                }
+            });
+        }
     }
 
     public static void updateUserProfileImages (final View layout, final Context context, final ProgressBar loading, final byte[] image, final FunctionCallback<Boolean> callback, final Boolean profilePhoto) {
         loading.setVisibility(View.VISIBLE);
 
-        loginDialog(context, new LogInCallback() {
-            @Override
-            public void done(ParseUser parseUser, ParseException e) {
-                loading.setVisibility(View.GONE);
-                if (e == null) {
-                    HashMap<String, Object> params = new HashMap<>();
-                    params.put("userObjectId", ParseUser.getCurrentUser().getObjectId());
-                    params.put("photo", image);
-                    loading.setVisibility(View.VISIBLE);
+        if (!App.hasNetworkConnection(context)){
+            loading.setVisibility(View.GONE);
+            Snackbar.make(layout, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+        } else {
+            loginDialog(layout, context, new LogInCallback() {
+                @Override
+                public void done(ParseUser parseUser, ParseException e) {
+                    loading.setVisibility(View.GONE);
+                    if (e == null) {
+                        HashMap<String, Object> params = new HashMap<>();
+                        params.put("userObjectId", ParseUser.getCurrentUser().getObjectId());
+                        params.put("photo", image);
+                        loading.setVisibility(View.VISIBLE);
 
-                    String funcName = profilePhoto ? "updateUserProfilePhoto" : "updateUserCoverPhoto";
+                        String funcName = profilePhoto ? "updateUserProfilePhoto" : "updateUserCoverPhoto";
 
-                    ParseCloud.callFunctionInBackground(funcName, params, new FunctionCallback<ParseUser>() {
-                        @Override
-                        public void done(ParseUser parseUser, ParseException e) {
-                            loading.setVisibility(View.GONE);
-                            callback.done(e == null, e);
-                        }
-                    });
-                } else {
-                    //did not login
-                    Snackbar.make(layout, context.getResources().getString(R.string.incorrect_login_credentials), Snackbar.LENGTH_SHORT).show();
+                        ParseCloud.callFunctionInBackground(funcName, params, new FunctionCallback<ParseUser>() {
+                            @Override
+                            public void done(ParseUser parseUser, ParseException e) {
+                                loading.setVisibility(View.GONE);
+                                callback.done(e == null, e);
+                            }
+                        });
+                    } else {
+                        //did not login
+                        Snackbar.make(layout, context.getResources().getString(R.string.incorrect_login_credentials), Snackbar.LENGTH_SHORT).show();
+                    }
                 }
-            }
-        });
+            });
+        }
+
+
     }
 
 
@@ -104,31 +116,46 @@ public class UserDataSource {
     public static void updateUserDescription (final View layout, final Context context, final ProgressBar loading, final String description, final FunctionCallback<Boolean> callback) {
         loading.setVisibility(View.VISIBLE);
 
-        loginDialog(context, new LogInCallback() {
-            @Override
-            public void done(ParseUser parseUser, ParseException e) {
-                loading.setVisibility(View.GONE);
-                if (e == null) {
-                    HashMap<String, Object> params = new HashMap<>();
-                    params.put("userObjectId", ParseUser.getCurrentUser().getObjectId());
-                    params.put("description", description);
-                    loading.setVisibility(View.VISIBLE);
-                    ParseCloud.callFunctionInBackground("updateUserDescription", params, new FunctionCallback<ParseUser>() {
-                        @Override
-                        public void done(ParseUser parseUser, ParseException e) {
-                            loading.setVisibility(View.GONE);
-                            callback.done(e == null, e);
-                        }
-                    });
-                } else {
-                    //did not login
-                    Snackbar.make(layout, context.getResources().getString(R.string.incorrect_login_credentials), Snackbar.LENGTH_SHORT).show();
+        if (!App.hasNetworkConnection(context)){
+            loading.setVisibility(View.GONE);
+            Snackbar.make(layout, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+        } else {
+            loginDialog(layout, context, new LogInCallback() {
+                @Override
+                public void done(ParseUser parseUser, ParseException e) {
+                    loading.setVisibility(View.GONE);
+                    if (e == null) {
+                        HashMap<String, Object> params = new HashMap<>();
+                        params.put("userObjectId", ParseUser.getCurrentUser().getObjectId());
+                        params.put("description", description);
+                        loading.setVisibility(View.VISIBLE);
+                        ParseCloud.callFunctionInBackground("updateUserDescription", params, new FunctionCallback<ParseUser>() {
+                            @Override
+                            public void done(ParseUser parseUser, ParseException e) {
+                                loading.setVisibility(View.GONE);
+                                callback.done(e == null, e);
+                            }
+                        });
+                    } else {
+                        //did not login
+                        Snackbar.make(layout, context.getResources().getString(R.string.incorrect_login_credentials), Snackbar.LENGTH_SHORT).show();
+                    }
                 }
-            }
-        });
+            });
+        }
+
+
     }
 
-    public static void updateFollowStateForUser (final boolean isPrivate, final View layout, final Boolean isFollowing, String organizationObjectId, final FunctionCallback<Boolean> callback){
+    public static void updateFollowStateForUser (final ProgressBar loading, Context context, final boolean isPrivate, final View layout, final Boolean isFollowing, String organizationObjectId, final FunctionCallback<Boolean> callback){
+        loading.setVisibility(View.VISIBLE);
+        if (!App.hasNetworkConnection(context)){
+            loading.setVisibility(View.GONE);
+            Snackbar.make(loading, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+        } else {
+            //here
+        }
+
         HashMap<String, Object> params = new HashMap<>();
         params.put("isFollowing", isFollowing);
         params.put("organizationObjectId", organizationObjectId);
@@ -137,6 +164,7 @@ public class UserDataSource {
         ParseCloud.callFunctionInBackground("updateFollowStateForUser", params, new FunctionCallback<Boolean>() {
             @Override
             public void done(Boolean isSuccessful, ParseException e) {
+                loading.setVisibility(View.GONE);
                 String message = "Failure";
                 if (e == null && isSuccessful) {
                     message = (isPrivate && isFollowing) ? "Sent follow request to organization" : "Successfully " + toastText + "followed organization";
@@ -151,103 +179,125 @@ public class UserDataSource {
         });
     }
 
-    public static void followOrganizations (final View v, final Context context, ProgressBar loader, ArrayList<String> orgs, final FunctionCallback<Boolean> callback){
-        HashMap <String, Object> params = new HashMap<>();
-        params.put("organizationObjectIds", orgs);
+    public static void followOrganizations (final View v, final Context context, final ProgressBar loader, ArrayList<String> orgs){
+        loader.setVisibility(View.VISIBLE);
 
-        ParseCloud.callFunctionInBackground("followOrganizations", params, new FunctionCallback<Boolean>() {
-            @Override
-            public void done(Boolean success, ParseException e) {
-                if (e == null){
-                    if (success){
-                        new AlertDialog.Builder(context)
-                                .setMessage("You can find and follow organizations at any time in the 'Discover' tab")
-                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Intent i = new Intent(context, TabbedActivity.class);
-                                        context.startActivity(i);
-                                    }
-                                })
-                                .show();
-                    }
+        if (!App.hasNetworkConnection(context)){
+            loader.setVisibility(View.GONE);
+            Snackbar.make(v, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+        } else {
+            HashMap <String, Object> params = new HashMap<>();
+            params.put("organizationObjectIds", orgs);
 
-                } else {
-                    e.printStackTrace();
-                    Snackbar.make(v, "Error following organizations", Snackbar.LENGTH_SHORT).show();
-                    Intent i = new Intent(context, TabbedActivity.class);
-                    context.startActivity(i);
-                }
-            }
-        });
-    }
-
-    private static void loginDialog(final Context context, final LogInCallback logInCallback) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.DialogTheme);
-        View view = ((TabbedActivity)context).getLayoutInflater().inflate(R.layout.login_user_dialog, null);
-        builder.setView(view);
-        final EditText password = (EditText)view.findViewById(R.id.login_dialog_password);
-        Button login = (Button)view.findViewById(R.id.login_dialog_button);
-
-        final AlertDialog dialog = builder.create();
-        dialog.show();
-
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String usernameT = ParseUser.getCurrentUser().getUsername();
-                String passwordT = password.getText().toString();
-
-                dialog.dismiss();
-
-                if (passwordT.equals("")) {
-                    AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-                    builder.setTitle(context.getString(R.string.incorrect_login_credentials))
-                            .setPositiveButton("OK", null)
-                            .show();
-                } else {
-                    ParseUser.logInInBackground(usernameT, passwordT, new LogInCallback() {
-                        @Override
-                        public void done(ParseUser parseUser, ParseException e) {
-                            logInCallback.done(parseUser, e);
+            ParseCloud.callFunctionInBackground("followOrganizations", params, new FunctionCallback<Boolean>() {
+                @Override
+                public void done(Boolean success, ParseException e) {
+                    loader.setVisibility(View.GONE);
+                    if (e == null) {
+                        if (success) {
+                            new AlertDialog.Builder(context)
+                                    .setMessage("You can find and follow organizations at any time in the 'Discover' tab")
+                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent i = new Intent(context, TabbedActivity.class);
+                                            context.startActivity(i);
+                                        }
+                                    })
+                                    .show();
                         }
-                    });
+
+                    } else {
+                        e.printStackTrace();
+                        Snackbar.make(v, "Error following organizations", Snackbar.LENGTH_SHORT).show();
+                        Intent i = new Intent(context, TabbedActivity.class);
+                        context.startActivity(i);
+                    }
                 }
-            }
-        });
+            });
+        }
+
+
     }
 
-    public static void getOrganizationsThatUserIsAdminOf (final View layout, final ProgressBar loading, String userObjectId, final FunctionCallback<ArrayList<Organization>> callback){
+    private static void loginDialog(View v, final Context context, final LogInCallback logInCallback) {
+        if (!App.hasNetworkConnection(context)){
+            Snackbar.make(v, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+        } else {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.DialogTheme);
+            View view = ((TabbedActivity)context).getLayoutInflater().inflate(R.layout.login_user_dialog, null);
+            builder.setView(view);
+            final EditText password = (EditText)view.findViewById(R.id.login_dialog_password);
+            Button login = (Button)view.findViewById(R.id.login_dialog_button);
+
+            final AlertDialog dialog = builder.create();
+            dialog.show();
+
+            login.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String usernameT = ParseUser.getCurrentUser().getUsername();
+                    String passwordT = password.getText().toString();
+
+                    dialog.dismiss();
+
+                    if (passwordT.equals("")) {
+                        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+                        builder.setTitle(context.getString(R.string.incorrect_login_credentials))
+                                .setPositiveButton("OK", null)
+                                .show();
+                    } else {
+                        ParseUser.logInInBackground(usernameT, passwordT, new LogInCallback() {
+                            @Override
+                            public void done(ParseUser parseUser, ParseException e) {
+                                logInCallback.done(parseUser, e);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+    }
+
+    public static void getOrganizationsThatUserIsAdminOf (Context context, final View layout, final ProgressBar loading, String userObjectId, final FunctionCallback<ArrayList<Organization>> callback){
         loading.setVisibility(View.VISIBLE);
 
-        HashMap<String, String> params = new HashMap<>();
-        params.put("userObjectId", userObjectId);
+        if (!App.hasNetworkConnection(context)){
+            loading.setVisibility(View.GONE);
+            Snackbar.make(layout, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+        } else {
+            HashMap<String, String> params = new HashMap<>();
+            params.put("userObjectId", userObjectId);
 
-        ParseCloud.callFunctionInBackground("getOrganizationsThatUserIsAdminOf", params, new FunctionCallback<List<ParseObject>>() {
-            @Override
-            public void done(List<ParseObject> followFields, ParseException e) {
-                loading.setVisibility(View.GONE);
+            ParseCloud.callFunctionInBackground("getOrganizationsThatUserIsAdminOf", params, new FunctionCallback<List<ParseObject>>() {
+                @Override
+                public void done(List<ParseObject> followFields, ParseException e) {
+                    loading.setVisibility(View.GONE);
 //                int i = 0; //for debugging
-                if (e == null) {
-                    ArrayList<Organization> orgs = new ArrayList<Organization>();
-                    for (ParseObject followField : followFields) {
-                        ParseObject orgObject = followField.getParseObject("organization");
-                        Organization org = new Organization(orgObject);
-                        org.setmLevel(Organization.getLevel(ConfigDataSource.ORG_LEVEL_CONFIG, orgObject));
-                        if (Organization.getLevel(ConfigDataSource.ORG_CHILD_LEVEL_CONFIG, orgObject) != null)
-                            org.setmChildLevel(Organization.getLevel(ConfigDataSource.ORG_CHILD_LEVEL_CONFIG, orgObject));
-                        if (Organization.getLevel(ConfigDataSource.ORG_PARENT_LEVEL_CONFIG, orgObject) != null)
-                            org.setmParentLevel(Organization.getLevel(ConfigDataSource.ORG_PARENT_LEVEL_CONFIG, orgObject));
-                        orgs.add(org);
-                    }
+                    if (e == null) {
+                        ArrayList<Organization> orgs = new ArrayList<Organization>();
+                        for (ParseObject followField : followFields) {
+                            ParseObject orgObject = followField.getParseObject("organization");
+                            Organization org = new Organization(orgObject);
+                            org.setmLevel(Organization.getLevel(ConfigDataSource.ORG_LEVEL_CONFIG, orgObject));
+                            if (Organization.getLevel(ConfigDataSource.ORG_CHILD_LEVEL_CONFIG, orgObject) != null)
+                                org.setmChildLevel(Organization.getLevel(ConfigDataSource.ORG_CHILD_LEVEL_CONFIG, orgObject));
+                            if (Organization.getLevel(ConfigDataSource.ORG_PARENT_LEVEL_CONFIG, orgObject) != null)
+                                org.setmParentLevel(Organization.getLevel(ConfigDataSource.ORG_PARENT_LEVEL_CONFIG, orgObject));
+                            orgs.add(org);
+                        }
 
-                    callback.done(orgs, e);
-                } else {
-                    e.printStackTrace();
-                    Snackbar.make(layout, "Error loading org admins", Snackbar.LENGTH_SHORT).show();
+                        callback.done(orgs, e);
+                    } else {
+                        e.printStackTrace();
+                        Snackbar.make(layout, "Error loading org admins", Snackbar.LENGTH_SHORT).show();
+                    }
                 }
-            }
-        });
+            });
+        }
+
+
     }
 
     public static void searchForUsersInRange (final Context context, final View v, final ProgressBar loading,
@@ -255,25 +305,32 @@ public class UserDataSource {
                                                       final FunctionCallback<ArrayList<User>> callback){
         loading.setVisibility(View.VISIBLE);
 
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("searchString", searchString);
-        params.put("startIndex", startIndex);
+        if (!App.hasNetworkConnection(context)){
+            loading.setVisibility(View.GONE);
+            Snackbar.make(v, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+        } else {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("searchString", searchString);
+            params.put("startIndex", startIndex);
 
-        ParseCloud.callFunctionInBackground("searchForUsersInRange", params, new FunctionCallback<List<ParseUser>>() {
-            @Override
-            public void done(List<ParseUser> usersReturned, ParseException e) {
-                loading.setVisibility(View.GONE);
-                if (e == null){
-                    ArrayList<User> users = new ArrayList<User>();
-                    for (ParseUser user : usersReturned){
-                        users.add(new User(user));
+            ParseCloud.callFunctionInBackground("searchForUsersInRange", params, new FunctionCallback<List<ParseUser>>() {
+                @Override
+                public void done(List<ParseUser> usersReturned, ParseException e) {
+                    loading.setVisibility(View.GONE);
+                    if (e == null) {
+                        ArrayList<User> users = new ArrayList<User>();
+                        for (ParseUser user : usersReturned) {
+                            users.add(new User(user));
+                        }
+
+                        callback.done(users, e);
+                    } else {
+                        Snackbar.make(v, context.getString(R.string.error_searching_orgs), Snackbar.LENGTH_SHORT).show();
                     }
-
-                    callback.done(users, e);
-                } else {
-                    Snackbar.make(v, context.getString(R.string.error_searching_orgs), Snackbar.LENGTH_SHORT).show();
                 }
-            }
-        });
+            });
+        }
+
+
     }
 }

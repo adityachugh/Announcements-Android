@@ -122,7 +122,7 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
                     String title = mTitle.getText().toString();
                     String body = mBody.getText().toString();
                     mRadioGroup = (RadioGroup) mView.findViewById(R.id.newA_priority_group);
-                    PostsDataSource.uploadPostForOrganization(mView, mLoading, mOrg.getmObjectId(), title, body, mImageBytes, mStartDate, mEndDate, getPrioritySelected(), mNotifyParent.isChecked(), new FunctionCallback<Boolean>() {
+                    PostsDataSource.uploadPostForOrganization(getActivity(), mView, mLoading, mOrg.getmObjectId(), title, body, mImageBytes, mStartDate, mEndDate, getPrioritySelected(), mNotifyParent.isChecked(), new FunctionCallback<Boolean>() {
                         @Override
                         public void done(Boolean success, ParseException e) {
                             if (e == null && success)

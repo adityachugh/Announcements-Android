@@ -140,5 +140,6 @@
     <string name="delete_post_dialog_text">Are you sure you want to delete this post?</string>
     <string name="yes_button_text">YES</string>
     <string name="no_network_connection">No network connection</string>
+    <string name="no_comments">No comments for this post.</string>
 
 </resources>

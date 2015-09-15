@@ -377,7 +377,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         alert.setTitle("Send follow request to " + mOrg.getTitle());
         alert.setPositiveButton("Send", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                OrgsDataSource.privateOrganizationAccessCodeEntered(mView, mLoading, mOrg.getmObjectId(), requestCode.getText().toString(), new FunctionCallback<Boolean>() {
+                OrgsDataSource.privateOrganizationAccessCodeEntered(getActivity(), mView, mLoading, mOrg.getmObjectId(), requestCode.getText().toString(), new FunctionCallback<Boolean>() {
                     @Override
                     public void done(Boolean followRequestSent, ParseException e) {
                         if (e == null){
@@ -412,7 +412,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            UserDataSource.updateFollowStateForUser(mOrg.isPrivateOrg(), mView, toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
+                            UserDataSource.updateFollowStateForUser(mLoading, getActivity(), mOrg.isPrivateOrg(), mView, toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
                                 @Override
                                 public void done(Boolean success, ParseException e) {
                                     if (success) {
@@ -427,7 +427,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                     })
                     .show();
         } else {
-            UserDataSource.updateFollowStateForUser(mOrg.isPrivateOrg(), mView, toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
+            UserDataSource.updateFollowStateForUser(mLoading, getActivity(), mOrg.isPrivateOrg(), mView, toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
                 @Override
                 public void done(Boolean success, ParseException e) {
                     if (success) {
@@ -445,7 +445,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
     }
 
     private void loadOrgsFollowed(final String userObjectId) {
-        OrgsDataSource.getOrganizationsFollowedByUserInRange(mLoading, userObjectId, new FunctionCallback<ArrayList<Organization>>() {
+        OrgsDataSource.getOrganizationsFollowedByUserInRange(getActivity(), mLoading, userObjectId, new FunctionCallback<ArrayList<Organization>>() {
             @Override
             public void done(ArrayList<Organization> orgs, ParseException e) {
                 if (e == null) {

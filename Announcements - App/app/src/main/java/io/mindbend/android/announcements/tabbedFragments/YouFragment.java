@@ -72,7 +72,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
         mView = inflater.inflate(R.layout.fragment_you, container, false);
         mLoading = (ProgressBar) mView.findViewById(R.id.you_frag_progressbar);
 
-        UserDataSource.getCurrentUserWithInfo(mLoading, new FunctionCallback<User>() {
+        UserDataSource.getCurrentUserWithInfo(getActivity(), mLoading, new FunctionCallback<User>() {
             @Override
             public void done(User user, ParseException e) {
                 mProfileFragment = ProfileFragment.newInstance(user, null, null, YouFragment.this, true, onToday, onDiscover, onYou, onAdmin);
@@ -93,7 +93,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
     public void userProfileToOrgProfile(final Organization orgSelected) {
         Log.wtf(TAG, "PARSE USER " + ParseUser.getCurrentUser().getObjectId());
         //replace the current profile frag with new org profile frag, while adding it to a backstack
-        OrgsDataSource.isFollowingOrganization(mView, mLoading, ParseUser.getCurrentUser().getObjectId(), orgSelected.getmObjectId(), new FunctionCallback<String>() {
+        OrgsDataSource.isFollowingOrganization(getActivity(), mView, mLoading, ParseUser.getCurrentUser().getObjectId(), orgSelected.getmObjectId(), new FunctionCallback<String>() {
             @Override
             public void done(String retrievedFollowState, ParseException e) {
                 if (e == null) {

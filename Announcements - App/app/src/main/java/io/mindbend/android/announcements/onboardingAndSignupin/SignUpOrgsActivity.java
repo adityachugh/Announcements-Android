@@ -99,7 +99,7 @@ public class SignUpOrgsActivity extends ActionBarActivity implements Serializabl
     }
 
     private void loadTopLevelOrgs(ProgressBar progressBar){
-        OrgsDataSource.getAllTopLevelOrganizations(progressBar, new FunctionCallback<ArrayList<Organization>>() {
+        OrgsDataSource.getAllTopLevelOrganizations(mContext, progressBar, new FunctionCallback<ArrayList<Organization>>() {
             @Override
             public void done(ArrayList<Organization> organizations, ParseException e) {
                 if (e == null){
@@ -125,7 +125,7 @@ public class SignUpOrgsActivity extends ActionBarActivity implements Serializabl
     }
 
     private void loadChildren(ProgressBar progressBar ,String orgId){
-        OrgsDataSource.getAllChildOrganizations(progressBar, orgId, new FunctionCallback<ArrayList<Organization>>() {
+        OrgsDataSource.getAllChildOrganizations(mContext, progressBar, orgId, new FunctionCallback<ArrayList<Organization>>() {
             @Override
             public void done(ArrayList<Organization> organizations, ParseException e) {
                 if (e == null) {
@@ -145,13 +145,6 @@ public class SignUpOrgsActivity extends ActionBarActivity implements Serializabl
     }
 
     private void followOrganizations(View v, Context context, ProgressBar progressBar){
-        UserDataSource.followOrganizations(v, context, progressBar, OrgsToFollow.getInstance(), new FunctionCallback<Boolean>() {
-            @Override
-            public void done(Boolean success, ParseException e) {
-                if (e == null){
-                    //handled in function
-                }
-            }
-        });
+        UserDataSource.followOrganizations(v, context, progressBar, OrgsToFollow.getInstance());
     }
 }

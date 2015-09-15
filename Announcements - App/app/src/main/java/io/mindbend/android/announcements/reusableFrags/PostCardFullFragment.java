@@ -43,15 +43,6 @@ public class PostCardFullFragment extends Fragment implements Serializable, View
     private transient View mView;
     private boolean mViewOnly;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param post Post.
-     * @param fullPostListener FullPostInteractionListener.
-     * @return A new instance of fragment PostCardFull.
-     */
-    // TODO: Rename and change types and number of parameters
     public static PostCardFullFragment newInstance(Post post, FullPostInteractionListener fullPostListener, boolean viewOnly) {
         PostCardFullFragment fragment = new PostCardFullFragment();
         Bundle args = new Bundle();

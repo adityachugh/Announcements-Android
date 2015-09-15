@@ -29,6 +29,7 @@
                     android:layout_marginTop="@dimen/card_inner_margin">
 
                     <de.hdodenhof.circleimageview.CircleImageView
+                        android:visibility="gone"
                         android:background="@drawable/fab"
                         android:id="@+id/full_post_priority_indicator"
                         android:layout_width="@dimen/post_priority_indicator_size"

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import io.mindbend.android.announcements.App;
 import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
@@ -58,216 +59,274 @@ public class OrgsDataSource {
         return (daysBetween <= 5);
     }
 
-    public static void getChildOrganizationsInRange (final ProgressBar loading, String parentOrganizationObjectId, int startIndex, int numberOfOrganizations, final FunctionCallback<ArrayList<Organization>> callback){
+    public static void getChildOrganizationsInRange (Context context, final ProgressBar loading, String parentOrganizationObjectId, int startIndex, int numberOfOrganizations, final FunctionCallback<ArrayList<Organization>> callback){
         loading.setVisibility(View.VISIBLE);
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("parentOrganizationObjectId", parentOrganizationObjectId);
-        params.put("startIndex", startIndex);
-        params.put("numberOfOrganizations", numberOfOrganizations);
 
-        ParseCloud.callFunctionInBackground("getChildOrganizationsInRange", params, new FunctionCallback<List<ParseObject>>() {
-            @Override
-            public void done(List<ParseObject> parseObjects, ParseException e) {
-                ArrayList<Organization> orgs = new ArrayList<Organization>();
-                if (e == null) {
-                    for (ParseObject object : parseObjects) {
-                        try {
-                            object.fetchIfNeeded();
-                        } catch (ParseException e1) {
-                            e1.printStackTrace();
+        if (!App.hasNetworkConnection(context)){
+            loading.setVisibility(View.GONE);
+            Snackbar.make(loading, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+        } else {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("parentOrganizationObjectId", parentOrganizationObjectId);
+            params.put("startIndex", startIndex);
+            params.put("numberOfOrganizations", numberOfOrganizations);
+
+            ParseCloud.callFunctionInBackground("getChildOrganizationsInRange", params, new FunctionCallback<List<ParseObject>>() {
+                @Override
+                public void done(List<ParseObject> parseObjects, ParseException e) {
+                    ArrayList<Organization> orgs = new ArrayList<Organization>();
+                    if (e == null) {
+                        for (ParseObject object : parseObjects) {
+                            try {
+                                object.fetchIfNeeded();
+                            } catch (ParseException e1) {
+                                e1.printStackTrace();
+                            }
+                            orgs.add(new Organization(object));
                         }
-                        orgs.add(new Organization(object));
-                    }
-                }
-                loading.setVisibility(View.GONE);
-                callback.done(orgs, e);
-            }
-        });
-    }
-
-    public static void getAllChildOrganizations(final ProgressBar loading, String parentOrganizationObjectId, final FunctionCallback<ArrayList<Organization>> callback) {
-        loading.setVisibility(View.VISIBLE);
-
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("parentOrganizationObjectId", parentOrganizationObjectId);
-
-        ParseCloud.callFunctionInBackground("getAllChildOrganizations", params, new FunctionCallback<List<ParseObject>>() {
-            @Override
-            public void done(List<ParseObject> parseObjects, ParseException e) {
-
-                ArrayList<Organization> orgs = new ArrayList<Organization>();
-                if (e == null) {
-                    for (ParseObject object : parseObjects) {
-                        try {
-                            object.fetchIfNeeded();
-                        } catch (ParseException e1) {
-                            e1.printStackTrace();
-                        }
-                        orgs.add(new Organization(object));
-                    }
-                }
-                loading.setVisibility(View.GONE);
-                callback.done(orgs, e);
-            }
-        });
-    }
-
-    public static void getOrganizationsFollowedByUserInRange (final ProgressBar loading, String userObjectId, final FunctionCallback<ArrayList<Organization>> callback) {
-        //only for user in profile frag tab
-        loading.setVisibility(View.VISIBLE);
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("userObjectId", userObjectId);
-        params.put("startIndex", 0);
-        params.put("numberOfOrganizations", 30);
-
-        ParseCloud.callFunctionInBackground("getOrganizationsFollowedByUserInRange", params, new FunctionCallback<List<ParseObject>>() {
-            @Override
-            public void done(List<ParseObject> parseObjects, ParseException e) {
-                loading.setVisibility(View.GONE);
-//                int i = 0;
-                ArrayList<Organization> orgsFollowed = new ArrayList<Organization>();
-                if (e == null) {
-                    for (ParseObject object : parseObjects) {
-                        ParseObject org = object.getParseObject("organization");
-                        orgsFollowed.add(new Organization(org));
                     }
                     loading.setVisibility(View.GONE);
-                    callback.done(orgsFollowed, e);
+                    callback.done(orgs, e);
                 }
+            });
+        }
 
-            }
-        });
+
     }
 
-    public static void getAllTopLevelOrganizations (final ProgressBar loading, final FunctionCallback<ArrayList<Organization>> callback){
+    public static void getAllChildOrganizations(Context context, final ProgressBar loading, String parentOrganizationObjectId, final FunctionCallback<ArrayList<Organization>> callback) {
         loading.setVisibility(View.VISIBLE);
 
-        HashMap<String, String> params = new HashMap<>();
+        if (!App.hasNetworkConnection(context)){
+            loading.setVisibility(View.GONE);
+            Snackbar.make(loading, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+        } else {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("parentOrganizationObjectId", parentOrganizationObjectId);
 
-        ParseCloud.callFunctionInBackground("getAllTopLevelOrganizations", params, new FunctionCallback<List<ParseObject>>() {
-            @Override
-            public void done(List<ParseObject> parseObjects, ParseException e) {
-                ArrayList<Organization> topOrgs = new ArrayList<Organization>();
-                if (e == null) {
-                    for (ParseObject object : parseObjects){
-                        try {
-                            object.fetchIfNeeded();
-                        } catch (ParseException e1) {
-                            e1.printStackTrace();
+            ParseCloud.callFunctionInBackground("getAllChildOrganizations", params, new FunctionCallback<List<ParseObject>>() {
+                @Override
+                public void done(List<ParseObject> parseObjects, ParseException e) {
+
+                    ArrayList<Organization> orgs = new ArrayList<Organization>();
+                    if (e == null) {
+                        for (ParseObject object : parseObjects) {
+                            try {
+                                object.fetchIfNeeded();
+                            } catch (ParseException e1) {
+                                e1.printStackTrace();
+                            }
+                            orgs.add(new Organization(object));
                         }
-                        topOrgs.add(new Organization(object));
+                    }
+                    loading.setVisibility(View.GONE);
+                    callback.done(orgs, e);
+                }
+            });
+        }
+
+
+    }
+
+    public static void getOrganizationsFollowedByUserInRange (Context context, final ProgressBar loading, String userObjectId, final FunctionCallback<ArrayList<Organization>> callback) {
+        //only for user in profile frag tab
+        loading.setVisibility(View.VISIBLE);
+
+        if (!App.hasNetworkConnection(context)){
+            loading.setVisibility(View.GONE);
+            Snackbar.make(loading, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+        } else {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("userObjectId", userObjectId);
+            params.put("startIndex", 0);
+            params.put("numberOfOrganizations", 30);
+
+            ParseCloud.callFunctionInBackground("getOrganizationsFollowedByUserInRange", params, new FunctionCallback<List<ParseObject>>() {
+                @Override
+                public void done(List<ParseObject> parseObjects, ParseException e) {
+                    loading.setVisibility(View.GONE);
+//                int i = 0;
+                    ArrayList<Organization> orgsFollowed = new ArrayList<Organization>();
+                    if (e == null) {
+                        for (ParseObject object : parseObjects) {
+                            ParseObject org = object.getParseObject("organization");
+                            orgsFollowed.add(new Organization(org));
+                        }
+                        loading.setVisibility(View.GONE);
+                        callback.done(orgsFollowed, e);
+                    }
+
+                }
+            });
+        }
+
+
+    }
+
+    public static void getAllTopLevelOrganizations (Context context, final ProgressBar loading, final FunctionCallback<ArrayList<Organization>> callback){
+        loading.setVisibility(View.VISIBLE);
+
+        if (!App.hasNetworkConnection(context)){
+            loading.setVisibility(View.GONE);
+            Snackbar.make(loading, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+        } else {
+            HashMap<String, String> params = new HashMap<>();
+
+            ParseCloud.callFunctionInBackground("getAllTopLevelOrganizations", params, new FunctionCallback<List<ParseObject>>() {
+                @Override
+                public void done(List<ParseObject> parseObjects, ParseException e) {
+                    ArrayList<Organization> topOrgs = new ArrayList<Organization>();
+                    if (e == null) {
+                        for (ParseObject object : parseObjects){
+                            try {
+                                object.fetchIfNeeded();
+                            } catch (ParseException e1) {
+                                e1.printStackTrace();
+                            }
+                            topOrgs.add(new Organization(object));
+                        }
+                    }
+                    loading.setVisibility(View.GONE);
+                    callback.done(topOrgs, e);
+                }
+            });
+        }
+
+
+    }
+
+    public static void isFollowingOrganization (Context context, final View layout, final ProgressBar loading, String userObjectId, String organizationObjectId, final FunctionCallback<String> callback){
+        loading.setVisibility(View.VISIBLE);
+
+        if (!App.hasNetworkConnection(context)){
+            loading.setVisibility(View.GONE);
+            Snackbar.make(layout, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+        } else {
+            HashMap<String, String> params = new HashMap<>();
+            params.put("userObjectId", userObjectId);
+            params.put("organizationObjectId", organizationObjectId);
+
+            ParseCloud.callFunctionInBackground("isFollowingOrganization", params, new FunctionCallback<String>() {
+                @Override
+                public void done(String followStatus, ParseException e) {
+//                int i = 0;
+                    loading.setVisibility(View.GONE);
+                    callback.done(followStatus, e);
+                }
+            });
+        }
+    }
+
+    public static void privateOrganizationAccessCodeEntered (Context context, final View layout, final ProgressBar loading, String organizationObjectId, String enteredAccessCode, final FunctionCallback<Boolean> callback){
+        loading.setVisibility(View.VISIBLE);
+
+        if (!App.hasNetworkConnection(context)){
+            loading.setVisibility(View.GONE);
+            Snackbar.make(layout, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+        } else {
+            HashMap<String, Object> params = new HashMap<>();
+
+            Integer accessCode = null;
+            if (!enteredAccessCode.equals(""))
+                accessCode = Integer.parseInt(enteredAccessCode);
+            Log.wtf("attempt to follow PRI org", "Access code: " + accessCode);
+
+            params.put("enteredAccessCode", accessCode);
+            params.put("organizationObjectId", organizationObjectId);
+
+            ParseCloud.callFunctionInBackground("privateOrganizationAccessCodeEntered", params, new FunctionCallback<Boolean>() {
+                @Override
+                public void done(Boolean correctCodeEntered, ParseException e) {
+                    loading.setVisibility(View.GONE);
+                    if (e == null){
+                        callback.done(correctCodeEntered, e);
+                    } else {
+                        Snackbar.make(layout, "Error", Snackbar.LENGTH_SHORT).show();
                     }
                 }
-                loading.setVisibility(View.GONE);
-                callback.done(topOrgs, e);
-            }
-        });
-    }
+            });
+        }
 
-    public static void isFollowingOrganization (final View layout, final ProgressBar loading, String userObjectId, String organizationObjectId, final FunctionCallback<String> callback){
-        loading.setVisibility(View.VISIBLE);
 
-        HashMap<String, String> params = new HashMap<>();
-        params.put("userObjectId", userObjectId);
-        params.put("organizationObjectId", organizationObjectId);
-
-        ParseCloud.callFunctionInBackground("isFollowingOrganization", params, new FunctionCallback<String>() {
-            @Override
-            public void done(String followStatus, ParseException e) {
-//                int i = 0;
-                loading.setVisibility(View.GONE);
-                callback.done(followStatus, e);
-            }
-        });
-    }
-
-    public static void privateOrganizationAccessCodeEntered (final View layout, final ProgressBar loading, String organizationObjectId, String enteredAccessCode, final FunctionCallback<Boolean> callback){
-        loading.setVisibility(View.VISIBLE);
-
-        HashMap<String, Object> params = new HashMap<>();
-
-        Integer accessCode = null;
-        if (!enteredAccessCode.equals(""))
-            accessCode = Integer.parseInt(enteredAccessCode);
-        Log.wtf("attempt to follow PRI org", "Access code: " + accessCode);
-
-        params.put("enteredAccessCode", accessCode);
-        params.put("organizationObjectId", organizationObjectId);
-
-        ParseCloud.callFunctionInBackground("privateOrganizationAccessCodeEntered", params, new FunctionCallback<Boolean>() {
-            @Override
-            public void done(Boolean correctCodeEntered, ParseException e) {
-                loading.setVisibility(View.GONE);
-                if (e == null){
-                    callback.done(correctCodeEntered, e);
-                } else {
-                    Snackbar.make(layout, "Error", Snackbar.LENGTH_SHORT).show();
-                }
-            }
-        });
     }
 
     public static void getOrganizationsForDiscoverTabInRange (final View view, final Context context, final ProgressBar loading, String userObjectId, int startIndex, int numberOfOrganizations, final FunctionCallback<ArrayList<Organization>> callback) {
         loading.setVisibility(View.VISIBLE);
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("userObjectId", userObjectId);
-        params.put("startIndex", startIndex);
-        params.put("numberOfOrganizations", numberOfOrganizations);
 
-        ParseCloud.callFunctionInBackground("getOrganizationsForDiscoverTabInRange", params, new FunctionCallback<List<ParseObject>>() {
-            @Override
-            public void done(List<ParseObject> parseOrgs, ParseException e) {
-                loading.setVisibility(View.GONE);
-                if (e == null){
-                    ArrayList<Organization> orgs = new ArrayList<Organization>();
-                    for (ParseObject org : parseOrgs){
-                        orgs.add(new Organization(org));
+        if (!App.hasNetworkConnection(context)){
+            loading.setVisibility(View.GONE);
+            Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+        } else {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("userObjectId", userObjectId);
+            params.put("startIndex", startIndex);
+            params.put("numberOfOrganizations", numberOfOrganizations);
+
+            ParseCloud.callFunctionInBackground("getOrganizationsForDiscoverTabInRange", params, new FunctionCallback<List<ParseObject>>() {
+                @Override
+                public void done(List<ParseObject> parseOrgs, ParseException e) {
+                    loading.setVisibility(View.GONE);
+                    if (e == null){
+                        ArrayList<Organization> orgs = new ArrayList<Organization>();
+                        for (ParseObject org : parseOrgs){
+                            orgs.add(new Organization(org));
+                        }
+                        callback.done(orgs, e);
+                    } else {
+                        e.printStackTrace();
+                        Snackbar.make(view, context.getString(R.string.error_getting_discover_orgs), Snackbar.LENGTH_SHORT).show();
                     }
-                    callback.done(orgs, e);
-                } else {
-                    e.printStackTrace();
-                    Snackbar.make(view, context.getString(R.string.error_getting_discover_orgs), Snackbar.LENGTH_SHORT).show();
                 }
-            }
-        });
+            });
+        }
+
+
     }
 
     public static void getFollowersFollowRequestsAndAdminsForOrganizationInRange (final View view, final Context context, final ProgressBar loading,
                                                                                   String organizationObjectId, int startIndex, int numberOfUsers, boolean isAdmin,
                                                                                   final FunctionCallback<HashMap<Boolean, Object>> callback) {
         loading.setVisibility(View.VISIBLE);
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("organizationObjectId", organizationObjectId);
-        params.put("startIndex", startIndex);
-        params.put("numberOfUsers", numberOfUsers);
-        params.put("isAdmin", isAdmin);
 
-        ParseCloud.callFunctionInBackground("getFollowersFollowRequestsAndAdminsForOrganizationInRange", params, new FunctionCallback<List<ParseObject>>() {
-            @Override
-            public void done(List<ParseObject> followObjects, ParseException e) {
+        if (!App.hasNetworkConnection(context)){
+            loading.setVisibility(View.GONE);
+            Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+        } else {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("organizationObjectId", organizationObjectId);
+            params.put("startIndex", startIndex);
+            params.put("numberOfUsers", numberOfUsers);
+            params.put("isAdmin", isAdmin);
+
+            ParseCloud.callFunctionInBackground("getFollowersFollowRequestsAndAdminsForOrganizationInRange", params, new FunctionCallback<List<ParseObject>>() {
+                @Override
+                public void done(List<ParseObject> followObjects, ParseException e) {
 //                int i = 0;
-                loading.setVisibility(View.GONE);
-                if (e == null){
-                    ArrayList<User> users = new ArrayList<User>();
-                    HashMap<User, Integer> userTypes = new HashMap<User, Integer>();
-                    for (ParseObject follow : followObjects){
-                        User user = new User(follow.getParseUser(UserDataSource.FOLLOWER_USER_FIELD));
-                        user.setmFollowObjectId(follow.getObjectId());
-                        users.add(user);
-                        userTypes.put(user, getTypeOfFollower(follow.getString(UserDataSource.FOLLOWER_USER_TYPE_FIELD)));
+                    loading.setVisibility(View.GONE);
+                    if (e == null){
+                        ArrayList<User> users = new ArrayList<User>();
+                        HashMap<User, Integer> userTypes = new HashMap<User, Integer>();
+                        for (ParseObject follow : followObjects){
+                            User user = new User(follow.getParseUser(UserDataSource.FOLLOWER_USER_FIELD));
+                            user.setmFollowObjectId(follow.getObjectId());
+                            users.add(user);
+                            userTypes.put(user, getTypeOfFollower(follow.getString(UserDataSource.FOLLOWER_USER_TYPE_FIELD)));
+                        }
+
+                        HashMap<Boolean, Object> toReturnMap = new HashMap<Boolean, Object>();
+                        toReturnMap.put(MAP_USER_LIST_KEY, users);
+                        toReturnMap.put(MAP_USER_TYPES_KEY, userTypes);
+
+                        callback.done(toReturnMap, e);
+                    } else {
+                        e.printStackTrace();
+                        Snackbar.make(view, context.getString(R.string.error_loading_org_members), Snackbar.LENGTH_SHORT).show();
                     }
-
-                    HashMap<Boolean, Object> toReturnMap = new HashMap<Boolean, Object>();
-                    toReturnMap.put(MAP_USER_LIST_KEY, users);
-                    toReturnMap.put(MAP_USER_TYPES_KEY, userTypes);
-
-                    callback.done(toReturnMap, e);
-                } else {
-                    e.printStackTrace();
-                    Snackbar.make(view, context.getString(R.string.error_loading_org_members), Snackbar.LENGTH_SHORT).show();
                 }
-            }
-        });
+            });
+        }
+
+
     }
 
     public static Integer getTypeOfFollower(String userTypeFromFollowObject){
@@ -290,25 +349,32 @@ public class OrgsDataSource {
                                                       final FunctionCallback<ArrayList<Organization>> callback){
         loading.setVisibility(View.VISIBLE);
 
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("searchString", searchString);
-        params.put("startIndex", startIndex);
+        if (!App.hasNetworkConnection(context)){
+            loading.setVisibility(View.GONE);
+            Snackbar.make(v, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+        } else {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("searchString", searchString);
+            params.put("startIndex", startIndex);
 
-        ParseCloud.callFunctionInBackground("searchForOrganizationsInRange", params, new FunctionCallback<List<ParseObject>>() {
-            @Override
-            public void done(List<ParseObject> organizationsReturned, ParseException e) {
-                loading.setVisibility(View.GONE);
-                if (e == null){
-                    ArrayList<Organization> orgs = new ArrayList<Organization>();
-                    for (ParseObject org : organizationsReturned){
-                        orgs.add(new Organization(org));
+            ParseCloud.callFunctionInBackground("searchForOrganizationsInRange", params, new FunctionCallback<List<ParseObject>>() {
+                @Override
+                public void done(List<ParseObject> organizationsReturned, ParseException e) {
+                    loading.setVisibility(View.GONE);
+                    if (e == null) {
+                        ArrayList<Organization> orgs = new ArrayList<Organization>();
+                        for (ParseObject org : organizationsReturned) {
+                            orgs.add(new Organization(org));
+                        }
+
+                        callback.done(orgs, e);
+                    } else {
+                        Snackbar.make(v, context.getString(R.string.error_searching_orgs), Snackbar.LENGTH_SHORT).show();
                     }
-
-                    callback.done(orgs, e);
-                } else {
-                    Snackbar.make(v, context.getString(R.string.error_searching_orgs), Snackbar.LENGTH_SHORT).show();
                 }
-            }
-        });
+            });
+        }
+
+
     }
 }

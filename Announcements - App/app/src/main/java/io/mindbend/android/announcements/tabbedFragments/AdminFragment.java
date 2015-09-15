@@ -149,7 +149,7 @@ public class AdminFragment extends Fragment implements Serializable,
          * this method is called when "view schools" is pressed
          */
 
-        OrgsDataSource.getAllChildOrganizations(mLoading, org.getmObjectId(), new FunctionCallback<ArrayList<Organization>>() {
+        OrgsDataSource.getAllChildOrganizations(getActivity(), mLoading, org.getmObjectId(), new FunctionCallback<ArrayList<Organization>>() {
             @Override
             public void done(ArrayList<Organization> organizations, ParseException e) {
                 if (e == null) {
@@ -272,7 +272,7 @@ public class AdminFragment extends Fragment implements Serializable,
         } else {
             Log.wtf(TAG, "PARSE USER " + ParseUser.getCurrentUser().getObjectId());
             //replace the current profile frag with new org profile frag, while adding it to a backstack
-            OrgsDataSource.isFollowingOrganization(mView, mLoading, ParseUser.getCurrentUser().getObjectId(), orgSelected.getmObjectId(), new FunctionCallback<String>() {
+            OrgsDataSource.isFollowingOrganization(getActivity(), mView, mLoading, ParseUser.getCurrentUser().getObjectId(), orgSelected.getmObjectId(), new FunctionCallback<String>() {
                 @Override
                 public void done(String followState, ParseException e) {
                     ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, followState, AdminFragment.this, followState.equals(UserDataSource.FOLLOWER_ADMIN), onToday, onDiscover, onYou, onAdmin);
