@@ -53,20 +53,28 @@ public class User implements Serializable, Parcelable{
             e.printStackTrace();
         }
         mObjectId = user.getObjectId();
-        mFirstName = user.getString(UserDataSource.FIRST_NAME);
-        mLastName = user.getString(UserDataSource.LAST_NAME);
-        mDescription = user.getString(UserDataSource.DESCRIPTION);
-        mUserCategory = user.getUsername();
-        mNumberOfOrganizationsFollowed = user.getInt(UserDataSource.ORG_FOLLOWED_COUNT);
-        if (user.getParseFile(UserDataSource.PROFILE_PHOTO) != null)
-            mProfilePictureURL = user.getParseFile(UserDataSource.PROFILE_PHOTO).getUrl();
-        else
-            mProfilePictureURL = "";
+        try {
+            mFirstName = user.fetchIfNeeded().getString(UserDataSource.FIRST_NAME);
+            mLastName = user.fetchIfNeeded().getString(UserDataSource.LAST_NAME);
+            mDescription = user.fetchIfNeeded().getString(UserDataSource.DESCRIPTION);
+            mNumberOfOrganizationsFollowed = user.getInt(UserDataSource.ORG_FOLLOWED_COUNT);
+            mUserCategory = user.fetchIfNeeded().getUsername();
 
-        if (user.getParseFile(UserDataSource.COVER_PHOTO) != null)
-            mCoverPictureURL = user.getParseFile(UserDataSource.COVER_PHOTO).getUrl();
-        else
-            mCoverPictureURL = "";
+            if (user.getParseFile(UserDataSource.PROFILE_PHOTO) != null)
+                mProfilePictureURL = user.fetchIfNeeded().getParseFile(UserDataSource.PROFILE_PHOTO).getUrl();
+            else
+                mProfilePictureURL = "";
+
+            if (user.getParseFile(UserDataSource.COVER_PHOTO) != null)
+                mCoverPictureURL = user.fetchIfNeeded().getParseFile(UserDataSource.COVER_PHOTO).getUrl();
+            else
+                mCoverPictureURL = "";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
 
         mFollowObjectId = "";
     }
