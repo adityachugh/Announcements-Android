@@ -1,5 +1,6 @@
 package io.mindbend.android.announcements.cloudCode;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -26,16 +27,14 @@ import io.mindbend.android.announcements.R;
  */
 public class AdminDataSource {
 
-    public static void updateOrganizationProfilePhoto(final View view, final Context context, final ProgressBar loading, int viewIdToRemove, String organizationObjectId, byte[] photo, final FunctionCallback<Boolean> callback) {
-        loading.setVisibility(View.VISIBLE);
-        final View layoutView = view.findViewById(viewIdToRemove);
-        layoutView.setVisibility(View.GONE);
+    public static void updateOrganizationProfilePhoto(final View view, final Context context, String organizationObjectId, byte[] photo, final FunctionCallback<Boolean> callback) {
+        final ProgressDialog dialog = new ProgressDialog(context);
+        dialog.setMessage(context.getString(R.string.updating_org_photo_loading_dialog_message));
 
         if (!App.hasNetworkConnection(context)){
-            loading.setVisibility(View.GONE);
-            layoutView.setVisibility(View.VISIBLE);
             Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
+            dialog.show();
             HashMap<String, Object> params = new HashMap<>();
             params.put("organizationObjectId", organizationObjectId);
             params.put("photo", photo);
@@ -43,8 +42,7 @@ public class AdminDataSource {
             ParseCloud.callFunctionInBackground("updateOrganizationProfilePhoto", params, new FunctionCallback<Boolean>() {
                 @Override
                 public void done(Boolean isSuccessful, ParseException e) {
-                    loading.setVisibility(View.GONE);
-                    layoutView.setVisibility(View.VISIBLE);
+                    dialog.dismiss();
                     if (e == null) {
                         Snackbar.make(view, context.getString(R.string.succes_updated_org_photo), Snackbar.LENGTH_SHORT).show();
                     } else {
@@ -58,18 +56,15 @@ public class AdminDataSource {
         }
     }
 
-    public static void updateOrganizationCoverPhoto(final View view, final Context context, final ProgressBar loading,int viewIdToRemove, String organizationObjectId, byte[] photo, final FunctionCallback<Boolean> callback) {
-        loading.setVisibility(View.VISIBLE);
-        final View layoutView = view.findViewById(viewIdToRemove);
-        layoutView.setVisibility(View.GONE);
-
+    public static void updateOrganizationCoverPhoto(final View view, final Context context, String organizationObjectId, byte[] photo, final FunctionCallback<Boolean> callback) {
+        final ProgressDialog dialog = new ProgressDialog(context);
+        dialog.setMessage(context.getString(R.string.updating_org_photo_loading_dialog_message));
         if (!App.hasNetworkConnection(context)){
-            loading.setVisibility(View.GONE);
-            layoutView.setVisibility(View.VISIBLE);
             Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         }
 
         else {
+            dialog.show();
             HashMap<String, Object> params = new HashMap<>();
             params.put("organizationObjectId", organizationObjectId);
             params.put("photo", photo);
@@ -77,8 +72,7 @@ public class AdminDataSource {
             ParseCloud.callFunctionInBackground("updateOrganizationCoverPhoto", params, new FunctionCallback<Boolean>() {
                 @Override
                 public void done(Boolean isSuccessful, ParseException e) {
-                    loading.setVisibility(View.GONE);
-                    layoutView.setVisibility(View.VISIBLE);
+                    dialog.dismiss();
                     if (e == null) {
                         Snackbar.make(view, context.getString(R.string.succes_updated_org_photo), Snackbar.LENGTH_SHORT).show();
                     } else {
@@ -129,7 +123,7 @@ public class AdminDataSource {
         //levelConfigObjectId is the child level config of the org that's calling this function
         loading.setVisibility(View.VISIBLE);
         final View layoutView = view.findViewById(viewIdToRemove);
-        layoutView.setVisibility(View.GONE);
+        layoutView.setVisibility(View.INVISIBLE);
 
         if (!App.hasNetworkConnection(context)){
             loading.setVisibility(View.GONE);
@@ -174,7 +168,7 @@ public class AdminDataSource {
     public static void getPostsToBeApprovedInRange(final View view, final ProgressBar loading,int viewIdToRemove, final Context context, String organizationObjectId, int startIndex, int numberOfPosts, final FunctionCallback<ArrayList<Post>> callback) {
         loading.setVisibility(View.VISIBLE);
         final View layoutView = view.findViewById(viewIdToRemove);
-        layoutView.setVisibility(View.GONE);
+        layoutView.setVisibility(View.INVISIBLE);
 
         if (!App.hasNetworkConnection(context)){
             loading.setVisibility(View.GONE);
@@ -213,7 +207,7 @@ public class AdminDataSource {
                                                            int numberOfPosts, final FunctionCallback<ArrayList<Post>> callback){
         loading.setVisibility(View.VISIBLE);
         final View layoutView = view.findViewById(viewIdToRemove);
-        layoutView.setVisibility(View.GONE);
+        layoutView.setVisibility(View.INVISIBLE);
 
         if (!App.hasNetworkConnection(context)){
             loading.setVisibility(View.GONE);
@@ -284,7 +278,7 @@ public class AdminDataSource {
 
         loading.setVisibility(View.VISIBLE);
         final View layoutView = view.findViewById(viewIdToRemove);
-        layoutView.setVisibility(View.GONE);
+        layoutView.setVisibility(View.INVISIBLE);
 
         if (!App.hasNetworkConnection(context)){
             loading.setVisibility(View.GONE);

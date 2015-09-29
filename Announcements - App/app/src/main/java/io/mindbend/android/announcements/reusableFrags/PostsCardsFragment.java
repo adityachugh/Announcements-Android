@@ -206,7 +206,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
         if (mIsApproving){
             AdminFragment adminFragment = ((AdminFragment)getParentFragment());
             //approving, query pending posts
-            AdminDataSource.getPostsToBeApprovedInRange(mView, adminFragment.mLoading, getActivity(), mParentOrgIdIfApproving, startIndex, numberOfPostsToLoad, new FunctionCallback<ArrayList<Post>>() {
+            AdminDataSource.getPostsToBeApprovedInRange(mView, adminFragment.mLoading, R.id.posts_cards_remove_while_loading,getActivity(), mParentOrgIdIfApproving, startIndex, numberOfPostsToLoad, new FunctionCallback<ArrayList<Post>>() {
                 @Override
                 public void done(ArrayList<Post> posts, ParseException e) {
                     mRefreshTodayPosts.setRefreshing(false);
@@ -224,7 +224,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
         } else if (mIsViewingState){
             AdminFragment adminFragment = ((AdminFragment)getParentFragment());
             //loading all posts
-            AdminDataSource.getAllPostsForOrganizationForRange(mView, adminFragment.mLoading, getActivity(), mOrgIdIfViewingState, startIndex, numberOfPostsToLoad, new FunctionCallback<ArrayList<Post>>() {
+            AdminDataSource.getAllPostsForOrganizationForRange(mView, adminFragment.mLoading, R.id.posts_cards_remove_while_loading,getActivity(), mOrgIdIfViewingState, startIndex, numberOfPostsToLoad, new FunctionCallback<ArrayList<Post>>() {
                 @Override
                 public void done(ArrayList<Post> posts, ParseException e) {
                     mRefreshTodayPosts.setRefreshing(false);
@@ -242,7 +242,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
         } else {
             TodayFragment todayFragment = ((TodayFragment)getParentFragment().getParentFragment());
             //querying today posts
-            PostsDataSource.getRangeOfPostsForDay(todayFragment.getView(), todayFragment.mLoading,R.id.today_remove_while_loading_view, getActivity(), startIndex, numberOfPostsToLoad, todayFragment.getmCurrentDateSelected(), new FunctionCallback<ArrayList<Post>>() {
+            PostsDataSource.getRangeOfPostsForDay(todayFragment.getView(), todayFragment.mLoading,false,R.id.today_remove_while_loading_view, getActivity(), startIndex, numberOfPostsToLoad, todayFragment.getmCurrentDateSelected(), new FunctionCallback<ArrayList<Post>>() {
                 @Override
                 public void done(ArrayList<Post> posts, ParseException e) {
                     mRefreshTodayPosts.setRefreshing(false);

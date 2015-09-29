@@ -187,7 +187,7 @@ public class AdminFragment extends Fragment implements Serializable,
     }
 
     private void loadPendingPosts(final String parentId){
-        AdminDataSource.getPostsToBeApprovedInRange(mView, mLoading, getActivity(), parentId, 0, 10, new FunctionCallback<ArrayList<Post>>() {
+        AdminDataSource.getPostsToBeApprovedInRange(mView, mLoading, R.id.admin_framelayout,getActivity(), parentId, 0, 10, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {
@@ -196,7 +196,7 @@ public class AdminFragment extends Fragment implements Serializable,
                             .beginTransaction()
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                             .replace(R.id.admin_framelayout, pendingPosts)
-                            .addToBackStack(PENDING_POSTS)
+                            .addToBackStack(null)
                             .commitAllowingStateLoss();
                 } else {
                     Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
@@ -232,7 +232,7 @@ public class AdminFragment extends Fragment implements Serializable,
     }
 
     private void allOrgPosts(final String orgId){
-        AdminDataSource.getAllPostsForOrganizationForRange(mView, mLoading, getActivity(), orgId, 0, 10, new FunctionCallback<ArrayList<Post>>() {
+        AdminDataSource.getAllPostsForOrganizationForRange(mView, mLoading, R.id.admin_framelayout,getActivity(), orgId, 0, 10, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {
@@ -241,7 +241,7 @@ public class AdminFragment extends Fragment implements Serializable,
                             .beginTransaction()
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                             .replace(R.id.admin_framelayout, allPosts)
-                            .addToBackStack(ALL_ORG_POSTS)
+                            .addToBackStack(null)
                             .commitAllowingStateLoss();
                 } else {
                     Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();

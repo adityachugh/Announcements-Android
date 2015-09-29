@@ -371,9 +371,9 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
                 byte[] imageBytes = convertImageUriToUploadableByteArray(selectedImageUri, requestCode, AdminMainFragment.CHANGE_PARENT_PROFILE_PHOTO);
                 Log.wtf("Image", "Converted bytes are: " + imageBytes);
                 if (requestCode == AdminMainFragment.CHANGE_PARENT_PROFILE_PHOTO) {
-                    AdminDataSource.updateOrganizationProfilePhoto(mView, TabbedActivity.this, mLoading, mAdminFragment.getmAdminMainFrag().getmOrg().getmObjectId(), imageBytes, null);
+                    AdminDataSource.updateOrganizationProfilePhoto(mView, TabbedActivity.this, mAdminFragment.getmAdminMainFrag().getmOrg().getmObjectId(), imageBytes, null);
                 } else {
-                    AdminDataSource.updateOrganizationCoverPhoto(mView, TabbedActivity.this, mLoading, mAdminFragment.getmAdminMainFrag().getmOrg().getmObjectId(), imageBytes, null);
+                    AdminDataSource.updateOrganizationCoverPhoto(mView, TabbedActivity.this, mAdminFragment.getmAdminMainFrag().getmOrg().getmObjectId(), imageBytes, null);
                 }
             }
 

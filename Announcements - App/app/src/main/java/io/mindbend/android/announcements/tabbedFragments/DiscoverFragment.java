@@ -153,7 +153,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
 
     @Override
     public void viewAnnouncementsState(Organization org) {
-        AdminDataSource.getAllPostsForOrganizationForRange(mView, mLoading, getActivity(), org.getmObjectId(), 0, 10, new FunctionCallback<ArrayList<Post>>() {
+        AdminDataSource.getAllPostsForOrganizationForRange(mView, mLoading, R.id.discover_framelayout,getActivity(), org.getmObjectId(), 0, 10, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {
@@ -165,7 +165,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
                             .addToBackStack(null)
                             .commitAllowingStateLoss();
                 } else {
-                    Snackbar.make(mView, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Toast.LENGTH_SHORT).show();
+                    Snackbar.make(mView, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
 

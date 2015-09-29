@@ -120,7 +120,7 @@ public class TodayFragment extends Fragment implements Serializable,
 
         mCurrentDateSelected = new Date();
 
-        loadPosts(0, 10);
+        loadPosts(0, 10, true);
 
         return mView;
     }
@@ -132,19 +132,18 @@ public class TodayFragment extends Fragment implements Serializable,
         return mCurrentDateSelected;
     }
 
-    public void setmCurrentDateSelected(Date mCurrentDateSelected) {
-        this.mCurrentDateSelected = mCurrentDateSelected;
-    }
-
-    private void loadPosts(int startIndex, int numberOfPosts) {
-        PostsDataSource.getRangeOfPostsForDay(mView, mLoading,R.id.today_remove_while_loading_view, getActivity(), startIndex, numberOfPosts, mCurrentDateSelected, new FunctionCallback<ArrayList<Post>>() {
+    private void loadPosts(int startIndex, int numberOfPosts, final boolean isGettingPostsForFirstTime) {
+        PostsDataSource.getRangeOfPostsForDay(mView, mLoading,isGettingPostsForFirstTime,R.id.today_remove_while_loading_view, getActivity(), startIndex, numberOfPosts, mCurrentDateSelected, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {
                     //pass in "this" in order to set the listener for the posts overlay frag in order to open the comments feed for a post
                     mPostsOverlayFragment = PostOverlayFragment.newInstance(posts, TodayFragment.this, false);
                     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.today_framelayout, mPostsOverlayFragment).addToBackStack(TODAY_POSTS_FRAG).commitAllowingStateLoss();
+                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.today_framelayout, mPostsOverlayFragment);
+                    if (isGettingPostsForFirstTime)
+                        transaction.addToBackStack(TODAY_POSTS_FRAG);
+                    transaction.commitAllowingStateLoss();
                 } else {
                     Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
@@ -171,7 +170,7 @@ public class TodayFragment extends Fragment implements Serializable,
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
         mCurrentDateSelected = new Date(year - 1900, monthOfYear, dayOfMonth);
-        loadPosts(0, 10);
+        loadPosts(0, 10, false);
     }
 
     @Override
@@ -224,7 +223,7 @@ public class TodayFragment extends Fragment implements Serializable,
         Log.wtf(TAG, "TODAYFRAG refreshed!");
 
         //refreshing will load the latest 10 posts
-        loadPosts(0, 10);
+        loadPosts(0, 10, false);
     }
 
     @Override
@@ -272,7 +271,7 @@ public class TodayFragment extends Fragment implements Serializable,
 
     @Override
     public void viewAnnouncementsState(Organization org) {
-        AdminDataSource.getAllPostsForOrganizationForRange(mView, mLoading, getActivity(), org.getmObjectId(), 0, 10, new FunctionCallback<ArrayList<Post>>() {
+        AdminDataSource.getAllPostsForOrganizationForRange(mView, mLoading,R.id.today_remove_while_loading_view, getActivity(), org.getmObjectId(), 0, 10, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {

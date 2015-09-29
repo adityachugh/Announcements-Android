@@ -141,5 +141,6 @@
     <string name="yes_button_text">YES</string>
     <string name="no_network_connection">No network connection</string>
     <string name="no_comments">No comments for this post.</string>
+    <string name="updating_org_photo_loading_dialog_message">Updating photo</string>
 
 </resources>
