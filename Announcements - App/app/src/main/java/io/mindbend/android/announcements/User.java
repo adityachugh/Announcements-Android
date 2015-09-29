@@ -2,6 +2,7 @@ package io.mindbend.android.announcements;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -49,26 +50,27 @@ public class User implements Serializable, Parcelable{
     public User (ParseUser user){
         try {
             user.fetchIfNeeded();
+            mObjectId = user.getObjectId();
+            mFirstName = user.getString(UserDataSource.FIRST_NAME);
+            mLastName = user.getString(UserDataSource.LAST_NAME);
+            mDescription = user.getString(UserDataSource.DESCRIPTION);
+            mUserCategory = user.getUsername();
+            mNumberOfOrganizationsFollowed = user.getInt(UserDataSource.ORG_FOLLOWED_COUNT);
+            if (user.getParseFile(UserDataSource.PROFILE_PHOTO) != null)
+                mProfilePictureURL = user.getParseFile(UserDataSource.PROFILE_PHOTO).getUrl();
+            else
+                mProfilePictureURL = "";
+
+            if (user.getParseFile(UserDataSource.COVER_PHOTO) != null)
+                mCoverPictureURL = user.getParseFile(UserDataSource.COVER_PHOTO).getUrl();
+            else
+                mCoverPictureURL = "";
+
+            mFollowObjectId = "";
         } catch (ParseException e) {
             e.printStackTrace();
+            Log.d("User", "Error fetching user data from Parse");
         }
-        mObjectId = user.getObjectId();
-        mFirstName = user.getString(UserDataSource.FIRST_NAME);
-        mLastName = user.getString(UserDataSource.LAST_NAME);
-        mDescription = user.getString(UserDataSource.DESCRIPTION);
-        mUserCategory = user.getUsername();
-        mNumberOfOrganizationsFollowed = user.getInt(UserDataSource.ORG_FOLLOWED_COUNT);
-        if (user.getParseFile(UserDataSource.PROFILE_PHOTO) != null)
-            mProfilePictureURL = user.getParseFile(UserDataSource.PROFILE_PHOTO).getUrl();
-        else
-            mProfilePictureURL = "";
-
-        if (user.getParseFile(UserDataSource.COVER_PHOTO) != null)
-            mCoverPictureURL = user.getParseFile(UserDataSource.COVER_PHOTO).getUrl();
-        else
-            mCoverPictureURL = "";
-
-        mFollowObjectId = "";
     }
 
     public  User (Parcel in){

@@ -7,7 +7,8 @@
              tools:context="io.mindbend.android.announcements.reusableFrags.ProfileFragment">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/profile_remove_view_while_loading">
         <com.nirhart.parallaxscroll.views.ParallaxScrollView
             android:id="@+id/profile_scrollview"
             android:layout_width="match_parent"
@@ -174,14 +175,17 @@
             android:elevation="@dimen/fab_elevation"
             android:src="@drawable/ic_not_following"
             />
+    </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
         <ProgressBar
             android:layout_width="@dimen/progress_bar_LARGE"
             android:layout_height="@dimen/progress_bar_LARGE"
             android:layout_centerInParent="true"
             android:id="@+id/profile_frag_progressbar"
             android:visibility="gone"/>
-
     </RelativeLayout>
 
 </FrameLayout>

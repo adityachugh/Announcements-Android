@@ -87,7 +87,7 @@ public class TodayFragment extends Fragment implements Serializable,
     private boolean onYou = false;
     private boolean onAdmin = false;
 
-    public Date mCurrentDateSelected;
+    private Date mCurrentDateSelected;
     private transient View mView;
 
     public TodayFragment() {
@@ -125,8 +125,19 @@ public class TodayFragment extends Fragment implements Serializable,
         return mView;
     }
 
+    public Date getmCurrentDateSelected() {
+        Date date = new Date();
+        mCurrentDateSelected.setHours(date.getHours());
+        mCurrentDateSelected.setMinutes(date.getMinutes());
+        return mCurrentDateSelected;
+    }
+
+    public void setmCurrentDateSelected(Date mCurrentDateSelected) {
+        this.mCurrentDateSelected = mCurrentDateSelected;
+    }
+
     private void loadPosts(int startIndex, int numberOfPosts) {
-        PostsDataSource.getRangeOfPostsForDay(mView, mLoading, getActivity(), startIndex, numberOfPosts, mCurrentDateSelected, new FunctionCallback<ArrayList<Post>>() {
+        PostsDataSource.getRangeOfPostsForDay(mView, mLoading,R.id.today_remove_while_loading_view, getActivity(), startIndex, numberOfPosts, mCurrentDateSelected, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {

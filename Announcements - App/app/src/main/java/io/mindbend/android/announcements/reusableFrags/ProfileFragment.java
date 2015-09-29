@@ -477,7 +477,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
 
 
     private void loadOrgPosts(String orgObjectId, int startIndex, int numberOfPosts) {
-        PostsDataSource.getPostsOfOrganizationInRange(mView, mLoading, getActivity(), orgObjectId, startIndex, numberOfPosts, new FunctionCallback<ArrayList<Post>>() {
+        PostsDataSource.getPostsOfOrganizationInRange(mView, mLoading, R.id.profile_remove_view_while_loading ,getActivity(), orgObjectId, startIndex, numberOfPosts, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> orgPosts, ParseException e) {
                 if (e == null) {

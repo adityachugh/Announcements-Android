@@ -242,7 +242,7 @@ public class PostsCardsFragment extends Fragment implements Serializable, PostOv
         } else {
             TodayFragment todayFragment = ((TodayFragment)getParentFragment().getParentFragment());
             //querying today posts
-            PostsDataSource.getRangeOfPostsForDay(mView, todayFragment.mLoading, getActivity(), startIndex, numberOfPostsToLoad, todayFragment.mCurrentDateSelected, new FunctionCallback<ArrayList<Post>>() {
+            PostsDataSource.getRangeOfPostsForDay(todayFragment.getView(), todayFragment.mLoading,R.id.today_remove_while_loading_view, getActivity(), startIndex, numberOfPostsToLoad, todayFragment.getmCurrentDateSelected(), new FunctionCallback<ArrayList<Post>>() {
                 @Override
                 public void done(ArrayList<Post> posts, ParseException e) {
                     mRefreshTodayPosts.setRefreshing(false);

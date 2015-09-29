@@ -290,7 +290,7 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
 
         @Override
         public int getCount() {
-            //TODO: only return 4 IF *****ADMIN*****, otherwise return 3.
+            //only return 4 IF *****ADMIN*****, otherwise return 3.
             if (userIsAdmin)
                 return 4;
             else {
