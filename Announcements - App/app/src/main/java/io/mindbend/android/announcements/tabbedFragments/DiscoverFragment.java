@@ -80,6 +80,20 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
         return mView;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            mLoading = (ProgressBar) mView.findViewById(R.id.discover_frag_progressbar);
+            mOrgsGridFrag = SearchableFrag.newInstance(SearchableFrag.ORGS_TYPE, null, this, false);
+        }
+    }
+
     public SearchableFrag getmOrgsGridFrag() {
         return mOrgsGridFrag;
     }

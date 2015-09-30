@@ -1,6 +1,7 @@
 package io.mindbend.android.announcements.tabbedFragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -62,6 +63,8 @@ public class AdminFragment extends Fragment implements Serializable,
 
     private static final String TAG = "AdminFragment";
     private static final String ARG_ADMIN_ORGS = "admin_orgs";
+    private static final String ARG_ADMING_ORG_FRAG = "admin_orgs_bundle";
+
     private transient OrgsGridFragment mAdminOrgsFrag;
     private transient AdminMainFragment mAdminMain;
     private ArrayList<Organization> mOrgsList;
@@ -106,7 +109,6 @@ public class AdminFragment extends Fragment implements Serializable,
         if (getArguments() != null) {
             mOrgsList = getArguments().getParcelableArrayList(ARG_ADMIN_ORGS);
             mAdminOrgsFrag = OrgsGridFragment.newInstance(mOrgsList, AdminFragment.this, AdminFragment.this, null, false);
-
         }
     }
 
@@ -128,6 +130,36 @@ public class AdminFragment extends Fragment implements Serializable,
         }
 
         return mView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelableArrayList(ARG_ADMIN_ORGS, mOrgsList);
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        if (savedInstanceState != null){
+            if (savedInstanceState.getParcelableArrayList(ARG_ADMIN_ORGS) != null){
+                mOrgsList = savedInstanceState.getParcelableArrayList(ARG_ADMIN_ORGS);
+                mAdminOrgsFrag = OrgsGridFragment.newInstance(mOrgsList, AdminFragment.this, AdminFragment.this, null, false);
+            }
+
+            mPostsOverlayListener = this;
+            mPostInteractionListener = this;
+            mFullPostInteractionListener = this;
+
+            onToday = false;
+            onDiscover = false;
+            onYou = false;
+            onAdmin = true;
+
+            mLoading = (ProgressBar) mView.findViewById(R.id.admin_frag_progressbar);
+        }
     }
 
     public AdminMainFragment getmAdminMainFrag() {

@@ -77,6 +77,7 @@ public class TodayFragment extends Fragment implements Serializable,
 
     private transient ImageButton mFab;
     public transient ProgressBar mLoading;
+
     //in order to add frags to the backstack
     public static final String TODAY_POSTS_FRAG = "today_posts_frag";
     private transient PostOverlayFragment mPostsOverlayFragment;
@@ -111,7 +112,13 @@ public class TodayFragment extends Fragment implements Serializable,
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_today, container, false);
         setRetainInstance(true);
+        setupView();
 
+
+        return mView;
+    }
+
+    private void setupView() {
         //instantiate the fab so that you can change its onClick method and src logo when switching between posts and comments fragments
         mFab = (ImageButton) mView.findViewById(R.id.today_fab);
         mFab.setOnClickListener(this);
@@ -122,7 +129,16 @@ public class TodayFragment extends Fragment implements Serializable,
 
         loadPosts(0, 10, true);
 
-        return mView;
+        onToday = true;
+        onDiscover = false;
+        onYou = false;
+        onAdmin = false;
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        setupView();
     }
 
     public Date getmCurrentDateSelected() {
