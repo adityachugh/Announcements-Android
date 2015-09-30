@@ -102,7 +102,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
         }
 
         //add image if present
-        if (!post.getmPostImageURL().equals("")){
+        if (post != null && post.getmPostImageURL() != null && !post.getmPostImageURL().equals("")){
 
             //image height is 200dp
             int imageHeightinPx = (int) (200 * mScale + 0.5f);
@@ -111,7 +111,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
             Picasso.with(mContext).load(post.getmPostImageURL()).skipMemoryCache().into(viewHolder.mPostImage);
         }
 
-        if (!post.getmPosterOrg().getmProfileImageURL().equals(""))
+        if (post != null && post.getmPosterOrg() != null && post.getmPosterOrg().getmProfileImageURL() != null && !post.getmPosterOrg().getmProfileImageURL().equals(""))
             Picasso.with(mContext).load(post.getmPosterOrg().getmProfileImageURL()).skipMemoryCache().resize(100,100).into(viewHolder.mPosterImage);
 
         viewHolder.mPostCard.setOnClickListener(new View.OnClickListener() {

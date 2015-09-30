@@ -377,7 +377,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         alert.setTitle("Send follow request to " + mOrg.getTitle());
         alert.setPositiveButton("Send", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                OrgsDataSource.privateOrganizationAccessCodeEntered(getActivity(), mView, mLoading, mOrg.getmObjectId(), requestCode.getText().toString(), new FunctionCallback<Boolean>() {
+                OrgsDataSource.privateOrganizationAccessCodeEntered(getActivity(), mView, mLoading, R.id.profile_remove_view_while_loading,mOrg.getmObjectId(), requestCode.getText().toString(), new FunctionCallback<Boolean>() {
                     @Override
                     public void done(Boolean followRequestSent, ParseException e) {
                         if (e == null){

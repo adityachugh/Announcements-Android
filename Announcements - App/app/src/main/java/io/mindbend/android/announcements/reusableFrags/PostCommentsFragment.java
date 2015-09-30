@@ -178,7 +178,7 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
     }
 
     private void loadComments(final boolean loadingMoreComments, final RelativeLayout loading, int startIndex, int numberOfComments) {
-        CommentsDataSource.getRangeOfCommentsForPost(mView, loading, getActivity(), startIndex, numberOfComments, mPost.getmObjectId(), new FunctionCallback<ArrayList<Comment>>() {
+        CommentsDataSource.getRangeOfCommentsForPost(mView, loading, R.id.post_comments_remove_view_while_loading,getActivity(), startIndex, numberOfComments, mPost.getmObjectId(), new FunctionCallback<ArrayList<Comment>>() {
             @Override
             public void done(ArrayList<Comment> comments, ParseException e) {
                 mRefreshComments.setRefreshing(false);

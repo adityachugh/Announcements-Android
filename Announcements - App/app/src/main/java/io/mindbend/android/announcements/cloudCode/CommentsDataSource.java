@@ -31,11 +31,14 @@ public class CommentsDataSource {
     public static final String COMMENT_TEXT = "comment";
     public static final String COMMENT_USER = "createUser";
 
-    public static void getRangeOfCommentsForPost(final View view, final RelativeLayout loadingLayout, final Context context, int startIndex, int numberOfComments, String postObjectId, final FunctionCallback<ArrayList<Comment>> callback){
+    public static void getRangeOfCommentsForPost(final View view, final RelativeLayout loadingLayout, int viewToRemoveId, final Context context, int startIndex, int numberOfComments, String postObjectId, final FunctionCallback<ArrayList<Comment>> callback){
         loadingLayout.setVisibility(View.VISIBLE);
+        final View layoutView = view.findViewById(viewToRemoveId);
+        layoutView.setVisibility(View.INVISIBLE);
 
         if (!App.hasNetworkConnection(context)){
             loadingLayout.setVisibility(View.GONE);
+            layoutView.setVisibility(View.VISIBLE);
             Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap<String, Object> params = new HashMap<>();
@@ -48,6 +51,7 @@ public class CommentsDataSource {
                 public void done(List<ParseObject> parseObjects, ParseException e) {
                     int i = 0;
                     loadingLayout.setVisibility(View.GONE);
+                    layoutView.setVisibility(View.VISIBLE);
                     //parseobject to comments
                     ArrayList<Comment> comments = new ArrayList<>();
                     if (e == null){

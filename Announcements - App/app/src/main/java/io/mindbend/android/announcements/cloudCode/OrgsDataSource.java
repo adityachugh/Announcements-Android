@@ -99,13 +99,15 @@ public class OrgsDataSource {
 
     }
 
-    public static void getAllChildOrganizations(final View view, Context context, final ProgressBar loading, String parentOrganizationObjectId, final FunctionCallback<ArrayList<Organization>> callback) {
+    public static void getAllChildOrganizations(final View view, Context context, final ProgressBar loading, int viewToRemoveId, String parentOrganizationObjectId, final FunctionCallback<ArrayList<Organization>> callback) {
         loading.setVisibility(View.VISIBLE);
+        final View layoutView = view.findViewById(viewToRemoveId);
 
         if (!App.hasNetworkConnection(context)){
             loading.setVisibility(View.GONE);
             Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
+            layoutView.setVisibility(View.INVISIBLE);
             HashMap<String, Object> params = new HashMap<>();
             params.put("parentOrganizationObjectId", parentOrganizationObjectId);
 
@@ -113,6 +115,7 @@ public class OrgsDataSource {
                 @Override
                 public void done(List<ParseObject> parseObjects, ParseException e) {
                     loading.setVisibility(View.GONE);
+                    layoutView.setVisibility(View.VISIBLE);
                     ArrayList<Organization> orgs = new ArrayList<Organization>();
                     if (e == null) {
                         for (ParseObject object : parseObjects) {
@@ -236,8 +239,9 @@ public class OrgsDataSource {
         }
     }
 
-    public static void privateOrganizationAccessCodeEntered (Context context, final View layout, final ProgressBar loading, String organizationObjectId, String enteredAccessCode, final FunctionCallback<Boolean> callback){
+    public static void privateOrganizationAccessCodeEntered (Context context, final View layout, final ProgressBar loading, int viewToRemoveId, String organizationObjectId, String enteredAccessCode, final FunctionCallback<Boolean> callback){
         loading.setVisibility(View.VISIBLE);
+        final View layoutView = layout.findViewById(viewToRemoveId);
 
         if (!App.hasNetworkConnection(context)){
             loading.setVisibility(View.GONE);
@@ -253,10 +257,12 @@ public class OrgsDataSource {
             params.put("enteredAccessCode", accessCode);
             params.put("organizationObjectId", organizationObjectId);
 
+            layoutView.setVisibility(View.INVISIBLE);
             ParseCloud.callFunctionInBackground("privateOrganizationAccessCodeEntered", params, new FunctionCallback<Boolean>() {
                 @Override
                 public void done(Boolean correctCodeEntered, ParseException e) {
                     loading.setVisibility(View.GONE);
+                    layoutView.setVisibility(View.VISIBLE);
                     if (e == null){
                         callback.done(correctCodeEntered, e);
                     } else {
@@ -302,15 +308,18 @@ public class OrgsDataSource {
 
     }
 
-    public static void getFollowersFollowRequestsAndAdminsForOrganizationInRange (final View view, final Context context, final ProgressBar loading,
+    public static void getFollowersFollowRequestsAndAdminsForOrganizationInRange (final View view, final Context context, final ProgressBar loading, int viewToRemoveId,
                                                                                   String organizationObjectId, int startIndex, int numberOfUsers, boolean isAdmin,
                                                                                   final FunctionCallback<HashMap<Boolean, Object>> callback) {
         loading.setVisibility(View.VISIBLE);
+        final View layoutView = view.findViewById(viewToRemoveId);
+        layoutView.setVisibility(View.INVISIBLE);
 
         if (!App.hasNetworkConnection(context)){
             loading.setVisibility(View.GONE);
             Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
+            layoutView.setVisibility(View.INVISIBLE);
             HashMap<String, Object> params = new HashMap<>();
             params.put("organizationObjectId", organizationObjectId);
             params.put("startIndex", startIndex);
@@ -322,6 +331,7 @@ public class OrgsDataSource {
                 public void done(List<ParseObject> followObjects, ParseException e) {
 //                int i = 0;
                     loading.setVisibility(View.GONE);
+                    layoutView.setVisibility(View.VISIBLE);
                     if (e == null){
                         ArrayList<User> users = new ArrayList<User>();
                         HashMap<User, Integer> userTypes = new HashMap<User, Integer>();

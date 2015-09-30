@@ -149,7 +149,7 @@ public class AdminFragment extends Fragment implements Serializable,
          * this method is called when "view schools" is pressed
          */
 
-        OrgsDataSource.getAllChildOrganizations(mView, getActivity(), mLoading, org.getmObjectId(), new FunctionCallback<ArrayList<Organization>>() {
+        OrgsDataSource.getAllChildOrganizations(mView, getActivity(), mLoading, R.id.admin_framelayout,org.getmObjectId(), new FunctionCallback<ArrayList<Organization>>() {
             @Override
             public void done(ArrayList<Organization> organizations, ParseException e) {
                 if (e == null) {
@@ -208,7 +208,7 @@ public class AdminFragment extends Fragment implements Serializable,
 
     @Override
     public void userListOpened(final Organization parentOrg) {
-        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, parentOrg.getmObjectId(), 0, 50, true, new FunctionCallback<HashMap<Boolean, Object>>() {
+        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, R.id.admin_framelayout,parentOrg.getmObjectId(), 0, 50, true, new FunctionCallback<HashMap<Boolean, Object>>() {
             @Override
             public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
 
@@ -318,7 +318,7 @@ public class AdminFragment extends Fragment implements Serializable,
 
     @Override
     public void viewMembers(final Organization org, final boolean isAdmin) {
-        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, org.getmObjectId(), 0, 50, isAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
+        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, R.id.admin_framelayout,org.getmObjectId(), 0, 50, isAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
             @Override
             public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
 
