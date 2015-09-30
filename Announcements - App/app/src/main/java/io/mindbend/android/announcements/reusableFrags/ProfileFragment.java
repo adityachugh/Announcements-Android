@@ -412,7 +412,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            UserDataSource.updateFollowStateForUser(mLoading, getActivity(), mOrg.isPrivateOrg(), mView, toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
+                            UserDataSource.updateFollowStateForUser(getActivity(), mOrg.isPrivateOrg(), mView, toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
                                 @Override
                                 public void done(Boolean success, ParseException e) {
                                     if (success) {
@@ -427,7 +427,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                     })
                     .show();
         } else {
-            UserDataSource.updateFollowStateForUser(mLoading, getActivity(), mOrg.isPrivateOrg(), mView, toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
+            UserDataSource.updateFollowStateForUser(getActivity(), mOrg.isPrivateOrg(), mView, toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
                 @Override
                 public void done(Boolean success, ParseException e) {
                     if (success) {
@@ -597,7 +597,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 if (!interestOneET.getText().toString().equals("") && !interestTwoET.getText().toString().equals("")) {
                     final String i1 = interestOneET.getText().toString();
                     final String i2 = interestTwoET.getText().toString();
-                    UserDataSource.updateUserDescription(mView, getActivity(), ((TabbedActivity) getActivity()).mYouFragment.mLoading, "Interested in " + i1 + " and " + i2, new FunctionCallback<Boolean>() {
+                    UserDataSource.updateUserDescription(mView, getActivity(), "Interested in " + i1 + " and " + i2, new FunctionCallback<Boolean>() {
                         @Override
                         public void done(Boolean success, ParseException e) {
                             if (success) {

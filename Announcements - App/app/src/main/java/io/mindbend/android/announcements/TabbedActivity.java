@@ -381,7 +381,7 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
                 byte[] imageBytes = convertImageUriToUploadableByteArray(selectedImageUri, requestCode, ProfileFragment.UPDATE_PROFILE_IMAGE);
                 Log.wtf("Image", "Converted bytes are: " + imageBytes.toString());
                 boolean isUpdatingProfilePhoto = (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE);
-                UserDataSource.updateUserProfileImages(mView, this, mYouFragment.mLoading, imageBytes, new FunctionCallback<Boolean>() {
+                UserDataSource.updateUserProfileImages(mView, this, imageBytes, new FunctionCallback<Boolean>() {
                     @Override
                     public void done(Boolean success, ParseException e) {
                         if (success) {

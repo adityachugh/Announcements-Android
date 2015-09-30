@@ -1,6 +1,7 @@
 package io.mindbend.android.announcements.cloudCode;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -34,23 +35,30 @@ public class VerificationDataSource {
     public static final String USER_USERNAME = "username";
     public static final String USER_PASSWORD = "password";
 
-    public static void signupUser (final View layout, final ProgressBar loader, final Context context, final String firsttName, final String lastName, final String password, final String username, final String email){
+    public static void signupUser (final View layout, final Context context, final String firsttName, final String lastName, final String password, final String username, final String email){
+        final ProgressDialog dialog = new ProgressDialog(context, R.style.DialogTheme);
+        dialog.setMessage(context.getString(R.string.sign_up_new_user_dialog_message));
+
         if (!App.hasNetworkConnection(context)){
             Snackbar.make(layout, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             final AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.DialogTheme);
             builder.setTitle("Field(s) in use.");
             builder.setPositiveButton("OK", null);
-            checkFieldInUse(layout, loader, context, USER_CLASS, USER_EMAIL, email, new FunctionCallback<Boolean>() {
+            dialog.show();
+            checkFieldInUse(layout, context, USER_CLASS, USER_EMAIL, email, new FunctionCallback<Boolean>() {
                 @Override
                 public void done(Boolean aBoolean, ParseException e) {
+                    dialog.dismiss();
                     if (e == null) {
                         if (aBoolean) {
                             builder.show();
                         } else {
-                            checkFieldInUse(layout, loader, context, USER_CLASS, USER_USERNAME, username, new FunctionCallback<Boolean>() {
+                            dialog.show();
+                            checkFieldInUse(layout, context, USER_CLASS, USER_USERNAME, username, new FunctionCallback<Boolean>() {
                                 @Override
                                 public void done(Boolean aBoolean, ParseException e) {
+                                    dialog.dismiss();
                                     if (e == null) {
                                         if (aBoolean) {
                                             builder.show();
@@ -63,9 +71,11 @@ public class VerificationDataSource {
                                             user.put(USER_LAST_NAME, lastName);
                                             user.put(UserDataSource.DESCRIPTION, context.getString(R.string.user_default_description));
 
+                                            dialog.show();
                                             user.signUpInBackground(new SignUpCallback() {
                                                 @Override
                                                 public void done(ParseException e) {
+                                                    dialog.dismiss();
                                                     Intent i = new Intent(context, SignUpOrgsActivity.class);
                                                     context.startActivity(i);
                                                 }
@@ -88,11 +98,8 @@ public class VerificationDataSource {
 
     }
 
-    public static void checkFieldInUse (View view, final ProgressBar loader, Context context, String className, String key, String value, final FunctionCallback<Boolean> callback){
-        loader.setVisibility(View.VISIBLE);
-
+    public static void checkFieldInUse (View view, Context context, String className, String key, String value, final FunctionCallback<Boolean> callback){
         if (!App.hasNetworkConnection(context)){
-            loader.setVisibility(View.GONE);
             Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap<String, Object> params = new HashMap<>();
@@ -102,7 +109,6 @@ public class VerificationDataSource {
             ParseCloud.callFunctionInBackground("isFieldValueInUse", params, new FunctionCallback<Boolean>() {
                 @Override
                 public void done(Boolean aBoolean, ParseException e) {
-                    loader.setVisibility(View.GONE);
                     callback.done(aBoolean, e);
                 }
             });

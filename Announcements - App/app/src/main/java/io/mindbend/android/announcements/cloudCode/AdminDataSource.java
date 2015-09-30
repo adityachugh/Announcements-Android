@@ -28,7 +28,7 @@ import io.mindbend.android.announcements.R;
 public class AdminDataSource {
 
     public static void updateOrganizationProfilePhoto(final View view, final Context context, String organizationObjectId, byte[] photo, final FunctionCallback<Boolean> callback) {
-        final ProgressDialog dialog = new ProgressDialog(context);
+        final ProgressDialog dialog = new ProgressDialog(context, R.style.DialogTheme);
         dialog.setMessage(context.getString(R.string.updating_org_photo_loading_dialog_message));
 
         if (!App.hasNetworkConnection(context)){
@@ -57,7 +57,7 @@ public class AdminDataSource {
     }
 
     public static void updateOrganizationCoverPhoto(final View view, final Context context, String organizationObjectId, byte[] photo, final FunctionCallback<Boolean> callback) {
-        final ProgressDialog dialog = new ProgressDialog(context);
+        final ProgressDialog dialog = new ProgressDialog(context, R.style.DialogTheme);
         dialog.setMessage(context.getString(R.string.updating_org_photo_loading_dialog_message));
         if (!App.hasNetworkConnection(context)){
             Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();

@@ -145,6 +145,6 @@ public class SignUpOrgsActivity extends ActionBarActivity implements Serializabl
     }
 
     private void followOrganizations(View v, Context context, ProgressBar progressBar){
-        UserDataSource.followOrganizations(v, context, progressBar, OrgsToFollow.getInstance());
+        UserDataSource.followOrganizations(v, context, OrgsToFollow.getInstance());
     }
 }

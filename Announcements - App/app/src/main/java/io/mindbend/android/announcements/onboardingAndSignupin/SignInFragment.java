@@ -2,6 +2,7 @@ package io.mindbend.android.announcements.onboardingAndSignupin;
 
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -87,15 +88,17 @@ public class SignInFragment extends Fragment
                 if (username.getText().toString().equals("") || password.getText().toString().equals("")){
                     Snackbar.make(v, "Please enter your username and password", Snackbar.LENGTH_SHORT).show();
                 } else {
-                    mLoading.setVisibility(View.VISIBLE);
+                    final ProgressDialog dialog = new ProgressDialog(getActivity(), R.style.DialogTheme);
+                    dialog.setMessage(getActivity().getString(R.string.sign_in_dialog_message));
+
                     if (!App.hasNetworkConnection(getActivity())){
-                        mLoading.setVisibility(View.GONE);
                         Snackbar.make(getView(), getActivity().getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
                     } else {
-                        ParseUser.logInInBackground(username.getText().toString(), password.getText().toString(), new LogInCallback() {
-                            @Override
-                            public void done(ParseUser parseUser, ParseException e) {
-                                mLoading.setVisibility(View.GONE);
+                        dialog.show();
+                                ParseUser.logInInBackground(username.getText().toString(), password.getText().toString(), new LogInCallback() {
+                                    @Override
+                                    public void done(ParseUser parseUser, ParseException e) {
+                                        dialog.dismiss();
                                 if (e == null){
                                     //login successful!
                                     Intent i = new Intent(getActivity(), TabbedActivity.class);

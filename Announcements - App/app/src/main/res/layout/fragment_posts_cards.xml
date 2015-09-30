@@ -11,11 +11,11 @@
         android:id="@+id/posts_cards_remove_while_loading">
         <TextView
             android:id="@+id/posts_no_posts_to_load"
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_marginTop="16dp"
             android:textSize="16dp"
             android:layout_width="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_centerHorizontal="true"
             android:layout_height="wrap_content"
             android:text="There are no posts."/>
 
