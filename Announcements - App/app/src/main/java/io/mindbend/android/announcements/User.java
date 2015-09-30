@@ -25,8 +25,6 @@ public class User implements Serializable, Parcelable{
     //Will be concatenated upon return
     private String mFirstName;
     private String mLastName;
-    private String mInterestOne;
-    private String mInterestTwo;
     private String mDescription;
     //Displayed as a hashtag (such as #Grade10, #Teacher, #Administration, etc.)
     private String mUserCategory;
@@ -35,10 +33,9 @@ public class User implements Serializable, Parcelable{
     private String mCoverPictureURL;
 
     public User(String firstName, String lastName, String interestOne, String interestTwo, String userCategory, int numberOfOrganizationsFollowed){
+        //interest 1 and 2 are deprecated
         mFirstName = firstName;
         mLastName = lastName;
-        mInterestOne = interestOne;
-        mInterestTwo = interestTwo;
         mUserCategory = userCategory;
         mDescription = "Interested in "+interestOne+" and "+interestTwo;
         mProfilePictureURL = "";
@@ -77,8 +74,6 @@ public class User implements Serializable, Parcelable{
         mObjectId = in.readString();
         mFirstName = in.readString();
         mLastName = in.readString();
-        mInterestOne = in.readString();
-        mInterestTwo = in.readString();
         mDescription = in.readString();
         mUserCategory = in.readString();
         mNumberOfOrganizationsFollowed = in.readInt();
@@ -96,26 +91,6 @@ public class User implements Serializable, Parcelable{
         return mObjectId;
     }
 
-    public String getInterestOne() {
-        return mInterestOne;
-    }
-
-    public void setInterestOne(String mInterestOne) {
-        this.mInterestOne = mInterestOne;
-    }
-
-    public String getInterestTwo() {
-        return mInterestTwo;
-    }
-
-    public void setInterestTwo(String mInterestTwo) {
-        this.mInterestTwo = mInterestTwo;
-    }
-
-    public String getInterests() {
-        //Returns both interests
-        return ("Interested in " + mInterestOne + " and " + mInterestTwo);
-    }
 
     public void setUserCategory(String mUserCategory) {
         this.mUserCategory = mUserCategory;
@@ -138,6 +113,10 @@ public class User implements Serializable, Parcelable{
         return mDescription;
     }
 
+    public void setmDescription(String mDescription) {
+        this.mDescription = mDescription;
+    }
+
     public String getmFollowObjectId() {
         return mFollowObjectId;
     }
@@ -156,8 +135,6 @@ public class User implements Serializable, Parcelable{
         dest.writeString(mObjectId);
         dest.writeString(mFirstName);
         dest.writeString(mLastName);
-        dest.writeString(mInterestOne);
-        dest.writeString(mInterestTwo);
         dest.writeString(mDescription);
         dest.writeString(mUserCategory);
         dest.writeInt(mNumberOfOrganizationsFollowed);

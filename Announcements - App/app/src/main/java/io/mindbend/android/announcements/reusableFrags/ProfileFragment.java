@@ -574,37 +574,27 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
 
         LinearLayout layout = new LinearLayout(getActivity());
         layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(16,0,0,16);
 
-        final EditText interestOneET = new EditText(getActivity());
-        String in1text = "#1: ";
-        if (mUser.getInterestOne() != null)
-            in1text = in1text + mUser.getInterestOne();
-        interestOneET.setHint(in1text);
-        layout.addView(interestOneET);
-
-        final EditText interestTwoET = new EditText(getActivity());
-        String in2text = "#2: ";
-        if (mUser.getInterestTwo() != null)
-            in2text = in2text + mUser.getInterestTwo();
-        interestTwoET.setHint(in2text);
-        layout.addView(interestTwoET);
+        final EditText newDescription = new EditText(getActivity());
+        newDescription.setHint(mUser.getmDescription());
+        layout.addView(newDescription);
 
         alert.setView(layout);
-        alert.setTitle("Enter your Interests");
+        alert.setTitle("Enter your description");
         alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 //What ever you want to do with the value
-                if (!interestOneET.getText().toString().equals("") && !interestTwoET.getText().toString().equals("")) {
-                    final String i1 = interestOneET.getText().toString();
-                    final String i2 = interestTwoET.getText().toString();
-                    UserDataSource.updateUserDescription(mView, getActivity(), "Interested in " + i1 + " and " + i2, new FunctionCallback<Boolean>() {
+                final String description = newDescription.getText().toString();
+                if (!description.equals("")) {
+                    final String i1 = newDescription.getText().toString();
+                    UserDataSource.updateUserDescription(mView, getActivity(), description, new FunctionCallback<Boolean>() {
                         @Override
                         public void done(Boolean success, ParseException e) {
                             if (success) {
                                 Snackbar.make(mView, "Interests updated", Snackbar.LENGTH_SHORT).show();
-                                mUser.setInterestOne(i1);
-                                mUser.setInterestTwo(i2);
-                                mProfileDetail.setText(mUser.getInterests());
+                                mUser.setmDescription(newDescription.getText().toString());
+                                mProfileDetail.setText(description);
                             } else {
                                 Snackbar.make(mView, "Error", Snackbar.LENGTH_SHORT).show();
                                 e.printStackTrace();

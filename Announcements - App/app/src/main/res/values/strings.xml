@@ -90,7 +90,7 @@
         name="profile_edit_user_dialog_options">
         <item>Change Profile Photo</item>
         <item>Change Cover Photo</item>
-        <item>Update Interests</item>
+        <item>Update Description</item>
     </string-array>
 
     <string name="title_activity_signup_select_parent_org">SignupSelectParentOrgActivity</string>
