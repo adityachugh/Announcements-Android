@@ -105,8 +105,8 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
                     mOrgs.addAll(organizations);
                     mOrgsGridFragment = OrgsGridFragment.newInstance(mOrgs, SearchableFrag.this, SearchableFrag.this, null, false);
                     FragmentTransaction ft2 = getFragmentManager().beginTransaction();
-                    if(ft2.isEmpty())
-                        ft2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.searchable_frag_of_items, mOrgsGridFragment).commitAllowingStateLoss();
+                    if(ft2 != null && ft2.isEmpty())
+                        ft2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.searchable_frag_of_items, mOrgsGridFragment).commitAllowingStateLoss();
                 }
             }
         });

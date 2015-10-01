@@ -76,7 +76,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
 
         mOrgsGridFrag = SearchableFrag.newInstance(SearchableFrag.ORGS_TYPE, null, this, false);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.discover_framelayout, mOrgsGridFrag).commitAllowingStateLoss();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, mOrgsGridFrag).commitAllowingStateLoss();
         return mView;
     }
 
@@ -91,6 +91,10 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
         if (savedInstanceState != null) {
             mLoading = (ProgressBar) mView.findViewById(R.id.discover_frag_progressbar);
             mOrgsGridFrag = SearchableFrag.newInstance(SearchableFrag.ORGS_TYPE, null, this, false);
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.discover_framelayout, mOrgsGridFrag)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .commitAllowingStateLoss();
         }
     }
 

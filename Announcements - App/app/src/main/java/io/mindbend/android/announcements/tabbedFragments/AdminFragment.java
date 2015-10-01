@@ -124,7 +124,7 @@ public class AdminFragment extends Fragment implements Serializable,
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         if (ft.isEmpty()) {
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .add(R.id.admin_framelayout, mAdminOrgsFrag)
+                    .replace(R.id.admin_framelayout, mAdminOrgsFrag)
                     .addToBackStack(ADMIN_ORGS_TAG)
                     .commitAllowingStateLoss();
         }
@@ -147,6 +147,11 @@ public class AdminFragment extends Fragment implements Serializable,
             if (savedInstanceState.getParcelableArrayList(ARG_ADMIN_ORGS) != null){
                 mOrgsList = savedInstanceState.getParcelableArrayList(ARG_ADMIN_ORGS);
                 mAdminOrgsFrag = OrgsGridFragment.newInstance(mOrgsList, AdminFragment.this, AdminFragment.this, null, false);
+                FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .replace(R.id.admin_framelayout, mAdminOrgsFrag)
+                        .addToBackStack(ADMIN_ORGS_TAG)
+                        .commitAllowingStateLoss();
             }
 
             mPostsOverlayListener = this;

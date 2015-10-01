@@ -84,11 +84,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
                 mProfileFragment = ProfileFragment.newInstance(user, null, null, YouFragment.this, true, onToday, onDiscover, onYou, onAdmin);
                 //inflate profileFrag in framelayout
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                if (transaction.isEmpty()) {
-                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.you_framelayout, mProfileFragment).addToBackStack(DEFAULT).commitAllowingStateLoss();
-                } else {
-                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.you_framelayout, mProfileFragment).addToBackStack(DEFAULT).commitAllowingStateLoss();
-                }
+                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.you_framelayout, mProfileFragment).addToBackStack(DEFAULT).commitAllowingStateLoss();
             }
         });
 
