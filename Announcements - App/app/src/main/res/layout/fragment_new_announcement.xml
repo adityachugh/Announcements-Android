@@ -5,7 +5,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/newA_remove_view_while_loading">
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -292,14 +293,18 @@
             android:src="@drawable/ic_upload"
             android:elevation="@dimen/fab_elevation" />
 
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
         <ProgressBar
             android:id="@+id/newA_submition_progressbar"
-            android:visibility="invisible"
+            android:visibility="gone"
             android:layout_centerInParent="true"
             style="@style/DialogTheme"
             android:layout_width="@dimen/progress_bar_LARGE"
             android:layout_height="@dimen/progress_bar_LARGE" />
-
     </RelativeLayout>
 
 </FrameLayout>

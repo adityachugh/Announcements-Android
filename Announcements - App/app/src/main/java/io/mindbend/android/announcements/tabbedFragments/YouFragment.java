@@ -70,6 +70,12 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
         // Inflate the layout for this fragment
         setRetainInstance(true);
         mView = inflater.inflate(R.layout.fragment_you, container, false);
+        setupView();
+
+        return mView;
+    }
+
+    private void setupView() {
         mLoading = (ProgressBar) mView.findViewById(R.id.you_frag_progressbar);
 
         UserDataSource.getCurrentUserWithInfo(mView, getActivity(), mLoading, new FunctionCallback<User>() {
@@ -78,11 +84,20 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
                 mProfileFragment = ProfileFragment.newInstance(user, null, null, YouFragment.this, true, onToday, onDiscover, onYou, onAdmin);
                 //inflate profileFrag in framelayout
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.you_framelayout, mProfileFragment).addToBackStack(DEFAULT).commitAllowingStateLoss();
+                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.you_framelayout, mProfileFragment).addToBackStack(DEFAULT).commitAllowingStateLoss();
             }
         });
 
-        return mView;
+        onToday = false;
+        onDiscover = false;
+        onYou = true;
+        onAdmin = false;
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        setupView();
     }
 
     public Fragment getmProfileFragment() {
@@ -126,7 +141,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
 
     @Override
     public void viewMembers(final Organization org, final boolean isAdmin) {
-        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, org.getmObjectId(), 0, 50, isAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
+        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, R.id.you_framelayout,org.getmObjectId(), 0, 50, isAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
             @Override
             public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
 
@@ -145,7 +160,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
 
     @Override
     public void viewAnnouncementsState(Organization org) {
-        AdminDataSource.getAllPostsForOrganizationForRange(mView, mLoading, getActivity(), org.getmObjectId(), 0, 10, new FunctionCallback<ArrayList<Post>>() {
+        AdminDataSource.getAllPostsForOrganizationForRange(mView, mLoading, R.id.you_framelayout,getActivity(), org.getmObjectId(), 0, 10, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {

@@ -44,11 +44,15 @@ public class PostsDataSource {
     public static final int HIGH_PRIORITY = 1;
 
 
-    public static void getRangeOfPostsForDay (final View view, final ProgressBar loader, final Context context, int startIndex, int numberOfPosts, Date date, final FunctionCallback<ArrayList<Post>> callback){
+    public static void getRangeOfPostsForDay (final View view, final ProgressBar loader, boolean isGettingPostsForFirstTime, int layoutToDisappearId, final Context context, int startIndex, int numberOfPosts, Date date, final FunctionCallback<ArrayList<Post>> callback){
         loader.setVisibility(View.VISIBLE);
+        final View layoutView = view.findViewById(layoutToDisappearId);
+        if (isGettingPostsForFirstTime)
+            layoutView.setVisibility(View.INVISIBLE);
 
         if (!App.hasNetworkConnection(context)){
             loader.setVisibility(View.GONE);
+            layoutView.setVisibility(View.VISIBLE);
             Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap<String, Object> params = new HashMap<>();
@@ -59,6 +63,7 @@ public class PostsDataSource {
                 @Override
                 public void done(List<ParseObject> parseObjects, ParseException e) {
                     loader.setVisibility(View.GONE);
+                    layoutView.setVisibility(View.VISIBLE);
 
                     //convert all parseobjects to posts
                     ArrayList<Post> posts = new ArrayList<Post>();
@@ -78,12 +83,18 @@ public class PostsDataSource {
 
     }
 
-    public static void getPostsOfOrganizationInRange (final View view, final ProgressBar loading, final Context context, String OrganizationObjectId,
+    public static void getPostsOfOrganizationInRange (final View view, final ProgressBar loading, final boolean removeLayout, int layoutToRemoveId, final Context context, String OrganizationObjectId,
                                                       int startIndex, int numberOfPosts, final FunctionCallback<ArrayList<Post>> callback){
         loading.setVisibility(View.VISIBLE);
+        final View layoutView = view.findViewById(layoutToRemoveId);
+        if (removeLayout){
+            layoutView.setVisibility(View.INVISIBLE);
+        }
 
         if (!App.hasNetworkConnection(context)){
             loading.setVisibility(View.GONE);
+            if (removeLayout)
+                layoutView.setVisibility(View.VISIBLE);
             Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap<String, Object> params = new HashMap<>();
@@ -96,6 +107,8 @@ public class PostsDataSource {
                 public void done(List<ParseObject> parseObjects, ParseException e) {
                     ArrayList<Post> orgPosts = new ArrayList<Post>();
                     loading.setVisibility(View.GONE);
+                    if(removeLayout)
+                        layoutView.setVisibility(View.VISIBLE);
                     if (e == null){
                         for (ParseObject object : parseObjects){
                             orgPosts.add(new Post(context, object));
@@ -111,13 +124,16 @@ public class PostsDataSource {
 
     }
 
-    public static void uploadPostForOrganization (Context context, final View view, final ProgressBar loading, String organizationObjectId,
-                                                  String title, String body, byte[] photo, Date startDate, Date endDate,
+    public static void uploadPostForOrganization (Context context, final View view, final ProgressBar loading, int layoutToRemoveId,
+                                                  String organizationObjectId, String title, String body, byte[] photo, Date startDate, Date endDate,
                                                   int priority, boolean notifyParent, final FunctionCallback<Boolean> callback){
         loading.setVisibility(View.VISIBLE);
+        final View layoutView = view.findViewById(layoutToRemoveId);
+        layoutView.setVisibility(View.INVISIBLE);
 
         if (!App.hasNetworkConnection(context)){
             loading.setVisibility(View.GONE);
+            layoutView.setVisibility(View.VISIBLE);
             Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap<String, Object> params = new HashMap<>();
@@ -134,6 +150,7 @@ public class PostsDataSource {
                 @Override
                 public void done(Boolean successful, ParseException e) {
                     loading.setVisibility(View.GONE);
+                    layoutView.setVisibility(View.VISIBLE);
                     String message = "Successfully uploaded announcement";
                     if (e == null) {
                         callback.done(successful, e);

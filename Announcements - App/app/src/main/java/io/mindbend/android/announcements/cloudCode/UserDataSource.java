@@ -1,6 +1,7 @@
 package io.mindbend.android.announcements.cloudCode;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -78,29 +79,27 @@ public class UserDataSource {
         }
     }
 
-    public static void updateUserProfileImages (final View layout, final Context context, final ProgressBar loading, final byte[] image, final FunctionCallback<Boolean> callback, final Boolean profilePhoto) {
-        loading.setVisibility(View.VISIBLE);
+    public static void updateUserProfileImages (final View layout, final Context context, final byte[] image, final FunctionCallback<Boolean> callback, final Boolean profilePhoto) {
+        final ProgressDialog dialog = new ProgressDialog(context, R.style.DialogTheme);
+        dialog.setMessage(context.getString(R.string.updating_profile_dialog_message));
 
         if (!App.hasNetworkConnection(context)){
-            loading.setVisibility(View.GONE);
             Snackbar.make(layout, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             loginDialog(layout, context, new LogInCallback() {
                 @Override
                 public void done(ParseUser parseUser, ParseException e) {
-                    loading.setVisibility(View.GONE);
                     if (e == null) {
                         HashMap<String, Object> params = new HashMap<>();
                         params.put("userObjectId", ParseUser.getCurrentUser().getObjectId());
                         params.put("photo", image);
-                        loading.setVisibility(View.VISIBLE);
 
                         String funcName = profilePhoto ? "updateUserProfilePhoto" : "updateUserCoverPhoto";
-
+                        dialog.show();
                         ParseCloud.callFunctionInBackground(funcName, params, new FunctionCallback<ParseUser>() {
                             @Override
                             public void done(ParseUser parseUser, ParseException e) {
-                                loading.setVisibility(View.GONE);
+                                dialog.dismiss();
                                 if (e != null){
                                     Snackbar.make(layout, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                                 } else {
@@ -121,26 +120,25 @@ public class UserDataSource {
 
 
 
-    public static void updateUserDescription (final View layout, final Context context, final ProgressBar loading, final String description, final FunctionCallback<Boolean> callback) {
-        loading.setVisibility(View.VISIBLE);
+    public static void updateUserDescription (final View layout, final Context context, final String description, final FunctionCallback<Boolean> callback) {
+        final ProgressDialog dialog = new ProgressDialog(context, R.style.DialogTheme);
+        dialog.setMessage(context.getString(R.string.updating_profile_dialog_message));
 
         if (!App.hasNetworkConnection(context)){
-            loading.setVisibility(View.GONE);
             Snackbar.make(layout, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             loginDialog(layout, context, new LogInCallback() {
                 @Override
                 public void done(ParseUser parseUser, ParseException e) {
-                    loading.setVisibility(View.GONE);
                     if (e == null) {
                         HashMap<String, Object> params = new HashMap<>();
                         params.put("userObjectId", ParseUser.getCurrentUser().getObjectId());
                         params.put("description", description);
-                        loading.setVisibility(View.VISIBLE);
+                        dialog.show();
                         ParseCloud.callFunctionInBackground("updateUserDescription", params, new FunctionCallback<ParseUser>() {
                             @Override
                             public void done(ParseUser parseUser, ParseException e) {
-                                loading.setVisibility(View.GONE);
+                                dialog.dismiss();
                                 callback.done(e == null, e);
                             }
                         });
@@ -155,22 +153,23 @@ public class UserDataSource {
 
     }
 
-    public static void updateFollowStateForUser (final ProgressBar loading, Context context, final boolean isPrivate, final View layout, final Boolean isFollowing, String organizationObjectId, final FunctionCallback<Boolean> callback){
-        loading.setVisibility(View.VISIBLE);
+    public static void updateFollowStateForUser (Context context, final boolean isPrivate, final View layout, final Boolean isFollowing, String organizationObjectId, final FunctionCallback<Boolean> callback){
         if (!App.hasNetworkConnection(context)){
-            loading.setVisibility(View.GONE);
             Snackbar.make(layout, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
+            final ProgressDialog dialog = new ProgressDialog(context, R.style.DialogTheme);
+            dialog.setMessage(context.getString(R.string.updating_follow_state_dialog_message));
             HashMap<String, Object> params = new HashMap<>();
             params.put("isFollowing", isFollowing);
             params.put("organizationObjectId", organizationObjectId);
             final String toastText = isFollowing ? "" : "un";
 
+            dialog.show();
             ParseCloud.callFunctionInBackground("updateFollowStateForUser", params, new FunctionCallback<Boolean>() {
                 @Override
                 public void done(Boolean isSuccessful, ParseException e) {
-                    loading.setVisibility(View.GONE);
                     String message = "Failure";
+                    dialog.dismiss();
                     if (e == null && isSuccessful) {
                         message = (isPrivate && isFollowing) ? "Sent follow request to organization" : "Successfully " + toastText + "followed organization";
                         callback.done(isSuccessful, e);
@@ -187,20 +186,21 @@ public class UserDataSource {
 
     }
 
-    public static void followOrganizations (final View v, final Context context, final ProgressBar loader, ArrayList<String> orgs){
-        loader.setVisibility(View.VISIBLE);
+    public static void followOrganizations (final View v, final Context context, ArrayList<String> orgs){
+        final ProgressDialog dialog = new ProgressDialog(context, R.style.DialogTheme);
+        dialog.setMessage(context.getString(R.string.following_orgs_signup_dialog_message));
 
         if (!App.hasNetworkConnection(context)){
-            loader.setVisibility(View.GONE);
             Snackbar.make(v, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap <String, Object> params = new HashMap<>();
             params.put("organizationObjectIds", orgs);
 
+            dialog.show();
             ParseCloud.callFunctionInBackground("followOrganizations", params, new FunctionCallback<Boolean>() {
                 @Override
                 public void done(Boolean success, ParseException e) {
-                    loader.setVisibility(View.GONE);
+                    dialog.dismiss();
                     if (e == null) {
                         if (success) {
                             new AlertDialog.Builder(context)

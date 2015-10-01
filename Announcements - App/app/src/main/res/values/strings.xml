@@ -90,7 +90,7 @@
         name="profile_edit_user_dialog_options">
         <item>Change Profile Photo</item>
         <item>Change Cover Photo</item>
-        <item>Update Interests</item>
+        <item>Update Description</item>
     </string-array>
 
     <string name="title_activity_signup_select_parent_org">SignupSelectParentOrgActivity</string>
@@ -141,5 +141,12 @@
     <string name="yes_button_text">YES</string>
     <string name="no_network_connection">No network connection</string>
     <string name="no_comments">No comments for this post.</string>
+    <string name="updating_org_photo_loading_dialog_message">Updating photo</string>
+    <string name="updating_follow_state_dialog_message">Updating follow state...</string>
+    <string name="updating_profile_dialog_message">Updating profile...</string>
+    <string name="following_orgs_signup_dialog_message">Following selected organizations...</string>
+    <string name="sign_up_new_user_dialog_message">Signing up user...</string>
+    <string name="signout_dialog_message">Signing you out...</string>
+    <string name="sign_in_dialog_message">Signing you in...</string>
 
 </resources>

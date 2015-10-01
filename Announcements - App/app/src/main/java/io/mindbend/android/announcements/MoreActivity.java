@@ -1,5 +1,6 @@
 package io.mindbend.android.announcements;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.Snackbar;
@@ -83,14 +84,16 @@ public class MoreActivity extends AppCompatActivity {
         signOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                mLoading.setVisibility(View.VISIBLE);
                 if (!App.hasNetworkConnection(MoreActivity.this)){
-                    mLoading.setVisibility(View.GONE);
                     Snackbar.make(v, MoreActivity.this.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
                 } else {
+                    final ProgressDialog dialog = new ProgressDialog(MoreActivity.this, R.style.DialogTheme);
+                    dialog.setMessage(getString(R.string.signout_dialog_message));
+                    dialog.show();
                     ParseUser.logOutInBackground(new LogOutCallback() {
                         @Override
                         public void done(ParseException e) {
+                            dialog.dismiss();;
                             if (e == null) {
                                 //sign out of parse, then...
                                 mLoading.setVisibility(View.GONE);

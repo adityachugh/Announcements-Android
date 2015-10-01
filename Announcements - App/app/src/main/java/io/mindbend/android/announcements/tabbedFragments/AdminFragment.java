@@ -1,6 +1,7 @@
 package io.mindbend.android.announcements.tabbedFragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -62,6 +63,8 @@ public class AdminFragment extends Fragment implements Serializable,
 
     private static final String TAG = "AdminFragment";
     private static final String ARG_ADMIN_ORGS = "admin_orgs";
+    private static final String ARG_ADMING_ORG_FRAG = "admin_orgs_bundle";
+
     private transient OrgsGridFragment mAdminOrgsFrag;
     private transient AdminMainFragment mAdminMain;
     private ArrayList<Organization> mOrgsList;
@@ -106,7 +109,6 @@ public class AdminFragment extends Fragment implements Serializable,
         if (getArguments() != null) {
             mOrgsList = getArguments().getParcelableArrayList(ARG_ADMIN_ORGS);
             mAdminOrgsFrag = OrgsGridFragment.newInstance(mOrgsList, AdminFragment.this, AdminFragment.this, null, false);
-
         }
     }
 
@@ -122,12 +124,47 @@ public class AdminFragment extends Fragment implements Serializable,
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         if (ft.isEmpty()) {
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .add(R.id.admin_framelayout, mAdminOrgsFrag)
+                    .replace(R.id.admin_framelayout, mAdminOrgsFrag)
                     .addToBackStack(ADMIN_ORGS_TAG)
                     .commitAllowingStateLoss();
         }
 
         return mView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelableArrayList(ARG_ADMIN_ORGS, mOrgsList);
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        if (savedInstanceState != null){
+            if (savedInstanceState.getParcelableArrayList(ARG_ADMIN_ORGS) != null){
+                mOrgsList = savedInstanceState.getParcelableArrayList(ARG_ADMIN_ORGS);
+                mAdminOrgsFrag = OrgsGridFragment.newInstance(mOrgsList, AdminFragment.this, AdminFragment.this, null, false);
+                FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .replace(R.id.admin_framelayout, mAdminOrgsFrag)
+                        .addToBackStack(ADMIN_ORGS_TAG)
+                        .commitAllowingStateLoss();
+            }
+
+            mPostsOverlayListener = this;
+            mPostInteractionListener = this;
+            mFullPostInteractionListener = this;
+
+            onToday = false;
+            onDiscover = false;
+            onYou = false;
+            onAdmin = true;
+
+            mLoading = (ProgressBar) mView.findViewById(R.id.admin_frag_progressbar);
+        }
     }
 
     public AdminMainFragment getmAdminMainFrag() {
@@ -149,7 +186,7 @@ public class AdminFragment extends Fragment implements Serializable,
          * this method is called when "view schools" is pressed
          */
 
-        OrgsDataSource.getAllChildOrganizations(mView, getActivity(), mLoading, org.getmObjectId(), new FunctionCallback<ArrayList<Organization>>() {
+        OrgsDataSource.getAllChildOrganizations(mView, getActivity(), mLoading, R.id.admin_framelayout,org.getmObjectId(), new FunctionCallback<ArrayList<Organization>>() {
             @Override
             public void done(ArrayList<Organization> organizations, ParseException e) {
                 if (e == null) {
@@ -187,7 +224,7 @@ public class AdminFragment extends Fragment implements Serializable,
     }
 
     private void loadPendingPosts(final String parentId){
-        AdminDataSource.getPostsToBeApprovedInRange(mView, mLoading, getActivity(), parentId, 0, 10, new FunctionCallback<ArrayList<Post>>() {
+        AdminDataSource.getPostsToBeApprovedInRange(mView, mLoading, R.id.admin_framelayout,getActivity(), parentId, 0, 10, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {
@@ -196,7 +233,7 @@ public class AdminFragment extends Fragment implements Serializable,
                             .beginTransaction()
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                             .replace(R.id.admin_framelayout, pendingPosts)
-                            .addToBackStack(PENDING_POSTS)
+                            .addToBackStack(null)
                             .commitAllowingStateLoss();
                 } else {
                     Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
@@ -208,7 +245,7 @@ public class AdminFragment extends Fragment implements Serializable,
 
     @Override
     public void userListOpened(final Organization parentOrg) {
-        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, parentOrg.getmObjectId(), 0, 50, true, new FunctionCallback<HashMap<Boolean, Object>>() {
+        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, R.id.admin_framelayout,parentOrg.getmObjectId(), 0, 50, true, new FunctionCallback<HashMap<Boolean, Object>>() {
             @Override
             public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
 
@@ -232,7 +269,7 @@ public class AdminFragment extends Fragment implements Serializable,
     }
 
     private void allOrgPosts(final String orgId){
-        AdminDataSource.getAllPostsForOrganizationForRange(mView, mLoading, getActivity(), orgId, 0, 10, new FunctionCallback<ArrayList<Post>>() {
+        AdminDataSource.getAllPostsForOrganizationForRange(mView, mLoading, R.id.admin_framelayout,getActivity(), orgId, 0, 10, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {
@@ -241,7 +278,7 @@ public class AdminFragment extends Fragment implements Serializable,
                             .beginTransaction()
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                             .replace(R.id.admin_framelayout, allPosts)
-                            .addToBackStack(ALL_ORG_POSTS)
+                            .addToBackStack(null)
                             .commitAllowingStateLoss();
                 } else {
                     Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
@@ -318,7 +355,7 @@ public class AdminFragment extends Fragment implements Serializable,
 
     @Override
     public void viewMembers(final Organization org, final boolean isAdmin) {
-        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, org.getmObjectId(), 0, 50, isAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
+        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, R.id.admin_framelayout,org.getmObjectId(), 0, 50, isAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
             @Override
             public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
 

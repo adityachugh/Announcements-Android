@@ -76,8 +76,26 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
 
         mOrgsGridFrag = SearchableFrag.newInstance(SearchableFrag.ORGS_TYPE, null, this, false);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).add(R.id.discover_framelayout, mOrgsGridFrag).commitAllowingStateLoss();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, mOrgsGridFrag).commitAllowingStateLoss();
         return mView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            mLoading = (ProgressBar) mView.findViewById(R.id.discover_frag_progressbar);
+            mOrgsGridFrag = SearchableFrag.newInstance(SearchableFrag.ORGS_TYPE, null, this, false);
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.discover_framelayout, mOrgsGridFrag)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .commitAllowingStateLoss();
+        }
     }
 
     public SearchableFrag getmOrgsGridFrag() {
@@ -134,7 +152,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
 
     @Override
     public void viewMembers(final Organization org, final boolean isAdmin) {
-        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, org.getmObjectId(), 0, 50, isAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
+        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, R.id.discover_framelayout,org.getmObjectId(), 0, 50, isAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
             @Override
             public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
 
@@ -153,7 +171,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
 
     @Override
     public void viewAnnouncementsState(Organization org) {
-        AdminDataSource.getAllPostsForOrganizationForRange(mView, mLoading, getActivity(), org.getmObjectId(), 0, 10, new FunctionCallback<ArrayList<Post>>() {
+        AdminDataSource.getAllPostsForOrganizationForRange(mView, mLoading, R.id.discover_framelayout,getActivity(), org.getmObjectId(), 0, 10, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {
@@ -165,7 +183,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
                             .addToBackStack(null)
                             .commitAllowingStateLoss();
                 } else {
-                    Snackbar.make(mView, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Toast.LENGTH_SHORT).show();
+                    Snackbar.make(mView, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
 

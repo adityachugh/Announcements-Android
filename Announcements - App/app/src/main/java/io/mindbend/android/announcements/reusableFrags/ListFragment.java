@@ -232,7 +232,7 @@ public class ListFragment extends Fragment implements Serializable, SwipyRefresh
                     } else {
                         //load more users
                         OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(),
-                                mLoading, mOrgOfUsers.getmObjectId(), mUsers.size(), 20, mIsAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
+                                mLoading, R.id.list_remove_view_while_loading, mOrgOfUsers.getmObjectId(), mUsers.size(), 20, mIsAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
                                     @Override
                                     public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
                                         if (e == null){
@@ -262,7 +262,7 @@ public class ListFragment extends Fragment implements Serializable, SwipyRefresh
                     } else {
                         //refresh users
                         OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(),
-                                mLoading, mOrgOfUsers.getmObjectId(), 0, 20, mIsAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
+                                mLoading, R.id.list_remove_view_while_loading, mOrgOfUsers.getmObjectId(), 0, 20, mIsAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
                                     @Override
                                     public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
                                         if (e == null){

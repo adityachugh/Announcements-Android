@@ -377,7 +377,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         alert.setTitle("Send follow request to " + mOrg.getTitle());
         alert.setPositiveButton("Send", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                OrgsDataSource.privateOrganizationAccessCodeEntered(getActivity(), mView, mLoading, mOrg.getmObjectId(), requestCode.getText().toString(), new FunctionCallback<Boolean>() {
+                OrgsDataSource.privateOrganizationAccessCodeEntered(getActivity(), mView, mLoading, R.id.profile_remove_view_while_loading,mOrg.getmObjectId(), requestCode.getText().toString(), new FunctionCallback<Boolean>() {
                     @Override
                     public void done(Boolean followRequestSent, ParseException e) {
                         if (e == null){
@@ -412,7 +412,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            UserDataSource.updateFollowStateForUser(mLoading, getActivity(), mOrg.isPrivateOrg(), mView, toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
+                            UserDataSource.updateFollowStateForUser(getActivity(), mOrg.isPrivateOrg(), mView, toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
                                 @Override
                                 public void done(Boolean success, ParseException e) {
                                     if (success) {
@@ -427,7 +427,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                     })
                     .show();
         } else {
-            UserDataSource.updateFollowStateForUser(mLoading, getActivity(), mOrg.isPrivateOrg(), mView, toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
+            UserDataSource.updateFollowStateForUser(getActivity(), mOrg.isPrivateOrg(), mView, toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
                 @Override
                 public void done(Boolean success, ParseException e) {
                     if (success) {
@@ -477,7 +477,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
 
 
     private void loadOrgPosts(String orgObjectId, int startIndex, int numberOfPosts) {
-        PostsDataSource.getPostsOfOrganizationInRange(mView, mLoading, getActivity(), orgObjectId, startIndex, numberOfPosts, new FunctionCallback<ArrayList<Post>>() {
+        PostsDataSource.getPostsOfOrganizationInRange(mView, mLoading, false,R.id.profile_remove_view_while_loading ,getActivity(), orgObjectId, startIndex, numberOfPosts, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> orgPosts, ParseException e) {
                 if (e == null) {
@@ -574,37 +574,27 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
 
         LinearLayout layout = new LinearLayout(getActivity());
         layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(16,0,0,16);
 
-        final EditText interestOneET = new EditText(getActivity());
-        String in1text = "#1: ";
-        if (mUser.getInterestOne() != null)
-            in1text = in1text + mUser.getInterestOne();
-        interestOneET.setHint(in1text);
-        layout.addView(interestOneET);
-
-        final EditText interestTwoET = new EditText(getActivity());
-        String in2text = "#2: ";
-        if (mUser.getInterestTwo() != null)
-            in2text = in2text + mUser.getInterestTwo();
-        interestTwoET.setHint(in2text);
-        layout.addView(interestTwoET);
+        final EditText newDescription = new EditText(getActivity());
+        newDescription.setHint(mUser.getmDescription());
+        layout.addView(newDescription);
 
         alert.setView(layout);
-        alert.setTitle("Enter your Interests");
+        alert.setTitle("Enter your description");
         alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 //What ever you want to do with the value
-                if (!interestOneET.getText().toString().equals("") && !interestTwoET.getText().toString().equals("")) {
-                    final String i1 = interestOneET.getText().toString();
-                    final String i2 = interestTwoET.getText().toString();
-                    UserDataSource.updateUserDescription(mView, getActivity(), ((TabbedActivity) getActivity()).mYouFragment.mLoading, "Interested in " + i1 + " and " + i2, new FunctionCallback<Boolean>() {
+                final String description = newDescription.getText().toString();
+                if (!description.equals("")) {
+                    final String i1 = newDescription.getText().toString();
+                    UserDataSource.updateUserDescription(mView, getActivity(), description, new FunctionCallback<Boolean>() {
                         @Override
                         public void done(Boolean success, ParseException e) {
                             if (success) {
                                 Snackbar.make(mView, "Interests updated", Snackbar.LENGTH_SHORT).show();
-                                mUser.setInterestOne(i1);
-                                mUser.setInterestTwo(i2);
-                                mProfileDetail.setText(mUser.getInterests());
+                                mUser.setmDescription(newDescription.getText().toString());
+                                mProfileDetail.setText(description);
                             } else {
                                 Snackbar.make(mView, "Error", Snackbar.LENGTH_SHORT).show();
                                 e.printStackTrace();

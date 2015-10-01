@@ -77,6 +77,7 @@ public class TodayFragment extends Fragment implements Serializable,
 
     private transient ImageButton mFab;
     public transient ProgressBar mLoading;
+
     //in order to add frags to the backstack
     public static final String TODAY_POSTS_FRAG = "today_posts_frag";
     private transient PostOverlayFragment mPostsOverlayFragment;
@@ -87,7 +88,7 @@ public class TodayFragment extends Fragment implements Serializable,
     private boolean onYou = false;
     private boolean onAdmin = false;
 
-    public Date mCurrentDateSelected;
+    private Date mCurrentDateSelected;
     private transient View mView;
 
     public TodayFragment() {
@@ -111,7 +112,13 @@ public class TodayFragment extends Fragment implements Serializable,
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_today, container, false);
         setRetainInstance(true);
+        setupView();
 
+
+        return mView;
+    }
+
+    private void setupView() {
         //instantiate the fab so that you can change its onClick method and src logo when switching between posts and comments fragments
         mFab = (ImageButton) mView.findViewById(R.id.today_fab);
         mFab.setOnClickListener(this);
@@ -120,20 +127,39 @@ public class TodayFragment extends Fragment implements Serializable,
 
         mCurrentDateSelected = new Date();
 
-        loadPosts(0, 10);
+        loadPosts(0, 10, true);
 
-        return mView;
+        onToday = true;
+        onDiscover = false;
+        onYou = false;
+        onAdmin = false;
     }
 
-    private void loadPosts(int startIndex, int numberOfPosts) {
-        PostsDataSource.getRangeOfPostsForDay(mView, mLoading, getActivity(), startIndex, numberOfPosts, mCurrentDateSelected, new FunctionCallback<ArrayList<Post>>() {
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        setupView();
+    }
+
+    public Date getmCurrentDateSelected() {
+        Date date = new Date();
+        mCurrentDateSelected.setHours(date.getHours());
+        mCurrentDateSelected.setMinutes(date.getMinutes());
+        return mCurrentDateSelected;
+    }
+
+    private void loadPosts(int startIndex, int numberOfPosts, final boolean isGettingPostsForFirstTime) {
+        PostsDataSource.getRangeOfPostsForDay(mView, mLoading,isGettingPostsForFirstTime,R.id.today_remove_while_loading_view, getActivity(), startIndex, numberOfPosts, mCurrentDateSelected, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {
                     //pass in "this" in order to set the listener for the posts overlay frag in order to open the comments feed for a post
                     mPostsOverlayFragment = PostOverlayFragment.newInstance(posts, TodayFragment.this, false);
                     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.today_framelayout, mPostsOverlayFragment).addToBackStack(TODAY_POSTS_FRAG).commitAllowingStateLoss();
+                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.today_framelayout, mPostsOverlayFragment);
+                    if (isGettingPostsForFirstTime)
+                        transaction.addToBackStack(TODAY_POSTS_FRAG);
+                    transaction.commitAllowingStateLoss();
                 } else {
                     Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
@@ -160,7 +186,7 @@ public class TodayFragment extends Fragment implements Serializable,
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
         mCurrentDateSelected = new Date(year - 1900, monthOfYear, dayOfMonth);
-        loadPosts(0, 10);
+        loadPosts(0, 10, false);
     }
 
     @Override
@@ -213,7 +239,7 @@ public class TodayFragment extends Fragment implements Serializable,
         Log.wtf(TAG, "TODAYFRAG refreshed!");
 
         //refreshing will load the latest 10 posts
-        loadPosts(0, 10);
+        loadPosts(0, 10, false);
     }
 
     @Override
@@ -242,7 +268,7 @@ public class TodayFragment extends Fragment implements Serializable,
 
     @Override
     public void viewMembers(final Organization org, final boolean isAdmin) {
-        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, org.getmObjectId(), 0, 50, isAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
+        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, R.id.today_remove_while_loading_view,org.getmObjectId(), 0, 50, isAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
             @Override
             public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
 
@@ -261,7 +287,7 @@ public class TodayFragment extends Fragment implements Serializable,
 
     @Override
     public void viewAnnouncementsState(Organization org) {
-        AdminDataSource.getAllPostsForOrganizationForRange(mView, mLoading, getActivity(), org.getmObjectId(), 0, 10, new FunctionCallback<ArrayList<Post>>() {
+        AdminDataSource.getAllPostsForOrganizationForRange(mView, mLoading,R.id.today_remove_while_loading_view, getActivity(), org.getmObjectId(), 0, 10, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {

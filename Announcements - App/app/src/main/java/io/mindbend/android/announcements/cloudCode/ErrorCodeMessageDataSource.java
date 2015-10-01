@@ -51,7 +51,7 @@ public class ErrorCodeMessageDataSource {
         errorCodeMap.put("251", "Linked account has an invalid session. Sign in again.");
         errorCodeMap.put("252", "The service being linked is unsupported.");
 
-        if (errorCodeMap.get(string) != null)
+        if (errorCodeMap.get(string) != null && errorCodeMap.get(string) != null)
             return errorCodeMap.get(string);
         else {
             return "Unknown Error. Report this to a Mindbend Studio employee.";

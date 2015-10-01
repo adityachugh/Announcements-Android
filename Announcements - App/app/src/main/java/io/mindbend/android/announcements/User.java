@@ -2,6 +2,7 @@ package io.mindbend.android.announcements;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -24,8 +25,6 @@ public class User implements Serializable, Parcelable{
     //Will be concatenated upon return
     private String mFirstName;
     private String mLastName;
-    private String mInterestOne;
-    private String mInterestTwo;
     private String mDescription;
     //Displayed as a hashtag (such as #Grade10, #Teacher, #Administration, etc.)
     private String mUserCategory;
@@ -34,10 +33,9 @@ public class User implements Serializable, Parcelable{
     private String mCoverPictureURL;
 
     public User(String firstName, String lastName, String interestOne, String interestTwo, String userCategory, int numberOfOrganizationsFollowed){
+        //interest 1 and 2 are deprecated
         mFirstName = firstName;
         mLastName = lastName;
-        mInterestOne = interestOne;
-        mInterestTwo = interestTwo;
         mUserCategory = userCategory;
         mDescription = "Interested in "+interestOne+" and "+interestTwo;
         mProfilePictureURL = "";
@@ -49,42 +47,33 @@ public class User implements Serializable, Parcelable{
     public User (ParseUser user){
         try {
             user.fetchIfNeeded();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        mObjectId = user.getObjectId();
-        try {
-            mFirstName = user.fetchIfNeeded().getString(UserDataSource.FIRST_NAME);
-            mLastName = user.fetchIfNeeded().getString(UserDataSource.LAST_NAME);
-            mDescription = user.fetchIfNeeded().getString(UserDataSource.DESCRIPTION);
+            mObjectId = user.getObjectId();
+            mFirstName = user.getString(UserDataSource.FIRST_NAME);
+            mLastName = user.getString(UserDataSource.LAST_NAME);
+            mDescription = user.getString(UserDataSource.DESCRIPTION);
+            mUserCategory = user.getUsername();
             mNumberOfOrganizationsFollowed = user.getInt(UserDataSource.ORG_FOLLOWED_COUNT);
-            mUserCategory = user.fetchIfNeeded().getUsername();
-
             if (user.getParseFile(UserDataSource.PROFILE_PHOTO) != null)
-                mProfilePictureURL = user.fetchIfNeeded().getParseFile(UserDataSource.PROFILE_PHOTO).getUrl();
+                mProfilePictureURL = user.getParseFile(UserDataSource.PROFILE_PHOTO).getUrl();
             else
                 mProfilePictureURL = "";
 
             if (user.getParseFile(UserDataSource.COVER_PHOTO) != null)
-                mCoverPictureURL = user.fetchIfNeeded().getParseFile(UserDataSource.COVER_PHOTO).getUrl();
+                mCoverPictureURL = user.getParseFile(UserDataSource.COVER_PHOTO).getUrl();
             else
                 mCoverPictureURL = "";
 
-        } catch (Exception e) {
+            mFollowObjectId = "";
+        } catch (ParseException e) {
             e.printStackTrace();
+            Log.d("User", "Error fetching user data from Parse");
         }
-
-
-
-        mFollowObjectId = "";
     }
 
     public  User (Parcel in){
         mObjectId = in.readString();
         mFirstName = in.readString();
         mLastName = in.readString();
-        mInterestOne = in.readString();
-        mInterestTwo = in.readString();
         mDescription = in.readString();
         mUserCategory = in.readString();
         mNumberOfOrganizationsFollowed = in.readInt();
@@ -102,26 +91,6 @@ public class User implements Serializable, Parcelable{
         return mObjectId;
     }
 
-    public String getInterestOne() {
-        return mInterestOne;
-    }
-
-    public void setInterestOne(String mInterestOne) {
-        this.mInterestOne = mInterestOne;
-    }
-
-    public String getInterestTwo() {
-        return mInterestTwo;
-    }
-
-    public void setInterestTwo(String mInterestTwo) {
-        this.mInterestTwo = mInterestTwo;
-    }
-
-    public String getInterests() {
-        //Returns both interests
-        return ("Interested in " + mInterestOne + " and " + mInterestTwo);
-    }
 
     public void setUserCategory(String mUserCategory) {
         this.mUserCategory = mUserCategory;
@@ -144,6 +113,10 @@ public class User implements Serializable, Parcelable{
         return mDescription;
     }
 
+    public void setmDescription(String mDescription) {
+        this.mDescription = mDescription;
+    }
+
     public String getmFollowObjectId() {
         return mFollowObjectId;
     }
@@ -162,8 +135,6 @@ public class User implements Serializable, Parcelable{
         dest.writeString(mObjectId);
         dest.writeString(mFirstName);
         dest.writeString(mLastName);
-        dest.writeString(mInterestOne);
-        dest.writeString(mInterestTwo);
         dest.writeString(mDescription);
         dest.writeString(mUserCategory);
         dest.writeInt(mNumberOfOrganizationsFollowed);

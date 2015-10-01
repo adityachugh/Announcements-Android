@@ -6,6 +6,7 @@
     tools:context="io.mindbend.android.announcements.reusableFrags.PostCommentsFragment">
 
     <RelativeLayout
+        android:id="@+id/post_comments_remove_view_while_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

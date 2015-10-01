@@ -77,7 +77,7 @@ public class SignUpFragment extends Fragment implements Serializable {
                     Snackbar.make(v, "Please fill in all fields.", Snackbar.LENGTH_SHORT).show();
                 else {
                     //check if fields in use
-                    VerificationDataSource.signupUser(v, mLoader, getActivity(), firstName, lastName, password, username, email);
+                    VerificationDataSource.signupUser(v, getActivity(), firstName, lastName, password, username, email);
                 }
             }
         });

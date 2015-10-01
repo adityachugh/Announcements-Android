@@ -125,7 +125,7 @@ public class SignUpOrgsActivity extends ActionBarActivity implements Serializabl
     }
 
     private void loadChildren(ProgressBar progressBar ,String orgId){
-        OrgsDataSource.getAllChildOrganizations(progressBar, mContext, progressBar, orgId, new FunctionCallback<ArrayList<Organization>>() {
+        OrgsDataSource.getAllChildOrganizations(progressBar, mContext, progressBar, R.id.sign_up_org_remove_view_while_loading,orgId, new FunctionCallback<ArrayList<Organization>>() {
             @Override
             public void done(ArrayList<Organization> organizations, ParseException e) {
                 if (e == null) {
@@ -145,6 +145,6 @@ public class SignUpOrgsActivity extends ActionBarActivity implements Serializabl
     }
 
     private void followOrganizations(View v, Context context, ProgressBar progressBar){
-        UserDataSource.followOrganizations(v, context, progressBar, OrgsToFollow.getInstance());
+        UserDataSource.followOrganizations(v, context, OrgsToFollow.getInstance());
     }
 }

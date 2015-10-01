@@ -1,5 +1,6 @@
 package io.mindbend.android.announcements.cloudCode;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -26,13 +27,14 @@ import io.mindbend.android.announcements.R;
  */
 public class AdminDataSource {
 
-    public static void updateOrganizationProfilePhoto(final View view, final Context context, final ProgressBar loading, String organizationObjectId, byte[] photo, final FunctionCallback<Boolean> callback) {
-        loading.setVisibility(View.VISIBLE);
+    public static void updateOrganizationProfilePhoto(final View view, final Context context, String organizationObjectId, byte[] photo, final FunctionCallback<Boolean> callback) {
+        final ProgressDialog dialog = new ProgressDialog(context, R.style.DialogTheme);
+        dialog.setMessage(context.getString(R.string.updating_org_photo_loading_dialog_message));
 
         if (!App.hasNetworkConnection(context)){
-            loading.setVisibility(View.GONE);
             Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
+            dialog.show();
             HashMap<String, Object> params = new HashMap<>();
             params.put("organizationObjectId", organizationObjectId);
             params.put("photo", photo);
@@ -40,7 +42,7 @@ public class AdminDataSource {
             ParseCloud.callFunctionInBackground("updateOrganizationProfilePhoto", params, new FunctionCallback<Boolean>() {
                 @Override
                 public void done(Boolean isSuccessful, ParseException e) {
-                    loading.setVisibility(View.GONE);
+                    dialog.dismiss();
                     if (e == null) {
                         Snackbar.make(view, context.getString(R.string.succes_updated_org_photo), Snackbar.LENGTH_SHORT).show();
                     } else {
@@ -54,15 +56,15 @@ public class AdminDataSource {
         }
     }
 
-    public static void updateOrganizationCoverPhoto(final View view, final Context context, final ProgressBar loading, String organizationObjectId, byte[] photo, final FunctionCallback<Boolean> callback) {
-        loading.setVisibility(View.VISIBLE);
-
+    public static void updateOrganizationCoverPhoto(final View view, final Context context, String organizationObjectId, byte[] photo, final FunctionCallback<Boolean> callback) {
+        final ProgressDialog dialog = new ProgressDialog(context, R.style.DialogTheme);
+        dialog.setMessage(context.getString(R.string.updating_org_photo_loading_dialog_message));
         if (!App.hasNetworkConnection(context)){
-            loading.setVisibility(View.GONE);
             Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         }
 
         else {
+            dialog.show();
             HashMap<String, Object> params = new HashMap<>();
             params.put("organizationObjectId", organizationObjectId);
             params.put("photo", photo);
@@ -70,7 +72,7 @@ public class AdminDataSource {
             ParseCloud.callFunctionInBackground("updateOrganizationCoverPhoto", params, new FunctionCallback<Boolean>() {
                 @Override
                 public void done(Boolean isSuccessful, ParseException e) {
-                    loading.setVisibility(View.GONE);
+                    dialog.dismiss();
                     if (e == null) {
                         Snackbar.make(view, context.getString(R.string.succes_updated_org_photo), Snackbar.LENGTH_SHORT).show();
                     } else {
@@ -113,16 +115,19 @@ public class AdminDataSource {
 
     }
 
-    public static void createNewChildOrganization(final View view, final Context context, final ProgressBar loading, String organizationObjectId,
+    public static void createNewChildOrganization(final View view, final Context context, final ProgressBar loading, int viewIdToRemove, String organizationObjectId,
                                                   String levelConfigObjectId, String configObjectId, String organizationName, String organizationHandle,
                                                   boolean isPrivate, String adminObjectId, boolean approvalRequired, Integer accessCode,
                                                   byte[] profilePhoto, byte[] coverPhoto, String description, String parentLevelConfigObjectId,
                                                   final FunctionCallback<Boolean> callback) {
         //levelConfigObjectId is the child level config of the org that's calling this function
         loading.setVisibility(View.VISIBLE);
+        final View layoutView = view.findViewById(viewIdToRemove);
+        layoutView.setVisibility(View.INVISIBLE);
 
         if (!App.hasNetworkConnection(context)){
             loading.setVisibility(View.GONE);
+            layoutView.setVisibility(View.VISIBLE);
             Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap<String, Object> params = new HashMap<>();
@@ -145,6 +150,7 @@ public class AdminDataSource {
                 @Override
                 public void done(Boolean success, ParseException e) {
                     loading.setVisibility(View.GONE);
+                    layoutView.setVisibility(View.VISIBLE);
                     if (e != null) {
                         Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                         e.printStackTrace();
@@ -159,11 +165,14 @@ public class AdminDataSource {
 
     }
 
-    public static void getPostsToBeApprovedInRange(final View view, final ProgressBar loading, final Context context, String organizationObjectId, int startIndex, int numberOfPosts, final FunctionCallback<ArrayList<Post>> callback) {
+    public static void getPostsToBeApprovedInRange(final View view, final ProgressBar loading,int viewIdToRemove, final Context context, String organizationObjectId, int startIndex, int numberOfPosts, final FunctionCallback<ArrayList<Post>> callback) {
         loading.setVisibility(View.VISIBLE);
+        final View layoutView = view.findViewById(viewIdToRemove);
+        layoutView.setVisibility(View.INVISIBLE);
 
         if (!App.hasNetworkConnection(context)){
             loading.setVisibility(View.GONE);
+            layoutView.setVisibility(View.VISIBLE);
             Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap<String, Object> params = new HashMap<>();
@@ -175,6 +184,7 @@ public class AdminDataSource {
                 @Override
                 public void done(List<ParseObject> parseObjects, ParseException e) {
                     loading.setVisibility(View.GONE);
+                    layoutView.setVisibility(View.VISIBLE);
                     ArrayList<Post> pendingPosts = new ArrayList<Post>();
                     if (e == null) {
                         for (ParseObject object : parseObjects) {
@@ -192,13 +202,16 @@ public class AdminDataSource {
 
     }
 
-    public static void getAllPostsForOrganizationForRange (final View view, final ProgressBar loading, final Context context,
+    public static void getAllPostsForOrganizationForRange (final View view, final ProgressBar loading,int viewIdToRemove, final Context context,
                                                            String organizationObjectId, int startIndex,
                                                            int numberOfPosts, final FunctionCallback<ArrayList<Post>> callback){
         loading.setVisibility(View.VISIBLE);
+        final View layoutView = view.findViewById(viewIdToRemove);
+        layoutView.setVisibility(View.INVISIBLE);
 
         if (!App.hasNetworkConnection(context)){
             loading.setVisibility(View.GONE);
+            layoutView.setVisibility(View.VISIBLE);
             Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap<String, Object> params = new HashMap<>();
@@ -210,6 +223,7 @@ public class AdminDataSource {
                 @Override
                 public void done(List<ParseObject> parseObjects, ParseException e) {
                     loading.setVisibility(View.GONE);
+                    layoutView.setVisibility(View.VISIBLE);
                     ArrayList<Post> posts = new ArrayList<Post>();
                     if (e == null) {
                         for (ParseObject object : parseObjects) {
@@ -258,14 +272,17 @@ public class AdminDataSource {
 
     }
 
-    public static void updateOrganizationFields(Context context, final View view, final ProgressBar loading, String organizationObjectId,
+    public static void updateOrganizationFields(Context context, final View view, final ProgressBar loading,int viewIdToRemove, String organizationObjectId,
                                                 String accessCodeString, String description, String name,
                                                 final FunctionCallback<Organization> orgModified) {
 
         loading.setVisibility(View.VISIBLE);
+        final View layoutView = view.findViewById(viewIdToRemove);
+        layoutView.setVisibility(View.INVISIBLE);
 
         if (!App.hasNetworkConnection(context)){
             loading.setVisibility(View.GONE);
+            layoutView.setVisibility(View.VISIBLE);
             Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap<String, Object> params = new HashMap<>();
@@ -280,6 +297,7 @@ public class AdminDataSource {
                 public void done(ParseObject orgReturned, ParseException e) {
 //                int i = 0;
                     loading.setVisibility(View.GONE);
+                    layoutView.setVisibility(View.VISIBLE);
                     if (e == null && orgModified != null) {
                         Snackbar.make(view, "Successfully updated organization", Snackbar.LENGTH_SHORT).show();
                         orgModified.done(new Organization(orgReturned), e);

@@ -198,7 +198,7 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
     private void submitOrg() {
         if(mOrgToModify != null){
 
-            AdminDataSource.updateOrganizationFields(getActivity(), mView, mLoading, mOrgToModify.getmObjectId(), mAccessCode.getText().toString(),
+            AdminDataSource.updateOrganizationFields(getActivity(), mView, mLoading, R.id.modify_org_remove_view_while_loading,mOrgToModify.getmObjectId(), mAccessCode.getText().toString(),
                     mDescription.getText().toString(), mName.getText().toString(), new FunctionCallback<Organization>() {
                         @Override
                         public void done(Organization organization, ParseException e) {
@@ -217,7 +217,7 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
         String initAdminObjectId = mInitialAdmin == null ? ParseUser.getCurrentUser().getObjectId() : mInitialAdmin.getmObjectId();
             Integer accessCode = (!isPrivate || mAccessCode.getText().toString().equals("")) ? null : Integer.parseInt(mAccessCode.getText().toString());
             boolean approvalRequired = ((Switch)mView.findViewById(R.id.newO_approval_required_switch)).isChecked();
-            AdminDataSource.createNewChildOrganization(mView, getActivity(), mLoading, mParentOrg.getmObjectId(),
+            AdminDataSource.createNewChildOrganization(mView, getActivity(), mLoading, R.id.modify_org_remove_view_while_loading,mParentOrg.getmObjectId(),
                     mParentOrg.getmChildLevel().getmObjectId(), mParentOrg.getmConfigId(), mName.getText().toString(),
                     mHandle.getText().toString(), isPrivate, initAdminObjectId, approvalRequired, accessCode,
                     toUploadProfileImageBytes, toUploadCoverImageBytes, mDescription.getText().toString(),

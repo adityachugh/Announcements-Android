@@ -290,7 +290,7 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
 
         @Override
         public int getCount() {
-            //TODO: only return 4 IF *****ADMIN*****, otherwise return 3.
+            //only return 4 IF *****ADMIN*****, otherwise return 3.
             if (userIsAdmin)
                 return 4;
             else {
@@ -371,9 +371,9 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
                 byte[] imageBytes = convertImageUriToUploadableByteArray(selectedImageUri, requestCode, AdminMainFragment.CHANGE_PARENT_PROFILE_PHOTO);
                 Log.wtf("Image", "Converted bytes are: " + imageBytes);
                 if (requestCode == AdminMainFragment.CHANGE_PARENT_PROFILE_PHOTO) {
-                    AdminDataSource.updateOrganizationProfilePhoto(mView, TabbedActivity.this, mLoading, mAdminFragment.getmAdminMainFrag().getmOrg().getmObjectId(), imageBytes, null);
+                    AdminDataSource.updateOrganizationProfilePhoto(mView, TabbedActivity.this, mAdminFragment.getmAdminMainFrag().getmOrg().getmObjectId(), imageBytes, null);
                 } else {
-                    AdminDataSource.updateOrganizationCoverPhoto(mView, TabbedActivity.this, mLoading, mAdminFragment.getmAdminMainFrag().getmOrg().getmObjectId(), imageBytes, null);
+                    AdminDataSource.updateOrganizationCoverPhoto(mView, TabbedActivity.this, mAdminFragment.getmAdminMainFrag().getmOrg().getmObjectId(), imageBytes, null);
                 }
             }
 
@@ -381,7 +381,7 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
                 byte[] imageBytes = convertImageUriToUploadableByteArray(selectedImageUri, requestCode, ProfileFragment.UPDATE_PROFILE_IMAGE);
                 Log.wtf("Image", "Converted bytes are: " + imageBytes.toString());
                 boolean isUpdatingProfilePhoto = (requestCode == ProfileFragment.UPDATE_PROFILE_IMAGE);
-                UserDataSource.updateUserProfileImages(mView, this, mYouFragment.mLoading, imageBytes, new FunctionCallback<Boolean>() {
+                UserDataSource.updateUserProfileImages(mView, this, imageBytes, new FunctionCallback<Boolean>() {
                     @Override
                     public void done(Boolean success, ParseException e) {
                         if (success) {
