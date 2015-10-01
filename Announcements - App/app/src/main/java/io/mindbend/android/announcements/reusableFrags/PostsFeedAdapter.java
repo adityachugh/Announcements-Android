@@ -124,9 +124,21 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
         if (mIsApproving){
             //if approving posts (admin)
 
+            //TODO: FIX! change positon of text to inside card
+//            //time since tag must include notifying body
+//            boolean notifyingParent = post.isNotifyingParent();
+//            String notifyingWho = "";
+//            if (notifyingParent){
+//                notifyingWho = post.getmPosterOrg().getmParentLevel().getmLevelTitle();
+//            } else {
+//                //notifyingWho = post.getmPosterOrg().getmMainLevel().getmLevelTitle();
+//            }
+//            viewHolder.mTimeSince.setText(post.getmPostTimeSince() + "\nNotifying: " + notifyingWho);
+
             //comment button becomes accept
             viewHolder.mCommentButton.setText(mContext.getString(R.string.approve_button_text));
             viewHolder.mCommentButton.setTextColor(mContext.getResources().getColor(R.color.announcement_accepted));
+
 
             viewHolder.mCommentButton.setOnClickListener(new View.OnClickListener() {
                 @Override

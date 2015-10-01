@@ -36,6 +36,7 @@ public class PostsDataSource {
     public static final String POST_ORGANIZATION = "organization";
     public static final String POST_STATUS = "status";
     public static final String POST_REJECTION_REASON = "rejectionReason";
+    public static final String POST_NOTIFY_PARENT = "notifyParent";
 
     //levels of priority
     public static final int LOW_PRIORITY = 3;
@@ -129,7 +130,7 @@ public class PostsDataSource {
             params.put("priority", priority);
             params.put("notifyParent", notifyParent);
 
-            ParseCloud.callFunctionInBackground("uploadPostForOrganization", params, new FunctionCallback<Boolean>() {
+            ParseCloud.callFunctionInBackground("uploadPostForOrganization", params,  new FunctionCallback<Boolean>() {
                 @Override
                 public void done(Boolean successful, ParseException e) {
                     loading.setVisibility(View.GONE);

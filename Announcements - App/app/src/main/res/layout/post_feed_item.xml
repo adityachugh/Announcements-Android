@@ -51,6 +51,7 @@
                 android:layout_alignBottom="@id/post_club_image"
                 android:layout_marginLeft="@dimen/post_title_margin"
                 android:text="2hrs"
+                android:maxLines="2"
                 android:textColor="@color/text_tertiary"/>
         </RelativeLayout>
 

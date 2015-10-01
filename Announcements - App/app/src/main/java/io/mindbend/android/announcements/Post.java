@@ -30,6 +30,7 @@ public class Post implements Serializable, Parcelable {
     private String mRejectionReason;
     private String mStartDate;
     private String mEndDate;
+    private boolean mNotifyParent;
     //TODO: setup passing in club image for the post
     //private String mUrlToPicture;
 
@@ -58,6 +59,7 @@ public class Post implements Serializable, Parcelable {
         mRejectionReason = object.getString(PostsDataSource.POST_REJECTION_REASON);
         mStartDate = object.getDate(PostsDataSource.POST_START_DATE).toString();
         mEndDate = object.getDate(PostsDataSource.POST_END_DATE).toString();
+        mNotifyParent = object.getBoolean(PostsDataSource.POST_NOTIFY_PARENT);
 
 
     }
@@ -145,6 +147,10 @@ public class Post implements Serializable, Parcelable {
 
     public String getEndDate() {
         return mEndDate;
+    }
+
+    public boolean isNotifyingParent() {
+        return mNotifyParent;
     }
 
     //    public Drawable getPriorityDrawable(Context context) {
