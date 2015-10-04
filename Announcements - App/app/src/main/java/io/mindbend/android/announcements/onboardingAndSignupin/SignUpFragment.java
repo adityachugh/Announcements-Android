@@ -70,6 +70,8 @@ public class SignUpFragment extends Fragment implements Serializable {
                 String firstName = mFirstName.getText().toString();
                 String lastName = mLastName.getText().toString();
                 String username = mUsername.getText().toString();
+                username = username.replace(" ", "");
+                username = username.toLowerCase();
                 String email = mEmail.getText().toString();
                 String password = mPassword.getText().toString();
 

@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,6 +48,11 @@ public class SignUpOrgsActivity extends ActionBarActivity implements Serializabl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_orgs);
+
+        Toolbar toolbar = (Toolbar)findViewById(R.id.sign_up_toolbar);
+        toolbar.inflateMenu(R.menu.menu_sign_up_orgs);
+        toolbar.hideOverflowMenu();
+        toolbar.setTitle("Config title here");
 
         mProgressBar = (ProgressBar) findViewById(R.id.sign_up_orgs_progressbar);
         mFab = (ImageButton) findViewById(R.id.signup_fab);
@@ -134,9 +140,9 @@ public class SignUpOrgsActivity extends ActionBarActivity implements Serializabl
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.sign_up_orgs_framelayout, childrenOrgs).addToBackStack(SIGN_UP_ORGS).commitAllowingStateLoss();
                     }
-//                    else {
-////                        Snackbar.make(, "This organization has no children.", Snackbar.LENGTH_SHORT).show();
-//                    }
+                    else {
+                        Snackbar.make((findViewById(R.id.sign_up_orgs_view)), "This organization has no children.", Snackbar.LENGTH_SHORT).show();
+                    }
                 } else {
                     e.printStackTrace();
                 }

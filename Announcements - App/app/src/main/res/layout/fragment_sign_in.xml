@@ -27,6 +27,8 @@
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:lines="1"
+            android:singleLine="true"
             android:paddingBottom="@dimen/edittext_to_line"/>
         <View
             android:layout_width="fill_parent"
@@ -41,6 +43,8 @@
             android:gravity="center"
             android:paddingBottom="30dp"
             android:layout_width="match_parent"
+            android:singleLine="true"
+            android:lines="1"
             android:layout_height="wrap_content"/>
         <TextView
             android:id="@+id/sign_in_forgot_password"

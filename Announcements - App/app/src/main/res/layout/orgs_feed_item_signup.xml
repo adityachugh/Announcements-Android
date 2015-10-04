@@ -47,7 +47,7 @@
             android:layout_gravity="center"
             android:layout_margin="8dp"
             android:text="Follow"
-            android:background="@android:color/white"
+            android:background="@color/divider_color"
             android:textColor="@color/accent"/>
     </LinearLayout>
 

@@ -19,6 +19,7 @@ public class User implements Serializable, Parcelable{
     //Current content reflects what is needed for profile page found in "you" tab
 
     private String mObjectId;
+
     private String mFollowObjectId; //the id for the follow object of this current user and the org it's following (based on context)
     //this is for acting on the follow request of pending users in private orgs
 

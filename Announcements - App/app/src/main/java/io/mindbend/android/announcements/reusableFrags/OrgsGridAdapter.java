@@ -1,6 +1,8 @@
 package io.mindbend.android.announcements.reusableFrags;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,12 +10,16 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -147,14 +153,63 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
                         OrgsToFollow.getInstance().remove(followedOrgs.get(mObjectPosition));
                         viewHolder.mFollowButton.setText("Follow");
                         viewHolder.mFollowButton.setTextColor(mContext.getResources().getColor(R.color.accent));
-                        viewHolder.mFollowButton.setBackgroundColor(mContext.getResources().getColor(R.color.white));
+                        viewHolder.mFollowButton.setBackgroundColor(mContext.getResources().getColor(R.color.divider_color));
                     } else {
-                        //not in array, therefore follow
-                        Log.wtf(TAG, "followed!");
-                        OrgsToFollow.getInstance().add(org.getmObjectId());
-                        viewHolder.mFollowButton.setText("Following");
-                        viewHolder.mFollowButton.setTextColor(mContext.getResources().getColor(R.color.white));
-                        viewHolder.mFollowButton.setBackgroundColor(mContext.getResources().getColor(R.color.accent));
+                        if (!org.hasAccessCode()){
+                            //not in array, therefore follow
+                            Log.wtf(TAG, "followed!");
+                            OrgsToFollow.getInstance().add(org.getmObjectId());
+                            viewHolder.mFollowButton.setText("Following");
+                            viewHolder.mFollowButton.setTextColor(mContext.getResources().getColor(R.color.white));
+                            viewHolder.mFollowButton.setBackgroundColor(mContext.getResources().getColor(R.color.accent));
+                        }
+                        else if (org.hasAccessCode()){
+                            //access code; pending follower
+                            //alert dialog to get reason
+                            LinearLayout layout = new LinearLayout(mContext);
+                            layout.setOrientation(LinearLayout.VERTICAL);
+                            layout.setPadding(16, 0, 16, 0);
+
+                            final EditText accessCode = new EditText(mContext);
+                            accessCode.setInputType(InputType.TYPE_CLASS_NUMBER);
+                            accessCode.setHint(mContext.getString(R.string.enter_access_code_for_private_org_message));
+                            layout.addView(accessCode);
+
+                            new AlertDialog.Builder(mContext, R.style.DialogTheme)
+                                    .setTitle(mContext.getString(R.string.access_code_dialog_title))
+                                    .setView(layout)
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            int enteredCode = Integer.parseInt(accessCode.getText().toString());
+                                            if (enteredCode == org.getmAccessCode()){
+                                                //correct code entered
+                                                Log.wtf(TAG, "pending!");
+                                                OrgsToFollow.getInstance().add(org.getmObjectId());
+                                                viewHolder.mFollowButton.setText("Pending");
+                                                viewHolder.mFollowButton.setTextColor(mContext.getResources().getColor(R.color.white));
+                                                viewHolder.mFollowButton.setBackgroundColor(mContext.getResources().getColor(R.color.post_priority_medium));
+
+                                                AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.DialogTheme);
+                                                builder.setTitle("Follow request sent")
+                                                        .setPositiveButton("OK", null)
+                                                        .show();
+                                            } else {
+                                                //incorrect code
+                                                AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.DialogTheme);
+                                                builder.setTitle("Incorrect access code entered.")
+                                                        .setPositiveButton("OK", null)
+                                                        .show();
+                                            }
+                                        }
+                                    })
+                                    .setNegativeButton(mContext.getString(R.string.cancel_button_text), new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                        }
+                                    })
+                                    .show();
+
+                        }
+
                     }
                 }
             });

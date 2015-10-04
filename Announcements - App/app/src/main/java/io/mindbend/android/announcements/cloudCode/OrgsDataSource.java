@@ -107,7 +107,7 @@ public class OrgsDataSource {
             loading.setVisibility(View.GONE);
             Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
-            layoutView.setVisibility(View.INVISIBLE);
+            //layoutView.setVisibility(View.INVISIBLE);
             HashMap<String, Object> params = new HashMap<>();
             params.put("parentOrganizationObjectId", parentOrganizationObjectId);
 
@@ -115,7 +115,7 @@ public class OrgsDataSource {
                 @Override
                 public void done(List<ParseObject> parseObjects, ParseException e) {
                     loading.setVisibility(View.GONE);
-                    layoutView.setVisibility(View.VISIBLE);
+                    //layoutView.setVisibility(View.VISIBLE);
                     ArrayList<Organization> orgs = new ArrayList<Organization>();
                     if (e == null) {
                         for (ParseObject object : parseObjects) {
