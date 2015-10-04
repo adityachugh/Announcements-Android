@@ -31,11 +31,12 @@
     <dimen name="more_logo_size">320dp</dimen>
     <dimen name="progress_bar_LARGE">72dp</dimen>
     <dimen name="pending_user_buttons_size">40dp</dimen>
-    <dimen name="profile_edit_button_size">46dp</dimen>
+    <dimen name="profile_edit_button_size">36dp</dimen>
     <dimen name="post_image_margin_top">8dp</dimen>
     <dimen name="post_text_min_height">51dp</dimen>
     <dimen name="profile_text_padding">16dp</dimen>
     <dimen name="toolbar_landscape_page_text">18sp</dimen>
     <dimen name="profile_org_view_members_button_size">32dp</dimen>
     <dimen name="post_priority_indicator_size">16dp</dimen>
+    <dimen name="profile_frag_photo_size">72dp</dimen>
 </resources>

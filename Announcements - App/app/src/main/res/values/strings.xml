@@ -148,5 +148,7 @@
     <string name="sign_up_new_user_dialog_message">Signing up user...</string>
     <string name="signout_dialog_message">Signing you out...</string>
     <string name="sign_in_dialog_message">Signing you in...</string>
+    <string name="profile_view_members_button">Members</string>
+    <string name="profile_view_children_button">Child Organizations</string>
 
 </resources>

@@ -16,6 +16,7 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -347,7 +348,8 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                     }
                 });
 
-                ImageButton viewMembersButton = (ImageButton) mView.findViewById(R.id.profile_view_members_button);
+                //make the view members button visible
+                Button viewMembersButton = (Button) mView.findViewById(R.id.profile_view_members_button);
                 viewMembersButton.setVisibility(View.VISIBLE);
                 viewMembersButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -355,6 +357,19 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                         mListener.viewMembers(mOrg, mToEdit);
                     }
                 });
+
+                //make the "child org" button visible and set its text to the appropriate level below the current org
+                if (mOrg.getmChildLevel() != null && mOrg.getmChildLevel().getmLevelTitle() != null && !mOrg.getmChildLevel().getmLevelTitle().equals("")){
+                    Button childrenOrgsButton = (Button)mView.findViewById(R.id.profile_view_children_button);
+                    childrenOrgsButton.setVisibility(View.VISIBLE);
+                    childrenOrgsButton.setText(mOrg.getmChildLevel().getmLevelTitle());
+                    childrenOrgsButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //TODO: show children orgs
+                        }
+                    });
+                }
             }
         }
 
