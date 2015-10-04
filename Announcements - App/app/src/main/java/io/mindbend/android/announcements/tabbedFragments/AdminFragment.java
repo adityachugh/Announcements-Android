@@ -309,7 +309,7 @@ public class AdminFragment extends Fragment implements Serializable,
         } else {
             Log.wtf(TAG, "PARSE USER " + ParseUser.getCurrentUser().getObjectId());
             //replace the current profile frag with new org profile frag, while adding it to a backstack
-            OrgsDataSource.isFollowingOrganization(getActivity(), mView, mLoading, ParseUser.getCurrentUser().getObjectId(), orgSelected.getmObjectId(), new FunctionCallback<String>() {
+            OrgsDataSource.isFollowingOrganization(R.id.admin_framelayout,getActivity(), mView, mLoading, ParseUser.getCurrentUser().getObjectId(), orgSelected.getmObjectId(), new FunctionCallback<String>() {
                 @Override
                 public void done(String followState, ParseException e) {
                     ProfileFragment orgProfile = ProfileFragment.newInstance(null, orgSelected, followState, AdminFragment.this, followState.equals(UserDataSource.FOLLOWER_ADMIN), onToday, onDiscover, onYou, onAdmin);
@@ -437,6 +437,7 @@ public class AdminFragment extends Fragment implements Serializable,
     @Override
     public void refreshPosts(boolean isApproving, boolean isViewingState) {
         //refresh when approving posts; load the 10 latest posts
+        getChildFragmentManager().popBackStack();
         if (isApproving)
             loadPendingPosts(mParentOrg.getmObjectId());
         else if (isViewingState)

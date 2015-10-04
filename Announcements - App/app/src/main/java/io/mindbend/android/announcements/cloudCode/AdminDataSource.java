@@ -315,7 +315,6 @@ public class AdminDataSource {
     }
 
     public static void actOnApprovalRequest(Context context, final View view, String postObjectId, String organizationObjectId, final boolean approvalState, String rejectionReason, int priority, final FunctionCallback<Boolean> callback) {
-
         if (!App.hasNetworkConnection(context)){
             Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
@@ -336,8 +335,10 @@ public class AdminDataSource {
                         else
                             Snackbar.make(view, "Successfully declined post!", Snackbar.LENGTH_SHORT).show();
                     } else {
-                        if (e!=null)
+                        if (e!=null){
                             Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
+                            e.printStackTrace();
+                        }
                     }
                 }
             });

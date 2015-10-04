@@ -244,7 +244,7 @@ public class TodayFragment extends Fragment implements Serializable,
 
     @Override
     public void openOrgProfileFromPosts(final Organization organization) {
-        OrgsDataSource.isFollowingOrganization(getActivity(), mView, mLoading, ParseUser.getCurrentUser().getObjectId(), organization.getmObjectId(), new FunctionCallback<String>() {
+        OrgsDataSource.isFollowingOrganization(R.id.today_remove_while_loading_view, getActivity(), mView, mLoading, ParseUser.getCurrentUser().getObjectId(), organization.getmObjectId(), new FunctionCallback<String>() {
             @Override
             public void done(String followState, ParseException e) {
                 if (e == null) {

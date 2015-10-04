@@ -213,13 +213,16 @@ public class OrgsDataSource {
 
     }
 
-    public static void isFollowingOrganization (Context context, final View layout, final ProgressBar loading, String userObjectId, String organizationObjectId, final FunctionCallback<String> callback){
+    public static void isFollowingOrganization (int viewToRemoveId, Context context, final View layout, final ProgressBar loading, String userObjectId, String organizationObjectId, final FunctionCallback<String> callback){
+        final View layoutView = layout.findViewById(viewToRemoveId);
+
         loading.setVisibility(View.VISIBLE);
 
         if (!App.hasNetworkConnection(context)){
             loading.setVisibility(View.GONE);
             Snackbar.make(layout, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
+            layoutView.setVisibility(View.INVISIBLE);
             HashMap<String, String> params = new HashMap<>();
             params.put("userObjectId", userObjectId);
             params.put("organizationObjectId", organizationObjectId);
@@ -228,6 +231,7 @@ public class OrgsDataSource {
                 @Override
                 public void done(String followStatus, ParseException e) {
                     loading.setVisibility(View.GONE);
+                    layoutView.setVisibility(View.VISIBLE);
                     if (e != null){
                         Snackbar.make(layout, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
                     } else {

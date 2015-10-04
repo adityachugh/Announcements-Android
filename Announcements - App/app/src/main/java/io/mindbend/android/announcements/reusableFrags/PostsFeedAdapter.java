@@ -144,9 +144,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
                 @Override
                 public void onClick(View v) {
                     //actOnApprovalRequest; true
-                    actOnApprovalRequest(viewHolder.itemView, post.getmObjectId(), post.getmPosterOrg().getmObjectId(), true, null, post.getmPriority());
-                    mPosts.remove(i);
-                    notifyDataSetChanged();
+                    actOnApprovalRequest(i, viewHolder.itemView, post.getmObjectId(), post.getmPosterOrg().getmObjectId(), true, null, post.getmPriority());
                 }
             });
 
@@ -166,9 +164,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
                             .setView(reason)
                             .setPositiveButton((mContext.getString(R.string.decline_button_text)), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
-                                    actOnApprovalRequest(viewHolder.itemView, post.getmObjectId(), post.getmPosterOrg().getmObjectId(), false, reason.getText().toString(), post.getmPriority());
-                                    mPosts.remove(i);
-                                    notifyDataSetChanged();
+                                    actOnApprovalRequest(i, viewHolder.itemView, post.getmObjectId(), post.getmPosterOrg().getmObjectId(), false, reason.getText().toString(), post.getmPriority());
                                 }
                             })
                             .setNegativeButton(mContext.getString(R.string.cancel_button_text), new DialogInterface.OnClickListener() {
@@ -288,12 +284,13 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
     }
 
     //act on approval state
-    private void actOnApprovalRequest (View view, String postObjectId, String organizationObjectId, boolean approvalState, String rejectionReason, int priority){
+    private void actOnApprovalRequest (final int position, View view, String postObjectId, String organizationObjectId, boolean approvalState, String rejectionReason, int priority){
          AdminDataSource.actOnApprovalRequest(mContext, view, postObjectId, organizationObjectId, approvalState, rejectionReason, priority, new FunctionCallback<Boolean>() {
              @Override
              public void done(Boolean aBoolean, ParseException e) {
                  if (e == null) {
-                     //handled in function
+                     mPosts.remove(position);
+                     notifyDataSetChanged();
                  }
              }
          });

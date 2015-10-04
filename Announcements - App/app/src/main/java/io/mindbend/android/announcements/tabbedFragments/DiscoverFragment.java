@@ -123,7 +123,7 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
     public void pressedOrgFromProfile(final Organization orgPressed) {
         Log.wtf(TAG, "PARSE USER " + ParseUser.getCurrentUser().getObjectId());
         //replace the current profile frag with new org profile frag, while adding it to a backstack
-        OrgsDataSource.isFollowingOrganization(getActivity(), mView, mLoading, ParseUser.getCurrentUser().getObjectId(), orgPressed.getmObjectId(), new FunctionCallback<String>() {
+        OrgsDataSource.isFollowingOrganization(R.id.discover_framelayout, getActivity(), mView, mLoading, ParseUser.getCurrentUser().getObjectId(), orgPressed.getmObjectId(), new FunctionCallback<String>() {
             @Override
             public void done(String followState, ParseException e) {
 //

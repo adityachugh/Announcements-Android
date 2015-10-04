@@ -108,7 +108,7 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
     public void userProfileToOrgProfile(final Organization orgSelected) {
         Log.wtf(TAG, "PARSE USER " + ParseUser.getCurrentUser().getObjectId());
         //replace the current profile frag with new org profile frag, while adding it to a backstack
-        OrgsDataSource.isFollowingOrganization(getActivity(), mView, mLoading, ParseUser.getCurrentUser().getObjectId(), orgSelected.getmObjectId(), new FunctionCallback<String>() {
+        OrgsDataSource.isFollowingOrganization(R.id.you_framelayout,getActivity(), mView, mLoading, ParseUser.getCurrentUser().getObjectId(), orgSelected.getmObjectId(), new FunctionCallback<String>() {
             @Override
             public void done(String retrievedFollowState, ParseException e) {
                 if (e == null) {
