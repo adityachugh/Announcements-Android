@@ -149,7 +149,7 @@ public class TodayFragment extends Fragment implements Serializable,
     }
 
     private void loadPosts(int startIndex, int numberOfPosts, final boolean isGettingPostsForFirstTime) {
-        PostsDataSource.getRangeOfPostsForDay(mView, mLoading,isGettingPostsForFirstTime,R.id.today_remove_while_loading_view, getActivity(), startIndex, numberOfPosts, mCurrentDateSelected, new FunctionCallback<ArrayList<Post>>() {
+        PostsDataSource.getRangeOfPostsForDay(mView, mLoading,isGettingPostsForFirstTime,R.id.today_remove_while_loading_view, getActivity(), startIndex, numberOfPosts, getmCurrentDateSelected(), new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {
