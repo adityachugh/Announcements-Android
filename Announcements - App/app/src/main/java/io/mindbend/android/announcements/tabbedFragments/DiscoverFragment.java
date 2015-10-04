@@ -45,7 +45,7 @@ import io.mindbend.android.announcements.reusableFrags.UserListAdapter;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DiscoverFragment extends Fragment implements Serializable, PostsFeedAdapter.PostInteractionListener, ProfileFragment.ProfileInteractionListener, SearchableFrag.SearchInterface, UserListAdapter.UserListInteractionListener, ListFragment.ListFabListener, PostOverlayFragment.PostsOverlayListener {
+public class DiscoverFragment extends Fragment implements Serializable, PostsFeedAdapter.PostInteractionListener, ProfileFragment.ProfileInteractionListener, SearchableFrag.SearchInterface, UserListAdapter.UserListInteractionListener, ListFragment.ListFabListener, PostOverlayFragment.PostsOverlayListener, OrgsGridAdapter.OrgInteractionListener, OrgsGridFragment.OrgsGridInteractionListener {
 
 
     private static final String TAG = "TAG";
@@ -192,6 +192,13 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
     }
 
     @Override
+    public void viewChildOrgs(ArrayList<Organization> orgs) {
+        OrgsGridFragment childrenOrgs = OrgsGridFragment.newInstance(orgs, DiscoverFragment.this, DiscoverFragment.this, null, false);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.discover_framelayout, childrenOrgs).addToBackStack(null).commitAllowingStateLoss();
+    }
+
+    @Override
     public void searchUserPressed(User userPressed) {
         pressedUserFromCommentOfOrgPost(userPressed);
     }
@@ -259,5 +266,15 @@ public class DiscoverFragment extends Fragment implements Serializable, PostsFee
     @Override
     public void visitCommentersProfile(User commenterToBeVisited) {
 
+    }
+
+    @Override
+    public void pressedOrg(Organization orgSelected) {
+        openOrgProfileFromPosts(orgSelected);
+    }
+
+    @Override
+    public void pressedOrgFromGrid(Organization orgPressed) {
+        openOrgProfileFromPosts(orgPressed);
     }
 }

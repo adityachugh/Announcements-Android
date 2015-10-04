@@ -268,6 +268,13 @@ public class AdminFragment extends Fragment implements Serializable,
         allOrgPosts(organization.getmObjectId());
     }
 
+    @Override
+    public void viewChildOrgs(ArrayList<Organization> orgs) {
+        OrgsGridFragment childrenOrgs = OrgsGridFragment.newInstance(orgs, AdminFragment.this, AdminFragment.this, null, false);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.admin_framelayout, childrenOrgs).addToBackStack(null).commitAllowingStateLoss();
+    }
+
     private void allOrgPosts(final String orgId){
         AdminDataSource.getAllPostsForOrganizationForRange(mView, mLoading, R.id.admin_framelayout,getActivity(), orgId, 0, 10, new FunctionCallback<ArrayList<Post>>() {
             @Override

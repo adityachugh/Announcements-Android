@@ -32,6 +32,7 @@ import io.mindbend.android.announcements.cloudCode.OrgsDataSource;
 import io.mindbend.android.announcements.cloudCode.UserDataSource;
 import io.mindbend.android.announcements.reusableFrags.ListFragment;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridAdapter;
+import io.mindbend.android.announcements.reusableFrags.OrgsGridFragment;
 import io.mindbend.android.announcements.reusableFrags.PostOverlayFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsCardsFragment;
 import io.mindbend.android.announcements.reusableFrags.PostsFeedAdapter;
@@ -43,7 +44,7 @@ import io.mindbend.android.announcements.reusableFrags.UserListAdapter;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class YouFragment extends Fragment implements Serializable, ProfileFragment.ProfileInteractionListener, SearchableFrag.SearchInterface, ListFragment.ListFabListener, UserListAdapter.UserListInteractionListener, PostOverlayFragment.PostsOverlayListener, PostsFeedAdapter.PostInteractionListener {
+public class YouFragment extends Fragment implements Serializable, ProfileFragment.ProfileInteractionListener, SearchableFrag.SearchInterface, ListFragment.ListFabListener, UserListAdapter.UserListInteractionListener, PostOverlayFragment.PostsOverlayListener, PostsFeedAdapter.PostInteractionListener, OrgsGridAdapter.OrgInteractionListener, OrgsGridFragment.OrgsGridInteractionListener {
     private static final String TAG = "TAG";
     private static final String DEFAULT = "default_frag";
     private ProfileFragment mProfileFragment;
@@ -181,6 +182,13 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
     }
 
     @Override
+    public void viewChildOrgs(ArrayList<Organization> orgs) {
+        OrgsGridFragment childrenOrgs = OrgsGridFragment.newInstance(orgs, YouFragment.this, YouFragment.this, null, false);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.you_framelayout, childrenOrgs).addToBackStack(null).commitAllowingStateLoss();
+    }
+
+    @Override
     public void userSelected(User userPressed) {
         pressedUserFromCommentOfOrgPost(userPressed);
     }
@@ -258,5 +266,15 @@ public class YouFragment extends Fragment implements Serializable, ProfileFragme
     @Override
     public void pressedPostCard(Post post) {
 
+    }
+
+    @Override
+    public void pressedOrg(Organization orgSelected) {
+        openOrgProfileFromPosts(orgSelected);
+    }
+
+    @Override
+    public void pressedOrgFromGrid(Organization orgPressed) {
+        openOrgProfileFromPosts(orgPressed);
     }
 }

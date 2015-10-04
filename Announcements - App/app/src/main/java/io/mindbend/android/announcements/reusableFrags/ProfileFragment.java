@@ -363,11 +363,19 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                     Button childrenOrgsButton = (Button)mView.findViewById(R.id.profile_view_children_button);
                     childrenOrgsButton.setVisibility(View.VISIBLE);
                     childrenOrgsButton.setText(mOrg.getmChildConfig().getmLevelTitle());
-                    Log.wtf("Child level", mOrg.getmChildConfig().getmLevelTitle());
+                    Log.wtf("Child level", mOrg.getmChildConfig().getmLevelTitle()+"s");
                     childrenOrgsButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            //TODO: show children orgs
+                            //show children orgs
+                            OrgsDataSource.getAllChildOrganizations(mView, getActivity(), mLoading, R.id.profile_remove_view_while_loading, mOrg.getmObjectId(), new FunctionCallback<ArrayList<Organization>>() {
+                                @Override
+                                public void done(ArrayList<Organization> organizations, ParseException e) {
+                                    if (e == null){
+                                        mListener.viewChildOrgs(organizations);
+                                    }
+                                }
+                            });
                         }
                     });
                 }
@@ -670,6 +678,8 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
         void viewMembers(Organization org, boolean isAdmin);
 
         void viewAnnouncementsState(Organization org);
+
+        void viewChildOrgs(ArrayList<Organization> orgs);
     }
 
     public interface ProfilePostCommentClick extends Serializable {

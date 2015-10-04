@@ -54,6 +54,8 @@ import io.mindbend.android.announcements.cloudCode.OrgsDataSource;
 import io.mindbend.android.announcements.cloudCode.PostsDataSource;
 import io.mindbend.android.announcements.cloudCode.UserDataSource;
 import io.mindbend.android.announcements.reusableFrags.ListFragment;
+import io.mindbend.android.announcements.reusableFrags.OrgsGridAdapter;
+import io.mindbend.android.announcements.reusableFrags.OrgsGridFragment;
 import io.mindbend.android.announcements.reusableFrags.PostCardFullFragment;
 import io.mindbend.android.announcements.reusableFrags.PostCommentsFragment;
 import io.mindbend.android.announcements.reusableFrags.PostOverlayFragment;
@@ -71,7 +73,7 @@ public class TodayFragment extends Fragment implements Serializable,
         View.OnClickListener,
         DatePickerDialog.OnDateSetListener,
         PostOverlayFragment.PostsOverlayListener,
-        ProfileFragment.ProfileInteractionListener, ListFragment.ListFabListener, UserListAdapter.UserListInteractionListener, SearchableFrag.SearchInterface, PostsFeedAdapter.PostInteractionListener{
+        ProfileFragment.ProfileInteractionListener, ListFragment.ListFabListener, UserListAdapter.UserListInteractionListener, SearchableFrag.SearchInterface, PostsFeedAdapter.PostInteractionListener, OrgsGridAdapter.OrgInteractionListener, OrgsGridFragment.OrgsGridInteractionListener {
 
     private static final String TAG = "TodayFragment";
 
@@ -268,7 +270,7 @@ public class TodayFragment extends Fragment implements Serializable,
 
     @Override
     public void viewMembers(final Organization org, final boolean isAdmin) {
-        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, R.id.today_remove_while_loading_view,org.getmObjectId(), 0, 50, isAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
+        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, R.id.today_remove_while_loading_view, org.getmObjectId(), 0, 50, isAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
             @Override
             public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
 
@@ -305,6 +307,13 @@ public class TodayFragment extends Fragment implements Serializable,
 
             }
         });
+    }
+
+    @Override
+    public void viewChildOrgs(ArrayList<Organization> orgs) {
+        OrgsGridFragment childOrgsFrag = OrgsGridFragment.newInstance(orgs, TodayFragment.this, TodayFragment.this, null, false);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.today_framelayout, childOrgsFrag).addToBackStack(null).commitAllowingStateLoss();
     }
 
     @Override
@@ -349,5 +358,15 @@ public class TodayFragment extends Fragment implements Serializable,
     @Override
     public void pressedPostCard(Post post) {
 
+    }
+
+    @Override
+    public void pressedOrg(Organization orgSelected) {
+        openOrgProfileFromPosts(orgSelected);
+    }
+
+    @Override
+    public void pressedOrgFromGrid(Organization orgPressed) {
+        openOrgProfileFromPosts(orgPressed);
     }
 }
