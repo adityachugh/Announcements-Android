@@ -359,10 +359,11 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 });
 
                 //make the "child org" button visible and set its text to the appropriate level below the current org
-                if (mOrg.getmChildLevel() != null && mOrg.getmChildLevel().getmLevelTitle() != null && !mOrg.getmChildLevel().getmLevelTitle().equals("")){
+                if (mOrg.getmChildConfig() != null && mOrg.getmChildConfig().getmLevelTitle() != null && !mOrg.getmChildConfig().getmLevelTitle().equals("")){
                     Button childrenOrgsButton = (Button)mView.findViewById(R.id.profile_view_children_button);
                     childrenOrgsButton.setVisibility(View.VISIBLE);
-                    childrenOrgsButton.setText(mOrg.getmChildLevel().getmLevelTitle());
+                    childrenOrgsButton.setText(mOrg.getmChildConfig().getmLevelTitle());
+                    Log.wtf("Child level", mOrg.getmChildConfig().getmLevelTitle());
                     childrenOrgsButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

@@ -33,6 +33,9 @@ public class Organization implements Serializable, Parcelable {
     private boolean mHasAccessCode;
     private Integer mAccessCode;
     private LevelConfig mParentLevel;
+    private LevelConfig mConfig;
+    private LevelConfig mChildConfig;
+    private LevelConfig mParentConfig;
 
 
     public Organization(String objectId, String title, String description, int followers, String tag, boolean privateOrg, boolean newOrg) {
@@ -73,8 +76,33 @@ public class Organization implements Serializable, Parcelable {
 
         mTag = object.getString(OrgsDataSource.ORG_TAG);
         mIsChildless = object.get(ConfigDataSource.ORG_CHILD_LEVEL_CONFIG) == null;
+        if (!mIsChildless){
+            try {
+                mChildConfig = new LevelConfig(object.getParseObject(ConfigDataSource.ORG_CHILD_LEVEL_CONFIG).fetchIfNeeded());
+            } catch (ParseException e) {
+                e.printStackTrace();
+                mChildConfig = null;
+            }
+        }
 
-        mConfigId = object.getParseObject(ConfigDataSource.ORG_CONFIG).getObjectId();
+        if (object.getParseObject(ConfigDataSource.ORG_PARENT_LEVEL_CONFIG) != null) {
+            try {
+                mParentConfig = new LevelConfig(object.getParseObject(ConfigDataSource.ORG_PARENT_LEVEL_CONFIG).fetchIfNeeded());
+            } catch (ParseException e) {
+                e.printStackTrace();
+                mParentConfig = null;
+            }
+        }
+
+        mConfigId = object.getParseObject(ConfigDataSource.ORG_CONFIG) != null ? object.getParseObject(ConfigDataSource.ORG_CONFIG).getObjectId() : null;
+        if (mConfigId != null){
+            try {
+                mConfig = new LevelConfig(object.getParseObject(ConfigDataSource.ORG_CONFIG).fetchIfNeeded());
+            } catch (ParseException e) {
+                e.printStackTrace();
+                mConfig = null;
+            }
+        }
 
         mHasAccessCode = object.getBoolean(OrgsDataSource.HAS_ACCESS_CODE);
         if (mHasAccessCode)
@@ -121,6 +149,12 @@ public class Organization implements Serializable, Parcelable {
             mAccessCode = in.readInt();
 
         mParentLevel = (LevelConfig)in.readSerializable();
+
+
+        //for the configs
+        mParentConfig = (LevelConfig)in.readSerializable();
+        mConfig = (LevelConfig)in.readSerializable();
+        mChildConfig = (LevelConfig)in.readSerializable();
     }
 
     public String getmObjectId() {
@@ -224,6 +258,18 @@ public class Organization implements Serializable, Parcelable {
         return mParentLevel;
     }
 
+    public LevelConfig getmConfig() {
+        return mConfig;
+    }
+
+    public LevelConfig getmChildConfig() {
+        return mChildConfig;
+    }
+
+    public LevelConfig getmParentConfig() {
+        return mParentConfig;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mObjectId);
@@ -257,6 +303,10 @@ public class Organization implements Serializable, Parcelable {
             dest.writeInt(mAccessCode);
 
         dest.writeSerializable(mParentLevel);
+
+        dest.writeSerializable(mParentConfig);
+        dest.writeSerializable(mConfig);
+        dest.writeSerializable(mChildConfig);
     }
 
     public static final Parcelable.Creator<Organization> CREATOR
