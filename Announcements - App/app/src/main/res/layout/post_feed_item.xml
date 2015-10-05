@@ -21,19 +21,20 @@
             android:layout_marginTop="@dimen/card_inner_margin">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:background="@drawable/high_priority_indicator"
-                android:visibility="gone"
-                android:id="@+id/post_priority_indicator"
-                android:layout_width="@dimen/post_priority_indicator_size"
-                android:layout_height="@dimen/post_priority_indicator_size"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true" />
-
-            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/post_club_image"
                 android:layout_width="@dimen/circle_avatar_size"
                 android:layout_height="@dimen/circle_avatar_size"
                 android:src="@color/primary"/>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:background="@drawable/high_priority_indicator"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:visibility="visible"
+                android:id="@+id/post_priority_indicator"
+                android:layout_width="@dimen/post_priority_indicator_size"
+                android:layout_height="@dimen/post_priority_indicator_size"
+                />
 
             <TextView
                 android:id="@+id/post_title"
@@ -41,17 +42,19 @@
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@id/post_club_image"
                 android:layout_marginLeft="@dimen/post_title_margin"
-                android:text="Synth polaroid bitter."
-                android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+                android:text="Example title of 30 characters"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:textSize="@dimen/post_title_size"/>
 
             <TextView
                 android:id="@+id/post_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/post_club_image"
+                android:layout_below="@id/post_title"
                 android:layout_marginLeft="@dimen/post_title_margin"
                 android:text="2hrs"
                 android:maxLines="2"
+                android:textSize="@dimen/post_time_text_size"
                 android:textColor="@color/text_tertiary"/>
         </RelativeLayout>
 
@@ -91,8 +94,8 @@
 
         <View
             android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/card_outer_margin"
             android:layout_height="1dp"
-            android:layout_marginTop="16dp"
             android:background="@color/divider_color"/>
 
         <LinearLayout

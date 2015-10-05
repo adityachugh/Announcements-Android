@@ -119,6 +119,7 @@ public class AdminDataSource {
                                                   String levelConfigObjectId, String configObjectId, String organizationName, String organizationHandle,
                                                   boolean isPrivate, String adminObjectId, boolean approvalRequired, Integer accessCode,
                                                   byte[] profilePhoto, byte[] coverPhoto, String description, String parentLevelConfigObjectId,
+                                                  String childLevelConfigObjectId,
                                                   final FunctionCallback<Boolean> callback) {
         //levelConfigObjectId is the child level config of the org that's calling this function
         loading.setVisibility(View.VISIBLE);
@@ -145,15 +146,18 @@ public class AdminDataSource {
             params.put("coverPhoto", coverPhoto);
             params.put("description", description);
             params.put("parentLevelConfigObjectId", parentLevelConfigObjectId);
+            params.put("childLevelConfigObjectId", childLevelConfigObjectId);
 
             ParseCloud.callFunctionInBackground("createNewChildOrganization", params, new FunctionCallback<Boolean>() {
                 @Override
                 public void done(Boolean success, ParseException e) {
                     loading.setVisibility(View.GONE);
                     layoutView.setVisibility(View.VISIBLE);
-                    if (e != null) {
-                        Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
-                        e.printStackTrace();
+                    if (e != null || !success) {
+                        String message = e == null ? "Unknown Error. Contact a Mindbend Studio Employee" : ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage());
+                        Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
+                        if (e != null)
+                            e.printStackTrace();
                     } else {
                         if (success)
                             callback.done(success, e);

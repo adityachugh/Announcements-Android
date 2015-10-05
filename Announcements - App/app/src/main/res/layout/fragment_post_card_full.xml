@@ -50,13 +50,15 @@
                         android:layout_alignTop="@id/post_club_image_full"
                         android:layout_marginLeft="@dimen/post_title_margin"
                         android:text="Synth polaroid bitter."
-                        android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                        android:textSize="@dimen/post_title_size"/>
 
                     <TextView
                         android:id="@+id/post_time_full"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignBottom="@id/post_club_image_full"
+                        android:layout_below="@id/post_title_full"
+                        android:textSize="@dimen/post_time_text_size"
                         android:layout_marginLeft="@dimen/post_title_margin"
                         android:text="2hrs"
                         android:textColor="@color/text_tertiary"/>

@@ -39,4 +39,6 @@
     <dimen name="profile_org_view_members_button_size">32dp</dimen>
     <dimen name="post_priority_indicator_size">16dp</dimen>
     <dimen name="profile_frag_photo_size">72dp</dimen>
+    <dimen name="post_title_size">16sp</dimen>
+    <dimen name="post_time_text_size">12sp</dimen>
 </resources>
