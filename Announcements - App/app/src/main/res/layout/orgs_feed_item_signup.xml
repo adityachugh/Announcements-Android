@@ -47,6 +47,7 @@
             android:layout_gravity="center"
             android:layout_margin="8dp"
             android:text="Follow"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:background="@color/divider_color"
             android:textColor="@color/accent"/>
     </LinearLayout>
