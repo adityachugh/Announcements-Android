@@ -66,7 +66,9 @@ public class SignUpOrgsActivity extends ActionBarActivity implements Serializabl
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                //follow orgs, then clear singleton
                                 followOrganizations(v, mContext, mProgressBar);
+                                OrgsToFollow.clearInstance();
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

@@ -16,4 +16,9 @@ public class OrgsToFollow extends ArrayList<String> {
         }
         return sInstance;
     }
+
+    //TO clear instance (reset selected orgs after user has signed up)
+    public static void clearInstance(){
+        sInstance = null;
+    }
 }

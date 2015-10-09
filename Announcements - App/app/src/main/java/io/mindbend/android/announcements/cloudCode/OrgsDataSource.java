@@ -333,7 +333,6 @@ public class OrgsDataSource {
             ParseCloud.callFunctionInBackground("getFollowersFollowRequestsAndAdminsForOrganizationInRange", params, new FunctionCallback<List<ParseObject>>() {
                 @Override
                 public void done(List<ParseObject> followObjects, ParseException e) {
-//                int i = 0;
                     loading.setVisibility(View.GONE);
                     layoutView.setVisibility(View.VISIBLE);
                     if (e == null){
