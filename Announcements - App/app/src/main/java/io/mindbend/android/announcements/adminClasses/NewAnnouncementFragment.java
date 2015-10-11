@@ -2,6 +2,7 @@ package io.mindbend.android.announcements.adminClasses;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -122,9 +123,13 @@ public class NewAnnouncementFragment extends Fragment implements DatePickerDialo
                     String title = mTitle.getText().toString();
                     String body = mBody.getText().toString();
                     mRadioGroup = (RadioGroup) mView.findViewById(R.id.newA_priority_group);
-                    PostsDataSource.uploadPostForOrganization(getActivity(), mView, mLoading, R.id.newA_remove_view_while_loading ,mOrg.getmObjectId(), title, body, mImageBytes, mStartDate, mEndDate, getPrioritySelected(), mNotifyParent.isChecked(), new FunctionCallback<Boolean>() {
+                    final ProgressDialog dialog = new ProgressDialog(getActivity(), R.style.DialogTheme);
+                    dialog.setMessage(getActivity().getString(R.string.posting_new_announcement_message));
+                    dialog.show();
+                    PostsDataSource.uploadPostForOrganization(getActivity(), mView,mOrg.getmObjectId(), title, body, mImageBytes, mStartDate, mEndDate, getPrioritySelected(), mNotifyParent.isChecked(), new FunctionCallback<Boolean>() {
                         @Override
                         public void done(Boolean success, ParseException e) {
+                            dialog.dismiss();
                             if (e == null && success)
                                 getActivity().onBackPressed();
                         }

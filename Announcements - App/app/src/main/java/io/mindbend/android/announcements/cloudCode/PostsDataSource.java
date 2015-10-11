@@ -124,16 +124,11 @@ public class PostsDataSource {
 
     }
 
-    public static void uploadPostForOrganization (Context context, final View view, final ProgressBar loading, int layoutToRemoveId,
+    public static void uploadPostForOrganization (Context context, final View view,
                                                   String organizationObjectId, String title, String body, byte[] photo, Date startDate, Date endDate,
                                                   int priority, boolean notifyParent, final FunctionCallback<Boolean> callback){
-        loading.setVisibility(View.VISIBLE);
-        final View layoutView = view.findViewById(layoutToRemoveId);
-        layoutView.setVisibility(View.INVISIBLE);
 
         if (!App.hasNetworkConnection(context)){
-            loading.setVisibility(View.GONE);
-            layoutView.setVisibility(View.VISIBLE);
             Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap<String, Object> params = new HashMap<>();
@@ -149,8 +144,6 @@ public class PostsDataSource {
             ParseCloud.callFunctionInBackground("uploadPostForOrganization", params,  new FunctionCallback<Boolean>() {
                 @Override
                 public void done(Boolean successful, ParseException e) {
-                    loading.setVisibility(View.GONE);
-                    layoutView.setVisibility(View.VISIBLE);
                     String message = "Successfully uploaded announcement";
                     if (e == null) {
                         callback.done(successful, e);

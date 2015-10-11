@@ -152,5 +152,6 @@
     <string name="sign_in_dialog_message">Signing you in...</string>
     <string name="profile_view_members_button">Members</string>
     <string name="profile_view_children_button">Child Organizations</string>
+    <string name="posting_new_announcement_message">Posting Announcement...</string>
 
 </resources>

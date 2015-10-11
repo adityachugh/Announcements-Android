@@ -219,7 +219,7 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
             boolean approvalRequired = ((Switch)mView.findViewById(R.id.newO_approval_required_switch)).isChecked();
             String childLevelConfigObjectId = mParentOrg.getmChildConfig() == null ? null : mParentOrg.getmChildConfig().getmObjectId();
             AdminDataSource.createNewChildOrganization(mView, getActivity(), mLoading, R.id.modify_org_remove_view_while_loading,mParentOrg.getmObjectId(),
-                    mParentOrg.getmChildLevel().getmObjectId(), mParentOrg.getmConfigId(), mName.getText().toString(),
+                    mParentOrg.getmConfigId(),mName.getText().toString(),
                     mHandle.getText().toString(), isPrivate, initAdminObjectId, approvalRequired, accessCode,
                     toUploadProfileImageBytes, toUploadCoverImageBytes, mDescription.getText().toString(),
                     mParentOrg.getmMainLevel().getmObjectId(), childLevelConfigObjectId,new FunctionCallback<Boolean>() {

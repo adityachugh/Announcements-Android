@@ -116,10 +116,10 @@ public class AdminDataSource {
     }
 
     public static void createNewChildOrganization(final View view, final Context context, final ProgressBar loading, int viewIdToRemove, String organizationObjectId,
-                                                  String levelConfigObjectId, String configObjectId, String organizationName, String organizationHandle,
+                                                  String configObjectId, String organizationName, String organizationHandle,
                                                   boolean isPrivate, String adminObjectId, boolean approvalRequired, Integer accessCode,
-                                                  byte[] profilePhoto, byte[] coverPhoto, String description, String parentLevelConfigObjectId,
-                                                  String childLevelConfigObjectId,
+                                                  byte[] profilePhoto, byte[] coverPhoto, String description, String newOrgParentLevelConfigObjectId,
+                                                  String newOrgLevelConfigObjectId,
                                                   final FunctionCallback<Boolean> callback) {
         //levelConfigObjectId is the child level config of the org that's calling this function
         loading.setVisibility(View.VISIBLE);
@@ -133,7 +133,6 @@ public class AdminDataSource {
         } else {
             HashMap<String, Object> params = new HashMap<>();
             params.put("organizationObjectId", organizationObjectId);
-            params.put("levelConfigObjectId", levelConfigObjectId);
             params.put("configObjectId", configObjectId);
             params.put("organizationName", organizationName);
             String organizationType = isPrivate ? OrgsDataSource.ORG_TYPES_PRIVATE : OrgsDataSource.ORG_TYPES_PUBLIC;
@@ -145,8 +144,8 @@ public class AdminDataSource {
             params.put("profilePhoto", profilePhoto);
             params.put("coverPhoto", coverPhoto);
             params.put("description", description);
-            params.put("parentLevelConfigObjectId", parentLevelConfigObjectId);
-            params.put("childLevelConfigObjectId", childLevelConfigObjectId);
+            params.put("newOrgParentLevelConfigObjectId", newOrgParentLevelConfigObjectId);
+            params.put("newOrgLevelConfigObjectId", newOrgLevelConfigObjectId);
 
             ParseCloud.callFunctionInBackground("createNewChildOrganization", params, new FunctionCallback<Boolean>() {
                 @Override
