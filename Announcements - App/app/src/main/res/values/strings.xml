@@ -153,5 +153,7 @@
     <string name="profile_view_members_button">Members</string>
     <string name="profile_view_children_button">Child Organizations</string>
     <string name="posting_new_announcement_message">Posting Announcement...</string>
+    <string name="modify_existing_org_message">Updating organization...</string>
+    <string name="create_new_org_message">Creating organization...</string>
 
 </resources>

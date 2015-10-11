@@ -115,20 +115,14 @@ public class AdminDataSource {
 
     }
 
-    public static void createNewChildOrganization(final View view, final Context context, final ProgressBar loading, int viewIdToRemove, String organizationObjectId,
+    public static void createNewChildOrganization(final View view, final Context context, String organizationObjectId,
                                                   String configObjectId, String organizationName, String organizationHandle,
                                                   boolean isPrivate, String adminObjectId, boolean approvalRequired, Integer accessCode,
                                                   byte[] profilePhoto, byte[] coverPhoto, String description, String newOrgParentLevelConfigObjectId,
                                                   String newOrgLevelConfigObjectId,
                                                   final FunctionCallback<Boolean> callback) {
-        //levelConfigObjectId is the child level config of the org that's calling this function
-        loading.setVisibility(View.VISIBLE);
-        final View layoutView = view.findViewById(viewIdToRemove);
-        layoutView.setVisibility(View.INVISIBLE);
 
         if (!App.hasNetworkConnection(context)){
-            loading.setVisibility(View.GONE);
-            layoutView.setVisibility(View.VISIBLE);
             Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap<String, Object> params = new HashMap<>();
@@ -150,8 +144,6 @@ public class AdminDataSource {
             ParseCloud.callFunctionInBackground("createNewChildOrganization", params, new FunctionCallback<Boolean>() {
                 @Override
                 public void done(Boolean success, ParseException e) {
-                    loading.setVisibility(View.GONE);
-                    layoutView.setVisibility(View.VISIBLE);
                     if (e != null || !success) {
                         String message = e == null ? "Unknown Error. Contact a Mindbend Studio Employee" : ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage());
                         Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
@@ -275,17 +267,11 @@ public class AdminDataSource {
 
     }
 
-    public static void updateOrganizationFields(Context context, final View view, final ProgressBar loading,int viewIdToRemove, String organizationObjectId,
+    public static void updateOrganizationFields(Context context, final View view, String organizationObjectId,
                                                 String accessCodeString, String description, String name,
                                                 final FunctionCallback<Organization> orgModified) {
 
-        loading.setVisibility(View.VISIBLE);
-        final View layoutView = view.findViewById(viewIdToRemove);
-        layoutView.setVisibility(View.INVISIBLE);
-
         if (!App.hasNetworkConnection(context)){
-            loading.setVisibility(View.GONE);
-            layoutView.setVisibility(View.VISIBLE);
             Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap<String, Object> params = new HashMap<>();
@@ -299,8 +285,6 @@ public class AdminDataSource {
                 @Override
                 public void done(ParseObject orgReturned, ParseException e) {
 //                int i = 0;
-                    loading.setVisibility(View.GONE);
-                    layoutView.setVisibility(View.VISIBLE);
                     if (e == null && orgModified != null) {
                         Snackbar.make(view, "Successfully updated organization", Snackbar.LENGTH_SHORT).show();
                         orgModified.done(new Organization(orgReturned), e);

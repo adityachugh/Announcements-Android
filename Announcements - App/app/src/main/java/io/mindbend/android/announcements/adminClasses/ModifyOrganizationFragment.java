@@ -1,6 +1,7 @@
 package io.mindbend.android.announcements.adminClasses;
 
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -88,9 +89,9 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParentOrg = (Organization)getArguments().getSerializable(ARG_PARENT);
-            mOrgToModify = (Organization)getArguments().getSerializable(ARG_ORG);
-            mListener = (ModifyOrgInterface)getArguments().getSerializable(ARG_LISTENER);
+            mParentOrg = (Organization) getArguments().getSerializable(ARG_PARENT);
+            mOrgToModify = (Organization) getArguments().getSerializable(ARG_ORG);
+            mListener = (ModifyOrgInterface) getArguments().getSerializable(ARG_LISTENER);
         }
     }
 
@@ -102,19 +103,19 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
 
         setupViews(mView);
 
-        if (mOrgToModify != null){
+        if (mOrgToModify != null) {
             mName.setText(mOrgToModify.getTitle());
             mHandle.setText(mOrgToModify.getTag());
             mHandle.setEnabled(false);
             mHandleTV.setTextColor(getResources().getColor(R.color.text_secondary));
-            LinearLayout approvalRequired = (LinearLayout)mView.findViewById(R.id.newO_approval_required_field);
+            LinearLayout approvalRequired = (LinearLayout) mView.findViewById(R.id.newO_approval_required_field);
             approvalRequired.setVisibility(View.GONE);
-            if (mOrgToModify.isPrivateOrg()){
+            if (mOrgToModify.isPrivateOrg()) {
                 isPrivate = true;
-                ((RadioButton)mView.findViewById(R.id.newO_type_private)).setChecked(true);
+                ((RadioButton) mView.findViewById(R.id.newO_type_private)).setChecked(true);
             } else {
                 isPrivate = false;
-                ((RadioButton)mView.findViewById(R.id.newO_type_public)).setChecked(true);
+                ((RadioButton) mView.findViewById(R.id.newO_type_public)).setChecked(true);
             }
         } else {
             LinearLayout mInitialAdminField = (LinearLayout) mView.findViewById(R.id.newO_add_admin_field);
@@ -196,41 +197,50 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
     }
 
     private void submitOrg() {
-        if(mOrgToModify != null){
+        if (mOrgToModify != null) {
 
-            AdminDataSource.updateOrganizationFields(getActivity(), mView, mLoading, R.id.modify_org_remove_view_while_loading,mOrgToModify.getmObjectId(), mAccessCode.getText().toString(),
+            final ProgressDialog dialog = new ProgressDialog(getActivity(), R.style.DialogTheme);
+            dialog.setMessage(getActivity().getString(R.string.modify_existing_org_message));
+            dialog.show();
+            AdminDataSource.updateOrganizationFields(getActivity(), mView, mOrgToModify.getmObjectId(), mAccessCode.getText().toString(),
                     mDescription.getText().toString(), mName.getText().toString(), new FunctionCallback<Organization>() {
                         @Override
                         public void done(Organization organization, ParseException e) {
-                            if (e == null && organization != null){
-                                        ((TabbedActivity) getActivity()).getmAdminFragment().updateModifiedAdminOrg(organization);
-                                OrgsGridFragment mainFragment = ((OrgsGridFragment)getFragmentManager().findFragmentByTag(AdminFragment.ADMIN_ORGS_TAG));
+                            dialog.dismiss();
+                            if (e == null && organization != null) {
+                                ((TabbedActivity) getActivity()).getmAdminFragment().updateModifiedAdminOrg(organization);
+                                OrgsGridFragment mainFragment = ((OrgsGridFragment) getFragmentManager().findFragmentByTag(AdminFragment.ADMIN_ORGS_TAG));
                                 getFragmentManager().beginTransaction().show(mainFragment);
                                 getFragmentManager().popBackStack();
                             }
                         }
                     });
-        }else {
+        } else {
             /**
              * Create the new org in Parse (with an access code if necessary)
              */
-        String initAdminObjectId = mInitialAdmin == null ? ParseUser.getCurrentUser().getObjectId() : mInitialAdmin.getmObjectId();
+            String initAdminObjectId = mInitialAdmin == null ? ParseUser.getCurrentUser().getObjectId() : mInitialAdmin.getmObjectId();
             Integer accessCode = (!isPrivate || mAccessCode.getText().toString().equals("")) ? null : Integer.parseInt(mAccessCode.getText().toString());
-            boolean approvalRequired = ((Switch)mView.findViewById(R.id.newO_approval_required_switch)).isChecked();
+            boolean approvalRequired = ((Switch) mView.findViewById(R.id.newO_approval_required_switch)).isChecked();
             String childLevelConfigObjectId = mParentOrg.getmChildConfig() == null ? null : mParentOrg.getmChildConfig().getmObjectId();
-            AdminDataSource.createNewChildOrganization(mView, getActivity(), mLoading, R.id.modify_org_remove_view_while_loading,mParentOrg.getmObjectId(),
-                    mParentOrg.getmConfigId(),mName.getText().toString(),
+
+            final ProgressDialog dialog2 = new ProgressDialog(getActivity(), R.style.DialogTheme);
+            dialog2.setMessage(getActivity().getString(R.string.create_new_org_message));
+            dialog2.show();
+            AdminDataSource.createNewChildOrganization(mView, getActivity(), mParentOrg.getmObjectId(),
+                    mParentOrg.getmConfigId(), mName.getText().toString(),
                     mHandle.getText().toString(), isPrivate, initAdminObjectId, approvalRequired, accessCode,
                     toUploadProfileImageBytes, toUploadCoverImageBytes, mDescription.getText().toString(),
-                    mParentOrg.getmMainLevel().getmObjectId(), childLevelConfigObjectId,new FunctionCallback<Boolean>() {
-                @Override
-                public void done(Boolean success, ParseException e) {
-                    if (success && e == null){
-                        Snackbar.make(mView, "Successfully created "+mName.getText().toString(), Snackbar.LENGTH_SHORT).show();
-                        ((TabbedActivity)getActivity()).getmAdminFragment().getChildFragmentManager().popBackStack();
-                    }
-                }
-            });
+                    mParentOrg.getmMainLevel().getmObjectId(), childLevelConfigObjectId, new FunctionCallback<Boolean>() {
+                        @Override
+                        public void done(Boolean success, ParseException e) {
+                            dialog2.dismiss();
+                            if (success && e == null) {
+                                Snackbar.make(mView, "Successfully created " + mName.getText().toString(), Snackbar.LENGTH_SHORT).show();
+                                ((TabbedActivity) getActivity()).getmAdminFragment().getChildFragmentManager().popBackStack();
+                            }
+                        }
+                    });
         }
     }
 
@@ -242,25 +252,25 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
         toUploadCoverImageBytes = coverImageBytes;
     }
 
-    private void changesCompleted(){
+    private void changesCompleted() {
         mUpdatesToBeMade--;
         if (mUpdatesToBeMade == 0)
             getFragmentManager().popBackStack();
     }
 
     private void setupViews(View v) {
-        mLoading = (ProgressBar)mView.findViewById(R.id.newO_creation_progressbar);
-        mName = (EditText)v.findViewById(R.id.newO_name);
-        mHandle = (EditText)v.findViewById(R.id.newO_handle);
-        mHandleTV = (TextView)v.findViewById(R.id.newO_handle_TV);
-        mAccessCode = (EditText)v.findViewById(R.id.newO_access_code_ET);
-        mAccessCodeTitle = (TextView)v.findViewById(R.id.newO_access_code_TV);
+        mLoading = (ProgressBar) mView.findViewById(R.id.newO_creation_progressbar);
+        mName = (EditText) v.findViewById(R.id.newO_name);
+        mHandle = (EditText) v.findViewById(R.id.newO_handle);
+        mHandleTV = (TextView) v.findViewById(R.id.newO_handle_TV);
+        mAccessCode = (EditText) v.findViewById(R.id.newO_access_code_ET);
+        mAccessCodeTitle = (TextView) v.findViewById(R.id.newO_access_code_TV);
         RadioGroup mOrgType = (RadioGroup) v.findViewById(R.id.newO_org_type);
 
-        mDescription = (EditText)mView.findViewById(R.id.newO_description);
-        if (mOrgToModify != null){
+        mDescription = (EditText) mView.findViewById(R.id.newO_description);
+        if (mOrgToModify != null) {
             if (mOrgToModify.hasAccessCode())
-                mAccessCode.setText(""+mOrgToModify.getmAccessCode());
+                mAccessCode.setText("" + mOrgToModify.getmAccessCode());
             mDescription.setText(mOrgToModify.getDescription());
         }
 
@@ -282,7 +292,7 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
             }
         });
 
-        LinearLayout profileImageField = (LinearLayout)v.findViewById(R.id.newO_profile_image_field);
+        LinearLayout profileImageField = (LinearLayout) v.findViewById(R.id.newO_profile_image_field);
         profileImageField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -295,7 +305,7 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
             }
         });
 
-        LinearLayout coverImageField = (LinearLayout)v.findViewById(R.id.newO_cover_image_field);
+        LinearLayout coverImageField = (LinearLayout) v.findViewById(R.id.newO_cover_image_field);
         coverImageField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
