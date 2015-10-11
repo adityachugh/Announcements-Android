@@ -151,7 +151,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
                             @Override
                             public void done(ArrayList<User> users, ParseException e) {
                                 if (e == null) {
-                                    mUserSearchListFrag = ListFragment.newInstance(false, null, true, null, null, null, null, users, SearchableFrag.this, null, mOrgOfUsers, query);
+                                    mUserSearchListFrag = ListFragment.newInstance(false, null, true, null, null, null, null, users, SearchableFrag.this, null, mOrgOfUsers, query, false);
                                     getFragmentManager().beginTransaction()
                                             .replace(R.id.searchable_frag_of_items, mUserSearchListFrag)
                                             .commitAllowingStateLoss();

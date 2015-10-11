@@ -100,6 +100,7 @@
     <string name="login_dialog_button_text">Login</string>
     <string name="empty_comment_message">Cannot post empty comment.</string>
     <string name="no_more_posts_message">No more posts to load</string>
+    <string name="no_more_users_message">No more users to load</string>
     <string name="no_more_comments_message">No more comments</string>
     <string name="follow_request_already_sent">Follow request already sent.</string>
     <string name="follow_request_already_sent_dialog_detailed_message">You must wait for administrators of this organization to accept your request before you can become a follower.</string>

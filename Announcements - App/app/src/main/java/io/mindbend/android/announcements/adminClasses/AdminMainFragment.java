@@ -109,6 +109,9 @@ public class AdminMainFragment extends Fragment implements Serializable {
         TextView viewOrgAdmins= (TextView) mView.findViewById(R.id.text_view_org_admins);
         viewOrgAdmins.setText(getString(R.string.format_view_org_admin, typeOfOrg));
 
+        TextView viewOrgPendingFollowers = (TextView) mView.findViewById(R.id.text_view_org_pending_followers);
+        viewOrgPendingFollowers.setText(getString(R.string.format_view_org_pending_followers, typeOfOrg));
+
         TextView changeOrgPhoto= (TextView) mView.findViewById(R.id.text_change_org_picture);
         changeOrgPhoto.setText(getString(R.string.format_change_org_photo, typeOfOrg));
 
@@ -186,10 +189,21 @@ public class AdminMainFragment extends Fragment implements Serializable {
             @Override
             public void onClick(View v) {
                 Log.d(ADMIN_MAIN_TAG, "view admins");
-                mListener.userListOpened(mOrg);
+                mListener.viewAdmins(mOrg);
             }
         });
 
+        LinearLayout viewOrgPendingFollowers = (LinearLayout) mView.findViewById(R.id.admin_view_org_pending_followers);
+        if (mOrg.isPrivateOrg() && !mOrg.hasAccessCode())
+            viewOrgPendingFollowers.setVisibility(View.VISIBLE);
+
+        viewOrgPendingFollowers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(ADMIN_MAIN_TAG, "view pending");
+                mListener.viewPendingFollowers(mOrg);
+            }
+        });
 
         LinearLayout changeOrgPhoto= (LinearLayout) mView.findViewById(R.id.admin_change_profile_org_picture);
         changeOrgPhoto.setOnClickListener(new View.OnClickListener() {
@@ -234,9 +248,11 @@ public class AdminMainFragment extends Fragment implements Serializable {
         void addAnnouncement(Organization organization);
         void addChildOrganization (Organization parentOrg);
         void getChildPendingPosts (Organization parentOrg);
-        void userListOpened(Organization parentOrg);
+        void viewAdmins(Organization parentOrg);
         void viewAnnouncementsState(Organization organization);
         void modifyOrg (Organization organization);
+        void viewPendingFollowers (Organization organization);
+        void viewFollowers (Organization organization);
     }
 
     public NewAnnouncementFragment getmNewAnnouncementFragment() {

@@ -186,7 +186,7 @@ public class AdminFragment extends Fragment implements Serializable,
          * this method is called when "view schools" is pressed
          */
 
-        OrgsDataSource.getAllChildOrganizations(mView, getActivity(), mLoading, R.id.admin_framelayout,org.getmObjectId(), new FunctionCallback<ArrayList<Organization>>() {
+        OrgsDataSource.getAllChildOrganizations(mView, getActivity(), mLoading, R.id.admin_framelayout, org.getmObjectId(), new FunctionCallback<ArrayList<Organization>>() {
             @Override
             public void done(ArrayList<Organization> organizations, ParseException e) {
                 if (e == null) {
@@ -224,7 +224,7 @@ public class AdminFragment extends Fragment implements Serializable,
     }
 
     private void loadPendingPosts(final String parentId){
-        AdminDataSource.getPostsToBeApprovedInRange(mView, mLoading, R.id.admin_framelayout,getActivity(), parentId, 0, 10, new FunctionCallback<ArrayList<Post>>() {
+        AdminDataSource.getPostsToBeApprovedInRange(mView, mLoading, R.id.admin_framelayout, getActivity(), parentId, 0, 10, new FunctionCallback<ArrayList<Post>>() {
             @Override
             public void done(ArrayList<Post> posts, ParseException e) {
                 if (e == null) {
@@ -244,15 +244,15 @@ public class AdminFragment extends Fragment implements Serializable,
     }
 
     @Override
-    public void userListOpened(final Organization parentOrg) {
-        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, R.id.admin_framelayout,parentOrg.getmObjectId(), 0, 50, true, new FunctionCallback<HashMap<Boolean, Object>>() {
+    public void viewAdmins(final Organization parentOrg) {
+        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, R.id.admin_framelayout, parentOrg.getmObjectId(), 0, 50, true, new FunctionCallback<HashMap<Boolean, Object>>() {
             @Override
             public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
 
                 ArrayList<User> users = (ArrayList<User>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
                 HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
 
-                ListFragment adminList = ListFragment.newInstance(true, AdminFragment.this, false, null, null, null, null, users, AdminFragment.this, typeOfUsers, parentOrg, null);
+                ListFragment adminList = ListFragment.newInstance(true, AdminFragment.this, false, null, null, null, null, users, AdminFragment.this, typeOfUsers, parentOrg, null, false);
                 getChildFragmentManager().beginTransaction()
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .replace(R.id.admin_framelayout, adminList)
@@ -260,6 +260,31 @@ public class AdminFragment extends Fragment implements Serializable,
                         .commitAllowingStateLoss();
             }
         });
+    }
+
+    @Override
+    public void viewPendingFollowers(final Organization organization) {
+        OrgsDataSource.getRequestedPendingPrivateOrganizationUsers(mView, getActivity(), mLoading, R.id.admin_framelayout, organization.getmObjectId(), 0, 1, new FunctionCallback<HashMap<Boolean, Object>>() {
+            @Override
+            public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
+                if (e == null) {
+                    ArrayList<User> users = (ArrayList<User>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
+                    HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
+
+                    ListFragment pendingFollowers = ListFragment.newInstance(true, AdminFragment.this, false, null, null, null, null, users, AdminFragment.this, typeOfUsers, organization, null, true);
+                    getChildFragmentManager().beginTransaction()
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .replace(R.id.admin_framelayout, pendingFollowers)
+                            .addToBackStack(null)
+                            .commitAllowingStateLoss();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void viewFollowers(Organization organization) {
+
     }
 
     @Override
@@ -362,14 +387,14 @@ public class AdminFragment extends Fragment implements Serializable,
 
     @Override
     public void viewMembers(final Organization org, final boolean isAdmin) {
-        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, R.id.admin_framelayout,org.getmObjectId(), 0, 50, isAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
+        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, R.id.admin_framelayout,org.getmObjectId(), 0, 20, isAdmin, new FunctionCallback<HashMap<Boolean, Object>>() {
             @Override
             public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
 
                 ArrayList<User> users = (ArrayList<User>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
                 HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
 
-                ListFragment adminList = ListFragment.newInstance(isAdmin, AdminFragment.this, false, null, null, null, null, users, AdminFragment.this, typeOfUsers, org, null);
+                ListFragment adminList = ListFragment.newInstance(isAdmin, AdminFragment.this, false, null, null, null, null, users, AdminFragment.this, typeOfUsers, org, null, false);
                 getChildFragmentManager().beginTransaction()
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .replace(R.id.admin_framelayout, adminList)
