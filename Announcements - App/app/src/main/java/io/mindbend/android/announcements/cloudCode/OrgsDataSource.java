@@ -386,7 +386,6 @@ public class OrgsDataSource {
 
                         for (ParseObject follow : parseObjects) {
                             User user = new User(follow.getParseUser(UserDataSource.FOLLOWER_USER_FIELD));
-                            Log.wtf("SWAG", "admin is" + user.toString() + " " + user.getName());
                             user.setmFollowObjectId(follow.getObjectId());
                             users.add(user);
                             userTypes.put(user, getTypeOfFollower(follow.getString(UserDataSource.FOLLOWER_USER_TYPE_FIELD)));
