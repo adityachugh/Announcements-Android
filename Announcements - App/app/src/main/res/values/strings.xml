@@ -12,7 +12,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="first_name_hint">first name</string>
     <string name="username_hint">username</string>
-    <string name="tagline">Notifications made simple.</string>
+    <string name="tagline">Stay informed.</string>
     <string name="password_hint">password</string>
     <string name="forgot_password">forgot password?</string>
     <string name="last_name_hint">last name</string>
