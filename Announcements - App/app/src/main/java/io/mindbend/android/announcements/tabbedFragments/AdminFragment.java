@@ -245,14 +245,34 @@ public class AdminFragment extends Fragment implements Serializable,
 
     @Override
     public void viewAdmins(final Organization parentOrg) {
-        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, R.id.admin_framelayout, parentOrg.getmObjectId(), 0, 50, true, new FunctionCallback<HashMap<Boolean, Object>>() {
+        OrgsDataSource.getAdminsForOrganizationInRange(mView, getActivity(), mLoading, R.id.admin_framelayout, parentOrg.getmObjectId(), 0, 20, new FunctionCallback<HashMap<Boolean, Object>>() {
+            @Override
+            public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
+                ArrayList<User> users = (ArrayList<User>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
+                HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
+
+                ListFragment adminList = ListFragment.newInstance(true, AdminFragment.this, false, null, null, null, null, users, AdminFragment.this, typeOfUsers, parentOrg, null, true, false);
+                getChildFragmentManager().beginTransaction()
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .replace(R.id.admin_framelayout, adminList)
+                        .addToBackStack(null)
+                        .commitAllowingStateLoss();
+            }
+        });
+    }
+
+
+    @Override
+    public void viewFollowers(final Organization organization) {
+        //is admin is false so pending followers dont show up in this list
+        OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(), mLoading, R.id.admin_framelayout, organization.getmObjectId(), 0, 20, false, new FunctionCallback<HashMap<Boolean, Object>>() {
             @Override
             public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
 
                 ArrayList<User> users = (ArrayList<User>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
                 HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
 
-                ListFragment adminList = ListFragment.newInstance(true, AdminFragment.this, false, null, null, null, null, users, AdminFragment.this, typeOfUsers, parentOrg, null, false);
+                ListFragment adminList = ListFragment.newInstance(true, AdminFragment.this, false, null, null, null, null, users, AdminFragment.this, typeOfUsers, organization, null, false, false);
                 getChildFragmentManager().beginTransaction()
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .replace(R.id.admin_framelayout, adminList)
@@ -264,14 +284,14 @@ public class AdminFragment extends Fragment implements Serializable,
 
     @Override
     public void viewPendingFollowers(final Organization organization) {
-        OrgsDataSource.getRequestedPendingPrivateOrganizationUsers(mView, getActivity(), mLoading, R.id.admin_framelayout, organization.getmObjectId(), 0, 1, new FunctionCallback<HashMap<Boolean, Object>>() {
+        OrgsDataSource.getRequestedPendingPrivateOrganizationUsers(mView, getActivity(), mLoading, R.id.admin_framelayout, organization.getmObjectId(), 0, 20, new FunctionCallback<HashMap<Boolean, Object>>() {
             @Override
             public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
                 if (e == null) {
                     ArrayList<User> users = (ArrayList<User>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
                     HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
 
-                    ListFragment pendingFollowers = ListFragment.newInstance(true, AdminFragment.this, false, null, null, null, null, users, AdminFragment.this, typeOfUsers, organization, null, true);
+                    ListFragment pendingFollowers = ListFragment.newInstance(true, AdminFragment.this, false, null, null, null, null, users, AdminFragment.this, typeOfUsers, organization, null, false, true);
                     getChildFragmentManager().beginTransaction()
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                             .replace(R.id.admin_framelayout, pendingFollowers)
@@ -280,11 +300,6 @@ public class AdminFragment extends Fragment implements Serializable,
                 }
             }
         });
-    }
-
-    @Override
-    public void viewFollowers(Organization organization) {
-
     }
 
     @Override
@@ -394,7 +409,7 @@ public class AdminFragment extends Fragment implements Serializable,
                 ArrayList<User> users = (ArrayList<User>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
                 HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
 
-                ListFragment adminList = ListFragment.newInstance(isAdmin, AdminFragment.this, false, null, null, null, null, users, AdminFragment.this, typeOfUsers, org, null, false);
+                ListFragment adminList = ListFragment.newInstance(isAdmin, AdminFragment.this, false, null, null, null, null, users, AdminFragment.this, typeOfUsers, org, null, false, false);
                 getChildFragmentManager().beginTransaction()
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .replace(R.id.admin_framelayout, adminList)

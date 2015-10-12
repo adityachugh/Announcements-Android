@@ -107,7 +107,10 @@ public class AdminMainFragment extends Fragment implements Serializable {
         allOrgAnnouncements.setText(getString(R.string.format_all_org_announcements, typeOfOrg));
 
         TextView viewOrgAdmins= (TextView) mView.findViewById(R.id.text_view_org_admins);
-        viewOrgAdmins.setText(getString(R.string.format_view_org_admin, typeOfOrg));
+        viewOrgAdmins.setText(getString(R.string.format_view_org_admins, typeOfOrg));
+
+        TextView viewOrgFollowers= (TextView) mView.findViewById(R.id.text_view_org_followers);
+        viewOrgFollowers.setText(getString(R.string.format_view_org_followers, typeOfOrg));
 
         TextView viewOrgPendingFollowers = (TextView) mView.findViewById(R.id.text_view_org_pending_followers);
         viewOrgPendingFollowers.setText(getString(R.string.format_view_org_pending_followers, typeOfOrg));
@@ -190,6 +193,15 @@ public class AdminMainFragment extends Fragment implements Serializable {
             public void onClick(View v) {
                 Log.d(ADMIN_MAIN_TAG, "view admins");
                 mListener.viewAdmins(mOrg);
+            }
+        });
+
+        LinearLayout viewOrgFollowers= (LinearLayout) mView.findViewById(R.id.admin_view_org_followers);
+        viewOrgFollowers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(ADMIN_MAIN_TAG, "view followers");
+                mListener.viewFollowers(mOrg);
             }
         });
 

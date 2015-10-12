@@ -1,22 +1,16 @@
 package io.mindbend.android.announcements.reusableFrags;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
-import android.util.ArrayMap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
@@ -46,7 +40,8 @@ public class ListFragment extends Fragment implements Serializable, SwipyRefresh
     private static final String ARG_USERS_TYPE = "type_of_users";
     private static final String ARG_INTERFACE = "interface_passed_in";
     private static final String ARG_IS_ADMIN = "is_current_user_admin_of_list";
-    private static final String ARG_IS_VIEWING_PENDING = "is_current_user_viewing_pending_users";
+    private static final String ARG_IS_VIEWING_ADMINS = "is_user_viewing_admins";
+    private static final String ARG_IS_VIEWING_PENDING_FOLLOWERS = "is_user_viewing_pending_followers";
     private static final String ARG_SEARCH_TEXT = "search_text";
 
     /**
@@ -72,6 +67,7 @@ public class ListFragment extends Fragment implements Serializable, SwipyRefresh
     private UserListAdapter.UserListInteractionListener mUserListener;
     private HashMap<User, Integer> mTypeOfUsers; //this is to detail if the users are members, admins, or pending members
     private boolean mIsAdmin;
+    private boolean mViewingAdmins;
     private boolean mViewingPending;
     private ListFabListener mListener;
     private ImageButton mAddAdminFab;
@@ -87,7 +83,7 @@ public class ListFragment extends Fragment implements Serializable, SwipyRefresh
                                            ArrayList<Organization> orgsIfPresent, OrgsListAdapter.OrgListInteractionListener orgListenerIfPresent,
                                            ArrayList<Notification> notifsIfPresent, NotifsListAdapter.NotifInteractionListener notifListenerIfPresent,
                                            ArrayList<User> usersIfPresent, UserListAdapter.UserListInteractionListener userListenerIfPresent, HashMap<User,
-            Integer> typeOfUser, Organization orgOfUsers, String nullableSearchQueryText, boolean viewingPendingUsers) {
+            Integer> typeOfUser, Organization orgOfUsers, String nullableSearchQueryText, boolean viewingAdmins, boolean viewingPending) {
         ListFragment fragment = new ListFragment();
         Bundle args = new Bundle();
 
@@ -106,7 +102,8 @@ public class ListFragment extends Fragment implements Serializable, SwipyRefresh
         //if users
         args.putParcelableArrayList(ARG_USERS, usersIfPresent);
         args.putSerializable(ARG_ORG_OF_USERS, orgOfUsers);
-        args.putBoolean(ARG_IS_VIEWING_PENDING, viewingPendingUsers);
+        args.putBoolean(ARG_IS_VIEWING_ADMINS, viewingAdmins);
+        args.putBoolean(ARG_IS_VIEWING_PENDING_FOLLOWERS, viewingPending);
         args.putSerializable(ARG_INTERFACE, userListenerIfPresent);
         args.putSerializable(ARG_USERS_TYPE, typeOfUser);
         if (nullableSearchQueryText != null && isSearching)
@@ -146,7 +143,8 @@ public class ListFragment extends Fragment implements Serializable, SwipyRefresh
             mTypeOfUsers = (HashMap<User, Integer>) getArguments().getSerializable(ARG_USERS_TYPE);
             mOrgOfUsers = (Organization) getArguments().getSerializable(ARG_ORG_OF_USERS);
             mUserListener = (UserListAdapter.UserListInteractionListener) getArguments().getSerializable(ARG_INTERFACE);
-            mViewingPending = getArguments().getBoolean(ARG_IS_VIEWING_PENDING);
+            mViewingAdmins = getArguments().getBoolean(ARG_IS_VIEWING_ADMINS);
+            mViewingPending = getArguments().getBoolean(ARG_IS_VIEWING_PENDING_FOLLOWERS);
         }
     }
 
@@ -179,7 +177,7 @@ public class ListFragment extends Fragment implements Serializable, SwipyRefresh
             case USERS_SELECTED:
                 mUserAdapter = new UserListAdapter(getActivity(), mUsers, mUserListener, mTypeOfUsers, mIsSearching, mOrgOfUsers, mView, mLoading);
                 recyclerView.setAdapter(mUserAdapter);
-                if (mIsAdmin && !mViewingPending) {
+                if (mIsAdmin && mViewingAdmins) {
                     //the add admin fab
                     mAddAdminFab = (ImageButton) mView.findViewById(R.id.list_fab);
                     mAddAdminFab.setVisibility(View.VISIBLE);
@@ -253,6 +251,25 @@ public class ListFragment extends Fragment implements Serializable, SwipyRefresh
                                       }
                                   }
                               });
+                    } else if (mViewingAdmins){
+                      //load more admins
+                        OrgsDataSource.getAdminsForOrganizationInRange(mView, getActivity(), mLoading,
+                                R.id.list_remove_view_while_loading, mOrgOfUsers.getmObjectId(), mUsers.size(), 20, new FunctionCallback<HashMap<Boolean, Object>>() {
+                                    @Override
+                                    public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
+                                        if (e == null){
+                                            ArrayList<User> usersLoaded = (ArrayList<User>)booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
+                                            HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>)booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
+
+                                            if (usersLoaded.size() == 0)
+                                                Snackbar.make(mView, getActivity().getString(R.string.no_more_users_message), Snackbar.LENGTH_SHORT).show();
+
+                                            mUsers.addAll(usersLoaded);
+                                            mTypeOfUsers.putAll(typeOfUsers);
+                                            mUserAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+                                });
                     } else {
                         //load more users
                         OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(),
@@ -305,6 +322,24 @@ public class ListFragment extends Fragment implements Serializable, SwipyRefresh
                                 }
                             }
                         });
+                    } else if (mViewingAdmins) {
+                        //refresh admins
+                        OrgsDataSource.getAdminsForOrganizationInRange(mView, getActivity(),
+                                mLoading, R.id.list_remove_view_while_loading, mOrgOfUsers.getmObjectId(), 0, 20, new FunctionCallback<HashMap<Boolean, Object>>() {
+                                    @Override
+                                    public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
+                                        if (e == null){
+                                            ArrayList<User> usersLoaded = (ArrayList<User>)booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
+                                            HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>)booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
+
+                                            mUsers.clear();
+                                            mUsers.addAll(usersLoaded);
+                                            mTypeOfUsers.clear();
+                                            mTypeOfUsers.putAll(typeOfUsers);
+                                            mUserAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+                                });
                     } else {
                         //refresh users
                         OrgsDataSource.getFollowersFollowRequestsAndAdminsForOrganizationInRange(mView, getActivity(),

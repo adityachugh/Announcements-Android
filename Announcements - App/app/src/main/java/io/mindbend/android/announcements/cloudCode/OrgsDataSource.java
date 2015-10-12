@@ -359,6 +359,54 @@ public class OrgsDataSource {
         }
     }
 
+    public static void getAdminsForOrganizationInRange (final View view, final Context context, final ProgressBar loading,
+                                                        int viewToRemoveId, String organizationObjectId, int startIndex,
+                                                        int numberOfUsers, final FunctionCallback<HashMap<Boolean, Object>> callback){
+
+        loading.setVisibility(View.VISIBLE);
+        final View layoutView = view.findViewById(viewToRemoveId);
+        layoutView.setVisibility(View.INVISIBLE);
+
+        if (!App.hasNetworkConnection(context)){
+            loading.setVisibility(View.GONE);
+            Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+        } else {
+            layoutView.setVisibility(View.INVISIBLE);
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("organizationObjectId", organizationObjectId);
+            params.put("startIndex", startIndex);
+            params.put("numberOfUsers", numberOfUsers);
+
+            ParseCloud.callFunctionInBackground("getAdminsForOrganizationInRange", params, new FunctionCallback<List<ParseObject>>() {
+                @Override
+                public void done(List<ParseObject> parseObjects, ParseException e) {
+                    if (e == null){
+                        ArrayList<User> users = new ArrayList<User>();
+                        HashMap<User, Integer> userTypes = new HashMap<User, Integer>(); //will be all admin, but needed for displaying list
+
+                        for (ParseObject follow : parseObjects) {
+                            User user = new User(follow.getParseUser(UserDataSource.FOLLOWER_USER_FIELD));
+                            Log.wtf("SWAG", "admin is" + user.toString() + " " + user.getName());
+                            user.setmFollowObjectId(follow.getObjectId());
+                            users.add(user);
+                            userTypes.put(user, getTypeOfFollower(follow.getString(UserDataSource.FOLLOWER_USER_TYPE_FIELD)));
+                        }
+
+                        HashMap<Boolean, Object> toReturnMap = new HashMap<Boolean, Object>();
+                        toReturnMap.put(MAP_USER_LIST_KEY, users);
+                        toReturnMap.put(MAP_USER_TYPES_KEY, userTypes);
+
+                        callback.done(toReturnMap, e);
+
+                    } else {
+                        e.printStackTrace();
+                        Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+    }
+
     public static void getRequestedPendingPrivateOrganizationUsers (final View view, final Context context, final ProgressBar loading,
                                                                     int viewToRemoveId, String organizationObjectId, int startIndex,
                                                                     int numberOfUsers, final FunctionCallback<HashMap<Boolean, Object>> callback){
