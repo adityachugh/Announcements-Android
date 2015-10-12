@@ -117,7 +117,7 @@
     <string name="succes_updated_org_photo">Successfully updated organization photo</string>
     <string name="error_getting_discover_orgs">Could not get Discover organizations</string>
     <string name="error_loading_org_members">Could not get followers of organization</string>
-    <string name="admin_main_modify_org">Modfy organization</string>
+    <string name="admin_main_modify_org">Modify organization</string>
     <string name="new_announce_Priority">Priority</string>
     <string name="newA_priority_low">Low</string>
     <string name="newA_priority_medium">Medium</string>
