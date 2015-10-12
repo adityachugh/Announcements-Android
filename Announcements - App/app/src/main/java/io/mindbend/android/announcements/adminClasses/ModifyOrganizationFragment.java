@@ -317,6 +317,10 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
                         "Select Picture"), UPLOAD_OR_MODIFY_COVER_PHOTO);
             }
         });
+
+        TextView orgType = (TextView)v.findViewById(R.id.modify_org_type_TV);
+        String orgTypeName = (mOrgToModify != null) ? mOrgToModify.getmConfig().getmLevelTitle() : mParentOrg.getmChildConfig().getmLevelTitle();
+        orgType.setText(orgTypeName + " Type");
     }
 
     public void setInitialAdmin(User initialAdmin) {

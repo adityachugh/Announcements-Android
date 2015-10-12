@@ -68,7 +68,7 @@
     <string name="format_Org_NAME">%1$s</string>
     <string name="new_org_Name">Name</string>
     <string name="new_org_Handle">Handle</string>
-    <string name="new_org_club_type">Club Type</string>
+    <string name="new_org_type">Organization Type</string>
     <string name="private_org">Private</string>
     <string name="public_org">Public</string>
     <string name="new_org_access_code">Access Code</string>

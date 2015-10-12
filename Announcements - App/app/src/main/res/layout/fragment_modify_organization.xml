@@ -291,12 +291,13 @@
                     android:paddingTop="@dimen/card_outer_margin">
 
                     <TextView
+                        android:id="@+id/modify_org_type_TV"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="@dimen/card_outer_margin"
                         android:layout_weight="1"
-                        android:text="@string/new_org_club_type"
+                        android:text="@string/new_org_type"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                         android:textSize="@dimen/list_text_size" />
 
