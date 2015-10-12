@@ -88,6 +88,10 @@ public class User implements Serializable, Parcelable{
         return (mFirstName + " " + mLastName);
     }
 
+    public String getmFirstName() {
+        return mFirstName;
+    }
+
     public String getmObjectId(){
         return mObjectId;
     }

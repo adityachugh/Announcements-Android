@@ -36,6 +36,7 @@ import io.mindbend.android.announcements.TabbedActivity;
 import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.cloudCode.AdminDataSource;
 import io.mindbend.android.announcements.cloudCode.OrgsDataSource;
+import io.mindbend.android.announcements.cloudCode.UserDataSource;
 import io.mindbend.android.announcements.reusableFrags.OrgsGridFragment;
 import io.mindbend.android.announcements.reusableFrags.SearchableFrag;
 import io.mindbend.android.announcements.tabbedFragments.AdminFragment;
@@ -65,7 +66,6 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
     private byte[] toUploadCoverImageBytes;
     private User mInitialAdmin;
     private View mView;
-    private ProgressBar mLoading;
 
     private boolean isPrivate = true;
     private int mUpdatesToBeMade;
@@ -130,7 +130,6 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
                     else {
                         Log.wtf("Create new org", "listener (interface) is null!");
                     }
-
                 }
             });
         }
@@ -210,7 +209,7 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
                             if (e == null && organization != null) {
                                 ((TabbedActivity) getActivity()).getmAdminFragment().updateModifiedAdminOrg(organization);
                                 OrgsGridFragment mainFragment = ((OrgsGridFragment) getFragmentManager().findFragmentByTag(AdminFragment.ADMIN_ORGS_TAG));
-                                getFragmentManager().beginTransaction().show(mainFragment);
+                                getFragmentManager().beginTransaction().show(mainFragment).commitAllowingStateLoss();
                                 getFragmentManager().popBackStack();
                             }
                         }
@@ -259,7 +258,6 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
     }
 
     private void setupViews(View v) {
-        mLoading = (ProgressBar) mView.findViewById(R.id.newO_creation_progressbar);
         mName = (EditText) v.findViewById(R.id.newO_name);
         mHandle = (EditText) v.findViewById(R.id.newO_handle);
         mHandleTV = (TextView) v.findViewById(R.id.newO_handle_TV);
@@ -319,12 +317,13 @@ public class ModifyOrganizationFragment extends Fragment implements Serializable
         });
 
         TextView orgType = (TextView)v.findViewById(R.id.modify_org_type_TV);
-        String orgTypeName = (mOrgToModify != null) ? mOrgToModify.getmConfig().getmLevelTitle() : mParentOrg.getmChildConfig().getmLevelTitle();
+        String orgTypeName = (mOrgToModify != null) ? mOrgToModify.getmLevelConfig().getmLevelTitle() : mParentOrg.getmChildConfig().getmLevelTitle();
         orgType.setText(orgTypeName + " Type");
     }
 
     public void setInitialAdmin(User initialAdmin) {
         mInitialAdmin = initialAdmin;
+        Log.wtf("Modify Org", "Successfully set "+mInitialAdmin.getmFirstName()+" as initial admin in frag");
     }
 
     public interface ModifyOrgInterface extends Serializable {

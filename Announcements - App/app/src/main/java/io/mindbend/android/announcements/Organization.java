@@ -33,7 +33,7 @@ public class Organization implements Serializable, Parcelable {
     private boolean mHasAccessCode;
     private Integer mAccessCode;
     private LevelConfig mParentLevel;
-    private LevelConfig mConfig;
+    private LevelConfig mLevelConfig;
     private LevelConfig mChildConfig;
     private LevelConfig mParentConfig;
 
@@ -85,6 +85,15 @@ public class Organization implements Serializable, Parcelable {
             }
         }
 
+        if (object.getParseObject(ConfigDataSource.ORG_LEVEL_CONFIG) != null){
+            try {
+                mLevelConfig = new LevelConfig(object.getParseObject(ConfigDataSource.ORG_LEVEL_CONFIG).fetchIfNeeded());
+            } catch (ParseException e) {
+                e.printStackTrace();
+                mLevelConfig = null;
+            }
+        }
+
         if (object.getParseObject(ConfigDataSource.ORG_PARENT_LEVEL_CONFIG) != null) {
             try {
                 mParentConfig = new LevelConfig(object.getParseObject(ConfigDataSource.ORG_PARENT_LEVEL_CONFIG).fetchIfNeeded());
@@ -95,14 +104,6 @@ public class Organization implements Serializable, Parcelable {
         }
 
         mConfigId = object.getParseObject(ConfigDataSource.ORG_CONFIG) != null ? object.getParseObject(ConfigDataSource.ORG_CONFIG).getObjectId() : null;
-        if (mConfigId != null){
-            try {
-                mConfig = new LevelConfig(object.getParseObject(ConfigDataSource.ORG_CONFIG).fetchIfNeeded());
-            } catch (ParseException e) {
-                e.printStackTrace();
-                mConfig = null;
-            }
-        }
 
         mHasAccessCode = object.getBoolean(OrgsDataSource.HAS_ACCESS_CODE);
         if (mHasAccessCode)
@@ -153,7 +154,7 @@ public class Organization implements Serializable, Parcelable {
 
         //for the configs
         mParentConfig = (LevelConfig)in.readSerializable();
-        mConfig = (LevelConfig)in.readSerializable();
+        mLevelConfig = (LevelConfig)in.readSerializable();
         mChildConfig = (LevelConfig)in.readSerializable();
     }
 
@@ -258,8 +259,8 @@ public class Organization implements Serializable, Parcelable {
         return mParentLevel;
     }
 
-    public LevelConfig getmConfig() {
-        return mConfig;
+    public LevelConfig getmLevelConfig() {
+        return mLevelConfig;
     }
 
     public LevelConfig getmChildConfig() {
@@ -305,7 +306,7 @@ public class Organization implements Serializable, Parcelable {
         dest.writeSerializable(mParentLevel);
 
         dest.writeSerializable(mParentConfig);
-        dest.writeSerializable(mConfig);
+        dest.writeSerializable(mLevelConfig);
         dest.writeSerializable(mChildConfig);
     }
 
