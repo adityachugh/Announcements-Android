@@ -155,17 +155,29 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
                         viewHolder.mFollowButton.setTextColor(mContext.getResources().getColor(R.color.accent));
                         viewHolder.mFollowButton.setBackgroundColor(mContext.getResources().getColor(R.color.divider_color));
                     } else {
-                        if (!org.hasAccessCode()){
-                            //not in array, therefore follow
+                        //not in array, therefore follow
+                        if (!org.isPrivateOrg()){
                             Log.wtf(TAG, "followed!");
                             OrgsToFollow.getInstance().add(org.getmObjectId());
                             viewHolder.mFollowButton.setText("Following");
                             viewHolder.mFollowButton.setTextColor(mContext.getResources().getColor(R.color.white));
                             viewHolder.mFollowButton.setBackgroundColor(mContext.getResources().getColor(R.color.accent));
-                        }
-                        else if (org.hasAccessCode()){
-                            //access code; pending follower
-                            //alert dialog to get reason
+                        } else if (org.isPrivateOrg() && !org.hasAccessCode()){
+                            //pending
+                            Log.wtf(TAG, "pending!");
+                            OrgsToFollow.getInstance().add(org.getmObjectId());
+                            viewHolder.mFollowButton.setText("Pending");
+                            viewHolder.mFollowButton.setTextColor(mContext.getResources().getColor(R.color.white));
+                            viewHolder.mFollowButton.setBackgroundColor(mContext.getResources().getColor(R.color.post_priority_medium));
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.DialogTheme);
+                            builder.setTitle("Follow request sent")
+                                    .setPositiveButton("OK", null)
+                                    .show();
+
+                        } else if (org.hasAccessCode()){
+                            //access code - following if correct
+                            //alert dialog to get code
                             LinearLayout layout = new LinearLayout(mContext);
                             layout.setOrientation(LinearLayout.VERTICAL);
                             layout.setPadding(16, 0, 16, 0);
@@ -183,16 +195,11 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
                                             int enteredCode = Integer.parseInt(accessCode.getText().toString());
                                             if (enteredCode == org.getmAccessCode()){
                                                 //correct code entered
-                                                Log.wtf(TAG, "pending!");
+                                                Log.wtf(TAG, "correct code - followed!");
                                                 OrgsToFollow.getInstance().add(org.getmObjectId());
-                                                viewHolder.mFollowButton.setText("Pending");
+                                                viewHolder.mFollowButton.setText("Following");
                                                 viewHolder.mFollowButton.setTextColor(mContext.getResources().getColor(R.color.white));
-                                                viewHolder.mFollowButton.setBackgroundColor(mContext.getResources().getColor(R.color.post_priority_medium));
-
-                                                AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.DialogTheme);
-                                                builder.setTitle("Follow request sent")
-                                                        .setPositiveButton("OK", null)
-                                                        .show();
+                                                viewHolder.mFollowButton.setBackgroundColor(mContext.getResources().getColor(R.color.accent));
                                             } else {
                                                 //incorrect code
                                                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.DialogTheme);
@@ -200,6 +207,7 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
                                                         .setPositiveButton("OK", null)
                                                         .show();
                                             }
+
                                         }
                                     })
                                     .setNegativeButton(mContext.getString(R.string.cancel_button_text), new DialogInterface.OnClickListener() {
