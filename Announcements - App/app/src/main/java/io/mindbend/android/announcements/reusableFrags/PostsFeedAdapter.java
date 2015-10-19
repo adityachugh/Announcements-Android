@@ -57,6 +57,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
         private final de.hdodenhof.circleimageview.CircleImageView mPosterImage;
         private final TextView mAnnouncementState;
         private final de.hdodenhof.circleimageview.CircleImageView mPriorityIndicator;
+        private final ImageView mNotifiedParentIcon;
 
         //TODO: create private fields for the elements within a single feed item
 
@@ -74,6 +75,7 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
             mPosterImage = (de.hdodenhof.circleimageview.CircleImageView)itemView.findViewById(R.id.post_club_image);
             mAnnouncementState = (TextView)itemView.findViewById(R.id.announcements_state_TV);
             mPriorityIndicator = (CircleImageView)itemView.findViewById(R.id.post_priority_indicator);
+            mNotifiedParentIcon = (ImageView)itemView.findViewById(R.id.post_notified_parent_icon);
         }
     }
 
@@ -97,6 +99,11 @@ public class PostsFeedAdapter extends RecyclerView.Adapter<PostsFeedAdapter.View
         viewHolder.mDetail.setText(post.getmPostDetail());
         viewHolder.mTimeSince.setText(post.getmPostTimeSince());
         viewHolder.mClubUsername.setText(post.getmPostClubUsername());
+
+        if (!post.isNotifyingParent()){
+            viewHolder.mNotifiedParentIcon.setVisibility(View.GONE);
+        }
+
         if(post.getmPriority() == PostsDataSource.HIGH_PRIORITY){
             viewHolder.mPriorityIndicator.setVisibility(View.VISIBLE);
         }

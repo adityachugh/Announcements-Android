@@ -103,6 +103,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
+            <ImageView
+                android:id="@+id/post_notified_parent_icon"
+                android:layout_marginLeft="@dimen/card_inner_margin"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_child_to_parent_post_primary"
+                android:layout_width="@dimen/child_to_parent_post_icon_size"
+                android:layout_height="@dimen/child_to_parent_post_icon_size"/>
+
             <TextView
                 android:id="@+id/announcements_state_TV"
                 style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
