@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -23,14 +24,17 @@ public class OnboardingInfoCardFragment extends Fragment implements Serializable
 
     private static final String ARG_TITLE = "title";
     private static final String ARG_TEXT = "text";
+    private static final String ARG_IMAGE_PATH = "image";
 
     private String mTitle;
     private String mText;
+    private int mImagePath;
 
-    public static OnboardingInfoCardFragment newInstance(String cardTitle, String cardText) {
+    public static OnboardingInfoCardFragment newInstance(String cardTitle, String cardText, int imagePath) {
         OnboardingInfoCardFragment fragment = new OnboardingInfoCardFragment();
         Bundle args = new Bundle();
         args.putString(ARG_TITLE, cardTitle);
+        args.putInt(ARG_IMAGE_PATH, imagePath);
         args.putString(ARG_TEXT, cardText);
         fragment.setArguments(args);
         return fragment;
@@ -46,6 +50,7 @@ public class OnboardingInfoCardFragment extends Fragment implements Serializable
         if (getArguments() != null) {
             mTitle = getArguments().getString(ARG_TITLE);
             mText = getArguments().getString(ARG_TEXT);
+            mImagePath = getArguments().getInt(ARG_IMAGE_PATH);
         }
     }
 
@@ -60,6 +65,9 @@ public class OnboardingInfoCardFragment extends Fragment implements Serializable
 
         titleText.setText(mTitle);
         infoText.setText(mText);
+
+        ImageView image = (ImageView)v.findViewById(R.id.info_card_image);
+        image.setImageResource(mImagePath);
 
         return v;
     }

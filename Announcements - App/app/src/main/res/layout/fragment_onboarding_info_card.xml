@@ -9,8 +9,8 @@
             android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
-            android:src="@drawable/landscape"
+            android:scaleType="centerInside"
+            android:src="@drawable/onboarding_posts"
             android:id="@+id/info_card_image"/>
     <LinearLayout
         android:layout_width="wrap_content"

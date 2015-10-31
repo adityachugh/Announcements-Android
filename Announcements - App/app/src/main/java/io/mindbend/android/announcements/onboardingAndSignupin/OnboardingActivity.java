@@ -153,16 +153,18 @@ public class OnboardingActivity extends ActionBarActivity implements Serializabl
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
 
         @Override
         public android.support.v4.app.Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return OnboardingInfoCardFragment.newInstance("TEXt", "TEXT 1");
+                    return OnboardingInfoCardFragment.newInstance("", "",R.drawable.onboarding_posts);
                 case 1:
-                    return OnboardingInfoCardFragment.newInstance("TEXt", "TEXT 2");
+                    return OnboardingInfoCardFragment.newInstance("", "",R.drawable.onboarding_comments);
+                case 2:
+                    return OnboardingInfoCardFragment.newInstance("", "",R.drawable.onboarding_discover);
             }
             return null;
         }
