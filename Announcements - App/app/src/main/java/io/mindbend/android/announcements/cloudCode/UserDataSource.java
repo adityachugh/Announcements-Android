@@ -272,11 +272,9 @@ public class UserDataSource {
 
     }
 
-    public static void getOrganizationsThatUserIsAdminOf (Context context, final View layout, final ProgressBar loading, String userObjectId, final FunctionCallback<ArrayList<Organization>> callback){
-        loading.setVisibility(View.VISIBLE);
+    public static void getOrganizationsThatUserIsAdminOf (Context context, final View layout, String userObjectId, final FunctionCallback<ArrayList<Organization>> callback){
 
         if (!App.hasNetworkConnection(context)){
-            loading.setVisibility(View.GONE);
             Snackbar.make(layout, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
             HashMap<String, String> params = new HashMap<>();
@@ -285,7 +283,6 @@ public class UserDataSource {
             ParseCloud.callFunctionInBackground("getOrganizationsThatUserIsAdminOf", params, new FunctionCallback<List<ParseObject>>() {
                 @Override
                 public void done(List<ParseObject> followFields, ParseException e) {
-                    loading.setVisibility(View.GONE);
 //                int i = 0; //for debugging
                     if (e == null) {
                         ArrayList<Organization> orgs = new ArrayList<Organization>();

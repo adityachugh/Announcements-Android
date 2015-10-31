@@ -90,6 +90,7 @@ public class SearchableFrag extends Fragment implements Serializable, UserListAd
 
         searchView.setOnQueryTextListener(this);
         searchView.onActionViewExpanded();
+
         //Stop keyboard from automatically popping up
         searchView.clearFocus();
 

@@ -122,7 +122,7 @@ public class TabbedActivity extends ActionBarActivity implements ViewPager.OnPag
             updateLandscapePageText();
         }
 
-        UserDataSource.getOrganizationsThatUserIsAdminOf(this, mView, mLoading, ParseUser.getCurrentUser().getObjectId(), new FunctionCallback<ArrayList<Organization>>() {
+        UserDataSource.getOrganizationsThatUserIsAdminOf(this, mView, ParseUser.getCurrentUser().getObjectId(), new FunctionCallback<ArrayList<Organization>>() {
             @Override
             public void done(ArrayList<Organization> organizations, ParseException e) {
                 if (e == null) {
