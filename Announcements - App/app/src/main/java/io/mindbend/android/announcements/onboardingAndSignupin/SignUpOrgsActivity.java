@@ -142,7 +142,6 @@ public class SignUpOrgsActivity extends ActionBarActivity implements Serializabl
             @Override
             public void done(ArrayList<Organization> organizations, ParseException e) {
                 if (e == null) {
-                    String orgTitle = "";
                     if (organizations.size() != 0) {
                         OrgsGridFragment childrenOrgs = OrgsGridFragment.newInstance(organizations, mOrgInteractionListener, mOrgsGridInteractionListener, null, true);
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -150,11 +149,11 @@ public class SignUpOrgsActivity extends ActionBarActivity implements Serializabl
 
                         //set toolbar title to config level
                         Organization organization = organizations.get(0);
-                        orgTitle = organization.getmLevelConfig().getmLevelTitle();
+                        String orgTitle = organization.getmLevelConfig().getmLevelTitle();
                         mToolbar.setTitle(orgTitle + "s");
                     }
                     else {
-                        Snackbar.make((findViewById(R.id.sign_up_orgs_view)), "This " + orgTitle + " has no children.", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make((findViewById(R.id.sign_up_orgs_view)), "This organization has no children.", Snackbar.LENGTH_SHORT).show();
                     }
                 } else {
                     e.printStackTrace();
