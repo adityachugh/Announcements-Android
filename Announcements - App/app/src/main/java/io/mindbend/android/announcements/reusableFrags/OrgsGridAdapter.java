@@ -122,11 +122,17 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
                 //if arraylist isnt empty
                 for (int j = 0; j < followedOrgs.size(); j++) {
                     String orgId = followedOrgs.get(j);
-                    if (org.getmObjectId().equals(orgId)){
+                    if (org.getmObjectId().equals(orgId) && !org.isPrivateOrg()){
                         //following button
                         viewHolder.mFollowButton.setText("Following");
                         viewHolder.mFollowButton.setTextColor(mContext.getResources().getColor(R.color.white));
                         viewHolder.mFollowButton.setBackgroundColor(mContext.getResources().getColor(R.color.accent));
+                    }
+                    else if (org.getmObjectId().equals(orgId) && org.isPrivateOrg()){
+                        //pending
+                        viewHolder.mFollowButton.setText("Pending");
+                        viewHolder.mFollowButton.setTextColor(mContext.getResources().getColor(R.color.white));
+                        viewHolder.mFollowButton.setBackgroundColor(mContext.getResources().getColor(R.color.post_priority_medium));
                     }
                 }
             }
