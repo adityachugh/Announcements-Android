@@ -43,16 +43,17 @@ public class SignUpOrgsActivity extends ActionBarActivity implements Serializabl
     private OrgsGridAdapter.OrgInteractionListener mOrgInteractionListener = this;
     private OrgsGridFragment.OrgsGridInteractionListener mOrgsGridInteractionListener = this;
     private Context mContext = this;
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_orgs);
 
-        Toolbar toolbar = (Toolbar)findViewById(R.id.sign_up_toolbar);
-        toolbar.inflateMenu(R.menu.menu_sign_up_orgs);
-        toolbar.hideOverflowMenu();
-        toolbar.setTitle("Config title here");
+        mToolbar = (Toolbar)findViewById(R.id.sign_up_toolbar);
+        mToolbar.inflateMenu(R.menu.menu_sign_up_orgs);
+        mToolbar.hideOverflowMenu();
+
 
         mProgressBar = (ProgressBar) findViewById(R.id.sign_up_orgs_progressbar);
         mFab = (ImageButton) findViewById(R.id.signup_fab);
@@ -114,6 +115,10 @@ public class SignUpOrgsActivity extends ActionBarActivity implements Serializabl
                     OrgsGridFragment orgsGridFragment = OrgsGridFragment.newInstance(organizations, mOrgInteractionListener, mOrgsGridInteractionListener, null, true);
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.sign_up_orgs_framelayout, orgsGridFragment).commitAllowingStateLoss();
+
+                    //set toolbar title to config level
+                    Organization organization = organizations.get(0);
+                    mToolbar.setTitle(organization.getmLevelConfig().getmLevelTitle() + "s");
                 }
                 else{
                     e.printStackTrace();
@@ -137,13 +142,19 @@ public class SignUpOrgsActivity extends ActionBarActivity implements Serializabl
             @Override
             public void done(ArrayList<Organization> organizations, ParseException e) {
                 if (e == null) {
+                    String orgTitle = "";
                     if (organizations.size() != 0) {
                         OrgsGridFragment childrenOrgs = OrgsGridFragment.newInstance(organizations, mOrgInteractionListener, mOrgsGridInteractionListener, null, true);
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.sign_up_orgs_framelayout, childrenOrgs).addToBackStack(SIGN_UP_ORGS).commitAllowingStateLoss();
+
+                        //set toolbar title to config level
+                        Organization organization = organizations.get(0);
+                        orgTitle = organization.getmLevelConfig().getmLevelTitle();
+                        mToolbar.setTitle(orgTitle + "s");
                     }
                     else {
-                        Snackbar.make((findViewById(R.id.sign_up_orgs_view)), "This organization has no children.", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make((findViewById(R.id.sign_up_orgs_view)), "This " + orgTitle + " has no children.", Snackbar.LENGTH_SHORT).show();
                     }
                 } else {
                     e.printStackTrace();
