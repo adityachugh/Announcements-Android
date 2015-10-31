@@ -361,7 +361,9 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                 //make the "child org" button visible and set its text to the appropriate level below the current org
                 if (mOrg.getmChildConfig() != null && mOrg.getmChildConfig().getmLevelTitle() != null && !mOrg.getmChildConfig().getmLevelTitle().equals("")){
                     Button childrenOrgsButton = (Button)mView.findViewById(R.id.profile_view_children_button);
-                    childrenOrgsButton.setVisibility(View.VISIBLE);
+                    if (!mOrg.isPrivateOrg() || (mOrg.isPrivateOrg() && (mOrgFollowState.equals(UserDataSource.FOLLOWER_NORMAL) || mOrgFollowState.equals(UserDataSource.FOLLOWER_ADMIN)))){
+                        childrenOrgsButton.setVisibility(View.VISIBLE);
+                    }
                     childrenOrgsButton.setText(mOrg.getmChildConfig().getmLevelTitle()+"s");
                     Log.wtf("Child level", mOrg.getmChildConfig().getmLevelTitle());
                     childrenOrgsButton.setOnClickListener(new View.OnClickListener() {
