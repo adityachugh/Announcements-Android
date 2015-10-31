@@ -43,12 +43,12 @@
         <Button
             android:id="@+id/org_follow_signup"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_margin="8dp"
+
             android:text="Follow"
             style="@style/Widget.AppCompat.Button.Borderless.Colored"
-            android:background="@color/divider_color"
+            android:background="@color/white"
             android:textColor="@color/accent"/>
     </LinearLayout>
 

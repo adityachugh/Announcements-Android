@@ -159,7 +159,7 @@ public class OrgsGridAdapter extends RecyclerView.Adapter<OrgsGridAdapter.ViewHo
                         OrgsToFollow.getInstance().remove(followedOrgs.get(mObjectPosition));
                         viewHolder.mFollowButton.setText("Follow");
                         viewHolder.mFollowButton.setTextColor(mContext.getResources().getColor(R.color.accent));
-                        viewHolder.mFollowButton.setBackgroundColor(mContext.getResources().getColor(R.color.divider_color));
+                        viewHolder.mFollowButton.setBackgroundColor(mContext.getResources().getColor(R.color.white));
                     } else {
                         //not in array, therefore follow
                         if (!org.isPrivateOrg()){
