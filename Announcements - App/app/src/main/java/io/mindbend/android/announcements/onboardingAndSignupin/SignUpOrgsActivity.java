@@ -134,14 +134,17 @@ public class SignUpOrgsActivity extends ActionBarActivity implements Serializabl
     @Override
     public void pressedOrg(Organization orgSelected) {
         //handle card clicks in here!
-        loadChildren(mProgressBar, orgSelected.getmObjectId());
+        loadChildren(mProgressBar, orgSelected.getmObjectId(), orgSelected);
     }
 
-    private void loadChildren(ProgressBar progressBar ,String orgId){
+    private void loadChildren(ProgressBar progressBar, String orgId, final Organization org){
         OrgsDataSource.getAllChildOrganizations(progressBar, mContext, progressBar, R.id.sign_up_org_remove_view_while_loading,orgId, new FunctionCallback<ArrayList<Organization>>() {
             @Override
             public void done(ArrayList<Organization> organizations, ParseException e) {
-                if (e == null) {
+                if (org.isPrivateOrg()){
+                    Snackbar.make((findViewById(R.id.sign_up_orgs_view)), "This organization is private - you must be approved to see its children", Snackbar.LENGTH_SHORT).show();
+                }
+                else if (e == null) {
                     if (organizations.size() != 0) {
                         OrgsGridFragment childrenOrgs = OrgsGridFragment.newInstance(organizations, mOrgInteractionListener, mOrgsGridInteractionListener, null, true);
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

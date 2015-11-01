@@ -200,7 +200,7 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
             Display display = getActivity().getWindowManager().getDefaultDisplay();
             mDeviceHeight = display.getHeight();
             mScale = getActivity().getResources().getDisplayMetrics().density;
-            Log.d(TAG, "Scale is: " + mScale + ", device height is: " + mDeviceHeight);
+
 
             //by default, height of framelayout should be half of device height as this is (approximately) the size of the view
             mProfileContentFrameLayoutEmbedded.setMinimumHeight(mDeviceHeight / 2);
@@ -374,7 +374,13 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                                 @Override
                                 public void done(ArrayList<Organization> organizations, ParseException e) {
                                     if (e == null){
-                                        mListener.viewChildOrgs(organizations);
+                                        if (mOrg.isPrivateOrg() && mOrgFollowState.equals("NFO")){
+                                            Snackbar.make(mView, "You must be following this organization to view its children", Snackbar.LENGTH_SHORT).show();
+                                        } else if (mOrgFollowState.equals("PEN")){
+                                            Snackbar.make(mView, "You must be approved before you can view this organization's children", Snackbar.LENGTH_SHORT).show();
+                                        } else {
+                                            mListener.viewChildOrgs(organizations);
+                                        }
                                     }
                                 }
                             });
