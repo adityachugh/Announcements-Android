@@ -30,7 +30,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
-                        android:src="@color/primary_light"
+                        android:src="@drawable/default_cover"
                         android:id="@+id/profile_cover_photo"/>
                     <ImageView
                         android:layout_width="match_parent"
@@ -55,7 +55,7 @@
                                 android:layout_centerInParent="true"
                                 android:layout_width="@dimen/profile_frag_photo_size"
                                 android:layout_height="@dimen/profile_frag_photo_size"
-                                android:src="@drawable/profilephoto"/>
+                                android:src="@drawable/default_profile"/>
                             <ImageButton
                                 android:id="@+id/profile_edit_org"
                                 android:visibility="gone"
