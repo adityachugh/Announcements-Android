@@ -371,7 +371,6 @@ public class OrgsDataSource {
             loading.setVisibility(View.GONE);
             Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
-            layoutView.setVisibility(View.INVISIBLE);
             HashMap<String, Object> params = new HashMap<>();
             params.put("organizationObjectId", organizationObjectId);
             params.put("startIndex", startIndex);
@@ -380,12 +379,16 @@ public class OrgsDataSource {
             ParseCloud.callFunctionInBackground("getAdminsForOrganizationInRange", params, new FunctionCallback<List<ParseObject>>() {
                 @Override
                 public void done(List<ParseObject> parseObjects, ParseException e) {
+                    int i = 0; //for debugging
+                    loading.setVisibility(View.GONE);
+                    layoutView.setVisibility(View.VISIBLE);
                     if (e == null){
                         ArrayList<User> users = new ArrayList<User>();
                         HashMap<User, Integer> userTypes = new HashMap<User, Integer>(); //will be all admin, but needed for displaying list
 
                         for (ParseObject follow : parseObjects) {
                             User user = new User(follow.getParseUser(UserDataSource.FOLLOWER_USER_FIELD));
+                            Log.wtf( follow.getString(UserDataSource.FOLLOWER_USER_TYPE_FIELD), user.getName()); //to check if the users are coming
                             user.setmFollowObjectId(follow.getObjectId());
                             users.add(user);
                             userTypes.put(user, getTypeOfFollower(follow.getString(UserDataSource.FOLLOWER_USER_TYPE_FIELD)));

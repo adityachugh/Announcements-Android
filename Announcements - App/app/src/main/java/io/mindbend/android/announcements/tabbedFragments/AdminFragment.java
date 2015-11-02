@@ -250,6 +250,10 @@ public class AdminFragment extends Fragment implements Serializable,
             public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
                 ArrayList<User> users = (ArrayList<User>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
                 HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
+                if (users.size() > 0 && typeOfUsers.size() > 0){
+                    Log.wtf("First admin:", users.get(0).getName());
+                    Log.wtf("Follower type (should be 1)", ""+typeOfUsers.get(users.get(0)));
+                }
 
                 ListFragment adminList = ListFragment.newInstance(true, AdminFragment.this, false, null, null, null, null, users, AdminFragment.this, typeOfUsers, parentOrg, null, true, false);
                 getChildFragmentManager().beginTransaction()
