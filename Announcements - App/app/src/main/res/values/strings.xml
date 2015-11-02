@@ -158,6 +158,6 @@
     <string name="posting_new_announcement_message">Posting Announcement...</string>
     <string name="modify_existing_org_message">Updating organization...</string>
     <string name="create_new_org_message">Creating organization...</string>
-    <string name="app_version_tag">Alpha</string>
+    <string name="app_version_tag">Closed Beta</string>
 
 </resources>

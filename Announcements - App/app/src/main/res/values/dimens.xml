@@ -4,7 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="banner_grad_radius">5dp</dimen>
     <dimen name="banner_height">200dp</dimen>
-    <dimen name="banner_height_landscape">88dp</dimen>
+    <dimen name="banner_height_landscape">100dp</dimen>
     <dimen name="app_logo_size">64dp</dimen>
     <dimen name="app_name_size">28sp</dimen>
     <dimen name="signinup_button_width">125dp</dimen>

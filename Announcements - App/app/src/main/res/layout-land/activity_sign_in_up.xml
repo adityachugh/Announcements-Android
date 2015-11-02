@@ -26,6 +26,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:gravity="center"
+                android:orientation="vertical"
                 android:transitionName="@string/onboaring_to_signup_animation">
 
                 <ImageView
@@ -33,6 +34,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/app_logo_size"
                     android:src="@drawable/informe_beta_logo_white" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/app_version_tag"
+                    android:textColor="@android:color/white"/>
             </LinearLayout>
         </RelativeLayout>
         <ScrollView
