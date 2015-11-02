@@ -153,7 +153,7 @@ public class UserDataSource {
 
     }
 
-    public static void updateFollowStateForUser (Context context, final boolean isPrivate, final View layout, final Boolean isFollowing, String organizationObjectId, final FunctionCallback<Boolean> callback){
+    public static void updateFollowStateForUser (Context context, final boolean isPrivate, final View layout, final Boolean isFollowing, String organizationObjectId, final FunctionCallback<String> callback){
         if (!App.hasNetworkConnection(context)){
             Snackbar.make(layout, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
         } else {
@@ -165,14 +165,14 @@ public class UserDataSource {
             final String toastText = isFollowing ? "" : "un";
 
             dialog.show();
-            ParseCloud.callFunctionInBackground("updateFollowStateForUser", params, new FunctionCallback<Boolean>() {
+            ParseCloud.callFunctionInBackground("updateFollowStateForUser", params, new FunctionCallback<String>() {
                 @Override
-                public void done(Boolean isSuccessful, ParseException e) {
+                public void done(String followType, ParseException e) {
                     String message = "Failure";
                     dialog.dismiss();
-                    if (e == null && isSuccessful) {
+                    if (e == null) {
                         message = (isPrivate && isFollowing) ? "Sent follow request to organization" : "Successfully " + toastText + "followed organization";
-                        callback.done(isSuccessful, e);
+                        callback.done(followType,e);
                     }
                     if (e != null) {
                         e.printStackTrace();

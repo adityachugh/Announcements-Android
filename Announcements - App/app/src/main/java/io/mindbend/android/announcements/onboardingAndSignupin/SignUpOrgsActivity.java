@@ -39,11 +39,10 @@ public class SignUpOrgsActivity extends ActionBarActivity implements Serializabl
     public static final String SIGN_UP_ORGS = "sign_up_orgs";
 
     private transient ProgressBar mProgressBar;
-    private transient ImageButton mFab;
-    private OrgsGridAdapter.OrgInteractionListener mOrgInteractionListener = this;
-    private OrgsGridFragment.OrgsGridInteractionListener mOrgsGridInteractionListener = this;
-    private Context mContext = this;
-    private Toolbar mToolbar;
+    private transient OrgsGridAdapter.OrgInteractionListener mOrgInteractionListener = this;
+    private transient OrgsGridFragment.OrgsGridInteractionListener mOrgsGridInteractionListener = this;
+    private transient Context mContext = this;
+    private transient Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +55,7 @@ public class SignUpOrgsActivity extends ActionBarActivity implements Serializabl
 
 
         mProgressBar = (ProgressBar) findViewById(R.id.sign_up_orgs_progressbar);
-        mFab = (ImageButton) findViewById(R.id.signup_fab);
+        ImageButton mFab = (ImageButton) findViewById(R.id.signup_fab);
 
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override

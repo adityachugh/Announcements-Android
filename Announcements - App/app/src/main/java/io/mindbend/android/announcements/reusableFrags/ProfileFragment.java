@@ -484,10 +484,10 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            UserDataSource.updateFollowStateForUser(getActivity(), mOrg.isPrivateOrg(), mView, toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
+                            UserDataSource.updateFollowStateForUser(getActivity(), mOrg.isPrivateOrg(), mView, toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<String>() {
                                 @Override
-                                public void done(Boolean success, ParseException e) {
-                                    if (success) {
+                                public void done(String followType, ParseException e) {
+                                    if (e == null && followType.equals(UserDataSource.FOLLOWER_NOT_FOLLOWING)) {
                                         //unfollows
                                         mFollowFab.setImageResource(R.drawable.ic_not_following);
                                         mToEdit = false;
@@ -499,10 +499,10 @@ public class ProfileFragment extends Fragment implements Serializable, OrgsGridA
                     })
                     .show();
         } else {
-            UserDataSource.updateFollowStateForUser(getActivity(), mOrg.isPrivateOrg(), mView, toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<Boolean>() {
+            UserDataSource.updateFollowStateForUser(getActivity(), mOrg.isPrivateOrg(), mView, toChangeStateTo, mOrg.getmObjectId(), new FunctionCallback<String>() {
                 @Override
-                public void done(Boolean success, ParseException e) {
-                    if (success) {
+                public void done(String followType, ParseException e) {
+                    if (e == null && (followType.equals(UserDataSource.FOLLOWER_PENDING) || followType.equals(UserDataSource.FOLLOWER_NORMAL))) {
                         if (mOrg.isPrivateOrg()) {
                             mFollowFab.setImageResource(R.drawable.ic_pending);
                             mOrgFollowState = UserDataSource.FOLLOWER_PENDING;
