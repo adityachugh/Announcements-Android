@@ -11,7 +11,10 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/signinup_padding">
+            android:paddingTop="@dimen/card_inner_margin"
+            android:paddingLeft="@dimen/signinup_padding"
+            android:paddingRight="@dimen/signinup_padding"
+            android:paddingBottom="@dimen/signinup_padding">
             <TextView
                 android:gravity="center"
                 android:text="@string/tagline"
@@ -125,6 +128,13 @@
                 android:layout_gravity="center"
                 android:layout_width="@dimen/single_button_width"
                 android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/signup_agreement_text"
+                android:layout_marginTop="@dimen/card_outer_margin"/>
 
         </LinearLayout>
 

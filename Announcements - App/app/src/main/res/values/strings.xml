@@ -159,5 +159,8 @@
     <string name="modify_existing_org_message">Updating organization...</string>
     <string name="create_new_org_message">Creating organization...</string>
     <string name="app_version_tag">Closed Beta</string>
+    <string name="EULA_title">End User Licence Agreement</string>
+    <string name="privacy_policy_title">Privacy Policy</string>
+    <string name="signup_agreement_text">By signing up, you are accepting the End User Licence Agreement and Privacy Policy of infor[me].</string>
 
 </resources>
