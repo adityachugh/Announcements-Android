@@ -187,8 +187,23 @@ public class TodayFragment extends Fragment implements Serializable,
 
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-        mCurrentDateSelected = new Date(year - 1900, monthOfYear, dayOfMonth);
-        loadPosts(0, 10, false);
+        Date selectedDate = new Date(year - 1900, monthOfYear, dayOfMonth);
+        if (selectedDate.getTime() > new Date().getTime() ){
+            //show error message
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
+            builder.setTitle(getActivity().getString(R.string.today_date_inappropriate_title))
+                    .setMessage(getActivity().getString(R.string.today_date_inappropriate_message))
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .show();
+        } else {
+            mCurrentDateSelected = selectedDate;
+            loadPosts(0, 10, false);
+        }
     }
 
     @Override
