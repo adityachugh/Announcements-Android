@@ -393,5 +393,38 @@ public class AdminDataSource {
             //actually delete
         }
     }
+
+    public static void removeFollowerFromOrganization (Context context, final View view, String organizationObjectId, String selectedFollowerToRemoveObjectId, final FunctionCallback<Boolean> callback){
+        if (!App.hasNetworkConnection(context)){
+            Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+        } else {
+            final ProgressDialog progressDialog = new ProgressDialog(context, R.style.DialogTheme);
+            progressDialog.setMessage(context.getString(R.string.remove_follower_loading_message));
+            progressDialog.setTitle("Loading...");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("organizationObjectId", organizationObjectId);
+            params.put("selectedFollowerToRemoveObjectId", selectedFollowerToRemoveObjectId);
+
+            ParseCloud.callFunctionInBackground("removeFollowerFromOrganization", params, new FunctionCallback<Boolean>() {
+                @Override
+                public void done(Boolean success, ParseException e) {
+                    progressDialog.dismiss();
+                    if (e == null){
+                        Snackbar.make(view, "Successfully deleted follower!", Snackbar.LENGTH_SHORT).show();
+                        Log.wtf("Deleted follower?", "SUCCESS");
+                        callback.done(true, e);
+                    } else {
+                        Log.wtf("Deleted follower?", "FAILURE");
+                        Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                    }
+                }
+            });
+            //actually delete
+        }
+    }
 }
 

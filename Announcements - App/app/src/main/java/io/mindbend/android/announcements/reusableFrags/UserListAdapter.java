@@ -103,30 +103,57 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         viewHolder.mUserLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if (mTypeOfUsers.get(user) == USERS_ADMINS && mIsAdmin){
+                if (mIsAdmin){
                     //give a dialog to delete selected admin
-                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.DialogTheme);
-                    builder.setTitle(R.string.delete_admin_title)
-                            .setMessage(mContext.getString(R.string.format_delete_admin, user.getmFirstName()))
-                            .setNegativeButton("No", null)
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    AdminDataSource.removeAdminFromOrganization(mContext, mView, mOrg.getmObjectId(), user.getmObjectId(), new FunctionCallback<Boolean>() {
-                                        @Override
-                                        public void done(Boolean success, ParseException e) {
-                                            if (success){
-                                                //setting admin as a normal user
-                                                mUsers.remove(user);
-                                                mTypeOfUsers.remove(user);
-                                                notifyDataSetChanged();
+                    if (mTypeOfUsers.get(user) == USERS_ADMINS){
+                        //remove admins
+                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.DialogTheme);
+                        builder.setTitle(R.string.delete_admin_title)
+                                .setMessage(mContext.getString(R.string.format_delete_admin, user.getmFirstName()))
+                                .setNegativeButton("No", null)
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        AdminDataSource.removeAdminFromOrganization(mContext, mView, mOrg.getmObjectId(), user.getmObjectId(), new FunctionCallback<Boolean>() {
+                                            @Override
+                                            public void done(Boolean success, ParseException e) {
+                                                if (success){
+                                                    //removing admin
+                                                    mUsers.remove(user);
+                                                    mTypeOfUsers.remove(user);
+                                                    notifyDataSetChanged();
+                                                }
                                             }
-                                        }
-                                    });
-                                }
-                            })
-                            .show();
+                                        });
+                                    }
+                                })
+                                .show();
+                    } else {
+                        //to remove pending and normal followers
+                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.DialogTheme);
+                        builder.setTitle(R.string.delete_follower_title)
+                                .setMessage(mContext.getString(R.string.format_delete_follower, user.getmFirstName()))
+                                .setNegativeButton("No", null)
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        AdminDataSource.removeFollowerFromOrganization(mContext, mView, mOrg.getmObjectId(), user.getmObjectId(), new FunctionCallback<Boolean>() {
+                                            @Override
+                                            public void done(Boolean success, ParseException e) {
+                                                if (success){
+                                                    //removing follower
+                                                    mUsers.remove(user);
+                                                    mTypeOfUsers.remove(user);
+                                                    notifyDataSetChanged();
+                                                }
+                                            }
+                                        });
+                                    }
+                                })
+                                .show();
+                    }
                 }
                 return true;
             }

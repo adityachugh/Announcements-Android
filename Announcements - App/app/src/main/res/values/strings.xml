@@ -165,5 +165,8 @@
     <string name="delete_admin_title">Delete Admin?</string>
     <string name="format_delete_admin">Do you want to remove %1$s as an admin?</string>
     <string name="remove_admin_loading_message">Removing admin...</string>
+    <string name="remove_follower_loading_message">Do you want to remove this follower from your organization?</string>
+    <string name="delete_follower_title">Remove this follower?</string>
+    <string name="format_delete_follower">Are you sure you want to remove %1$s from your organization?</string>
 
 </resources>
