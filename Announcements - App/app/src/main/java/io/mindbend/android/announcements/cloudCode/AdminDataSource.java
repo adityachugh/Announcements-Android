@@ -360,5 +360,38 @@ public class AdminDataSource {
 
 
     }
+
+    public static void removeAdminFromOrganization (Context context, final View view, String organizationObjectId, String selectedAdminToRemoveObjectId, final FunctionCallback<Boolean> callback){
+        if (!App.hasNetworkConnection(context)){
+            Snackbar.make(view, context.getString(R.string.no_network_connection), Snackbar.LENGTH_SHORT).show();
+        } else {
+            final ProgressDialog progressDialog = new ProgressDialog(context, R.style.DialogTheme);
+            progressDialog.setMessage(context.getString(R.string.remove_admin_loading_message));
+            progressDialog.setTitle("Loading...");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("organizationObjectId", organizationObjectId);
+            params.put("selectedAdminToRemoveObjectId", selectedAdminToRemoveObjectId);
+
+            ParseCloud.callFunctionInBackground("removeAdminFromOrganization", params, new FunctionCallback<Boolean>() {
+                @Override
+                public void done(Boolean success, ParseException e) {
+                    progressDialog.dismiss();
+                    if (e == null){
+                            Snackbar.make(view, "Successfully deleted admin!", Snackbar.LENGTH_SHORT).show();
+                        Log.wtf("Deleted admin?", "SUCCESS");
+                        callback.done(true, e);
+                    } else {
+                        Log.wtf("Deleted admin?", "FAILURE");
+                        Snackbar.make(view, ErrorCodeMessageDataSource.errorCodeMessage(e.getMessage()), Snackbar.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                    }
+                }
+            });
+            //actually delete
+        }
+    }
 }
 

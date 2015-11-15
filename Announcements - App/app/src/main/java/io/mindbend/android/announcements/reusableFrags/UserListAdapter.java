@@ -1,7 +1,11 @@
 package io.mindbend.android.announcements.reusableFrags;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
+import android.app.DialogFragment;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -27,6 +31,7 @@ import io.mindbend.android.announcements.Organization;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
 import io.mindbend.android.announcements.cloudCode.AdminDataSource;
+import io.mindbend.android.announcements.cloudCode.UserDataSource;
 
 /**
  * Created by Akshay Pall on 06/08/2015.
@@ -67,6 +72,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
     private UserListInteractionListener mListener;
     private HashMap<User, Integer> mTypeOfUsers;
     private boolean mIsSearching;
+    private boolean mIsAdmin;
     private Organization mOrg;
 
     //for acting on a follow request
@@ -91,6 +97,38 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
             @Override
             public void onClick(View v) {
                 mListener.userSelected(user);
+            }
+        });
+
+        viewHolder.mUserLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (mTypeOfUsers.get(user) == USERS_ADMINS && mIsAdmin){
+                    //give a dialog to delete selected admin
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.DialogTheme);
+                    builder.setTitle(R.string.delete_admin_title)
+                            .setMessage(mContext.getString(R.string.format_delete_admin, user.getmFirstName()))
+                            .setNegativeButton("No", null)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    AdminDataSource.removeAdminFromOrganization(mContext, mView, mOrg.getmObjectId(), user.getmObjectId(), new FunctionCallback<Boolean>() {
+                                        @Override
+                                        public void done(Boolean success, ParseException e) {
+                                            if (success){
+                                                //setting admin as a normal user
+                                                mUsers.remove(user);
+                                                mTypeOfUsers.remove(user);
+                                                notifyDataSetChanged();
+                                            }
+                                        }
+                                    });
+                                }
+                            })
+                            .show();
+                }
+                return true;
             }
         });
 
@@ -160,7 +198,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
     }
 
     public UserListAdapter (Context context, List<User> users, UserListInteractionListener listener,
-                            HashMap<User, Integer> typeOfUsers, boolean isSearching,
+                            HashMap<User, Integer> typeOfUsers, boolean isSearching, boolean isAdmin,
                             Organization parentOrgIfSearching, View view, ProgressBar loading) {
         //save the mPosts private field as what is passed in
         mContext = context;
@@ -169,8 +207,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         mTypeOfUsers = typeOfUsers;
         mIsSearching = isSearching;
         mOrg = parentOrgIfSearching;
-
-
+        mIsAdmin = isAdmin;
         mView = view;
         mLoading = loading;
     }

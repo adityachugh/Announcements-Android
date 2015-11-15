@@ -175,7 +175,7 @@ public class ListFragment extends Fragment implements Serializable, SwipyRefresh
                 recyclerView.setAdapter(notifsAdapter);
                 break;
             case USERS_SELECTED:
-                mUserAdapter = new UserListAdapter(getActivity(), mUsers, mUserListener, mTypeOfUsers, mIsSearching, mOrgOfUsers, mView, mLoading);
+                mUserAdapter = new UserListAdapter(getActivity(), mUsers, mUserListener, mTypeOfUsers, mIsSearching, mIsAdmin,mOrgOfUsers, mView, mLoading);
                 recyclerView.setAdapter(mUserAdapter);
                 if (mIsAdmin && mViewingAdmins) {
                     //the add admin fab
