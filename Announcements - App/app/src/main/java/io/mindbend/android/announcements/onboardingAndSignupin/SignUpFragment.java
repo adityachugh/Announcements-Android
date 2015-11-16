@@ -1,6 +1,7 @@
 package io.mindbend.android.announcements.onboardingAndSignupin;
 
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -12,6 +13,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.ParseCloud;
@@ -20,6 +22,7 @@ import java.io.Serializable;
 
 import io.mindbend.android.announcements.App;
 import io.mindbend.android.announcements.R;
+import io.mindbend.android.announcements.TermsConditionsActivity;
 import io.mindbend.android.announcements.cloudCode.VerificationDataSource;
 
 
@@ -45,6 +48,16 @@ public class SignUpFragment extends Fragment implements Serializable {
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         View v =  inflater.inflate(R.layout.fragment_sign_up, container, false);
+
+        TextView termsAndConditions = (TextView)v.findViewById(R.id.terms_and_conditions_signup);
+        termsAndConditions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //go to terms and conditions website activity
+                Intent i = new Intent(getActivity(), TermsConditionsActivity.class);
+                startActivity(i);
+            }
+        });
 
         mLoader = (ProgressBar)v.findViewById(R.id.sign_up_progressbar);
 

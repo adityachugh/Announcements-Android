@@ -46,6 +46,16 @@ public class MoreActivity extends AppCompatActivity {
         //progress bar grabbing
         mLoading = (ProgressBar)findViewById(R.id.more_progressbar);
 
+        LinearLayout termsAndConditions = (LinearLayout)findViewById(R.id.terms_and_conditions_more);
+        termsAndConditions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //go to webview activity with terms and conditions
+                Intent i = new Intent(MoreActivity.this, TermsConditionsActivity.class);
+                startActivity(i);
+            }
+        });
+
         LinearLayout reportBug = (LinearLayout)findViewById(R.id.report_bug);
         reportBug.setOnClickListener(new View.OnClickListener() {
             @Override
