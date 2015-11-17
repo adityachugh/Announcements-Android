@@ -40,6 +40,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView mName;
+        private final TextView mUsername;
         private final LinearLayout mUserLayout;
         private final ImageView mUserIcon;
         private final CircleImageView mUserImage;
@@ -52,6 +53,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
             super(itemView);
             //getting all the elements part of the card, aside from the image
             mName = (TextView) itemView.findViewById(R.id.user_name);
+            mUsername = (TextView) itemView.findViewById(R.id.user_username);
             mUserLayout = (LinearLayout)itemView.findViewById(R.id.user_list);
             mUserIcon = (ImageView)itemView.findViewById(R.id.user_list_right_icon);
             mAcceptUser = (ImageButton)itemView.findViewById(R.id.pending_user_accept_button);
@@ -89,6 +91,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
     public void onBindViewHolder(final ViewHolder viewHolder, int i) {
         final User user = mUsers.get(i);
         viewHolder.mName.setText(user.getName());
+        viewHolder.mUsername.setText("@" + user.getUserCategory());
 
         if (user.getmProfilePictureURL() != null && !user.getmProfilePictureURL().equals(""))
             Picasso.with(mContext).load(user.getmProfilePictureURL()).skipMemoryCache().resize(100,100).into(viewHolder.mUserImage);

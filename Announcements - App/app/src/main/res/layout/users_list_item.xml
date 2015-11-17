@@ -13,16 +13,34 @@
         android:layout_height="@dimen/circle_avatar_size"
         android:src="@color/primary"
         android:id="@+id/user_list_image"/>
-    <TextView
-        android:layout_marginLeft="@dimen/card_outer_margin"
+    <LinearLayout
         android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:text="John Cena"
-        android:layout_gravity="center_vertical"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textSize="@dimen/list_text_size"
-        android:id="@+id/user_name"/>
+        android:orientation="vertical"
+        android:gravity="center_vertical">
+        <TextView
+            android:layout_marginLeft="@dimen/card_outer_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="John Cena"
+            android:layout_gravity="center_vertical"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="@dimen/list_text_size"
+            android:id="@+id/user_name"/>
+        <TextView
+            android:layout_marginLeft="@dimen/card_outer_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="\@JohnCena"
+            android:layout_marginTop="2dp"
+            android:layout_gravity="center_vertical"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="11sp"
+            android:id="@+id/user_username"/>
+    </LinearLayout>
+
+
     <ImageButton
         android:visibility="gone"
         android:id="@+id/pending_user_accept_button"
