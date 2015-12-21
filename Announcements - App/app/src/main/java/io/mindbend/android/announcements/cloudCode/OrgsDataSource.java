@@ -359,13 +359,14 @@ public class OrgsDataSource {
         }
     }
 
-    public static void getAdminsForOrganizationInRange (final View view, final Context context, final ProgressBar loading,
-                                                        int viewToRemoveId, String organizationObjectId, int startIndex,
+    public static void getAdminsForOrganizationInRange (final View view, final Context context, final View loading,
+                                                        final int viewToRemoveId, String organizationObjectId, int startIndex,
                                                         int numberOfUsers, final FunctionCallback<HashMap<Boolean, Object>> callback){
 
         loading.setVisibility(View.VISIBLE);
         final View layoutView = view.findViewById(viewToRemoveId);
         layoutView.setVisibility(View.INVISIBLE);
+
 
         if (!App.hasNetworkConnection(context)){
             loading.setVisibility(View.GONE);
@@ -382,13 +383,13 @@ public class OrgsDataSource {
                     int i = 0; //for debugging
                     loading.setVisibility(View.GONE);
                     layoutView.setVisibility(View.VISIBLE);
-                    if (e == null){
+                    if (e == null) {
                         ArrayList<User> users = new ArrayList<User>();
                         HashMap<User, Integer> userTypes = new HashMap<User, Integer>(); //will be all admin, but needed for displaying list
 
                         for (ParseObject follow : parseObjects) {
                             User user = new User(follow.getParseUser(UserDataSource.FOLLOWER_USER_FIELD));
-                            Log.wtf( follow.getString(UserDataSource.FOLLOWER_USER_TYPE_FIELD), user.getName()); //to check if the users are coming
+                            Log.wtf(follow.getString(UserDataSource.FOLLOWER_USER_TYPE_FIELD), user.getName()); //to check if the users are coming
                             user.setmFollowObjectId(follow.getObjectId());
                             users.add(user);
                             userTypes.put(user, getTypeOfFollower(follow.getString(UserDataSource.FOLLOWER_USER_TYPE_FIELD)));

@@ -31,7 +31,7 @@ public class CommentsDataSource {
     public static final String COMMENT_TEXT = "comment";
     public static final String COMMENT_USER = "createUser";
 
-    public static void getRangeOfCommentsForPost(final View view, final RelativeLayout loadingLayout, int viewToRemoveId, final Context context, int startIndex, int numberOfComments, String postObjectId, final FunctionCallback<ArrayList<Comment>> callback){
+    public static void getRangeOfCommentsForPost(final View view, final View loadingLayout, int viewToRemoveId, final Context context, int startIndex, int numberOfComments, String postObjectId, final FunctionCallback<ArrayList<Comment>> callback){
         loadingLayout.setVisibility(View.VISIBLE);
         final View layoutView = view.findViewById(viewToRemoveId);
         layoutView.setVisibility(View.INVISIBLE);

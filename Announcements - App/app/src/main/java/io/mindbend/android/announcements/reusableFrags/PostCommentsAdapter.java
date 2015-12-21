@@ -4,9 +4,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -17,6 +19,7 @@ import com.parse.ParseUser;
 import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -35,6 +38,7 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
         private final TextView mTimeSince;
         private final TextView mCommentText;
         private final CircleImageView mPosterImage;
+        private final ImageView mAdminImageTag;
         private final LinearLayout mEntireLayout; //for long clicking to delete a comment
 
         public ViewHolder(View itemView) {
@@ -44,11 +48,13 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
             mCommenterName = (TextView)itemView.findViewById(R.id.comment_poster_name);
             mTimeSince = (TextView)itemView.findViewById(R.id.comment_time_since);
             mCommentText = (TextView)itemView.findViewById(R.id.comment_text);
+            mAdminImageTag = (ImageView)itemView.findViewById(R.id.comment_is_admin_image_tag);
             mEntireLayout = (LinearLayout)itemView.findViewById(R.id.comment_layout);
         }
     }
 
     private List<io.mindbend.android.announcements.Comment> mComments;
+    private ArrayList<User> mAdmins;
     private transient RelativeLayout mLoadingLayout;
     private Context mContext;
     private CommenterInteractionListener mListener;
@@ -62,6 +68,16 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         final Comment currentComment = mComments.get(i);
+
+        int k = 0;
+        boolean commentorIsAdmin = false;
+        while(!commentorIsAdmin && k < mAdmins.size()) {
+           if (mAdmins.get(k).getmObjectId().equals(currentComment.getmUser().getmObjectId())){
+               commentorIsAdmin = true;
+               viewHolder.mAdminImageTag.setVisibility(View.VISIBLE);
+            }
+            k++;
+        }
 
         //viewHolder.mCommenterName.setText(currentComment.getmUserId());
         viewHolder.mCommentText.setText(currentComment.getmText());
@@ -124,12 +140,13 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
         return mComments.size();
     }
 
-    public PostCommentsAdapter(Context context, List<io.mindbend.android.announcements.Comment> comments, CommenterInteractionListener commentListener, RelativeLayout loadinglayout) {
+    public PostCommentsAdapter(Context context, List<io.mindbend.android.announcements.Comment> comments, ArrayList<User> admins, CommenterInteractionListener commentListener, RelativeLayout loadinglayout) {
         //save the mPosts private field as what is passed in
         mContext = context;
         mComments = comments;
         mListener = commentListener;
         mLoadingLayout = loadinglayout;
+        mAdmins = admins;
     }
 
     @Override

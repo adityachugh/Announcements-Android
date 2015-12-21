@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,13 +35,16 @@ import com.parse.ParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import io.mindbend.android.announcements.Comment;
 import io.mindbend.android.announcements.Post;
 import io.mindbend.android.announcements.R;
 import io.mindbend.android.announcements.User;
+import io.mindbend.android.announcements.cloudCode.AdminDataSource;
 import io.mindbend.android.announcements.cloudCode.CommentsDataSource;
+import io.mindbend.android.announcements.cloudCode.OrgsDataSource;
 
 public class PostCommentsFragment extends Fragment implements Serializable, PostCommentsAdapter.CommenterInteractionListener, SwipyRefreshLayout.OnRefreshListener {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -59,6 +63,7 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
     private transient RecyclerView mRecyclerView;
     private transient RelativeLayout mLoading;
     private TextView mNoCommentsText;
+    private ArrayList<User> mAdmins;
 
     public static PostCommentsFragment newInstance(Post postClicked, CommentsInteractionListener commentListener) {
         PostCommentsFragment fragment = new PostCommentsFragment();
@@ -96,9 +101,25 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
 
             mLoading = (RelativeLayout) mView.findViewById(R.id.comments_progressbar_layout);
             mComments = new ArrayList<>();
-            mCommentsAdapter = new PostCommentsAdapter(getActivity(), mComments, PostCommentsFragment.this, mLoading);
-            mRecyclerView.setAdapter(mCommentsAdapter);
-            loadComments(false, mLoading, 0, 10);
+
+            OrgsDataSource.getAdminsForOrganizationInRange(mView, getActivity(), mLoading, R.id.post_comments_remove_view_while_loading, mPost.getmPosterOrg().getmObjectId(), 0, 20, new FunctionCallback<HashMap<Boolean, Object>>() {
+                @Override
+                public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
+                    ArrayList<User> users = (ArrayList<User>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
+                    HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
+                    if (users.size() > 0 && typeOfUsers.size() > 0) {
+                        Log.wtf("First admin:", users.get(0).getName());
+                        Log.wtf("Follower type (should be 1)", "" + typeOfUsers.get(users.get(0)));
+                    }
+
+                    mAdmins = new ArrayList<>();
+                    mAdmins.addAll(users);
+                    mCommentsAdapter = new PostCommentsAdapter(getActivity(), mComments, mAdmins, PostCommentsFragment.this, mLoading);
+                    mRecyclerView.setAdapter(mCommentsAdapter);
+                    loadComments(false, mLoading, 0, 10);
+
+                }
+            });
 
             mFab = (ImageButton) mView.findViewById(R.id.comments_fab);
             mFab.setOnClickListener(new View.OnClickListener() {
@@ -180,7 +201,7 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
     private void loadComments(final boolean loadingMoreComments, final RelativeLayout loading, int startIndex, int numberOfComments) {
         CommentsDataSource.getRangeOfCommentsForPost(mView, loading, R.id.post_comments_remove_view_while_loading,getActivity(), startIndex, numberOfComments, mPost.getmObjectId(), new FunctionCallback<ArrayList<Comment>>() {
             @Override
-            public void done(ArrayList<Comment> comments, ParseException e) {
+            public void done(final ArrayList<Comment> comments, ParseException e) {
                 mRefreshComments.setRefreshing(false);
                 if (e == null) {
                     Log.wtf("PostCommentsFragment", "comments loaded");
@@ -188,20 +209,50 @@ public class PostCommentsFragment extends Fragment implements Serializable, Post
                     if (!loadingMoreComments)
                         mComments.clear();
                     mComments.addAll(comments);
-                    mCommentsAdapter.notifyDataSetChanged();
-                    if (!loadingMoreComments) {
-                        if (comments.size() == 0) {
-                            mNoCommentsText.setVisibility(View.VISIBLE);
-                        } else {
-                            mNoCommentsText.setVisibility(View.GONE);
-                            //the animation for the recycler view to slide in from the bottom of the view
-                            TranslateAnimation trans = new TranslateAnimation(0, 0, 1000, 0);
-                            trans.setDuration(500);
-                            trans.setInterpolator(new DecelerateInterpolator(1.0f));
-                            mRecyclerView.startAnimation(trans);
-                        }
 
-                    }
+                    //load admins of org to identify them in comments
+                            mCommentsAdapter.notifyDataSetChanged();
+                            if (!loadingMoreComments) {
+                                if (comments.size() == 0) {
+                                    mNoCommentsText.setVisibility(View.VISIBLE);
+                                } else {
+                                    mNoCommentsText.setVisibility(View.GONE);
+                                    //the animation for the recycler view to slide in from the bottom of the view
+                                    TranslateAnimation trans = new TranslateAnimation(0, 0, 1000, 0);
+                                    trans.setDuration(500);
+                                    trans.setInterpolator(new DecelerateInterpolator(1.0f));
+                                    mRecyclerView.startAnimation(trans);
+                                }
+
+                            }
+
+//                    OrgsDataSource.getAdminsForOrganizationInRange(mView, getActivity(), loading, R.id.post_comments_remove_view_while_loading, mPost.getmPosterOrg().getmObjectId(), 0, 20, new FunctionCallback<HashMap<Boolean, Object>>() {
+//                        @Override
+//                        public void done(HashMap<Boolean, Object> booleanObjectHashMap, ParseException e) {
+//                            ArrayList<User> users = (ArrayList<User>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_LIST_KEY);
+//                            HashMap<User, Integer> typeOfUsers = (HashMap<User, Integer>) booleanObjectHashMap.get(OrgsDataSource.MAP_USER_TYPES_KEY);
+//                            if (users.size() > 0 && typeOfUsers.size() > 0) {
+//                                Log.wtf("First admin:", users.get(0).getName());
+//                                Log.wtf("Follower type (should be 1)", "" + typeOfUsers.get(users.get(0)));
+//                            }
+//
+//                            mAdmins.addAll(users);
+//                            mCommentsAdapter.notifyDataSetChanged();
+//                            if (!loadingMoreComments) {
+//                                if (comments.size() == 0) {
+//                                    mNoCommentsText.setVisibility(View.VISIBLE);
+//                                } else {
+//                                    mNoCommentsText.setVisibility(View.GONE);
+//                                    //the animation for the recycler view to slide in from the bottom of the view
+//                                    TranslateAnimation trans = new TranslateAnimation(0, 0, 1000, 0);
+//                                    trans.setDuration(500);
+//                                    trans.setInterpolator(new DecelerateInterpolator(1.0f));
+//                                    mRecyclerView.startAnimation(trans);
+//                                }
+//
+//                            }
+//                        }
+//                    });
                 } else if (e.getCode() == ParseException.INCORRECT_TYPE) {
                     mComments.clear();
                     mCommentsAdapter.notifyDataSetChanged();

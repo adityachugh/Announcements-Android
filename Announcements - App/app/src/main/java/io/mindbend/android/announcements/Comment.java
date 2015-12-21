@@ -18,7 +18,6 @@ public class Comment implements Serializable {
     private String mText;
     private String mTimeSince;
     private String mObjectId;
-
     private User mUser;
     //TODO: setup passing in image for the comment
 

@@ -36,6 +36,16 @@
                 android:layout_marginLeft="@dimen/post_title_margin"
                 android:text="2hrs"
                 android:textColor="@color/text_tertiary" />
+
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/comment_is_admin_image_tag"
+                android:tint="@color/text_tertiary"
+                android:layout_width="@dimen/comment_admin_tag_size"
+                android:src="@drawable/ic_admin"
+                android:layout_height="@dimen/comment_admin_tag_size"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@id/comment_image"/>
         </RelativeLayout>
 
         <ImageView
